@@ -12,7 +12,7 @@ export const PriceChildren=():ReactNode=>{
             <NumberInput min={0} source="groundHandlingCharge" label="Ground Handling Charge"/>
             <NumberInput min={0} source="crewBeltingCharge" label="Crew Belting Charge"/>
             <NumberInput min={0} source="miscellaneousCharge" label="Miscellaneous Charge"/>
-            <CheckboxGroupInput source="taxes" label="Taxes" choices={[{id:"isSGST",name: "SGST"},{id:"isCGST",name: "CGST"},{id:"isIGST",name: "IGST"}]}/>
+            <CheckboxGroupInput source="taxes" label="Taxes" choices={[{id:"SGST",name: "SGST"},{id:"CGST",name: "CGST"},{id:"IGST",name: "IGST"}]}/>
 
     </>)
 

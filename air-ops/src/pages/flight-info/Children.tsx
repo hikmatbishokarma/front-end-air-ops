@@ -10,6 +10,7 @@ export const FlightInfoChildren=():ReactNode=>{
                            <BooleanInput source="status" label="Status"/>
                             <TextInput source="name" label="Name"/>
                             <TextInput source ="code" label="Code"/>
+                            <TextInput source ="image" label="Image"/>
                             <RichTextInput source="description" label="Description"/>
       
                       </TabbedForm.Tab>
