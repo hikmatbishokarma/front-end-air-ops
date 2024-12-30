@@ -4,10 +4,10 @@
 //   import.meta.env.VITE_SIMPLE_REST_URL,
 // );
 
-import { fetchUtils } from "react-admin";
-import { stringify } from "query-string";
+import { fetchUtils } from 'react-admin';
+import { stringify } from 'query-string';
 
-const apiUrl = "http://localhost:3000";
+const apiUrl = 'http://localhost:3000';
 const httpClient = fetchUtils.fetchJson;
 
 export const dataProvider = {
@@ -27,7 +27,7 @@ export const dataProvider = {
     // }));
 
     return httpClient(url, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(body),
     }).then(({ json }) => {
       console.log(json);
@@ -63,13 +63,13 @@ export const dataProvider = {
 
     return httpClient(url).then(({ headers, json }) => ({
       data: json,
-      total: parseInt(headers.get("content-range").split("/").pop(), 10),
+      total: parseInt(headers.get('content-range').split('/').pop(), 10),
     }));
   },
 
   update: (resource: string, params: any) =>
     httpClient(`${apiUrl}/${resource}/${params.id}`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({ data: json })),
 
@@ -78,14 +78,14 @@ export const dataProvider = {
       filter: JSON.stringify({ id: params.ids }),
     };
     return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({ data: json }));
   },
 
   create: (resource: string, params: any) =>
     httpClient(`${apiUrl}/${resource}/create`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({
       data: { ...params.data, id: json.id },
@@ -93,7 +93,7 @@ export const dataProvider = {
 
   delete: (resource: string, params: any) =>
     httpClient(`${apiUrl}/${resource}/${params.id}`, {
-      method: "DELETE",
+      method: 'DELETE',
     }).then(({ json }) => ({ data: json })),
 
   deleteMany: (resource: string, params: any) => {
@@ -101,7 +101,7 @@ export const dataProvider = {
       filter: JSON.stringify({ id: params.ids }),
     };
     return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
-      method: "DELETE",
+      method: 'DELETE',
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({ data: json }));
   },

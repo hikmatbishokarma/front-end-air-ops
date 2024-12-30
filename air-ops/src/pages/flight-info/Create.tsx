@@ -1,14 +1,10 @@
+import { Create } from 'react-admin';
+import { FlightInfoChildren } from './Children';
 
-import {  Create } from "react-admin"
-import { FlightInfoChildren } from "./Children"
-
-
-
-export const FlightInfoCreate=()=>{
-
-    return (
-        <Create>
-           <FlightInfoChildren/>
-        </Create>
-    )
-}
+export const FlightInfoCreate = () => {
+  return (
+    <Create>
+      <FlightInfoChildren />
+    </Create>
+  );
+};
