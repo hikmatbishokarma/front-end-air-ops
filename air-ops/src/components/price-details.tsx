@@ -30,15 +30,13 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({
   flightCost,
   subTotal,
   calculatedTaxes,
-  total 
+  total,
 }) => {
-
-    
-  
-
   return (
-    <Box sx={{ padding: 2, textAlign: 'right', borderRadius: 2, maxWidth: 400 }}>
-      <Typography variant="h6" gutterBottom>
+    <Box
+      sx={{ padding: 2, textAlign: 'right', borderRadius: 2, maxWidth: 400 }}
+    >
+      <Typography variant='h6' gutterBottom>
         Price Breakdown
       </Typography>
       <Divider />
@@ -54,11 +52,13 @@ const PriceDetails: React.FC<PriceDetailsProps> = ({
       <Typography>SubTotal: {subTotal}</Typography>
       <Divider sx={{ my: 1 }} />
       {calculatedTaxes.map((tax, index) => (
-        <Typography key={index}>{tax.type} @{tax.percentage}: {tax.value}</Typography>
+        <Typography key={index}>
+          {tax.type} @{tax.percentage}: {tax.value}
+        </Typography>
       ))}
-     
+
       <Divider sx={{ my: 1 }} />
-      <Typography variant="h6">Total Cost: {total}</Typography>
+      <Typography variant='h6'>Total Cost: {total}</Typography>
       <Divider sx={{ my: 1 }} />
     </Box>
   );

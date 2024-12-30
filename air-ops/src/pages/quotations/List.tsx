@@ -1,25 +1,32 @@
+import {
+  Datagrid,
+  List,
+  TextField,
+  NumberField,
+  EditButton,
+} from 'react-admin';
+import QuotationWorkflowField from './TransitionsWorkflow/QuotationWorkflowField';
 
-import { Datagrid, List, TextField,BooleanField, TopToolbar, CreateButton } from "react-admin"
+// const ListActions = () => {
 
-const ListActions = () => {
+//     return (
+//         <TopToolbar>
 
-    return (
-        <TopToolbar>
-           
-           <CreateButton to="/generate-quote"/>
-        </TopToolbar>
-    );
-}
+//            <CreateButton to="/generate-quote"/>
+//         </TopToolbar>
+//     );
+// }
 
-export const QuotationsList=()=>{
-    return (
-        <List actions={<ListActions/>}>
-            <Datagrid bulkActionButtons={false}>
-            <TextField source="quotationNumber" title="Quotation No"/>
-            <BooleanField source="status" title="Status"/>
-          
-            </Datagrid>
-
-        </List>
-    )
-}
+export const QuotationsList = () => {
+  return (
+    <List actions={false} filter={{ isLatest: true }}>
+      <Datagrid bulkActionButtons={false} rowClick={false}>
+        <TextField source='code' title='Quotation No' />
+        <QuotationWorkflowField source='state' />
+        {/* <TextField source='state' title='State' /> */}
+        <NumberField source='version' title='Version' />
+        <EditButton />
+      </Datagrid>
+    </List>
+  );
+};

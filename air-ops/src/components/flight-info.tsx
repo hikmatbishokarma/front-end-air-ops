@@ -13,11 +13,20 @@ interface FlightInfoProps {
   specifications: Specification[];
 }
 
-const FlightInfoStep: React.FC<{ flightInfo: FlightInfoProps }> = ({ flightInfo }) => {
+const FlightInfoStep: React.FC<{ flightInfo: FlightInfoProps }> = ({
+  flightInfo,
+}) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: 2,
+      }}
+    >
       {/* Flight Name */}
-      <Typography variant="h6">{flightInfo.name}</Typography>
+      <Typography variant='h6'>{flightInfo.name}</Typography>
 
       {/* Flight Image */}
       <Box
@@ -33,7 +42,11 @@ const FlightInfoStep: React.FC<{ flightInfo: FlightInfoProps }> = ({ flightInfo 
 
       {/* Flight Description */}
       <Box sx={{ mt: 2 }}>
-        <Typography variant="body1" component="div" dangerouslySetInnerHTML={{ __html: flightInfo.description }} />
+        <Typography
+          variant='body1'
+          component='div'
+          dangerouslySetInnerHTML={{ __html: flightInfo.description }}
+        />
       </Box>
 
       <Divider sx={{ my: 2 }} />
@@ -41,7 +54,10 @@ const FlightInfoStep: React.FC<{ flightInfo: FlightInfoProps }> = ({ flightInfo 
       {/* Flight Specifications */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         {flightInfo.specifications.map((spec, index) => (
-          <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            key={index}
+            sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+          >
             <i className={spec.icon}></i> {/* FontAwesome Icon */}
             <Typography>{spec.name}</Typography>
           </Box>
