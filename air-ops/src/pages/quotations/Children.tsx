@@ -2,9 +2,11 @@ import { ReactNode } from 'react';
 
 import {
   ArrayInput,
+  AutocompleteInput,
   CheckboxGroupInput,
   DateTimeInput,
   NumberInput,
+  ReferenceInput,
   required,
   SimpleFormIterator,
   TabbedForm,
@@ -12,6 +14,8 @@ import {
 } from 'react-admin';
 
 export const QuotationsChildren = (): ReactNode => {
+  const filterToQuery = (searchText: string) =>
+    searchText ? { code: { $regex: searchText, $options: 'i' } } : {};
   return (
     <TabbedForm>
       <TabbedForm.Tab label='Basic'>
@@ -44,11 +48,19 @@ export const QuotationsChildren = (): ReactNode => {
               min={0}
               max={4}
             />
-            <TextInput
+            {/* <TextInput
               validate={[required()]}
               source='flight'
               label='Select Flight'
-            />
+            /> */}
+            <ReferenceInput source='flight' reference='flight-info'>
+              {' '}
+              <AutocompleteInput
+                filterToQuery={filterToQuery}
+                label='Select Flight'
+                optionText={'code'}
+              />
+            </ReferenceInput>
           </SimpleFormIterator>
         </ArrayInput>
       </TabbedForm.Tab>
@@ -56,35 +68,35 @@ export const QuotationsChildren = (): ReactNode => {
         <NumberInput
           validate={[required()]}
           min={0}
-          source='basePrice'
+          source='prices.basePrice'
           label='Base Price'
         />
         <NumberInput
           validate={[required()]}
           min={0}
-          source='duration'
+          source='prices.duration'
           label='Duration'
         />
         <NumberInput
           validate={[required()]}
           min={0}
-          source='groundHandlingCharge'
+          source='prices.groundHandlingCharge'
           label='Ground Handling Charge'
         />
         <NumberInput
           validate={[required()]}
           min={0}
-          source='crewBeltingCharge'
+          source='prices.crewBeltingCharge'
           label='Crew Belting Charge'
         />
         <NumberInput
           validate={[required()]}
           min={0}
-          source='miscellaneousCharge'
+          source='prices.miscellaneousCharge'
           label='Miscellaneous Charge'
         />
         <CheckboxGroupInput
-          source='taxes'
+          source='prices.taxes'
           label='Taxes'
           choices={[
             { id: 'SGST', name: 'SGST' },
