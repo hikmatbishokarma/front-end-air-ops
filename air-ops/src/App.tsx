@@ -20,6 +20,7 @@ import { RolesEdit } from './pages/roles/Edit';
 import { QuotationsList } from './pages/quotations/List';
 import { QuotationsCreate } from './pages/quotations/Create';
 import { QuotationsEdit } from './pages/quotations/Edit';
+import PreviewQuotation from './pages/quotations/Preview';
 
 export const App = () => (
   <Admin
@@ -59,6 +60,7 @@ export const App = () => (
     />
     <CustomRoutes>
       <Route path='/generate-quote' element={<StepperForm />} />
+      <Route path='/preview/:id' element={<PreviewQuotation />} />
     </CustomRoutes>
   </Admin>
 );

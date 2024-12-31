@@ -21,11 +21,6 @@ export const dataProvider = {
     };
     const url = `${apiUrl}/${resource}`;
 
-    // return httpClient(url).then(({ headers, json }) => ({
-    //     data: json,
-    //     total: parseInt(headers.get('content-range').split('/').pop(), 10),
-    // }));
-
     return httpClient(url, {
       method: 'POST',
       body: JSON.stringify(body),
@@ -41,14 +36,24 @@ export const dataProvider = {
     })),
 
   getMany: (resource: string, params: any) => {
-    const query = {
-      filter: JSON.stringify({ ids: params.ids }),
+    let idsfilter = params.ids ? { id: { $in: params.ids } } : {};
+    const url = `${apiUrl}/${resource}`;
+
+    const body = {
+      filter: idsfilter,
     };
-    const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    return httpClient(url).then(({ json }) => ({ data: json }));
+    console.log('getMany', resource, params, body);
+    return httpClient(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }).then(({ json }) => {
+      console.log(json);
+      return json;
+    });
   },
 
   getManyReference: (resource: string, params: any) => {
+    console.log('getManyReference');
     const { page, perPage } = params.pagination;
     const { field, order } = params.sort;
     const query = {
