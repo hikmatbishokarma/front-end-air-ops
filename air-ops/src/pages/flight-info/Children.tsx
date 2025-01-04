@@ -3,6 +3,8 @@ import { RichTextInput } from 'ra-input-rich-text';
 import {
   ArrayInput,
   BooleanInput,
+  ImageField,
+  ImageInput,
   SimpleFormIterator,
   TabbedForm,
   TextInput,
@@ -15,7 +17,10 @@ export const FlightInfoChildren = (): ReactNode => {
         <BooleanInput source='status' label='Status' />
         <TextInput source='name' label='Name' />
         <TextInput source='code' label='Code' />
-        <TextInput source='image' label='Image' />
+        {/* <TextInput source='image' label='Image' /> */}
+        <ImageInput source="pictures" label="Related pictures" multiple>
+         <ImageField source="src" title="title" />
+        </ImageInput>
         <RichTextInput source='description' label='Description' />
       </TabbedForm.Tab>
       <TabbedForm.Tab label='Specifications'>
