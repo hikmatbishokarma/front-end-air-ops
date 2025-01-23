@@ -1,0 +1,66 @@
+p {
+    color: black;
+    margin: 0px 0px 0px;
+
+}
+
+h3 {
+    color: black;
+    margin: 0px 0px 0px;
+}
+
+.quotatios {
+    background-color: white;
+    padding: 30px 50px;
+}
+
+.quotatios .head_part {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.quotatios .head_part .name_address {
+    border: 2px solid transparent;
+}
+
+.quotatios .head_part .date_details {
+    border: 2px solid transparent;
+}
+
+.quotatios .disc {
+    padding: 20px 0px;
+}
+
+.quotatios .table_head {
+    border-radius: 5px;
+    background-color: rgb(201, 171, 4);
+    padding: 0px 21px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.quotatios .table_head h2 {
+    margin: 0px 0px 0px;
+}
+.quotatios .table_head span{
+    margin-top: 6px;
+}
+ 
+
+.quotatios .table_div table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+.quotatios .table_div td,
+th {
+    border: 1px solid black;
+    color: black;
+}
+
+.quotatios .table_div tr {
+    text-align: center;
+}
