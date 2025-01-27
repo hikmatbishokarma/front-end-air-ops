@@ -10,7 +10,7 @@
 //       </Typography>
 //   );
 // }
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -28,6 +28,10 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list'
+import useGql from '../lib/graphql/gql';
+import { GET_AIRPORTS } from '../lib/graphql/queries/airports';
+import AirportsAutocomplete from '../components/airport-autocommplete';
+
 
 export const events =[
   {
@@ -101,6 +105,24 @@ export default function DashboardPage() {
     );
     setRows(updatedRows);
   };
+
+  //  useEffect( () => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await useGql({
+  //         query: GET_AIRPORTS,
+  //         queryName: "airports",
+  //         queryType: "query",
+  //         variables: {},
+  //       });
+  //       console.log("data", data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  
+  //   fetchData();
+  // },[])
 
   return (
     <div style={{ padding: '20px' }}>
@@ -193,20 +215,22 @@ export default function DashboardPage() {
               <div style={{ marginTop: '20px' }}>
                 {rows.map((row) => (
                   <div key={row.id} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <TextField
+                    {/* <TextField
                       label="ADEP"
                       margin="normal"
                       style={{ flex: 1 }}
                       value={row.ADEP}
                       onChange={(e) => handleInputChange(row.id, 'ADEP', e.target.value)}
-                    />
-                    <TextField
+                    /> */}
+                    <AirportsAutocomplete label="ADEP"/>
+                    <AirportsAutocomplete label="ADES"/>
+                    {/* <TextField
                       label="ADES"
                       margin="normal"
                       style={{ flex: 1 }}
                       value={row.ADES}
                       onChange={(e) => handleInputChange(row.id, 'ADES', e.target.value)}
-                    />
+                    /> */}
                     <TextField
                       label="TBA"
                       margin="normal"
