@@ -10,7 +10,7 @@
 //       </Typography>
 //   );
 // }
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -24,18 +24,39 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import listPlugin from '@fullcalendar/list'
+import useGql from '../lib/graphql/gql';
+import { GET_AIRPORTS } from '../lib/graphql/queries/airports';
+import AirportsAutocomplete from '../components/airport-autocommplete';
 
-const localizer = momentLocalizer(moment);
 
-const events = [
+export const events =[
   {
-    title: 'OPKD - KBGR',
-    start: new Date(2025, 0, 20, 11, 0), // Jan 20, 2025, 11:00 AM
-    end: new Date(2025, 0, 20, 19, 30), // Jan 20, 2025, 7:30 PM
+      "title": "Conference",
+      "start": "2025-01-25",
+      "end": "2025-01-27"
   },
+  {
+      "title": "Meeting",
+      "start": "2025-01-26T10:30:00+00:00",
+      "end": "2025-01-26T12:30:00+00:00"
+  },
+  {
+      "title": "Lunch",
+      "start": "2025-01-26T12:00:00+00:00"
+  },
+  {
+      "title": "Birthday Party",
+      "start": "2025-01-27T07:00:00+00:00"
+  },
+  {
+      "url": "http://google.com/",
+      "title": "Click for Google",
+      "start": "2025-01-28"
+  }
 ];
 
 export default function DashboardPage() {
@@ -84,6 +105,24 @@ export default function DashboardPage() {
     );
     setRows(updatedRows);
   };
+
+  //  useEffect( () => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await useGql({
+  //         query: GET_AIRPORTS,
+  //         queryName: "airports",
+  //         queryType: "query",
+  //         variables: {},
+  //       });
+  //       console.log("data", data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  
+  //   fetchData();
+  // },[])
 
   return (
     <div style={{ padding: '20px' }}>
@@ -176,20 +215,22 @@ export default function DashboardPage() {
               <div style={{ marginTop: '20px' }}>
                 {rows.map((row) => (
                   <div key={row.id} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <TextField
+                    {/* <TextField
                       label="ADEP"
                       margin="normal"
                       style={{ flex: 1 }}
                       value={row.ADEP}
                       onChange={(e) => handleInputChange(row.id, 'ADEP', e.target.value)}
-                    />
-                    <TextField
+                    /> */}
+                    <AirportsAutocomplete label="ADEP"/>
+                    <AirportsAutocomplete label="ADES"/>
+                    {/* <TextField
                       label="ADES"
                       margin="normal"
                       style={{ flex: 1 }}
                       value={row.ADES}
                       onChange={(e) => handleInputChange(row.id, 'ADES', e.target.value)}
-                    />
+                    /> */}
                     <TextField
                       label="TBA"
                       margin="normal"
@@ -239,14 +280,17 @@ export default function DashboardPage() {
               <Typography variant="h6" gutterBottom>
                 Calendar
               </Typography>
-              <Calendar
-                localizer={localizer}
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 400 }}
-                defaultView="week"
-              />
+
+<FullCalendar
+  plugins={[ dayGridPlugin,timeGridPlugin,listPlugin ]}
+  initialView='dayGridMonth'
+  headerToolbar={ {
+    left: 'prev,next today',
+    center: 'title',
+    right: 'dayGridMonth,timeGridWeek,timeGridDay' // user can switch between the two
+  }}
+  events={events}
+  />
             </div>
           </div>
         </DialogContent>
