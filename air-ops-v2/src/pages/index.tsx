@@ -243,16 +243,7 @@ export default function DashboardPage() {
                 ></TextField>
               </div>
 
-              <TextField
-                label="Representative"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue=""
-              >
-                <MenuItem value="">---</MenuItem>
-                <MenuItem value="Smith">Smith</MenuItem>
-              </TextField>
+              
               
               <Autocomplete
                 disablePortal
@@ -279,32 +270,8 @@ export default function DashboardPage() {
                 renderInput={(params) => <TextField {...params}  label="Aircraft"/>}
                         />
 
-              <TextField
-                label="Trip Type"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue="Based on configuration"
-              >
-                <MenuItem value="Based on configuration">
-                  Based on configuration
-                </MenuItem>
-                <MenuItem value="Custom">Custom</MenuItem>
-              </TextField>
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label="Add positionings automatically"
-              />
-              <TextField
-                label="Flight Time"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue="Historical Data"
-              >
-                <MenuItem value="Historical Data">Historical Data</MenuItem>
-                <MenuItem value="Live Data">Live Data</MenuItem>
-              </TextField>
+              
+              
               <Button variant="contained" color="primary">
                 One Way or Multi Leg
               </Button>
