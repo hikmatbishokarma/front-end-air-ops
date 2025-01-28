@@ -31,6 +31,9 @@ import listPlugin from '@fullcalendar/list'
 import useGql from '../lib/graphql/gql';
 import { GET_AIRPORTS } from '../lib/graphql/queries/airports';
 import AirportsAutocomplete from '../components/airport-autocommplete';
+import { GET_AIRCRAFT_CATEGORIES } from '../lib/graphql/queries/aircraft-categories';
+import { Autocomplete } from '@mui/material';
+import { GET_AIRCRAFT } from '../lib/graphql/queries/aircraft';
 
 
 export const events =[
@@ -59,9 +62,24 @@ export const events =[
   }
 ];
 
+interface AircraftCategory{
+  id: string;
+  name: string;
+}
+
+interface Aircraft{
+  id: string;
+  name: string;
+  category: AircraftCategory;
+}
+
 export default function DashboardPage() {
   const [mainDialogOpen, setMainDialogOpen] = useState(false);
   const [subDialogOpen, setSubDialogOpen] = useState(false);
+  const [aircraftCategories, setAircraftCategories] = useState<AircraftCategory[]>([]);
+  const [aircrafts, setAircrafts] = useState<Aircraft[]>([]);
+  const [selectedAircraftCategory, setSelectedAircraftCategory] = useState<AircraftCategory | null>(null);
+
   const [rows, setRows] = useState([
     { id: 1, ADEP: '', ADES: '', TBA: '', dateLT: '', timeLT: '', PAX: '' },
   ]);
@@ -106,23 +124,47 @@ export default function DashboardPage() {
     setRows(updatedRows);
   };
 
-  //  useEffect( () => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const data = await useGql({
-  //         query: GET_AIRPORTS,
-  //         queryName: "airports",
-  //         queryType: "query",
-  //         variables: {},
-  //       });
-  //       console.log("data", data);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  
-  //   fetchData();
-  // },[])
+  const getAircraftCategories = async () => {
+    try {
+      const data = await useGql({
+        query: GET_AIRCRAFT_CATEGORIES,
+        queryName: "aircraftCategories",
+        queryType: "query",
+        variables: {},
+      });
+      setAircraftCategories(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAircrafts = async (categoryId) => {
+    try {
+      const data = await useGql({
+        query: GET_AIRCRAFT,
+        queryName: "aircraft",
+        queryType: "query",
+        variables: categoryId? {sorting: [{
+    "field":"category",
+    "direction":"ASC"
+  }]}:{},
+      });
+      setAircrafts(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+ console.log("selectedAircraftCategory", selectedAircraftCategory)
+
+   useEffect( () => {
+    getAircraftCategories();
+    getAircrafts(null);
+  },[])
+
+  useEffect( () => {
+    getAircrafts(selectedAircraftCategory?.id);
+  },[selectedAircraftCategory])
 
   return (
     <div style={{ padding: '20px' }}>
@@ -163,21 +205,32 @@ export default function DashboardPage() {
                 <MenuItem value="">---</MenuItem>
                 <MenuItem value="Smith">Smith</MenuItem>
               </TextField>
-              <TextField
-                label="Min. Category"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue=""
-              >
-                <MenuItem value="">---</MenuItem>
-                <MenuItem value="A">A</MenuItem>
-              </TextField>
-              <TextField
-                label="Aircraft"
-                fullWidth
-                margin="normal"
-              />
+              
+              <Autocomplete
+                disablePortal
+               options={aircraftCategories}
+                 getOptionLabel={(option) => `${option.name}`}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params}  label="Min. Category"/>}
+                onChange={(e,value)=>setSelectedAircraftCategory(value)}
+                        />
+
+             
+               <Autocomplete
+                disablePortal
+               options={aircrafts}
+                 getOptionLabel={(option) => `${option.name}`}
+                sx={{ width: 300 }}
+                renderOption={(props, option) => (
+                  <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start"  }}>
+                   
+                    <span>{`${option.category.name}`}</span>
+                    <span style={{ fontWeight: "bold" }}>{option.name}</span>
+                  </li>
+                )}
+                renderInput={(params) => <TextField {...params}  label="Aircraft"/>}
+                        />
+
               <TextField
                 label="Trip Type"
                 fullWidth
