@@ -57,7 +57,14 @@ const AirportsAutocomplete = ({label}) => {
 
   return (
     <Autocomplete
-      sx={{ width: 100 }}
+    sx={(theme) => ({
+        display: 'inline-block',
+        '& input': {
+          width: 200,
+          bgcolor: 'background.paper',
+          color: theme.palette.getContrastText(theme.palette.background.paper),
+        },
+      })}
       disableClearable
       options={options}
       getOptionLabel={(option) => `${option.iata_code}`}
