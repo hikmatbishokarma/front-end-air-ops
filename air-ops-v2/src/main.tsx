@@ -47,6 +47,7 @@ import App from './App';
 import Layout from './layouts/dashboard';
 import DashboardPage from './pages';
 import OrdersPage from './pages/orders';
+import Category from './pages/category';
 import SignInPage from './pages/signIn';
 
 const router = createBrowserRouter([
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
           {
             path: '/orders',
             Component: OrdersPage,
+          },
+          {
+            path: '/category',
+            Component: Category,
           },
         ],
       },
