@@ -2,7 +2,7 @@
 // import Typography from '@mui/material/Typography';
 
 // export default function HomePage() {
-  
+
 
 //   return (    
 //       <Typography>
@@ -31,31 +31,33 @@ import listPlugin from '@fullcalendar/list'
 import useGql from '../lib/graphql/gql';
 import { GET_AIRPORTS } from '../lib/graphql/queries/airports';
 import AirportsAutocomplete from '../components/airport-autocommplete';
+import Autocomplete from '@mui/material/Autocomplete';
 
+import './main.css';
 
-export const events =[
+export const events = [
   {
-      "title": "Conference",
-      "start": "2025-01-25",
-      "end": "2025-01-27"
+    "title": "Conference",
+    "start": "2025-01-25",
+    "end": "2025-01-27"
   },
   {
-      "title": "Meeting",
-      "start": "2025-01-26T10:30:00+00:00",
-      "end": "2025-01-26T12:30:00+00:00"
+    "title": "Meeting",
+    "start": "2025-01-26T10:30:00+00:00",
+    "end": "2025-01-26T12:30:00+00:00"
   },
   {
-      "title": "Lunch",
-      "start": "2025-01-26T12:00:00+00:00"
+    "title": "Lunch",
+    "start": "2025-01-26T12:00:00+00:00"
   },
   {
-      "title": "Birthday Party",
-      "start": "2025-01-27T07:00:00+00:00"
+    "title": "Birthday Party",
+    "start": "2025-01-27T07:00:00+00:00"
   },
   {
-      "url": "http://google.com/",
-      "title": "Click for Google",
-      "start": "2025-01-28"
+    "url": "http://google.com/",
+    "title": "Click for Google",
+    "start": "2025-01-28"
   }
 ];
 
@@ -120,10 +122,10 @@ export default function DashboardPage() {
   //       console.error("Error fetching data:", error);
   //     }
   //   };
-  
+
   //   fetchData();
   // },[])
-
+  const options = ['Option 1', 'Option 2'];
   return (
     <div style={{ padding: '20px' }}>
       <Button variant="contained" onClick={handleMainDialogOpen}>
@@ -134,16 +136,20 @@ export default function DashboardPage() {
       <Dialog open={mainDialogOpen} onClose={handleMainDialogClose} maxWidth="lg" fullWidth>
         <DialogTitle>Add New Quote Request</DialogTitle>
         <DialogContent>
-          <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', gap: '20px', border: '1px solid grey', padding: '0px 8px' }}>
             {/* Left Form */}
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 0.5, padding: '5px 0px' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '18px' }}>Requested by:</span>
                 <TextField
-                  label="Requested By"
-                  fullWidth
-                  margin="normal"
                   select
-                  defaultValue=""
+                  defaultValue="Option 1"
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '40%' }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: '0', height: '30px' },
+                  }}
                 >
                   <MenuItem value="">---</MenuItem>
                   <MenuItem value="John">John</MenuItem>
@@ -152,58 +158,50 @@ export default function DashboardPage() {
                   <AddIcon />
                 </IconButton>
               </div>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '10px 0px' }}>
+                <span style={{ marginRight: '8px' }}>Representative:</span>
+                <TextField
+                  select
+                  defaultValue=""
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '40%' }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: '0', height: '30px' },
+                  }}
+                >
+                  <MenuItem value="">---</MenuItem>
+                  <MenuItem value="Smith">Smith</MenuItem>
+                </TextField>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '10px 0px' }}>
+                <span style={{ marginRight: '16px' }}>Min. Category:</span>
+                <TextField
+                  select
+                  defaultValue=""
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '40%' }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: '0', height: '30px' },
+                  }}
+                >
+                  <MenuItem value="">---</MenuItem>
+                  <MenuItem value="A">A</MenuItem>
+                </TextField>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '10px 0px' }}>
+                <span style={{ marginRight: '65.5px' }}>Aircraft:</span>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '40%' }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: '0', height: '30px' },
+                  }}
+                ></TextField>
+              </div>
 
-              <TextField
-                label="Representative"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue=""
-              >
-                <MenuItem value="">---</MenuItem>
-                <MenuItem value="Smith">Smith</MenuItem>
-              </TextField>
-              <TextField
-                label="Min. Category"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue=""
-              >
-                <MenuItem value="">---</MenuItem>
-                <MenuItem value="A">A</MenuItem>
-              </TextField>
-              <TextField
-                label="Aircraft"
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Trip Type"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue="Based on configuration"
-              >
-                <MenuItem value="Based on configuration">
-                  Based on configuration
-                </MenuItem>
-                <MenuItem value="Custom">Custom</MenuItem>
-              </TextField>
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label="Add positionings automatically"
-              />
-              <TextField
-                label="Flight Time"
-                fullWidth
-                margin="normal"
-                select
-                defaultValue="Historical Data"
-              >
-                <MenuItem value="Historical Data">Historical Data</MenuItem>
-                <MenuItem value="Live Data">Live Data</MenuItem>
-              </TextField>
               <Button variant="contained" color="primary">
                 One Way or Multi Leg
               </Button>
@@ -213,6 +211,18 @@ export default function DashboardPage() {
 
               {/* Dynamic Rows */}
               <div style={{ marginTop: '20px' }}>
+                <div className='heading-table'>
+
+                  <span>ADEP</span>
+                  <span>ADES</span>
+                  <span>TBA</span>
+                  <span>  &nbsp;  &nbsp;   </span>
+                  <span>Date LT</span>
+                  <span>Time LT</span>
+                  <span>PAX</span>
+
+
+                </div>
                 {rows.map((row) => (
                   <div key={row.id} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     {/* <TextField
@@ -222,8 +232,10 @@ export default function DashboardPage() {
                       value={row.ADEP}
                       onChange={(e) => handleInputChange(row.id, 'ADEP', e.target.value)}
                     /> */}
-                    <AirportsAutocomplete label="ADEP"/>
-                    <AirportsAutocomplete label="ADES"/>
+                   
+                 
+                    <AirportsAutocomplete label="ADEP" />
+                    <AirportsAutocomplete label="ADES" />
                     {/* <TextField
                       label="ADES"
                       margin="normal"
@@ -232,30 +244,55 @@ export default function DashboardPage() {
                       onChange={(e) => handleInputChange(row.id, 'ADES', e.target.value)}
                     /> */}
                     <TextField
-                      label="TBA"
+                      size="small"
+                      style={{ width: '10%' }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: '0', height: '30px' },
+                      }}
                       margin="normal"
-                      style={{ flex: 1 }}
                       value={row.TBA}
                       onChange={(e) => handleInputChange(row.id, 'TBA', e.target.value)}
                     />
+                     <TextField
+                  select
+                  defaultValue=""
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '40%', marginTop:'8px' }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: '0', height: '30px' },
+                  }}
+                >
+                  <MenuItem value="">---</MenuItem>
+                  <MenuItem value="A">A</MenuItem>
+                </TextField>
                     <TextField
-                      label="Date LT"
+                      size="small"
+                      style={{ width: '35%' }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: '0', height: '30px' },
+                      }}
                       margin="normal"
-                      style={{ flex: 1 }}
                       value={row.dateLT}
                       onChange={(e) => handleInputChange(row.id, 'dateLT', e.target.value)}
                     />
                     <TextField
-                      label="Time LT"
+                      size="small"
+                      style={{ width: '35%' }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: '0', height: '30px' },
+                      }}
                       margin="normal"
-                      style={{ flex: 1 }}
                       value={row.timeLT}
                       onChange={(e) => handleInputChange(row.id, 'timeLT', e.target.value)}
                     />
                     <TextField
-                      label="PAX"
+                      size="small"
+                      style={{ width: '35%' }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: '0', height: '30px' },
+                      }}
                       margin="normal"
-                      style={{ flex: 1 }}
                       value={row.PAX}
                       onChange={(e) => handleInputChange(row.id, 'PAX', e.target.value)}
                     />
@@ -276,21 +313,21 @@ export default function DashboardPage() {
             </div>
 
             {/* Right Calendar */}
-            <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', borderRadius: '8px' }}>
+            <div style={{ flex: 0.5, backgroundColor: '#fff', borderLeft: '1px solid grey', paddingLeft: '8px' }}>
               <Typography variant="h6" gutterBottom>
                 Calendar
               </Typography>
 
-<FullCalendar
-  plugins={[ dayGridPlugin,timeGridPlugin,listPlugin ]}
-  initialView='dayGridMonth'
-  headerToolbar={ {
-    left: 'prev,next today',
-    center: 'title',
-    right: 'dayGridMonth,timeGridWeek,timeGridDay' // user can switch between the two
-  }}
-  events={events}
-  />
+              <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+                initialView='dayGridMonth'
+                headerToolbar={{
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'dayGridMonth,timeGridWeek,timeGridDay' // user can switch between the two
+                }}
+                events={events}
+              />
             </div>
           </div>
         </DialogContent>

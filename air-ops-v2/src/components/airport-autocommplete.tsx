@@ -11,7 +11,7 @@ type Airport = {
   city: string;
 };
 
-const AirportsAutocomplete = ({label}) => {
+const AirportsAutocomplete = ({ label }) => {
   const [inputValue, setInputValue] = useState(""); // Stores user input
   const [options, setOptions] = useState<Airport[]>([]); // Stores fetched airport options
   const [loading, setLoading] = useState(false); // Indicates loading state
@@ -56,41 +56,70 @@ const AirportsAutocomplete = ({label}) => {
   console.log("Options state:", options);
 
   return (
+    // <Autocomplete
+    //   sx={{ width: 100 }}
+    //   disableClearable
+    //   options={options}
+    //   getOptionLabel={(option) => `${option.iata_code}`}
+    //   isOptionEqualToValue={(option, value) => option.id === value.id} // Ensure proper equality check
+    //   onInputChange={(event, value) => {
+    //     setInputValue(value);
+    //   }}
+    //   loading={loading}
+    //   renderOption={(props, option) => (
+    //     <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start"  }}>
+    //       <span style={{ fontWeight: "bold" }}>{option.iata_code}</span>
+    //       <span>{`${option.city}, ${option.name}`}</span>
+    //     </li>
+    //   )}
+
+    // renderInput={(params) => (
+    //     <TextField
+    //       {...params}
+    //       label={label}
+    //       slotProps={{
+    //         input: {
+    //           ...params.InputProps,
+    //           endAdornment: (
+    //             <React.Fragment>
+    //               {loading ? <CircularProgress color="inherit" size={20} /> : null}
+    //               {params.InputProps.endAdornment}
+    //             </React.Fragment>
+    //           ),
+    //         },
+    //       }}
+    //     />
+    //   )}
+    // />
     <Autocomplete
-      sx={{ width: 100 }}
-      disableClearable
-      options={options}
+      sx={(theme) => ({
+        display: 'inline-block',
+        '& input': {
+          width: "100%",
+          padding: '4px 4px',
+          marginTop: '8px',
+          bgcolor: 'background.paper',
+          color: theme.palette.getContrastText(theme.palette.background.paper),
+        },
+      })}
       getOptionLabel={(option) => `${option.iata_code}`}
-      isOptionEqualToValue={(option, value) => option.id === value.id} // Ensure proper equality check
       onInputChange={(event, value) => {
         setInputValue(value);
       }}
-      loading={loading}
+      options={options}
       renderOption={(props, option) => (
-        <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start"  }}>
+        <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
           <span style={{ fontWeight: "bold" }}>{option.iata_code}</span>
           <span>{`${option.city}, ${option.name}`}</span>
         </li>
       )}
-
-    renderInput={(params) => (
-        <TextField
-          {...params}
-          label={label}
-          slotProps={{
-            input: {
-              ...params.InputProps,
-              endAdornment: (
-                <React.Fragment>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                  {params.InputProps.endAdornment}
-                </React.Fragment>
-              ),
-            },
-          }}
-        />
+      renderInput={(params) => (
+        <div ref={params.InputProps.ref}>
+          <input type="text" {...params.inputProps} />
+        </div>
       )}
     />
+
   );
 };
 

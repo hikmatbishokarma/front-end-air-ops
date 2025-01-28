@@ -1,0 +1,8 @@
+.heading-table{
+     width: 89%;
+    display: flex;
+    justify-content: space-around;
+}
+.fc .fc-toolbar-title{
+    font-size: 20px;
+}
