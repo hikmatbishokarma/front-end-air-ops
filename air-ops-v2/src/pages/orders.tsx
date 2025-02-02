@@ -1,9 +1,7 @@
 // import * as React from 'react';
 // import Typography from '@mui/material/Typography';
 
-
 // export default function OrdersPage() {
-  
 
 //   return (
 //     <Typography>
@@ -11,7 +9,7 @@
 //     </Typography>
 //   );
 // }
-import * as React from 'react';
+import * as React from "react";
 import {
   Button,
   Dialog,
@@ -27,22 +25,34 @@ import {
   TableRow,
   Paper,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 
 export default function OrdersPage() {
   const [open, setOpen] = React.useState(false);
 
   // Initial rows with demo data
   const [rows, setRows] = React.useState([
-    { city: 'New York', airportName: 'John F. Kennedy International Airport', iataCode: 'JFK' },
-    { city: 'Los Angeles', airportName: 'Los Angeles International Airport', iataCode: 'LAX' },
-    { city: 'Chicago', airportName: 'O’Hare International Airport', iataCode: 'ORD' },
+    {
+      city: "New York",
+      airportName: "John F. Kennedy International Airport",
+      iataCode: "JFK",
+    },
+    {
+      city: "Los Angeles",
+      airportName: "Los Angeles International Airport",
+      iataCode: "LAX",
+    },
+    {
+      city: "Chicago",
+      airportName: "O’Hare International Airport",
+      iataCode: "ORD",
+    },
   ]);
 
   const [formData, setFormData] = React.useState({
-    city: '',
-    airportName: '',
-    iataCode: '',
+    city: "",
+    airportName: "",
+    iataCode: "",
   });
 
   const handleOpen = () => {
@@ -51,7 +61,7 @@ export default function OrdersPage() {
 
   const handleClose = () => {
     setOpen(false);
-    setFormData({ city: '', airportName: '', iataCode: '' }); // Reset form data
+    setFormData({ city: "", airportName: "", iataCode: "" }); // Reset form data
   };
 
   const handleChange = (e) => {
@@ -67,13 +77,13 @@ export default function OrdersPage() {
   return (
     <div>
       {/* Table Section */}
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: "20px" }}>
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '10px',
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "10px",
           }}
         >
           <Typography variant="h6">Airports</Typography>

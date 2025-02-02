@@ -1,9 +1,7 @@
 // import * as React from 'react';
 // import Typography from '@mui/material/Typography';
 
-
 // export default function OrdersPage() {
-  
 
 //   return (
 //     <Typography>
@@ -11,7 +9,7 @@
 //     </Typography>
 //   );
 // }
-import * as React from 'react';
+import * as React from "react";
 import {
   TextField,
   Button,
@@ -24,67 +22,77 @@ import {
   Paper,
   Typography,
   Grid,
-} from '@mui/material';
+} from "@mui/material";
 
 export default function Category() {
   // States for the left side
   const [categories, setCategories] = React.useState([
-    'Electronics',
-    'Furniture',
-    'Clothing',
-    'Books', // Demo category names
+    "Electronics",
+    "Furniture",
+    "Clothing",
+    "Books", // Demo category names
   ]);
-  const [nameInput, setNameInput] = React.useState('');
+  const [nameInput, setNameInput] = React.useState("");
 
   // States for the right side
   const [records, setRecords] = React.useState([
-    { name: 'John Doe', category: 'Electronics' },
-    { name: 'Jane Smith', category: 'Furniture' },
-    { name: 'Alice Johnson', category: 'Clothing' }, // Demo data
+    { name: "John Doe", category: "Electronics" },
+    { name: "Jane Smith", category: "Furniture" },
+    { name: "Alice Johnson", category: "Clothing" }, // Demo data
   ]);
-  const [nameField, setNameField] = React.useState('');
-  const [categoryField, setCategoryField] = React.useState('');
+  const [nameField, setNameField] = React.useState("");
+  const [categoryField, setCategoryField] = React.useState("");
 
   // Left Side: Handle Category Submission
   const handleCategorySubmit = () => {
-    if (nameInput.trim() !== '') {
+    if (nameInput.trim() !== "") {
       setCategories((prev) => [...prev, nameInput.trim()]);
-      setNameInput('');
+      setNameInput("");
     }
   };
 
   // Right Side: Handle Name & Category Record Submission
   const handleRecordSubmit = () => {
-    if (nameField.trim() !== '' && categoryField.trim() !== '') {
+    if (nameField.trim() !== "" && categoryField.trim() !== "") {
       setRecords((prev) => [
         ...prev,
         { name: nameField.trim(), category: categoryField.trim() },
       ]);
-      setNameField('');
-      setCategoryField('');
+      setNameField("");
+      setCategoryField("");
     }
   };
 
   return (
-    <div style={{ margin: '20px' }}>
+    <div style={{ margin: "20px" }}>
       <Grid container spacing={3}>
         {/* Left Side: Category Management */}
         <Grid item xs={4}>
-          <Typography variant="h6" style={{ marginBottom: '10px' }}>
+          <Typography variant="h6" style={{ marginBottom: "10px" }}>
             Add Category
           </Typography>
 
           {/* Input Form for Category */}
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
             <TextField
               label="Category Name"
               value={nameInput}
               onChange={(e) => setNameInput(e.target.value)}
               fullWidth
               margin="normal"
-              style={{ marginRight: '10px' }}
+              style={{ marginRight: "10px" }}
             />
-            <Button variant="contained" color="primary" onClick={handleCategorySubmit}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCategorySubmit}
+            >
               Submit
             </Button>
           </div>
@@ -110,12 +118,19 @@ export default function Category() {
 
         {/* Right Side: Name & Category Records */}
         <Grid item xs={8}>
-          <Typography variant="h6" style={{ marginBottom: '10px' }}>
+          <Typography variant="h6" style={{ marginBottom: "10px" }}>
             Add Name and Category
           </Typography>
 
           {/* Input Form for Name and Category (Side by Side) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginBottom: "20px",
+            }}
+          >
             <TextField
               label="Name"
               value={nameField}
@@ -132,7 +147,11 @@ export default function Category() {
               margin="normal"
               style={{ flex: 1 }}
             />
-            <Button variant="contained" color="primary" onClick={handleRecordSubmit}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleRecordSubmit}
+            >
               Submit
             </Button>
           </div>

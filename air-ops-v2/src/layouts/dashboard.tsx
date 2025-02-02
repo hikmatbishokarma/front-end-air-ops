@@ -1,17 +1,17 @@
-import * as React from 'react';
-import LinearProgress from '@mui/material/LinearProgress';
-import { Outlet, Navigate, useLocation } from 'react-router';
-import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { PageContainer } from '@toolpad/core/PageContainer';
-import { Account } from '@toolpad/core/Account';
+import * as React from "react";
+import LinearProgress from "@mui/material/LinearProgress";
+import { Outlet, Navigate, useLocation } from "react-router";
+import { DashboardLayout } from "@toolpad/core/DashboardLayout";
+import { PageContainer } from "@toolpad/core/PageContainer";
+import { Account } from "@toolpad/core/Account";
 
-import { useSession } from '../SessionContext';
+import { useSession } from "../SessionContext";
 
 function CustomAccount() {
   return (
     <Account
       slotProps={{
-        preview: { slotProps: { avatarIconButton: { sx: { border: '0' } } } },
+        preview: { slotProps: { avatarIconButton: { sx: { border: "0" } } } },
       }}
     />
   );
@@ -23,7 +23,7 @@ export default function Layout() {
 
   if (loading) {
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: "100%" }}>
         <LinearProgress />
       </div>
     );
