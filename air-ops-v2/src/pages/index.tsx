@@ -63,12 +63,12 @@ export const events = [
   }
 ];
 
-interface AircraftCategory{
+interface AircraftCategory {
   id: string;
   name: string;
 }
 
-interface Aircraft{
+interface Aircraft {
   id: string;
   name: string;
   category: AircraftCategory;
@@ -145,10 +145,12 @@ export default function DashboardPage() {
         query: GET_AIRCRAFT,
         queryName: "aircraft",
         queryType: "query",
-        variables: categoryId? {sorting: [{
-    "field":"category",
-    "direction":"ASC"
-  }]}:{},
+        variables: categoryId ? {
+          sorting: [{
+            "field": "category",
+            "direction": "ASC"
+          }]
+        } : {},
       });
       setAircrafts(data);
     } catch (error) {
@@ -156,16 +158,16 @@ export default function DashboardPage() {
     }
   };
 
- console.log("selectedAircraftCategory", selectedAircraftCategory)
+  console.log("selectedAircraftCategory", selectedAircraftCategory)
 
-   useEffect( () => {
+  useEffect(() => {
     getAircraftCategories();
     getAircrafts(null);
-  },[])
+  }, [])
 
-  useEffect( () => {
+  useEffect(() => {
     getAircrafts(selectedAircraftCategory?.id);
-  },[selectedAircraftCategory])
+  }, [selectedAircraftCategory])
 
   return (
     <div style={{ padding: '20px' }}>
@@ -243,35 +245,38 @@ export default function DashboardPage() {
                 ></TextField>
               </div>
 
-              
-              
-              <Autocomplete
-                disablePortal
-               options={aircraftCategories}
-                 getOptionLabel={(option) => `${option.name}`}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params}  label="Min. Category"/>}
-                onChange={(e,value)=>setSelectedAircraftCategory(value)}
-                        />
 
-             
-               <Autocomplete
-                disablePortal
-               options={aircrafts}
-                 getOptionLabel={(option) => `${option.name}`}
-                sx={{ width: 300 }}
-                renderOption={(props, option) => (
-                  <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start"  }}>
-                   
-                    <span>{`${option.category.name}`}</span>
-                    <span style={{ fontWeight: "bold" }}>{option.name}</span>
-                  </li>
-                )}
-                renderInput={(params) => <TextField {...params}  label="Aircraft"/>}
-                        />
+              <div style={{ display: 'flex', alignItems: 'center', padding: '10px 0px' }}>
+                <span style={{ marginRight: '16px' }}>Min. Category:</span>
+                <Autocomplete
+                  disablePortal
+                  options={aircraftCategories}
+                  getOptionLabel={(option) => `${option.name}`}
+                  sx={{ width: '40%',padding: '0', height: '30px' }}
+                  renderInput={(params) => <TextField {...params} />}
+                  onChange={(e, value) => setSelectedAircraftCategory(value)}
+                />
+              </div>
 
-              
-              
+              <div style={{ display: 'flex', alignItems: 'center', padding: '10px 0px', marginBottom:'20px' }}>
+                <span style={{ marginRight: '65.5px' }}>Aircraft:</span>
+                <Autocomplete
+                  disablePortal
+                  options={aircrafts}
+                  getOptionLabel={(option) => `${option.name}`}
+                  sx={{ width: '40%',padding: '0', height: '30px' }}
+                  renderOption={(props, option) => (
+                    <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+
+                      <span>{`${option.category.name}`}</span>
+                      <span style={{ fontWeight: "bold" }}>{option.name}</span>
+                    </li>
+                  )}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </div>
+
+
               <Button variant="contained" color="primary">
                 One Way or Multi Leg
               </Button>
@@ -302,8 +307,8 @@ export default function DashboardPage() {
                       value={row.ADEP}
                       onChange={(e) => handleInputChange(row.id, 'ADEP', e.target.value)}
                     /> */}
-                   
-                 
+
+
                     <AirportsAutocomplete label="ADEP" />
                     <AirportsAutocomplete label="ADES" />
                     {/* <TextField
@@ -323,19 +328,19 @@ export default function DashboardPage() {
                       value={row.TBA}
                       onChange={(e) => handleInputChange(row.id, 'TBA', e.target.value)}
                     />
-                     <TextField
-                  select
-                  defaultValue=""
-                  variant="outlined"
-                  size="small"
-                  style={{ width: '40%', marginTop:'8px' }} // Set the width to 30%
-                  InputProps={{
-                    style: { padding: '0', height: '30px' },
-                  }}
-                >
-                  <MenuItem value="">---</MenuItem>
-                  <MenuItem value="A">A</MenuItem>
-                </TextField>
+                    <TextField
+                      select
+                      defaultValue=""
+                      variant="outlined"
+                      size="small"
+                      style={{ width: '40%', marginTop: '8px' }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: '0', height: '30px' },
+                      }}
+                    >
+                      <MenuItem value="">---</MenuItem>
+                      <MenuItem value="A">A</MenuItem>
+                    </TextField>
                     <TextField
                       size="small"
                       style={{ width: '35%' }} // Set the width to 30%
