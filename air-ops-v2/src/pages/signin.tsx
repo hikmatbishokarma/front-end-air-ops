@@ -7,7 +7,6 @@
 // import { useSession, type Session } from '../SessionContext';
 // import { signInWithCredentials } from '../firebase/auth';
 
-
 // export default function SignIn() {
 //   const { session, setSession, loading } = useSession();
 //   const navigate = useNavigate();
@@ -26,8 +25,7 @@
 //       signIn={async (provider, formData, callbackUrl) => {
 //         let result;
 //         try {
-          
-          
+
 //           if (provider.id === 'credentials') {
 //             const email = formData?.get('email') as string;
 //             const password = formData?.get('password') as string;
@@ -56,34 +54,33 @@
 //           return { error: error instanceof Error ? error.message : 'An error occurred' };
 //         }
 //       }}
-        
+
 //     />
 //   );
 // }
 // janedoe@gmail.com
 // password
 
-
-'use client';
-import * as React from 'react';
-import { SignInPage } from '@toolpad/core/SignInPage';
-import type { Session } from '@toolpad/core/AppProvider';
-import { useNavigate } from 'react-router';
-import { useSession } from '../SessionContext';
+"use client";
+import * as React from "react";
+import { SignInPage } from "@toolpad/core/SignInPage";
+import type { Session } from "@toolpad/core/AppProvider";
+import { useNavigate } from "react-router";
+import { useSession } from "../SessionContext";
 
 const fakeAsyncGetSession = async (formData: any): Promise<Session> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (formData.get('password') === 'password') {
+      if (formData.get("password") === "password") {
         resolve({
           user: {
-            name: 'Bharat Kashyap',
-            email: formData.get('email') || '',
-            image: 'https://avatars.githubusercontent.com/u/19550456',
+            name: "Bharat Kashyap",
+            email: formData.get("email") || "",
+            image: "https://avatars.githubusercontent.com/u/19550456",
           },
         });
       }
-      reject(new Error('Incorrect credentials.'));
+      reject(new Error("Incorrect credentials."));
     }, 1000);
   });
 };
@@ -93,18 +90,20 @@ export default function SignIn() {
   const navigate = useNavigate();
   return (
     <SignInPage
-      providers={[{ id: 'credentials', name: 'Credentials' }]}
+      providers={[{ id: "credentials", name: "Credentials" }]}
       signIn={async (provider, formData, callbackUrl) => {
         // Demo session
         try {
           const session = await fakeAsyncGetSession(formData);
           if (session) {
             setSession(session);
-            navigate(callbackUrl || '/', { replace: true });
+            navigate(callbackUrl || "/", { replace: true });
             return {};
           }
         } catch (error) {
-          return { error: error instanceof Error ? error.message : 'An error occurred' };
+          return {
+            error: error instanceof Error ? error.message : "An error occurred",
+          };
         }
         return {};
       }}

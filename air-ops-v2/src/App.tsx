@@ -27,7 +27,7 @@
 //   title: "air-ops-v2",
 // };
 
-// // const AUTHENTICATION: Authentication = {    
+// // const AUTHENTICATION: Authentication = {
 // //   signIn: () => {},
 // //   signOut: firebaseSignOut,
 // // };
@@ -61,7 +61,6 @@
 //     }
 //   },
 // };
-
 
 // export default function App() {
 //   const [session, setSession] = React.useState<Session | null>(null);
@@ -104,7 +103,7 @@
 //           setLoading(false);
 //           return;
 //         }
-  
+
 //         const response = await fetch('/api/session', {
 //           headers: { Authorization: `Bearer ${token}` },
 //         });
@@ -126,10 +125,9 @@
 //         setLoading(false);
 //       }
 //     };
-  
+
 //     checkSession();
 //   }, []);
-  
 
 //   return (
 //     <ReactRouterAppProvider
@@ -145,40 +143,44 @@
 //   );
 // }
 
-
-import * as React from 'react';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import HomeIcon from '@mui/icons-material/Home';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { ReactRouterAppProvider } from '@toolpad/core/react-router';
-import { Outlet, useNavigate } from 'react-router';
-import type { Navigation, Session } from '@toolpad/core/AppProvider';
-import { SessionContext } from './SessionContext';
+import * as React from "react";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import HomeIcon from "@mui/icons-material/Home";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { ReactRouterAppProvider } from "@toolpad/core/react-router";
+import { Outlet, useNavigate } from "react-router";
+import type { Navigation, Session } from "@toolpad/core/AppProvider";
+import { SessionContext } from "./SessionContext";
 
 const NAVIGATION: Navigation = [
   {
-    kind: 'header',
-    title: 'Main items',
+    kind: "header",
+    title: "Main items",
   },
   {
-    title: 'Dashboard',
+    title: "Dashboard",
     icon: <DashboardIcon />,
   },
   {
-    segment: 'orders',
-    title: 'Orders',
+    segment: "orders",
+    title: "Orders",
     icon: <ShoppingCartIcon />,
   },
   {
-    segment: 'category',
-    title: 'Category',
+    segment: "category",
+    title: "Category",
+    icon: <ShoppingCartIcon />,
+  },
+  {
+    segment: "flight-form",
+    title: "Flight Form",
     icon: <ShoppingCartIcon />,
   },
 ];
 
 const BRANDING = {
-  logo:<HomeIcon />,
-  title: 'Air Ops',
+  logo: <HomeIcon />,
+  title: "Air Ops",
 };
 
 export default function App() {
@@ -186,15 +188,18 @@ export default function App() {
   const navigate = useNavigate();
 
   const signIn = React.useCallback(() => {
-    navigate('/sign-in');
+    navigate("/sign-in");
   }, [navigate]);
 
   const signOut = React.useCallback(() => {
     setSession(null);
-    navigate('/sign-in');
+    navigate("/sign-in");
   }, [navigate]);
 
-  const sessionContextValue = React.useMemo(() => ({ session, setSession }), [session, setSession]);
+  const sessionContextValue = React.useMemo(
+    () => ({ session, setSession }),
+    [session, setSession],
+  );
 
   return (
     <SessionContext.Provider value={sessionContextValue}>

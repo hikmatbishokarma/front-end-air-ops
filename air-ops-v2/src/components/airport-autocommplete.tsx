@@ -3,6 +3,21 @@ import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import { GET_AIRPORTS } from "../lib/graphql/queries/airports";
 import useGql from "../lib/graphql/gql";
 
+// Custom debounce hook
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
 type Airport = {
   id: string;
   iata_code: string;
@@ -11,7 +26,8 @@ type Airport = {
   city: string;
 };
 
-const AirportsAutocomplete = ({ label }) => {
+const AirportsAutocomplete = ({ value, onChange, label }: any) => {
+ 
   const [inputValue, setInputValue] = useState(""); // Stores user input
   const [options, setOptions] = useState<Airport[]>([]); // Stores fetched airport options
   const [loading, setLoading] = useState(false); // Indicates loading state
@@ -55,50 +71,18 @@ const AirportsAutocomplete = ({ label }) => {
 
   console.log("Options state:", options);
 
-  return (
-    // <Autocomplete
-    //   sx={{ width: 100 }}
-    //   disableClearable
-    //   options={options}
-    //   getOptionLabel={(option) => `${option.iata_code}`}
-    //   isOptionEqualToValue={(option, value) => option.id === value.id} // Ensure proper equality check
-    //   onInputChange={(event, value) => {
-    //     setInputValue(value);
-    //   }}
-    //   loading={loading}
-    //   renderOption={(props, option) => (
-    //     <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start"  }}>
-    //       <span style={{ fontWeight: "bold" }}>{option.iata_code}</span>
-    //       <span>{`${option.city}, ${option.name}`}</span>
-    //     </li>
-    //   )}
+  // Find the selected airport option based on iata_code (field.value)
+  const selectedOption = options.find((opt) => opt.iata_code === value) || null;
 
-    // renderInput={(params) => (
-    //     <TextField
-    //       {...params}
-    //       label={label}
-    //       slotProps={{
-    //         input: {
-    //           ...params.InputProps,
-    //           endAdornment: (
-    //             <React.Fragment>
-    //               {loading ? <CircularProgress color="inherit" size={20} /> : null}
-    //               {params.InputProps.endAdornment}
-    //             </React.Fragment>
-    //           ),
-    //         },
-    //       }}
-    //     />
-    //   )}
-    // />
+  return (
     <Autocomplete
       sx={(theme) => ({
-        display: 'inline-block',
-        '& input': {
+        display: "inline-block",
+        "& input": {
           width: "100%",
-          padding: '4px 4px',
-          marginTop: '8px',
-          bgcolor: 'background.paper',
+          padding: "4px 4px",
+          marginTop: "8px",
+          bgcolor: "background.paper",
           color: theme.palette.getContrastText(theme.palette.background.paper),
         },
       })}
@@ -106,9 +90,20 @@ const AirportsAutocomplete = ({ label }) => {
       onInputChange={(event, value) => {
         setInputValue(value);
       }}
+
       options={options}
+      // value={options.find((opt) => opt.iata_code === value) || null}
+      value={selectedOption}
+      onChange={(_, selectedOption) => onChange(selectedOption ? selectedOption.iata_code : "")}
       renderOption={(props, option) => (
-        <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+        <li
+          {...props}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
           <span style={{ fontWeight: "bold" }}>{option.iata_code}</span>
           <span>{`${option.city}, ${option.name}`}</span>
         </li>
@@ -120,6 +115,30 @@ const AirportsAutocomplete = ({ label }) => {
       )}
     />
 
+    // <Autocomplete
+    //   getOptionLabel={(option) => `${option.iata_code}`} // Display iata_code in the list
+    //   options={options}
+    //   value={selectedOption} // Set the entire airport object as value
+    //   onInputChange={(event, newInputValue) => setInputValue(newInputValue)} // Update the input value for searching
+    //   onChange={(_, newValue) => {
+    //     // Update the form value (i.e., airport iata_code)
+    //     onChange(newValue ? newValue.iata_code : "");
+    //   }}
+    //   renderOption={(props, option) => (
+    //     <li
+    //       {...props}
+    //       style={{
+    //         display: "flex",
+    //         flexDirection: "column",
+    //         alignItems: "flex-start",
+    //       }}
+    //     >
+    //       <span style={{ fontWeight: "bold" }}>{option.iata_code}</span>
+    //       <span>{`${option.city}, ${option.name}`}</span>
+    //     </li>
+    //   )}
+    //   renderInput={(params) => <TextField {...params} label={label} />}
+    // />
   );
 };
 
