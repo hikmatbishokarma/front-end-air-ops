@@ -6,3 +6,9 @@
 .fc .fc-toolbar-title{
     font-size: 20px;
 }
+.css-h473fx-MuiAutocomplete-root .MuiOutlinedInput-root .MuiAutocomplete-input {
+    padding: 0px !important;
+}
+.css-h473fx-MuiAutocomplete-root .MuiOutlinedInput-root {
+    padding: 4px;
+}
