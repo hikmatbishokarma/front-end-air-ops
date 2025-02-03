@@ -109,8 +109,8 @@ export default function DashboardPage() {
   const [selectedAircraftCategory, setSelectedAircraftCategory] =
     useState<AircraftCategory | null>(null);
 
-    const [events, setEvents] = useState<{ title: string; start: string; end: string }[]>([]);
-    const [clients,setClients] = useState<any[]>([]);
+  const [events, setEvents] = useState<{ title: string; start: string; end: string }[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
 
   const { control, handleSubmit, setValue, watch } = useForm({
     defaultValues,
@@ -121,19 +121,19 @@ export default function DashboardPage() {
     name: "itinerary",
   });
 
-  
-  const createQuote=async (formData)=>{
-    const data = await useGql({
-        query: CREATE_QUOTE,
-        queryName: "quote",
-        variables: {
-            input: {
-              quote: formData
-            }
-          },
-      });
 
-      console.log("submitted data:", data);
+  const createQuote = async (formData) => {
+    const data = await useGql({
+      query: CREATE_QUOTE,
+      queryName: "quote",
+      variables: {
+        input: {
+          quote: formData
+        }
+      },
+    });
+
+    console.log("submitted data:", data);
   }
 
   const onSubmit = (data: any) => {
@@ -149,11 +149,13 @@ export default function DashboardPage() {
 
     console.log("newItinerary", lastItinerary);
 
-    setEvents((prev:any)=> [...prev, {title: `${lastItinerary.source}-${lastItinerary.destination}`,
+    setEvents((prev: any) => [...prev, {
+      title: `${lastItinerary.source}-${lastItinerary.destination}`,
       start: lastItinerary?.date,
       end: moment(lastItinerary?.date)
-      .add(moment.duration(lastItinerary?.time))
-      .format("YYYY-MM-DD HH:mm")}]);
+        .add(moment.duration(lastItinerary?.time))
+        .format("YYYY-MM-DD HH:mm")
+    }]);
 
     const newItinerary = {
       date: "",
@@ -162,10 +164,10 @@ export default function DashboardPage() {
       source: lastItinerary ? lastItinerary.destination : "",
       destination: "",
       paxNumber: 1,
-      aircraft:""
+      aircraft: ""
     };
 
-    
+
     // Append the new itinerary to the existing itinerary list
     append(newItinerary);
   };
@@ -188,10 +190,10 @@ export default function DashboardPage() {
     setSubDialogOpen(true);
   };
 
-  const handleSubDialogClose = async() => {
+  const handleSubDialogClose = async () => {
     console.log("Sub Dialog Closed")
     setSubDialogOpen(false);
-    await getClients(); 
+    await getClients();
   };
 
   const handleAddRow = () => {
@@ -240,13 +242,13 @@ export default function DashboardPage() {
         queryType: "query",
         variables: categoryId
           ? {
-              sorting: [
-                {
-                  field: "category",
-                  direction: "ASC",
-                },
-              ],
-            }
+            sorting: [
+              {
+                field: "category",
+                direction: "ASC",
+              },
+            ],
+          }
           : {},
       });
       setAircrafts(data);
@@ -255,7 +257,7 @@ export default function DashboardPage() {
     }
   };
 
-  const getClients= async()=>{
+  const getClients = async () => {
     try {
       const data = await useGql({
         query: GET_CLIENTS,
@@ -536,13 +538,13 @@ export default function DashboardPage() {
               </div>
             </div> */}
 
-            <form onSubmit={handleSubmit(onSubmit)} style={{ padding: "20px" }}>
+            <form onSubmit={handleSubmit(onSubmit)} className="form_Work" style={{ padding: "20px", flex: 0.5, }}>
               <Controller
                 name="requestedBy"
                 control={control}
                 render={({ field }) => (
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ mr: 2 }}>Requested by:</Typography>
+                    <Typography sx={{ marginRight: '37px' }}>Requested by:</Typography>
                     {/* <TextField
                       {...field}
                       select
@@ -555,21 +557,21 @@ export default function DashboardPage() {
                     ></TextField> */}
                     <Autocomplete
 
-  {...field}
+                      {...field}
 
-  options={clients}
+                      options={clients}
 
-                    getOptionLabel={(option) => option.name} // Display the category name
-                    value={
-                      field.value
-                        ? clients.find(
+                      getOptionLabel={(option) => option.name} // Display the category name
+                      value={
+                        field.value
+                          ? clients.find(
                             (client) => client.id === field.value,
                           )
-                        : null
-                    }
-  sx={{ width: 300 }}
-  renderInput={(params) => <TextField {...params} />}
-/>
+                          : null
+                      }
+                      sx={{ width: 300 }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
                     <IconButton onClick={handleSubDialogOpen}>
                       <AddIcon />
                     </IconButton>
@@ -587,39 +589,41 @@ export default function DashboardPage() {
                       padding: "10px 0px",
                     }}
                   >
-                    <Typography sx={{ mr: 8 }}>Representative:</Typography>
+                    <Typography sx={{ marginRight: '28px' }}>Representative:</Typography>
                     <TextField
                       {...field}
-                      label="Representative"
-                      fullWidth
+                      style={{ width: '300px' }}
                       margin="normal"
                     />
                   </Box>
                 )}
               />
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography sx={{ marginRight: '17px' }}>Aircraft Category:</Typography>
+                <Controller
+                  name="aircraftCategory"
+                  control={control}
+                  render={({ field }) => (
+                    <Autocomplete
+                      {...field}
+                      options={aircraftCategories}
+                      getOptionLabel={(option) => option.name} // Display the category name
+                      value={selectedAircraftCategory} // Ensure value is the full AircraftCategory object
+                      onChange={(_, value) => {
+                        setSelectedAircraftCategory(value); // Set full object on selection
+                        setValue("aircraftCategory", value ? value.id : ""); // Update form value with category ID
+                      }}
+                      sx={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField {...params} />
+                      )}
+                    />
+                  )}
+                />
+              </Box>
 
-              <Controller
-                name="aircraftCategory"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
-                    options={aircraftCategories}
-                    getOptionLabel={(option) => option.name} // Display the category name
-                    value={selectedAircraftCategory} // Ensure value is the full AircraftCategory object
-                    onChange={(_, value) => {
-                      setSelectedAircraftCategory(value); // Set full object on selection
-                      setValue("aircraftCategory", value ? value.id : ""); // Update form value with category ID
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Aircraft Category" />
-                    )}
-                  />
-                )}
-              />
 
-   
-              <Box sx={{ mt: 2 }}>
+              <Box sx={{ mt: 5 }}>
                 <Box
                   sx={{
                     display: "grid",
@@ -635,6 +639,10 @@ export default function DashboardPage() {
                   <Typography variant="body2">Date LT</Typography>
                   <Typography variant="body2">Time LT</Typography>
                   <Typography variant="body2">PAX</Typography>
+                  <Typography variant="body2">Aircraft</Typography>
+                  <Typography variant="body2"><Delete /></Typography>
+
+
                 </Box>
                 {/* Itinerary Fields */}
                 {fields.map((item, index) => (
@@ -644,11 +652,12 @@ export default function DashboardPage() {
                     key={item.id}
                     sx={{
                       display: "flex",
-                      gap: "10px",
+                      gap: "0px",
                       alignItems: "center",
+                      marginTop: '5px'
                     }}
                   >
-                      <Grid item xs={2}>
+                    <Grid item xs={2}>
                       <Controller
                         name={`itinerary.${index}.source`}
                         control={control}
@@ -674,14 +683,14 @@ export default function DashboardPage() {
                       />
                     </Grid>
 
-                    <Grid item xs={3}>
+                    <Grid item xs={2}>
                       <Controller
                         name={`itinerary.${index}.date`}
                         control={control}
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            label="Date"
+                            // label="Date"
                             type="date"
                             fullWidth
                             InputLabelProps={{ shrink: true }}
@@ -697,7 +706,7 @@ export default function DashboardPage() {
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            label="Time"
+                            // label="Time"
                             type="time"
                             fullWidth
                             InputLabelProps={{ shrink: true }}
@@ -706,15 +715,15 @@ export default function DashboardPage() {
                       />
                     </Grid>
 
-                  
-                    <Grid item xs={2}>
+
+                    <Grid item xs={1}>
                       <Controller
                         name={`itinerary.${index}.paxNumber`}
                         control={control}
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            label="Pax Number"
+                            // label="Pax Number"
                             type="number"
                             fullWidth
                           />
@@ -723,31 +732,31 @@ export default function DashboardPage() {
                     </Grid>
                     <Grid item xs={2}>
 
-                    <Controller
-                name= {`itinerary.${index}.aircraft`}
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
-                    options={aircrafts}
-                    getOptionLabel={(option) => option.name} // Display the aircraft name
-                    value={
-                      field.value
-                        ? aircrafts.find(
-                            (aircraft) => aircraft.id === field.value,
-                          )
-                        : null
-                    } // Match the selected aircraft by id
-                    onChange={(_, value) => {
-                      // Update form state with the selected aircraft's id
-                      field.onChange(value ? value.id : ""); // Set the aircraft id in form data
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Aircraft" />
-                    )}
-                  />
-                )}
-              />
+                      <Controller
+                        name={`itinerary.${index}.aircraft`}
+                        control={control}
+                        render={({ field }) => (
+                          <Autocomplete
+                            {...field}
+                            options={aircrafts}
+                            getOptionLabel={(option) => option.name} // Display the aircraft name
+                            value={
+                              field.value
+                                ? aircrafts.find(
+                                  (aircraft) => aircraft.id === field.value,
+                                )
+                                : null
+                            } // Match the selected aircraft by id
+                            onChange={(_, value) => {
+                              // Update form state with the selected aircraft's id
+                              field.onChange(value ? value.id : ""); // Set the aircraft id in form data
+                            }}
+                            renderInput={(params) => (
+                              <TextField {...params} />
+                            )}
+                          />
+                        )}
+                      />
                     </Grid>
 
                     <Grid item xs={1} container alignItems="center">
@@ -757,24 +766,30 @@ export default function DashboardPage() {
                     </Grid>
                   </Grid>
                 ))}
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="primary"
-                  onClick={addItinerary} // Add a new itinerary
-                >
-                  Add Itinerary
-                </Button>
+                <Box sx={{
+                  display:"flex"
+                }}>
+                  <Button
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    onClick={addItinerary} // Add a new itinerary
+                    style={{ marginTop: '10px' }}
+                  >
+                    {/* Add Itinerary */}
+                    +
+                  </Button>
+                  {/* Submit Button */}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                    style={{ marginTop: '10px', marginLeft:"28px" }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
               </Box>
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                variant="contained"
-                color="success"
-                style={{ marginLeft: "10px" }}
-              >
-                Submit
-              </Button>
             </form>
 
             {/* Right Calendar */}
