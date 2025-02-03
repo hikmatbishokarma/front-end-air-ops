@@ -36,12 +36,14 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 import "./main.css";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import moment from "moment";
 import { GET_CLIENTS } from "../lib/graphql/queries/clients";
 import RequestedByDialog from "../components/client-form";
-import { CREATE_QUOTE } from "../lib/graphql/queries/quote";
+import { CREATE_QUOTE, GET_QUOTES } from "../lib/graphql/queries/quote";
+import Paper from '@mui/material/Paper';
+import { QuoteStatus } from "../lib/utils";
 
 // export const events = [
 //   {
@@ -87,7 +89,6 @@ const defaultValues = {
     {
       date: "",
       time: "",
-      departureOrArrival: "departure",
       source: "",
       destination: "",
       paxNumber: 1,
@@ -96,7 +97,7 @@ const defaultValues = {
   ],
 
   providerType: "airops",
-  aircraftCategory: "",
+  category: "",
 };
 
 export default function DashboardPage() {
@@ -111,6 +112,7 @@ export default function DashboardPage() {
 
   const [events, setEvents] = useState<{ title: string; start: string; end: string }[]>([]);
   const [clients, setClients] = useState<any[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
 
   const { control, handleSubmit, setValue, watch } = useForm({
     defaultValues,
@@ -139,6 +141,7 @@ export default function DashboardPage() {
   const onSubmit = (data: any) => {
     console.log("Form Data:", data);
     createQuote(data);
+    setMainDialogOpen(false);
   };
 
   const itinerary = watch("itinerary");
@@ -160,7 +163,6 @@ export default function DashboardPage() {
     const newItinerary = {
       date: "",
       time: "",
-      departureOrArrival: "departure",
       source: lastItinerary ? lastItinerary.destination : "",
       destination: "",
       paxNumber: 1,
@@ -174,9 +176,7 @@ export default function DashboardPage() {
 
   console.log("events", events);
 
-  const [rows, setRows] = useState([
-    { id: 1, ADEP: "", ADES: "", TBA: "", dateLT: "", timeLT: "", PAX: "" },
-  ]);
+
 
   const handleMainDialogOpen = () => {
     setMainDialogOpen(true);
@@ -196,29 +196,9 @@ export default function DashboardPage() {
     await getClients();
   };
 
-  const handleAddRow = () => {
-    const newRow = {
-      id: rows.length + 1,
-      ADEP: "",
-      ADES: "",
-      TBA: "",
-      dateLT: "",
-      timeLT: "",
-      PAX: "",
-    };
-    setRows([...rows, newRow]);
-  };
 
-  const handleDeleteRow = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
 
-  const handleInputChange = (id, field, value) => {
-    const updatedRows = rows.map((row) =>
-      row.id === id ? { ...row, [field]: value } : row,
-    );
-    setRows(updatedRows);
-  };
+
 
   const getAircraftCategories = async () => {
     try {
@@ -271,9 +251,38 @@ export default function DashboardPage() {
     }
   }
 
+  const getQuotes=async()=>{
+    try {
+      const data = await useGql({
+        query: GET_QUOTES,
+        queryName: "quotes",
+        queryType: "query",
+        variables: {},
+      });
+      setRows(()=>{
+        return data.map((quote: any) => {
+          return {
+            id: quote.id,
+            refrenceNo:"dIRAAA",
+            status: QuoteStatus[quote.status],
+            requester: quote.requestedBy.name,
+            // representative: quote.representative.name,
+            itinerary: quote.itinerary.map((itinerary: any) => {
+              return `${itinerary.source} - ${itinerary.destination}`;
+            }).join(", "),
+            createdAt: quote.createdAt,
+            updatedAt: quote.updatedAt,
+          }
+        })
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
   console.log("selectedAircraftCategory", selectedAircraftCategory);
 
   useEffect(() => {
+    getQuotes()
     getAircraftCategories();
     getAircrafts(null);
     getClients()
@@ -283,11 +292,44 @@ export default function DashboardPage() {
     getAircrafts(selectedAircraftCategory?.id);
   }, [selectedAircraftCategory]);
 
+console.log("rows", rows);
+
   return (
     <div style={{ padding: "20px" }}>
-      <Button variant="contained" onClick={handleMainDialogOpen}>
+      <>
+
+      <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Requester</TableCell>
+            <TableCell align="right">Itinenary</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.refrenceNo}
+              </TableCell>
+              <TableCell align="right">{row.status}</TableCell>
+              <TableCell align="right">{row.requester}</TableCell>
+              <TableCell align="right">{row.itinerary}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    <Button variant="contained" onClick={handleMainDialogOpen}>
         Add New Quote Request
       </Button>
+      </>
+     
 
       {/* Main Dialog */}
       <Dialog
@@ -545,22 +587,10 @@ export default function DashboardPage() {
                 render={({ field }) => (
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography sx={{ marginRight: '37px' }}>Requested by:</Typography>
-                    {/* <TextField
-                      {...field}
-                      select
-                      variant="outlined"
-                      size="small"
-                      sx={{ width: "40%" }} // Set the width as in the old code
-                      InputProps={{
-                        sx: { padding: 0, height: "30px" },
-                      }}
-                    ></TextField> */}
+                    
                     <Autocomplete
-
                       {...field}
-
                       options={clients}
-
                       getOptionLabel={(option) => option.name} // Display the category name
                       value={
                         field.value
@@ -569,6 +599,9 @@ export default function DashboardPage() {
                           )
                           : null
                       }
+                      onChange={(_, newValue) => {
+                        field.onChange(newValue ? newValue.id : ""); // Update only the selected value
+                      }}
                       sx={{ width: 300 }}
                       renderInput={(params) => <TextField {...params} />}
                     />
@@ -601,7 +634,7 @@ export default function DashboardPage() {
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography sx={{ marginRight: '17px' }}>Aircraft Category:</Typography>
                 <Controller
-                  name="aircraftCategory"
+                  name="category"
                   control={control}
                   render={({ field }) => (
                     <Autocomplete
@@ -611,7 +644,7 @@ export default function DashboardPage() {
                       value={selectedAircraftCategory} // Ensure value is the full AircraftCategory object
                       onChange={(_, value) => {
                         setSelectedAircraftCategory(value); // Set full object on selection
-                        setValue("aircraftCategory", value ? value.id : ""); // Update form value with category ID
+                        setValue("category", value ? value.id : ""); // Update form value with category ID
                       }}
                       sx={{ width: 300 }}
                       renderInput={(params) => (
