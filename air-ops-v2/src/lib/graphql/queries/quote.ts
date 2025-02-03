@@ -7,3 +7,25 @@ export const CREATE_QUOTE = gql`
     }
   }
 `;
+
+export const GET_QUOTES = gql`
+  query getQuotes(
+    $filter: QuoteFilter! = {}
+    $paging: OffsetPaging! = { limit: 10 }
+    $sorting: [QuoteSort!]! = []
+  ) {
+    quotes(filter: $filter, paging: $paging, sorting: $sorting) {
+      nodes {
+        id
+        requestedBy {
+          id
+          name
+        }
+        status
+        itinerary
+        providerType
+        updatedAt
+      }
+    }
+  }
+`;
