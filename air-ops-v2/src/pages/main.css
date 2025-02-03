@@ -6,9 +6,19 @@
 .fc .fc-toolbar-title{
     font-size: 20px;
 }
-.css-h473fx-MuiAutocomplete-root .MuiOutlinedInput-root .MuiAutocomplete-input {
+.form_Work .css-28116y-MuiAutocomplete-root .MuiOutlinedInput-root{
     padding: 0px !important;
 }
-.css-h473fx-MuiAutocomplete-root .MuiOutlinedInput-root {
-    padding: 4px;
+.form_Work .css-1tlcqt-MuiAutocomplete-root .MuiOutlinedInput-root{
+    padding: 0px !important;
+}
+.form_Work .css-1j615le-MuiInputBase-input-MuiOutlinedInput-input{
+    padding: 7.5px 0px !important;
+}
+.form_Work .css-1ab68zf-MuiAutocomplete-root .MuiAutocomplete-input {
+    border: 1px solid #c4c4c4;
+    border-radius: 4px;
+    /* padding: 8px; */
+    height: 39px;
+    margin-top: 0px;
 }
