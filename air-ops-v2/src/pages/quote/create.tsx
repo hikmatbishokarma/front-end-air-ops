@@ -1,14 +1,3 @@
-// import * as React from 'react';
-// import Typography from '@mui/material/Typography';
-
-// export default function HomePage() {
-
-//   return (
-//       <Typography>
-//         Welcome to Toolpad Core!
-//       </Typography>
-//   );
-// }
 import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -17,8 +6,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
@@ -27,40 +14,21 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
-import useGql from "../lib/graphql/gql";
-import { GET_AIRPORTS } from "../lib/graphql/queries/airports";
-import AirportsAutocomplete from "../components/airport-autocommplete";
-import { GET_AIRCRAFT_CATEGORIES } from "../lib/graphql/queries/aircraft-categories";
-import { GET_AIRCRAFT } from "../lib/graphql/queries/aircraft";
-import Autocomplete from "@mui/material/Autocomplete";
+import { Box, Grid } from "@mui/material";
 
-import "./main.css";
+import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import {
-  Box,
-  Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import AirportsAutocomplete from "../../components/airport-autocommplete";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import moment from "moment";
-import { GET_CLIENTS } from "../lib/graphql/queries/clients";
-import RequestedByDialog from "../components/client-form";
-import { CREATE_QUOTE, GET_QUOTES } from "../lib/graphql/queries/quote";
-import Paper from "@mui/material/Paper";
-import { QuoteStatus } from "../lib/utils";
-import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
-import { TimeField } from "@mui/x-date-pickers/TimeField";
+import { Delete } from "@mui/icons-material";
+import useGql from "../../lib/graphql/gql";
+import { CREATE_QUOTE } from "../../lib/graphql/queries/quote";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import QuoteRequestDialog from "../components/quote-dialog";
+import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft";
+import { GET_CLIENTS } from "../../lib/graphql/queries/clients";
+import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
+import RequestedByDialog from "../../components/client-form";
 
 interface AircraftCategory {
   id: string;
@@ -93,9 +61,12 @@ const defaultValues = {
   aircraft: "",
 };
 
-export default function DashboardPage() {
-  const [mainDialogOpen, setMainDialogOpen] = useState(false);
+export const QuoteCreate = ({ isNewQuote,setIsNewQuote }) => {
+
+    console.log("isNewQuote::",isNewQuote)
+
   const [subDialogOpen, setSubDialogOpen] = useState(false);
+
   const [aircraftCategories, setAircraftCategories] = useState<
     AircraftCategory[]
   >([]);
@@ -107,7 +78,6 @@ export default function DashboardPage() {
     { title: string; start: string; end: string }[]
   >([]);
   const [clients, setClients] = useState<any[]>([]);
-  const [rows, setRows] = useState<any[]>([]);
 
   const { control, handleSubmit, setValue, watch } = useForm({
     defaultValues,
@@ -128,14 +98,12 @@ export default function DashboardPage() {
         },
       },
     });
-
-    console.log("submitted data:", data);
   };
 
   const onSubmit = (data: any) => {
     console.log("Form Data:", data);
     createQuote(data);
-    setMainDialogOpen(false);
+    setIsNewQuote(false);
   };
 
   const itinerary = watch("itinerary");
@@ -143,8 +111,6 @@ export default function DashboardPage() {
 
   const addItinerary = () => {
     const lastItinerary = itinerary[itinerary.length - 1];
-
-    console.log("newItinerary", lastItinerary);
 
     setEvents((prev: any) => [
       ...prev,
@@ -167,28 +133,7 @@ export default function DashboardPage() {
       paxNumber: 1,
     };
 
-    // Append the new itinerary to the existing itinerary list
     append(newItinerary);
-  };
-
-  console.log("events", events);
-
-  const handleMainDialogOpen = () => {
-    setMainDialogOpen(true);
-  };
-
-  const handleMainDialogClose = () => {
-    setMainDialogOpen(false);
-  };
-
-  const handleSubDialogOpen = () => {
-    setSubDialogOpen(true);
-  };
-
-  const handleSubDialogClose = async () => {
-    console.log("Sub Dialog Closed");
-    setSubDialogOpen(false);
-    await getClients();
   };
 
   const getAircraftCategories = async () => {
@@ -242,40 +187,7 @@ export default function DashboardPage() {
     }
   };
 
-  const getQuotes = async () => {
-    try {
-      const data = await useGql({
-        query: GET_QUOTES,
-        queryName: "quotes",
-        queryType: "query",
-        variables: {},
-      });
-      setRows(() => {
-        return data.map((quote: any) => {
-          return {
-            id: quote.id,
-            refrenceNo: quote.referenceNumber,
-            status: QuoteStatus[quote.status],
-            requester: quote.requestedBy.name,
-            // representative: quote.representative.name,
-            itinerary: quote.itinerary
-              .map((itinerary: any) => {
-                return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
-              })
-              .join(", "),
-            createdAt: quote.createdAt,
-            updatedAt: quote.updatedAt,
-          };
-        });
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  console.log("selectedAircraftCategory", selectedAircraftCategory);
-
   useEffect(() => {
-    getQuotes();
     getAircraftCategories();
     getAircrafts(null);
     getClients();
@@ -285,47 +197,16 @@ export default function DashboardPage() {
     getAircrafts(selectedAircraftCategory?.id);
   }, [selectedAircraftCategory]);
 
-  console.log("rows", rows);
+  const handleSubDialogClose = async () => {
+    setSubDialogOpen(false);
+    await getClients();
+  };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell align="right">Status</TableCell>
-                <TableCell align="right">Requester</TableCell>
-                <TableCell align="right">Itinenary</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.refrenceNo}
-                  </TableCell>
-                  <TableCell align="right">{row.status}</TableCell>
-                  <TableCell align="right">{row.requester}</TableCell>
-                  <TableCell align="right">{row.itinerary}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Button variant="contained" onClick={handleMainDialogOpen}>
-          Add New Quote Request
-        </Button>
-      </>
-
-      {/* Main Dialog */}
+    <>
       <Dialog
-        open={mainDialogOpen}
-        onClose={handleMainDialogClose}
+        open={isNewQuote}
+        onClose={() => setIsNewQuote(false)}
         maxWidth="lg"
         fullWidth
       >
@@ -368,7 +249,7 @@ export default function DashboardPage() {
                       sx={{ width: 300 }}
                       renderInput={(params) => <TextField {...params} />}
                     />
-                    <IconButton onClick={handleSubDialogOpen}>
+                    <IconButton onClick={() => setSubDialogOpen(true)}>
                       <AddIcon />
                     </IconButton>
                   </Box>
@@ -558,7 +439,7 @@ export default function DashboardPage() {
 
                     <Grid item xs={1} container alignItems="center">
                       <IconButton onClick={() => remove(index)} color="error">
-                        <Delete />
+                        <Delete fontSize="small" />
                       </IconButton>
                     </Grid>
                   </Grid>
@@ -616,28 +497,17 @@ export default function DashboardPage() {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleMainDialogClose} color="primary">
+          <Button onClick={() => setIsNewQuote(false)} color="primary">
             Cancel
-          </Button>
-          <Button
-            onClick={handleMainDialogClose}
-            color="primary"
-            variant="contained"
-          >
-            Submit
           </Button>
         </DialogActions>
       </Dialog>
-      {/* 
-<QuoteRequestDialog mainDialogOpen={mainDialogOpen} handleMainDialogClose={handleMainDialogClose} handleSubmit={handleSubmit}
- onSubmit={onsubmit} control={control} clients={clients} aircraftCategories={aircraftCategories}
-  aircrafts={aircrafts} fields={fields} remove={remove} addItinerary={addItinerary} events={events}
-   handleSubDialogOpen={handleMainDialogClose} selectedAircraftCategory={selectedAircraftCategory} setSelectedAircraftCategory={setSelectedAircraftCategory} setValue={setValue} />
-      */}
       <RequestedByDialog
         subDialogOpen={subDialogOpen}
         handleSubDialogClose={handleSubDialogClose}
       />
-    </div>
+    </>
   );
-}
+};
+
+export default QuoteCreate;

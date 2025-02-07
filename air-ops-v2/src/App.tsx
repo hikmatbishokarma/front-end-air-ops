@@ -176,6 +176,12 @@ const NAVIGATION: Navigation = [
     title: "Flight Form",
     icon: <ShoppingCartIcon />,
   },
+
+  {
+    segment: "quotes",
+    title: "Requests/Quotes",
+    icon: <ShoppingCartIcon />,
+  },
 ];
 
 const BRANDING = {

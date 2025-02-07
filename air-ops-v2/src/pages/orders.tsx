@@ -1,14 +1,239 @@
-// import * as React from 'react';
-// import Typography from '@mui/material/Typography';
+{
+  /* Left Form */
+}
+{
+  /* <div style={{ flex: 0.5, padding: "5px 0px" }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <span style={{ marginRight: "18px" }}>Requested by:</span>
+                <TextField
+                  select
+                  defaultValue="Option 1"
+                  variant="outlined"
+                  size="small"
+                  style={{ width: "40%" }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: "0", height: "30px" },
+                  }}
+                >
+                  <MenuItem value="">---</MenuItem>
+                  <MenuItem value="John">John</MenuItem>
+                </TextField>
+                <IconButton onClick={handleSubDialogOpen}>
+                  <AddIcon />
+                </IconButton>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "10px 0px",
+                }}
+              >
+                <span style={{ marginRight: "8px" }}>Representative:</span>
+                <TextField
+                  select
+                  defaultValue=""
+                  variant="outlined"
+                  size="small"
+                  style={{ width: "40%" }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: "0", height: "30px" },
+                  }}
+                >
+                  <MenuItem value="">---</MenuItem>
+                  <MenuItem value="Smith">Smith</MenuItem>
+                </TextField>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "10px 0px",
+                }}
+              >
+                <span style={{ marginRight: "16px" }}>Min. Category:</span>
+                <TextField
+                  select
+                  defaultValue=""
+                  variant="outlined"
+                  size="small"
+                  style={{ width: "40%" }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: "0", height: "30px" },
+                  }}
+                >
+                  <MenuItem value="">---</MenuItem>
+                  <MenuItem value="A">A</MenuItem>
+                </TextField>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "10px 0px",
+                }}
+              >
+                <span style={{ marginRight: "65.5px" }}>Aircraft:</span>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  style={{ width: "40%" }} // Set the width to 30%
+                  InputProps={{
+                    style: { padding: "0", height: "30px" },
+                  }}
+                ></TextField>
+              </div>
 
-// export default function OrdersPage() {
+              <Autocomplete
+                disablePortal
+                options={aircraftCategories}
+                getOptionLabel={(option) => `${option.name}`}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Min. Category" />
+                )}
+                onChange={(e, value) => setSelectedAircraftCategory(value)}
+              />
 
-//   return (
-//     <Typography>
-//       Welcome to the Toolpad orders!
-//     </Typography>
-//   );
-// }
+              <Autocomplete
+                disablePortal
+                options={aircrafts}
+                getOptionLabel={(option) => `${option.name}`}
+                sx={{ width: 300 }}
+                renderOption={(props, option) => (
+                  <li
+                    {...props}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <span>{`${option.category.name}`}</span>
+                    <span style={{ fontWeight: "bold" }}>{option.name}</span>
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField {...params} label="Aircraft" />
+                )}
+              />
+
+              <Button variant="contained" color="primary">
+                One Way or Multi Leg
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                style={{ marginLeft: "10px" }}
+              >
+                Round Trip
+              </Button>
+
+          
+              <div style={{ marginTop: "20px" }}>
+                <div className="heading-table">
+                  <span>ADEP</span>
+                  <span>ADES</span>
+                  <span>TBA</span>
+                  <span> &nbsp; &nbsp; </span>
+                  <span>Date LT</span>
+                  <span>Time LT</span>
+                  <span>PAX</span>
+                </div>
+                {rows.map((row) => (
+                  <div
+                    key={row.id}
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      alignItems: "center",
+                    }}
+                  >
+                   
+                    <AirportsAutocomplete label="ADEP" />
+                    <AirportsAutocomplete label="ADES" />
+                   
+                    <TextField
+                      size="small"
+                      style={{ width: "10%" }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: "0", height: "30px" },
+                      }}
+                      margin="normal"
+                      value={row.TBA}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "TBA", e.target.value)
+                      }
+                    />
+                    <TextField
+                      select
+                      defaultValue=""
+                      variant="outlined"
+                      size="small"
+                      style={{ width: "40%", marginTop: "8px" }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: "0", height: "30px" },
+                      }}
+                    >
+                      <MenuItem value="">---</MenuItem>
+                      <MenuItem value="A">A</MenuItem>
+                    </TextField>
+                    <TextField
+                      size="small"
+                      style={{ width: "35%" }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: "0", height: "30px" },
+                      }}
+                      margin="normal"
+                      value={row.dateLT}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "dateLT", e.target.value)
+                      }
+                    />
+                    <TextField
+                      size="small"
+                      style={{ width: "35%" }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: "0", height: "30px" },
+                      }}
+                      margin="normal"
+                      value={row.timeLT}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "timeLT", e.target.value)
+                      }
+                    />
+                    <TextField
+                      size="small"
+                      style={{ width: "35%" }} // Set the width to 30%
+                      InputProps={{
+                        style: { padding: "0", height: "30px" },
+                      }}
+                      margin="normal"
+                      value={row.PAX}
+                      onChange={(e) =>
+                        handleInputChange(row.id, "PAX", e.target.value)
+                      }
+                    />
+                    <IconButton
+                      onClick={() => handleDeleteRow(row.id)}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </div>
+                ))}
+                <Button
+                  variant="outlined"
+                  startIcon={<AddIcon />}
+                  onClick={handleAddRow}
+                  style={{ marginTop: "10px" }}
+                >
+                  Add Row
+                </Button>
+              </div>
+            </div> */
+}
+
 import * as React from "react";
 import {
   Button,
