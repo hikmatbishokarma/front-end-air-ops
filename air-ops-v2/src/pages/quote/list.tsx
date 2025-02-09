@@ -88,9 +88,11 @@ export const QuoteList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button variant="contained" onClick={() => setIsNewQuote(true)}>
-        NEW QUOTE
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
+  <Button variant="contained" onClick={() => setIsNewQuote(true)}>
+    NEW QUOTE
+  </Button>
+</Box>
       <QuoteCreate isNewQuote={isNewQuote} setIsNewQuote={setIsNewQuote} />
     </>
   );

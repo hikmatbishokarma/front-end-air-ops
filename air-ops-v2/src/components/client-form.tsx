@@ -63,7 +63,7 @@ const RequestedByDialog = ({ subDialogOpen, handleSubDialogClose }) => {
     <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
       <DialogTitle>Add Requested By Details</DialogTitle>
       <DialogContent>
-      <Controller
+        <Controller
           name="type"
           control={control}
           render={({ field }) => (
@@ -87,7 +87,7 @@ const RequestedByDialog = ({ subDialogOpen, handleSubDialogClose }) => {
             </FormControl>
           )}
         />
-        
+
         <Controller
           name="name"
           control={control}
@@ -124,7 +124,6 @@ const RequestedByDialog = ({ subDialogOpen, handleSubDialogClose }) => {
             <TextField {...field} label="Email" fullWidth margin="normal" />
           )}
         />
-      
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubDialogClose} color="primary">
