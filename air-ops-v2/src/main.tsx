@@ -90,7 +90,6 @@ const router = createBrowserRouter([
         path: "/sign-in",
         Component: SignInPage,
       },
-
     ],
   },
 ]);

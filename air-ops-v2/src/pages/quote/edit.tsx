@@ -21,6 +21,7 @@ import { GET_QUOTE_BY_ID, UPDATE_QUOTE } from "../../lib/graphql/queries/quote";
 import { GET_CLIENTS } from "../../lib/graphql/queries/clients";
 import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
+import AddIcon from "@mui/icons-material/Add";
 
 interface AircraftCategory {
   id: string;
@@ -34,7 +35,6 @@ interface Aircraft {
 }
 
 const QuoteEdit = () => {
-   
   const { id } = useParams();
   const navigate = useNavigate();
   const { control, handleSubmit, setValue, register } = useForm();
@@ -55,8 +55,6 @@ const QuoteEdit = () => {
   >([]);
   const [clients, setClients] = useState<any[]>([]);
 
- 
-
   // Fetch existing quote details
 
   const fetchQuote = async () => {
@@ -64,10 +62,10 @@ const QuoteEdit = () => {
       query: GET_QUOTE_BY_ID,
       queryName: "quote",
       queryType: "query-without-edge",
-      variables: {id},
+      variables: { id },
     });
 
-    console.log("response",response)
+    console.log("response", response);
     if (response) {
       setValue("referenceNo", response.referenceNo);
       setValue("status", response.status);
@@ -154,104 +152,121 @@ const QuoteEdit = () => {
 
   return (
     <Paper sx={{ padding: 3, maxWidth: 800, margin: "auto" }}>
-      <Typography variant="h5">Edit Quote</Typography>
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        Edit Quote
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Requested By */}
-        <Controller
-          name="requestedBy"
-          control={control}
-          render={({ field }) => (
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <Typography sx={{ mr: 3 }}>Requested by:</Typography>
-              <Autocomplete
-                {...field}
-                options={clients}
-                getOptionLabel={(option) => option.name}
-                value={
-                  clients.find((client) => client.id === field.value) || null
-                }
-                onChange={(_, newValue) => field.onChange(newValue?.id || "")}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </Box>
-          )}
-        />
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={4}>
+            <Typography sx={{ whiteSpace: "nowrap" }}>Requested by:</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <Controller
+              name="requestedBy"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  options={clients}
+                  getOptionLabel={(option) => option.name}
+                  value={
+                    clients.find((client) => client.id === field.value) || null
+                  }
+                  onChange={(_, newValue) => field.onChange(newValue?.id || "")}
+                  renderInput={(params) => (
+                    <TextField {...params} size="small" />
+                  )}
+                />
+              )}
+            />
+          </Grid>
 
-        {/* Representative */}
-        <Controller
-          name="representative"
-          control={control}
-          render={({ field }) => (
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <Typography sx={{ mr: 3 }}>Representative:</Typography>
-              <TextField {...field} sx={{ width: 300 }} />
-            </Box>
-          )}
-        />
+          {/* Representative */}
+          <Grid item xs={4}>
+            <Typography>Representative:</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <Controller
+              name="representative"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} fullWidth size="small" />
+              )}
+            />
+          </Grid>
 
-        {/* Aircraft Category */}
-        <Controller
-          name="category"
-          control={control}
-          render={({ field }) => (
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <Typography sx={{ mr: 3 }}>Aircraft Category:</Typography>
-              <Autocomplete
-                {...field}
-                options={aircraftCategories}
-                getOptionLabel={(option: any) => option?.name}
-                value={selectedAircraftCategory}
-                onChange={(_, newValue) => {
-                  setSelectedAircraftCategory(newValue);
-                  field.onChange(newValue?.id || "");
-                }}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </Box>
-          )}
-        />
+          {/* Aircraft Category */}
+          <Grid item xs={4}>
+            <Typography>Aircraft Category:</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <Controller
+              name="category"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  options={aircraftCategories}
+                  getOptionLabel={(option: any) => option?.name}
+                  value={selectedAircraftCategory}
+                  onChange={(_, newValue) => {
+                    setSelectedAircraftCategory(newValue);
+                    field.onChange(newValue?.id || "");
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} size="small" />
+                  )}
+                />
+              )}
+            />
+          </Grid>
 
-        {/* Aircraft */}
-        <Controller
-          name="aircraft"
-          control={control}
-          render={({ field }) => (
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <Typography sx={{ mr: 3 }}>Aircraft:</Typography>
-              <Autocomplete
-                {...field}
-                options={aircrafts}
-                getOptionLabel={(option) => option.name}
-                value={
-                  aircrafts.find((aircraft) => aircraft.id === field.value) ||
-                  null
-                }
-                onChange={(_, newValue) => field.onChange(newValue?.id || "")}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </Box>
-          )}
-        />
+          {/* Aircraft */}
+          <Grid item xs={4}>
+            <Typography>Aircraft:</Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <Controller
+              name="aircraft"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  {...field}
+                  options={aircrafts}
+                  getOptionLabel={(option) => option.name}
+                  value={
+                    aircrafts.find((aircraft) => aircraft.id === field.value) ||
+                    null
+                  }
+                  onChange={(_, newValue) => field.onChange(newValue?.id || "")}
+                  renderInput={(params) => (
+                    <TextField {...params} size="small" />
+                  )}
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
 
         {/* Itinerary List */}
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="h6">Itinerary</Typography>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Itinerary
+          </Typography>
           {fields.map((item, index) => (
             <Grid
               container
               spacing={2}
+              alignItems="center"
               key={item.id}
-              sx={{ alignItems: "center", mb: 1 }}
+              sx={{ mb: 1 }}
             >
               <Grid item xs={2}>
                 <Controller
                   name={`itinerary.${index}.source`}
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} label="Source (ADEP)" fullWidth />
+                    <TextField {...field} label="ADEP" fullWidth size="small" />
                   )}
                 />
               </Grid>
@@ -261,34 +276,42 @@ const QuoteEdit = () => {
                   name={`itinerary.${index}.destination`}
                   control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Destination (ADES)"
-                      fullWidth
-                    />
+                    <TextField {...field} label="ADES" fullWidth size="small" />
                   )}
                 />
               </Grid>
 
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <Controller
                     name={`itinerary.${index}.depatureDateTime`}
                     control={control}
                     render={({ field }) => (
-                      <DateTimePicker {...field} value={moment(field.value)} />
+                      <DateTimePicker
+                        {...field}
+                        value={moment(field.value)}
+                        slotProps={{
+                          textField: { fullWidth: true, size: "small" },
+                        }}
+                      />
                     )}
                   />
                 </LocalizationProvider>
               </Grid>
 
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <Controller
                     name={`itinerary.${index}.arrivalDateTime`}
                     control={control}
                     render={({ field }) => (
-                      <DateTimePicker {...field} value={moment(field.value)} />
+                      <DateTimePicker
+                        {...field}
+                        value={moment(field.value)}
+                        slotProps={{
+                          textField: { fullWidth: true, size: "small" },
+                        }}
+                      />
                     )}
                   />
                 </LocalizationProvider>
@@ -299,31 +322,37 @@ const QuoteEdit = () => {
                   name={`itinerary.${index}.paxNumber`}
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} type="number" fullWidth />
+                    <TextField
+                      {...field}
+                      type="number"
+                      fullWidth
+                      size="small"
+                    />
                   )}
                 />
               </Grid>
 
               <Grid item xs={1}>
                 <IconButton onClick={() => remove(index)} color="error">
-                  <Delete />
+                  <Delete fontSize="small" />
                 </IconButton>
               </Grid>
             </Grid>
           ))}
 
           <Button onClick={() => append({})} variant="contained" sx={{ mt: 2 }}>
-            + Add Itinerary
+            <AddIcon fontSize="small" />
           </Button>
         </Box>
 
+        {/* Submit Button */}
         <Button
           type="submit"
           variant="contained"
           color="success"
           sx={{ mt: 3 }}
         >
-          Update Quote
+          Save
         </Button>
       </form>
     </Paper>

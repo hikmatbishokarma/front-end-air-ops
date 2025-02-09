@@ -61,9 +61,8 @@ const defaultValues = {
   aircraft: "",
 };
 
-export const QuoteCreate = ({ isNewQuote,setIsNewQuote }) => {
-
-    console.log("isNewQuote::",isNewQuote)
+export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
+  console.log("isNewQuote::", isNewQuote);
 
   const [subDialogOpen, setSubDialogOpen] = useState(false);
 
@@ -79,7 +78,7 @@ export const QuoteCreate = ({ isNewQuote,setIsNewQuote }) => {
   >([]);
   const [clients, setClients] = useState<any[]>([]);
 
-  const { control, handleSubmit, setValue, watch } = useForm({
+  const { control, handleSubmit, setValue, watch,reset } = useForm({
     defaultValues,
   });
 
@@ -104,24 +103,16 @@ export const QuoteCreate = ({ isNewQuote,setIsNewQuote }) => {
     console.log("Form Data:", data);
     createQuote(data);
     setIsNewQuote(false);
+    reset();
   };
 
-  const itinerary = watch("itinerary");
+  const itinerary = watch("itinerary",[]);
   console.log("itinerary", itinerary);
 
   const addItinerary = () => {
     const lastItinerary = itinerary[itinerary.length - 1];
 
-    setEvents((prev: any) => [
-      ...prev,
-      {
-        title: `${lastItinerary.source}-${lastItinerary.destination}`,
-        start: lastItinerary?.date,
-        end: moment(lastItinerary?.date)
-          .add(moment.duration(lastItinerary?.time))
-          .format("YYYY-MM-DD HH:mm"),
-      },
-    ]);
+    
 
     const newItinerary = {
       date: "",
@@ -135,6 +126,45 @@ export const QuoteCreate = ({ isNewQuote,setIsNewQuote }) => {
 
     append(newItinerary);
   };
+
+ // const itinerary = useWatch({ control, name: "itinerary" });
+
+ console.log("itinerary:", itinerary);
+
+  useEffect(() => {
+  
+  
+    const lastIndex = itinerary.length - 1;
+    const lastItinerary = itinerary[lastIndex];
+  
+  
+  
+    if (
+      lastItinerary?.source &&
+      lastItinerary?.destination &&
+      lastItinerary?.depatureDateTime &&
+      lastItinerary?.arrivalDateTime 
+    ) {
+      console.log("✅ All Fields Filled - Adding to Events");
+  
+      setEvents((prev: any) => [
+        ...prev,
+        {
+          title: `${lastItinerary.source}-${lastItinerary.destination}`,
+          start: lastItinerary?.depatureDateTime
+            ? moment.utc(lastItinerary.depatureDateTime).format("YYYY-MM-DD HH:mm")
+            : "", // Ensure valid date or empty string
+          end: lastItinerary?.arrivalDateTime
+            ? moment.utc(lastItinerary.arrivalDateTime).format("YYYY-MM-DD HH:mm")
+            : "", // Ensure valid date or empty string
+        },
+      ]);
+      
+    }
+  }, [JSON.stringify(itinerary)]); // ✅ Runs when itinerary updates
+
+  console.log("eventss",events)
+  
 
   const getAircraftCategories = async () => {
     try {
@@ -225,250 +255,231 @@ export const QuoteCreate = ({ isNewQuote,setIsNewQuote }) => {
               className="form_Work"
               style={{ padding: "20px", flex: 0.5 }}
             >
-              <Controller
-                name="requestedBy"
-                control={control}
-                render={({ field }) => (
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ marginRight: "37px" }}>
-                      Requested by:
-                    </Typography>
+              <Grid container spacing={2} alignItems="center">
+               
 
-                    <Autocomplete
-                      {...field}
-                      options={clients}
-                      getOptionLabel={(option) => option.name} // Display the category name
-                      value={
-                        field.value
-                          ? clients.find((client) => client.id === field.value)
-                          : null
-                      }
-                      onChange={(_, newValue) => {
-                        field.onChange(newValue ? newValue.id : ""); // Update only the selected value
-                      }}
-                      sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                    <IconButton onClick={() => setSubDialogOpen(true)}>
-                      <AddIcon />
-                    </IconButton>
-                  </Box>
-                )}
-              />
-              <Controller
-                name="representative"
-                control={control}
-                render={({ field }) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "10px 0px",
-                    }}
-                  >
-                    <Typography sx={{ marginRight: "28px" }}>
-                      Representative:
-                    </Typography>
-                    <TextField
-                      {...field}
-                      style={{ width: "300px" }}
-                      margin="normal"
-                    />
-                  </Box>
-                )}
-              />
-
-              <Controller
-                name="category"
-                control={control}
-                render={({ field }) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "10px 0px",
-                    }}
-                  >
-                    <Typography sx={{ marginRight: "17px" }}>
-                      Aircraft Category:
-                    </Typography>
-                    <Autocomplete
-                      {...field}
-                      options={aircraftCategories}
-                      getOptionLabel={(option) => option.name}
-                      value={selectedAircraftCategory}
-                      onChange={(_, value) => {
-                        setSelectedAircraftCategory(value);
-                        setValue("category", value ? value.id : "");
-                      }}
-                      sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </Box>
-                )}
-              />
-
-              <Controller
-                name={`aircraft`}
-                control={control}
-                render={({ field }) => (
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ marginRight: "17px" }}>
-                      Aircraft:
-                    </Typography>
-                    <Autocomplete
-                      {...field}
-                      options={aircrafts}
-                      getOptionLabel={(option) => option.name}
-                      value={
-                        field.value
-                          ? aircrafts.find(
-                              (aircraft) => aircraft.id === field.value,
-                            )
-                          : null
-                      }
-                      onChange={(_, value) => {
-                        field.onChange(value ? value.id : "");
-                      }}
-                      sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </Box>
-                )}
-              />
-
-              <Box sx={{ mt: 5 }}>
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(7, auto)",
-                    gap: 2,
-                    fontWeight: "bold",
-                    borderBottom: "2px solid #ddd",
-                    pb: 1,
-                  }}
-                >
-                  <Typography variant="body2">ADEP</Typography>
-                  <Typography variant="body2">ADES</Typography>
-                  <Typography variant="body2">DDT</Typography>
-                  <Typography variant="body2">ADT LT</Typography>
-                  <Typography variant="body2">PAX</Typography>
-
-                  <Typography variant="body2">
-                    <Delete />
+                <Grid item xs={4}>
+                  <Typography sx={{ whiteSpace: "nowrap" }}>
+                    Requested by:
                   </Typography>
-                </Box>
-
-                {fields.map((item, index) => (
-                  <Grid
-                    container
-                    spacing={2}
-                    key={item.id}
-                    sx={{
-                      display: "flex",
-                      gap: "0px",
-                      alignItems: "center",
-                      marginTop: "5px",
-                    }}
-                  >
-                    <Grid item xs={2}>
-                      <Controller
-                        name={`itinerary.${index}.source`}
-                        control={control}
-                        render={({ field }) => (
-                          <AirportsAutocomplete
-                            {...field}
-                            label="Source (ADEP)"
-                          />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name="requestedBy"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        options={clients}
+                        getOptionLabel={(option) => option.name}
+                        value={
+                          field.value
+                            ? clients.find(
+                                (client) => client.id === field.value,
+                              )
+                            : null
+                        }
+                        onChange={(_, newValue) => {
+                          field.onChange(newValue ? newValue.id : ""); // Update only the selected value
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} size="small" />
                         )}
                       />
-                    </Grid>
+                    )}
+                  />
+                 
+                </Grid>
+                <Grid  item xs={2}>  <IconButton onClick={() => setSubDialogOpen(true)}>
+                      <AddIcon />
+                    </IconButton></Grid>
+                
+                <Grid item xs={4}>
+                  <Typography>Representative:</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name="representative"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} fullWidth size="small" />
+                    )}
+                  />
+                </Grid>
 
-                    <Grid item xs={2}>
-                      <Controller
-                        name={`itinerary.${index}.destination`}
-                        control={control}
-                        render={({ field }) => (
-                          <AirportsAutocomplete
-                            {...field}
-                            label="Destination (ADES)"
-                          />
+               
+
+                <Grid item xs={4}>
+                  <Typography>Aircraft Category:</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name="category"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        options={aircraftCategories}
+                        getOptionLabel={(option: any) => option?.name}
+                        value={selectedAircraftCategory}
+                        onChange={(_, newValue) => {
+                          setSelectedAircraftCategory(newValue);
+                          field.onChange(newValue?.id || "");
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} size="small" />
                         )}
                       />
-                    </Grid>
+                    )}
+                  />
+                </Grid>
 
-                    <Grid item xs={2}>
-                      <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <Controller
-                          name={`itinerary.${index}.depatureDateTime`}
-                          control={control}
-                          render={({ field }) => (
-                            <DateTimePicker
-                              {...field}
-                              value={field.value ? moment(field.value) : null}
-                            />
-                          )}
-                        />
-                      </LocalizationProvider>
-                    </Grid>
+               
 
-                    <Grid item xs={2}>
-                      <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <Controller
-                          name={`itinerary.${index}.arrivalDateTime`}
-                          control={control}
-                          render={({ field }) => (
-                            <DateTimePicker
-                              {...field}
-                              value={field.value ? moment(field.value) : null}
-                            />
-                          )}
-                        />
-                      </LocalizationProvider>
-                    </Grid>
-
-                    <Grid item xs={1}>
-                      <Controller
-                        name={`itinerary.${index}.paxNumber`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField {...field} type="number" fullWidth />
+                <Grid item xs={4}>
+                  <Typography>Aircraft:</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name="aircraft"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        options={aircrafts}
+                        getOptionLabel={(option) => option.name}
+                        value={
+                          field.value
+                            ? aircrafts.find(
+                                (aircraft) => aircraft.id === field.value,
+                              )
+                            : null
+                        }
+                        onChange={(_, value) => {
+                          field.onChange(value ? value.id : "");
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} size="small" />
                         )}
                       />
-                    </Grid>
+                    )}
+                  />
+                </Grid>
+              </Grid>
+              <Box sx={{ mt: 5 }}>
 
-                    <Grid item xs={1} container alignItems="center">
-                      <IconButton onClick={() => remove(index)} color="error">
-                        <Delete fontSize="small" />
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                ))}
-                <Box
-                  sx={{
-                    display: "flex",
-                  }}
-                >
-                  <Button
-                    type="button"
-                    variant="contained"
-                    color="primary"
-                    onClick={addItinerary}
-                    style={{ marginTop: "10px" }}
-                  >
-                    +
-                  </Button>
+  <Box
+    sx={{
+      display: "grid",
+      gridTemplateColumns: "repeat(7, 1fr)",
+      gap: 2,
+      fontWeight: "bold",
+      borderBottom: "2px solid #ddd",
+      pb: 1,
+      alignItems: "center",
+    }}
+  >
+    <Typography variant="body2">ADEP</Typography>
+    <Typography variant="body2">ADES</Typography>
+    <Typography variant="body2">DDT</Typography>
+    <Typography variant="body2">ADT</Typography>
+    <Typography variant="body2">PAX</Typography>
+    <IconButton aria-label="Add" onClick={addItinerary}>
+        <AddIcon />
+      </IconButton>
+  </Box>
 
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="success"
-                    style={{ marginTop: "10px", marginLeft: "28px" }}
-                  >
-                    Submit
-                  </Button>
-                </Box>
-              </Box>
+  {/* Dynamic Itinerary Fields */}
+  {fields.map((item, index) => (
+    <Grid
+      container
+      spacing={1}
+      key={item.id}
+      alignItems="center"
+      sx={{ mt: 1 }}
+    >
+      <Grid item xs={2}>
+        <Controller
+          name={`itinerary.${index}.source`}
+          control={control}
+          render={({ field }) => (
+            <AirportsAutocomplete {...field} label="Source (ADEP)" />
+          )}
+        />
+      </Grid>
+
+      <Grid item xs={2}>
+        <Controller
+          name={`itinerary.${index}.destination`}
+          control={control}
+          render={({ field }) => (
+            <AirportsAutocomplete {...field} label="Destination (ADES)" />
+          )}
+        />
+      </Grid>
+
+      <Grid item xs={2.5}>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <Controller
+            name={`itinerary.${index}.depatureDateTime`}
+            control={control}
+            render={({ field }) => (
+              <DateTimePicker
+              ampmInClock={false}
+                {...field}
+                value={field.value ? moment(field.value) : null}
+                onChange={(newValue) => field.onChange(newValue)}
+                slotProps={{ textField: { fullWidth: true, size: "small" } }} // ✅ FIXED
+              />
+            )}
+          />
+        </LocalizationProvider>
+      </Grid>
+
+      <Grid item xs={2.5}>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <Controller
+            name={`itinerary.${index}.arrivalDateTime`}
+            control={control}
+            render={({ field }) => (
+              <DateTimePicker
+                {...field}
+                value={field.value ? moment(field.value) : null}
+                onChange={(newValue) => field.onChange(newValue)}
+                slotProps={{ textField: { fullWidth: true, size: "small" } }} // ✅ FIXED
+              />
+            )}
+          />
+        </LocalizationProvider>
+      </Grid>
+
+      <Grid item xs={2}>
+        <Controller
+          name={`itinerary.${index}.paxNumber`}
+          control={control}
+          render={({ field }) => (
+            <TextField {...field} type="number" fullWidth size="small" />
+          )}
+        />
+      </Grid>
+
+      <Grid item xs={1} sx={{ display: "flex", justifyContent: "center" }}>
+        <IconButton onClick={() => remove(index)} color="error">
+          <Delete fontSize="small" />
+        </IconButton>
+      </Grid>
+    </Grid>
+  ))}
+
+  {/* Buttons */}
+  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+   
+    <Button type="submit" variant="contained" color="success">
+      Submit
+    </Button>
+  </Box>
+</Box>
+
             </form>
 
             <div
