@@ -78,7 +78,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
   >([]);
   const [clients, setClients] = useState<any[]>([]);
 
-  const { control, handleSubmit, setValue, watch,reset } = useForm({
+  const { control, handleSubmit, setValue, watch, reset } = useForm({
     defaultValues,
   });
 
@@ -106,13 +106,11 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
     reset();
   };
 
-  const itinerary = watch("itinerary",[]);
+  const itinerary = watch("itinerary", []);
   console.log("itinerary", itinerary);
 
   const addItinerary = () => {
     const lastItinerary = itinerary[itinerary.length - 1];
-
-    
 
     const newItinerary = {
       date: "",
@@ -127,44 +125,42 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
     append(newItinerary);
   };
 
- // const itinerary = useWatch({ control, name: "itinerary" });
+  // const itinerary = useWatch({ control, name: "itinerary" });
 
- console.log("itinerary:", itinerary);
+  console.log("itinerary:", itinerary);
 
   useEffect(() => {
-  
-  
     const lastIndex = itinerary.length - 1;
     const lastItinerary = itinerary[lastIndex];
-  
-  
-  
+
     if (
       lastItinerary?.source &&
       lastItinerary?.destination &&
       lastItinerary?.depatureDateTime &&
-      lastItinerary?.arrivalDateTime 
+      lastItinerary?.arrivalDateTime
     ) {
       console.log("✅ All Fields Filled - Adding to Events");
-  
+
       setEvents((prev: any) => [
         ...prev,
         {
           title: `${lastItinerary.source}-${lastItinerary.destination}`,
           start: lastItinerary?.depatureDateTime
-            ? moment.utc(lastItinerary.depatureDateTime).format("YYYY-MM-DD HH:mm")
+            ? moment
+                .utc(lastItinerary.depatureDateTime)
+                .format("YYYY-MM-DD HH:mm")
             : "", // Ensure valid date or empty string
           end: lastItinerary?.arrivalDateTime
-            ? moment.utc(lastItinerary.arrivalDateTime).format("YYYY-MM-DD HH:mm")
+            ? moment
+                .utc(lastItinerary.arrivalDateTime)
+                .format("YYYY-MM-DD HH:mm")
             : "", // Ensure valid date or empty string
         },
       ]);
-      
     }
   }, [JSON.stringify(itinerary)]); // ✅ Runs when itinerary updates
 
-  console.log("eventss",events)
-  
+  console.log("eventss", events);
 
   const getAircraftCategories = async () => {
     try {
@@ -256,8 +252,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
               style={{ padding: "20px", flex: 0.5 }}
             >
               <Grid container spacing={2} alignItems="center">
-               
-
                 <Grid item xs={4}>
                   <Typography sx={{ whiteSpace: "nowrap" }}>
                     Requested by:
@@ -288,12 +282,14 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                       />
                     )}
                   />
-                 
                 </Grid>
-                <Grid  item xs={2}>  <IconButton onClick={() => setSubDialogOpen(true)}>
-                      <AddIcon />
-                    </IconButton></Grid>
-                
+                <Grid item xs={2}>
+                  {" "}
+                  <IconButton onClick={() => setSubDialogOpen(true)}>
+                    <AddIcon />
+                  </IconButton>
+                </Grid>
+
                 <Grid item xs={4}>
                   <Typography>Representative:</Typography>
                 </Grid>
@@ -306,8 +302,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                     )}
                   />
                 </Grid>
-
-               
 
                 <Grid item xs={4}>
                   <Typography>Aircraft Category:</Typography>
@@ -333,8 +327,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                     )}
                   />
                 </Grid>
-
-               
 
                 <Grid item xs={4}>
                   <Typography>Aircraft:</Typography>
@@ -367,119 +359,135 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                 </Grid>
               </Grid>
               <Box sx={{ mt: 5 }}>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(7, 1fr)",
+                    gap: 2,
+                    fontWeight: "bold",
+                    borderBottom: "2px solid #ddd",
+                    pb: 1,
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body2">ADEP</Typography>
+                  <Typography variant="body2">ADES</Typography>
+                  <Typography variant="body2">DDT</Typography>
+                  <Typography variant="body2">ADT</Typography>
+                  <Typography variant="body2">PAX</Typography>
+                  <IconButton aria-label="Add" onClick={addItinerary}>
+                    <AddIcon />
+                  </IconButton>
+                </Box>
 
-  <Box
-    sx={{
-      display: "grid",
-      gridTemplateColumns: "repeat(7, 1fr)",
-      gap: 2,
-      fontWeight: "bold",
-      borderBottom: "2px solid #ddd",
-      pb: 1,
-      alignItems: "center",
-    }}
-  >
-    <Typography variant="body2">ADEP</Typography>
-    <Typography variant="body2">ADES</Typography>
-    <Typography variant="body2">DDT</Typography>
-    <Typography variant="body2">ADT</Typography>
-    <Typography variant="body2">PAX</Typography>
-    <IconButton aria-label="Add" onClick={addItinerary}>
-        <AddIcon />
-      </IconButton>
-  </Box>
+                {/* Dynamic Itinerary Fields */}
+                {fields.map((item, index) => (
+                  <Grid
+                    container
+                    spacing={1}
+                    key={item.id}
+                    alignItems="center"
+                    sx={{ mt: 1 }}
+                  >
+                    <Grid item xs={2}>
+                      <Controller
+                        name={`itinerary.${index}.source`}
+                        control={control}
+                        render={({ field }) => (
+                          <AirportsAutocomplete
+                            {...field}
+                            label="Source (ADEP)"
+                          />
+                        )}
+                      />
+                    </Grid>
 
-  {/* Dynamic Itinerary Fields */}
-  {fields.map((item, index) => (
-    <Grid
-      container
-      spacing={1}
-      key={item.id}
-      alignItems="center"
-      sx={{ mt: 1 }}
-    >
-      <Grid item xs={2}>
-        <Controller
-          name={`itinerary.${index}.source`}
-          control={control}
-          render={({ field }) => (
-            <AirportsAutocomplete {...field} label="Source (ADEP)" />
-          )}
-        />
-      </Grid>
+                    <Grid item xs={2}>
+                      <Controller
+                        name={`itinerary.${index}.destination`}
+                        control={control}
+                        render={({ field }) => (
+                          <AirportsAutocomplete
+                            {...field}
+                            label="Destination (ADES)"
+                          />
+                        )}
+                      />
+                    </Grid>
 
-      <Grid item xs={2}>
-        <Controller
-          name={`itinerary.${index}.destination`}
-          control={control}
-          render={({ field }) => (
-            <AirportsAutocomplete {...field} label="Destination (ADES)" />
-          )}
-        />
-      </Grid>
+                    <Grid item xs={2.5}>
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Controller
+                          name={`itinerary.${index}.depatureDateTime`}
+                          control={control}
+                          render={({ field }) => (
+                            <DateTimePicker
+                              ampmInClock={false}
+                              {...field}
+                              value={field.value ? moment(field.value) : null}
+                              onChange={(newValue) => field.onChange(newValue)}
+                              slotProps={{
+                                textField: { fullWidth: true, size: "small" },
+                              }} // ✅ FIXED
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
 
-      <Grid item xs={2.5}>
-        <LocalizationProvider dateAdapter={AdapterMoment}>
-          <Controller
-            name={`itinerary.${index}.depatureDateTime`}
-            control={control}
-            render={({ field }) => (
-              <DateTimePicker
-              ampmInClock={false}
-                {...field}
-                value={field.value ? moment(field.value) : null}
-                onChange={(newValue) => field.onChange(newValue)}
-                slotProps={{ textField: { fullWidth: true, size: "small" } }} // ✅ FIXED
-              />
-            )}
-          />
-        </LocalizationProvider>
-      </Grid>
+                    <Grid item xs={2.5}>
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Controller
+                          name={`itinerary.${index}.arrivalDateTime`}
+                          control={control}
+                          render={({ field }) => (
+                            <DateTimePicker
+                              {...field}
+                              value={field.value ? moment(field.value) : null}
+                              onChange={(newValue) => field.onChange(newValue)}
+                              slotProps={{
+                                textField: { fullWidth: true, size: "small" },
+                              }} // ✅ FIXED
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
 
-      <Grid item xs={2.5}>
-        <LocalizationProvider dateAdapter={AdapterMoment}>
-          <Controller
-            name={`itinerary.${index}.arrivalDateTime`}
-            control={control}
-            render={({ field }) => (
-              <DateTimePicker
-                {...field}
-                value={field.value ? moment(field.value) : null}
-                onChange={(newValue) => field.onChange(newValue)}
-                slotProps={{ textField: { fullWidth: true, size: "small" } }} // ✅ FIXED
-              />
-            )}
-          />
-        </LocalizationProvider>
-      </Grid>
+                    <Grid item xs={2}>
+                      <Controller
+                        name={`itinerary.${index}.paxNumber`}
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            type="number"
+                            fullWidth
+                            size="small"
+                          />
+                        )}
+                      />
+                    </Grid>
 
-      <Grid item xs={2}>
-        <Controller
-          name={`itinerary.${index}.paxNumber`}
-          control={control}
-          render={({ field }) => (
-            <TextField {...field} type="number" fullWidth size="small" />
-          )}
-        />
-      </Grid>
+                    <Grid
+                      item
+                      xs={1}
+                      sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <IconButton onClick={() => remove(index)} color="error">
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                ))}
 
-      <Grid item xs={1} sx={{ display: "flex", justifyContent: "center" }}>
-        <IconButton onClick={() => remove(index)} color="error">
-          <Delete fontSize="small" />
-        </IconButton>
-      </Grid>
-    </Grid>
-  ))}
-
-  {/* Buttons */}
-  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-   
-    <Button type="submit" variant="contained" color="success">
-      Submit
-    </Button>
-  </Box>
-</Box>
-
+                {/* Buttons */}
+                <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                  <Button type="submit" variant="contained" color="success">
+                    Submit
+                  </Button>
+                </Box>
+              </Box>
             </form>
 
             <div
