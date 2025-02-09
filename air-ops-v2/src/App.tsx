@@ -172,8 +172,8 @@ const NAVIGATION: Navigation = [
     icon: <ShoppingCartIcon />,
   },
   {
-    segment: "flight-form",
-    title: "Flight Form",
+    segment: "prices",
+    title: "Prices",
     icon: <ShoppingCartIcon />,
   },
 

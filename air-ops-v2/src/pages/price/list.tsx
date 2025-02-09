@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import {
   Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   Table,
   TableBody,
@@ -14,38 +18,32 @@ import Paper from "@mui/material/Paper";
 import { QuoteStatus } from "../../lib/utils";
 import useGql from "../../lib/graphql/gql";
 import { GET_QUOTES } from "../../lib/graphql/queries/quote";
-import QuoteCreate from "./create";
-import { Outlet, useNavigate } from "react-router";
 
-export const QuoteList = () => {
+import { Outlet, useNavigate } from "react-router";
+import PriceCreate from "./Create";
+import { GET_PRICES } from "../../lib/graphql/queries/price";
+
+export const PriceList = () => {
   const navigate = useNavigate();
 
-  const [isNewQuote, setIsNewQuote] = useState(false);
+  const [isNewPriceOpen, setIsNewPriceOpen] = useState(false);
   const [rows, setRows] = useState<any[]>([]);
 
-  const getQuotes = async () => {
+  const getPrices = async () => {
     try {
       const data = await useGql({
-        query: GET_QUOTES,
-        queryName: "quotes",
+        query: GET_PRICES,
+        queryName: "prices",
         queryType: "query",
         variables: {},
       });
       setRows(() => {
-        return data.map((quote: any) => {
+        return data.map((price: any) => {
           return {
-            id: quote.id,
-            refrenceNo: quote.referenceNumber,
-            status: QuoteStatus[quote.status],
-            requester: quote.requestedBy.name,
-            // representative: quote.representative.name,
-            itinerary: quote.itinerary
-              .map((itinerary: any) => {
-                return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
-              })
-              .join(", "),
-            createdAt: quote.createdAt,
-            updatedAt: quote.updatedAt,
+            id: price.id,
+             aircraft:price.aircraft.name,
+            createdAt: price.createdAt,
+            updatedAt: price.updatedAt,
           };
         });
       });
@@ -55,7 +53,7 @@ export const QuoteList = () => {
   };
 
   useEffect(() => {
-    getQuotes();
+    getPrices();
   }, []);
 
   return (
@@ -65,9 +63,9 @@ export const QuoteList = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Requester</TableCell>
-              <TableCell align="right">Itinenary</TableCell>
+              <TableCell align="right">Aircraft</TableCell>
+              <TableCell align="right">Updated At</TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -75,27 +73,44 @@ export const QuoteList = () => {
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                onClick={() => navigate(`/quotes/edit/${row.id}`)}
+                onClick={() => navigate(`/prices/edit/${row.id}`)}
               >
                 <TableCell component="th" scope="row">
                   {row.refrenceNo}
                 </TableCell>
-                <TableCell align="right">{row.status}</TableCell>
-                <TableCell align="right">{row.requester}</TableCell>
-                <TableCell align="right">{row.itinerary}</TableCell>
+                <TableCell align="right">{row.aircraft}</TableCell>
+                <TableCell align="right">{row.createdAt}</TableCell>
+               
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
-        <Button variant="contained" onClick={() => setIsNewQuote(true)}>
-          NEW QUOTE
+        <Button variant="contained" onClick={() => setIsNewPriceOpen(true)}>
+          NEW PRICE
         </Button>
       </Box>
-      <QuoteCreate isNewQuote={isNewQuote} setIsNewQuote={setIsNewQuote} />
+
+      <Dialog
+        open={isNewPriceOpen}
+        onClose={() => setIsNewPriceOpen(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Create New Price</DialogTitle>
+        <DialogContent>
+        <PriceCreate/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsNewPriceOpen(false)} color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+     
     </>
   );
 };
 
-export default QuoteList;
+export default PriceList;
