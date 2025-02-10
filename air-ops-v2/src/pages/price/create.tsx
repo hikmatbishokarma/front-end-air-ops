@@ -337,7 +337,7 @@ const handleAddFee = (selectedFee) => {
 
 <Grid container spacing={2} sx={{ mt: 2 }}>
   {/* Autocomplete Dropdown for Adding New Fee */}
-  <Grid item xs={5}>
+  <Grid item xs={4.5}>
     <Autocomplete
       options={newFeeOption} // Define available fee options
       getOptionLabel={(option) => option.label}
@@ -348,17 +348,16 @@ const handleAddFee = (selectedFee) => {
   </Grid>
 
   {/* Total Currency Display */}
-  <Grid item xs={2}>
-   
+  <Grid item xs={1.5}>
     <span>TOTAL</span>
   </Grid>
-  <Grid item xs={2}>
+  <Grid item xs={1.5}>
   
     <span>INR</span>
   </Grid>
 
   {/* Grand Total Display */}
-  <Grid item xs={3}>
+  <Grid item xs={1.5}>
    <span>1000</span>
   </Grid>
 </Grid>

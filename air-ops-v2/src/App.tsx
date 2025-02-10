@@ -162,6 +162,11 @@ const NAVIGATION: Navigation = [
     icon: <DashboardIcon />,
   },
   {
+    segment: "quotes",
+    title: "Requests/Quotes",
+    icon: <ShoppingCartIcon />,
+  },
+  {
     segment: "orders",
     title: "Orders",
     icon: <ShoppingCartIcon />,
@@ -177,11 +182,7 @@ const NAVIGATION: Navigation = [
     icon: <ShoppingCartIcon />,
   },
 
-  {
-    segment: "quotes",
-    title: "Requests/Quotes",
-    icon: <ShoppingCartIcon />,
-  },
+ 
 ];
 
 const BRANDING = {
