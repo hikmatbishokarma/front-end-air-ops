@@ -49,6 +49,11 @@ import OrdersPage from "./pages/orders";
 import Category from "./pages/category";
 import SignInPage from "./pages/signIn";
 import FlightRequestForm from "./pages/test";
+import QuoteList from "./pages/quote/list";
+import QuoteEdit from "./pages/quote/edit";
+import PriceCreate from "./pages/price/Create";
+import PriceList from "./pages/price/list";
+import PriceEdit from "./pages/price/edit";
 
 const router = createBrowserRouter([
   {
@@ -72,7 +77,23 @@ const router = createBrowserRouter([
           },
           {
             path: "flight-form",
-            Component: FlightRequestForm,
+            Component: PriceCreate,
+          },
+          {
+            path: "quotes",
+            Component: QuoteList,
+          },
+          {
+            path: "quotes/edit/:id",
+            Component: QuoteEdit,
+          },
+          {
+            path: "prices",
+            Component: PriceList,
+          },
+          {
+            path: "prices/edit/:id",
+            Component: PriceEdit,
           },
         ],
       },
