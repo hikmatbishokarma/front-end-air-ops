@@ -27,7 +27,6 @@ type Airport = {
 };
 
 const AirportsAutocomplete = ({ value, onChange, label }: any) => {
- 
   const [inputValue, setInputValue] = useState(""); // Stores user input
   const [options, setOptions] = useState<Airport[]>([]); // Stores fetched airport options
   const [loading, setLoading] = useState(false); // Indicates loading state
@@ -90,11 +89,12 @@ const AirportsAutocomplete = ({ value, onChange, label }: any) => {
       onInputChange={(event, value) => {
         setInputValue(value);
       }}
-
       options={options}
       // value={options.find((opt) => opt.iata_code === value) || null}
       value={selectedOption}
-      onChange={(_, selectedOption) => onChange(selectedOption ? selectedOption.iata_code : "")}
+      onChange={(_, selectedOption) =>
+        onChange(selectedOption ? selectedOption.iata_code : "")
+      }
       renderOption={(props, option) => (
         <li
           {...props}

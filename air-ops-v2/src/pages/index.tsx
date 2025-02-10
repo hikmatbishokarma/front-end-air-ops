@@ -36,38 +36,31 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 import "./main.css";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { Box, Grid } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import moment from "moment";
 import { GET_CLIENTS } from "../lib/graphql/queries/clients";
 import RequestedByDialog from "../components/client-form";
-import { CREATE_QUOTE } from "../lib/graphql/queries/quote";
-
-// export const events = [
-//   {
-//     title: "Conference",
-//     start: "2025-01-25",
-//     end: "2025-01-27",
-//   },
-//   {
-//     title: "Meeting",
-//     start: "2025-01-26T10:30:00+00:00",
-//     end: "2025-01-26T12:30:00+00:00",
-//   },
-//   {
-//     title: "Lunch",
-//     start: "2025-01-26T12:00:00+00:00",
-//   },
-//   {
-//     title: "Birthday Party",
-//     start: "2025-01-27T07:00:00+00:00",
-//   },
-//   {
-//     url: "http://google.com/",
-//     title: "Click for Google",
-//     start: "2025-01-28",
-//   },
-// ];
+import { CREATE_QUOTE, GET_QUOTES } from "../lib/graphql/queries/quote";
+import Paper from "@mui/material/Paper";
+import { QuoteStatus } from "../lib/utils";
+import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
+import { TimeField } from "@mui/x-date-pickers/TimeField";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import QuoteRequestDialog from "../components/quote-dialog";
 
 interface AircraftCategory {
   id: string;
@@ -87,16 +80,17 @@ const defaultValues = {
     {
       date: "",
       time: "",
-      departureOrArrival: "departure",
+      depatureDateTime: "",
+      arrivalDateTime: "",
       source: "",
       destination: "",
       paxNumber: 1,
-      aircraft: "",
     },
   ],
 
   providerType: "airops",
-  aircraftCategory: "",
+  category: "",
+  aircraft: "",
 };
 
 export default function DashboardPage() {
@@ -109,8 +103,11 @@ export default function DashboardPage() {
   const [selectedAircraftCategory, setSelectedAircraftCategory] =
     useState<AircraftCategory | null>(null);
 
-  const [events, setEvents] = useState<{ title: string; start: string; end: string }[]>([]);
+  const [events, setEvents] = useState<
+    { title: string; start: string; end: string }[]
+  >([]);
   const [clients, setClients] = useState<any[]>([]);
+  const [rows, setRows] = useState<any[]>([]);
 
   const { control, handleSubmit, setValue, watch } = useForm({
     defaultValues,
@@ -121,24 +118,24 @@ export default function DashboardPage() {
     name: "itinerary",
   });
 
-
   const createQuote = async (formData) => {
     const data = await useGql({
       query: CREATE_QUOTE,
       queryName: "quote",
       variables: {
         input: {
-          quote: formData
-        }
+          quote: formData,
+        },
       },
     });
 
     console.log("submitted data:", data);
-  }
+  };
 
   const onSubmit = (data: any) => {
     console.log("Form Data:", data);
     createQuote(data);
+    setMainDialogOpen(false);
   };
 
   const itinerary = watch("itinerary");
@@ -149,34 +146,32 @@ export default function DashboardPage() {
 
     console.log("newItinerary", lastItinerary);
 
-    setEvents((prev: any) => [...prev, {
-      title: `${lastItinerary.source}-${lastItinerary.destination}`,
-      start: lastItinerary?.date,
-      end: moment(lastItinerary?.date)
-        .add(moment.duration(lastItinerary?.time))
-        .format("YYYY-MM-DD HH:mm")
-    }]);
+    setEvents((prev: any) => [
+      ...prev,
+      {
+        title: `${lastItinerary.source}-${lastItinerary.destination}`,
+        start: lastItinerary?.date,
+        end: moment(lastItinerary?.date)
+          .add(moment.duration(lastItinerary?.time))
+          .format("YYYY-MM-DD HH:mm"),
+      },
+    ]);
 
     const newItinerary = {
       date: "",
       time: "",
-      departureOrArrival: "departure",
       source: lastItinerary ? lastItinerary.destination : "",
       destination: "",
+      depatureDateTime: "",
+      arrivalDateTime: "",
       paxNumber: 1,
-      aircraft: ""
     };
-
 
     // Append the new itinerary to the existing itinerary list
     append(newItinerary);
   };
 
   console.log("events", events);
-
-  const [rows, setRows] = useState([
-    { id: 1, ADEP: "", ADES: "", TBA: "", dateLT: "", timeLT: "", PAX: "" },
-  ]);
 
   const handleMainDialogOpen = () => {
     setMainDialogOpen(true);
@@ -191,33 +186,9 @@ export default function DashboardPage() {
   };
 
   const handleSubDialogClose = async () => {
-    console.log("Sub Dialog Closed")
+    console.log("Sub Dialog Closed");
     setSubDialogOpen(false);
     await getClients();
-  };
-
-  const handleAddRow = () => {
-    const newRow = {
-      id: rows.length + 1,
-      ADEP: "",
-      ADES: "",
-      TBA: "",
-      dateLT: "",
-      timeLT: "",
-      PAX: "",
-    };
-    setRows([...rows, newRow]);
-  };
-
-  const handleDeleteRow = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
-
-  const handleInputChange = (id, field, value) => {
-    const updatedRows = rows.map((row) =>
-      row.id === id ? { ...row, [field]: value } : row,
-    );
-    setRows(updatedRows);
   };
 
   const getAircraftCategories = async () => {
@@ -242,13 +213,13 @@ export default function DashboardPage() {
         queryType: "query",
         variables: categoryId
           ? {
-            sorting: [
-              {
-                field: "category",
-                direction: "ASC",
-              },
-            ],
-          }
+              sorting: [
+                {
+                  field: "category",
+                  direction: "ASC",
+                },
+              ],
+            }
           : {},
       });
       setAircrafts(data);
@@ -269,25 +240,87 @@ export default function DashboardPage() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
 
+  const getQuotes = async () => {
+    try {
+      const data = await useGql({
+        query: GET_QUOTES,
+        queryName: "quotes",
+        queryType: "query",
+        variables: {},
+      });
+      setRows(() => {
+        return data.map((quote: any) => {
+          return {
+            id: quote.id,
+            refrenceNo: quote.referenceNumber,
+            status: QuoteStatus[quote.status],
+            requester: quote.requestedBy.name,
+            // representative: quote.representative.name,
+            itinerary: quote.itinerary
+              .map((itinerary: any) => {
+                return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
+              })
+              .join(", "),
+            createdAt: quote.createdAt,
+            updatedAt: quote.updatedAt,
+          };
+        });
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   console.log("selectedAircraftCategory", selectedAircraftCategory);
 
   useEffect(() => {
+    getQuotes();
     getAircraftCategories();
     getAircrafts(null);
-    getClients()
+    getClients();
   }, []);
 
   useEffect(() => {
     getAircrafts(selectedAircraftCategory?.id);
   }, [selectedAircraftCategory]);
 
+  console.log("rows", rows);
+
   return (
     <div style={{ padding: "20px" }}>
-      <Button variant="contained" onClick={handleMainDialogOpen}>
-        Add New Quote Request
-      </Button>
+      <>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right">Requester</TableCell>
+                <TableCell align="right">Itinenary</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.refrenceNo}
+                  </TableCell>
+                  <TableCell align="right">{row.status}</TableCell>
+                  <TableCell align="right">{row.requester}</TableCell>
+                  <TableCell align="right">{row.itinerary}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Button variant="contained" onClick={handleMainDialogOpen}>
+          Add New Quote Request
+        </Button>
+      </>
 
       {/* Main Dialog */}
       <Dialog
@@ -306,269 +339,32 @@ export default function DashboardPage() {
               padding: "0px 8px",
             }}
           >
-            {/* Left Form */}
-            {/* <div style={{ flex: 0.5, padding: "5px 0px" }}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <span style={{ marginRight: "18px" }}>Requested by:</span>
-                <TextField
-                  select
-                  defaultValue="Option 1"
-                  variant="outlined"
-                  size="small"
-                  style={{ width: "40%" }} // Set the width to 30%
-                  InputProps={{
-                    style: { padding: "0", height: "30px" },
-                  }}
-                >
-                  <MenuItem value="">---</MenuItem>
-                  <MenuItem value="John">John</MenuItem>
-                </TextField>
-                <IconButton onClick={handleSubDialogOpen}>
-                  <AddIcon />
-                </IconButton>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "10px 0px",
-                }}
-              >
-                <span style={{ marginRight: "8px" }}>Representative:</span>
-                <TextField
-                  select
-                  defaultValue=""
-                  variant="outlined"
-                  size="small"
-                  style={{ width: "40%" }} // Set the width to 30%
-                  InputProps={{
-                    style: { padding: "0", height: "30px" },
-                  }}
-                >
-                  <MenuItem value="">---</MenuItem>
-                  <MenuItem value="Smith">Smith</MenuItem>
-                </TextField>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "10px 0px",
-                }}
-              >
-                <span style={{ marginRight: "16px" }}>Min. Category:</span>
-                <TextField
-                  select
-                  defaultValue=""
-                  variant="outlined"
-                  size="small"
-                  style={{ width: "40%" }} // Set the width to 30%
-                  InputProps={{
-                    style: { padding: "0", height: "30px" },
-                  }}
-                >
-                  <MenuItem value="">---</MenuItem>
-                  <MenuItem value="A">A</MenuItem>
-                </TextField>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "10px 0px",
-                }}
-              >
-                <span style={{ marginRight: "65.5px" }}>Aircraft:</span>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  style={{ width: "40%" }} // Set the width to 30%
-                  InputProps={{
-                    style: { padding: "0", height: "30px" },
-                  }}
-                ></TextField>
-              </div>
-
-              <Autocomplete
-                disablePortal
-                options={aircraftCategories}
-                getOptionLabel={(option) => `${option.name}`}
-                sx={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Min. Category" />
-                )}
-                onChange={(e, value) => setSelectedAircraftCategory(value)}
-              />
-
-              <Autocomplete
-                disablePortal
-                options={aircrafts}
-                getOptionLabel={(option) => `${option.name}`}
-                sx={{ width: 300 }}
-                renderOption={(props, option) => (
-                  <li
-                    {...props}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <span>{`${option.category.name}`}</span>
-                    <span style={{ fontWeight: "bold" }}>{option.name}</span>
-                  </li>
-                )}
-                renderInput={(params) => (
-                  <TextField {...params} label="Aircraft" />
-                )}
-              />
-
-              <Button variant="contained" color="primary">
-                One Way or Multi Leg
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                style={{ marginLeft: "10px" }}
-              >
-                Round Trip
-              </Button>
-
-          
-              <div style={{ marginTop: "20px" }}>
-                <div className="heading-table">
-                  <span>ADEP</span>
-                  <span>ADES</span>
-                  <span>TBA</span>
-                  <span> &nbsp; &nbsp; </span>
-                  <span>Date LT</span>
-                  <span>Time LT</span>
-                  <span>PAX</span>
-                </div>
-                {rows.map((row) => (
-                  <div
-                    key={row.id}
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                      alignItems: "center",
-                    }}
-                  >
-                   
-                    <AirportsAutocomplete label="ADEP" />
-                    <AirportsAutocomplete label="ADES" />
-                   
-                    <TextField
-                      size="small"
-                      style={{ width: "10%" }} // Set the width to 30%
-                      InputProps={{
-                        style: { padding: "0", height: "30px" },
-                      }}
-                      margin="normal"
-                      value={row.TBA}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "TBA", e.target.value)
-                      }
-                    />
-                    <TextField
-                      select
-                      defaultValue=""
-                      variant="outlined"
-                      size="small"
-                      style={{ width: "40%", marginTop: "8px" }} // Set the width to 30%
-                      InputProps={{
-                        style: { padding: "0", height: "30px" },
-                      }}
-                    >
-                      <MenuItem value="">---</MenuItem>
-                      <MenuItem value="A">A</MenuItem>
-                    </TextField>
-                    <TextField
-                      size="small"
-                      style={{ width: "35%" }} // Set the width to 30%
-                      InputProps={{
-                        style: { padding: "0", height: "30px" },
-                      }}
-                      margin="normal"
-                      value={row.dateLT}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "dateLT", e.target.value)
-                      }
-                    />
-                    <TextField
-                      size="small"
-                      style={{ width: "35%" }} // Set the width to 30%
-                      InputProps={{
-                        style: { padding: "0", height: "30px" },
-                      }}
-                      margin="normal"
-                      value={row.timeLT}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "timeLT", e.target.value)
-                      }
-                    />
-                    <TextField
-                      size="small"
-                      style={{ width: "35%" }} // Set the width to 30%
-                      InputProps={{
-                        style: { padding: "0", height: "30px" },
-                      }}
-                      margin="normal"
-                      value={row.PAX}
-                      onChange={(e) =>
-                        handleInputChange(row.id, "PAX", e.target.value)
-                      }
-                    />
-                    <IconButton
-                      onClick={() => handleDeleteRow(row.id)}
-                      color="error"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </div>
-                ))}
-                <Button
-                  variant="outlined"
-                  startIcon={<AddIcon />}
-                  onClick={handleAddRow}
-                  style={{ marginTop: "10px" }}
-                >
-                  Add Row
-                </Button>
-              </div>
-            </div> */}
-
-            <form onSubmit={handleSubmit(onSubmit)} className="form_Work" style={{ padding: "20px", flex: 0.5, }}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="form_Work"
+              style={{ padding: "20px", flex: 0.5 }}
+            >
               <Controller
                 name="requestedBy"
                 control={control}
                 render={({ field }) => (
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ marginRight: '37px' }}>Requested by:</Typography>
-                    {/* <TextField
-                      {...field}
-                      select
-                      variant="outlined"
-                      size="small"
-                      sx={{ width: "40%" }} // Set the width as in the old code
-                      InputProps={{
-                        sx: { padding: 0, height: "30px" },
-                      }}
-                    ></TextField> */}
+                    <Typography sx={{ marginRight: "37px" }}>
+                      Requested by:
+                    </Typography>
+
                     <Autocomplete
-
                       {...field}
-
                       options={clients}
-
                       getOptionLabel={(option) => option.name} // Display the category name
                       value={
                         field.value
-                          ? clients.find(
-                            (client) => client.id === field.value,
-                          )
+                          ? clients.find((client) => client.id === field.value)
                           : null
                       }
+                      onChange={(_, newValue) => {
+                        field.onChange(newValue ? newValue.id : ""); // Update only the selected value
+                      }}
                       sx={{ width: 300 }}
                       renderInput={(params) => <TextField {...params} />}
                     />
@@ -589,62 +385,99 @@ export default function DashboardPage() {
                       padding: "10px 0px",
                     }}
                   >
-                    <Typography sx={{ marginRight: '28px' }}>Representative:</Typography>
+                    <Typography sx={{ marginRight: "28px" }}>
+                      Representative:
+                    </Typography>
                     <TextField
                       {...field}
-                      style={{ width: '300px' }}
+                      style={{ width: "300px" }}
                       margin="normal"
                     />
                   </Box>
                 )}
               />
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography sx={{ marginRight: '17px' }}>Aircraft Category:</Typography>
-                <Controller
-                  name="aircraftCategory"
-                  control={control}
-                  render={({ field }) => (
+
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "10px 0px",
+                    }}
+                  >
+                    <Typography sx={{ marginRight: "17px" }}>
+                      Aircraft Category:
+                    </Typography>
                     <Autocomplete
                       {...field}
                       options={aircraftCategories}
-                      getOptionLabel={(option) => option.name} // Display the category name
-                      value={selectedAircraftCategory} // Ensure value is the full AircraftCategory object
+                      getOptionLabel={(option) => option.name}
+                      value={selectedAircraftCategory}
                       onChange={(_, value) => {
-                        setSelectedAircraftCategory(value); // Set full object on selection
-                        setValue("aircraftCategory", value ? value.id : ""); // Update form value with category ID
+                        setSelectedAircraftCategory(value);
+                        setValue("category", value ? value.id : "");
                       }}
                       sx={{ width: 300 }}
-                      renderInput={(params) => (
-                        <TextField {...params} />
-                      )}
+                      renderInput={(params) => <TextField {...params} />}
                     />
-                  )}
-                />
-              </Box>
+                  </Box>
+                )}
+              />
 
+              <Controller
+                name={`aircraft`}
+                control={control}
+                render={({ field }) => (
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Typography sx={{ marginRight: "17px" }}>
+                      Aircraft:
+                    </Typography>
+                    <Autocomplete
+                      {...field}
+                      options={aircrafts}
+                      getOptionLabel={(option) => option.name}
+                      value={
+                        field.value
+                          ? aircrafts.find(
+                              (aircraft) => aircraft.id === field.value,
+                            )
+                          : null
+                      }
+                      onChange={(_, value) => {
+                        field.onChange(value ? value.id : "");
+                      }}
+                      sx={{ width: 300 }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Box>
+                )}
+              />
 
               <Box sx={{ mt: 5 }}>
                 <Box
                   sx={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(7, auto)", // Creates equal spacing for 7 items
-                    gap: 2, // Adds spacing between items
+                    gridTemplateColumns: "repeat(7, auto)",
+                    gap: 2,
                     fontWeight: "bold",
-                    borderBottom: "2px solid #ddd", // Optional: To visually separate the header
-                    pb: 1, // Padding bottom for better spacing
+                    borderBottom: "2px solid #ddd",
+                    pb: 1,
                   }}
                 >
                   <Typography variant="body2">ADEP</Typography>
                   <Typography variant="body2">ADES</Typography>
-                  <Typography variant="body2">Date LT</Typography>
-                  <Typography variant="body2">Time LT</Typography>
+                  <Typography variant="body2">DDT</Typography>
+                  <Typography variant="body2">ADT LT</Typography>
                   <Typography variant="body2">PAX</Typography>
-                  <Typography variant="body2">Aircraft</Typography>
-                  <Typography variant="body2"><Delete /></Typography>
 
-
+                  <Typography variant="body2">
+                    <Delete />
+                  </Typography>
                 </Box>
-                {/* Itinerary Fields */}
+
                 {fields.map((item, index) => (
                   <Grid
                     container
@@ -654,7 +487,7 @@ export default function DashboardPage() {
                       display: "flex",
                       gap: "0px",
                       alignItems: "center",
-                      marginTop: '5px'
+                      marginTop: "5px",
                     }}
                   >
                     <Grid item xs={2}>
@@ -684,77 +517,41 @@ export default function DashboardPage() {
                     </Grid>
 
                     <Grid item xs={2}>
-                      <Controller
-                        name={`itinerary.${index}.date`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            // label="Date"
-                            type="date"
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                          />
-                        )}
-                      />
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Controller
+                          name={`itinerary.${index}.depatureDateTime`}
+                          control={control}
+                          render={({ field }) => (
+                            <DateTimePicker
+                              {...field}
+                              value={field.value ? moment(field.value) : null}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
                     </Grid>
 
                     <Grid item xs={2}>
-                      <Controller
-                        name={`itinerary.${index}.time`}
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            // label="Time"
-                            type="time"
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                          />
-                        )}
-                      />
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Controller
+                          name={`itinerary.${index}.arrivalDateTime`}
+                          control={control}
+                          render={({ field }) => (
+                            <DateTimePicker
+                              {...field}
+                              value={field.value ? moment(field.value) : null}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
                     </Grid>
-
 
                     <Grid item xs={1}>
                       <Controller
                         name={`itinerary.${index}.paxNumber`}
                         control={control}
                         render={({ field }) => (
-                          <TextField
-                            {...field}
-                            // label="Pax Number"
-                            type="number"
-                            fullWidth
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={2}>
-
-                      <Controller
-                        name={`itinerary.${index}.aircraft`}
-                        control={control}
-                        render={({ field }) => (
-                          <Autocomplete
-                            {...field}
-                            options={aircrafts}
-                            getOptionLabel={(option) => option.name} // Display the aircraft name
-                            value={
-                              field.value
-                                ? aircrafts.find(
-                                  (aircraft) => aircraft.id === field.value,
-                                )
-                                : null
-                            } // Match the selected aircraft by id
-                            onChange={(_, value) => {
-                              // Update form state with the selected aircraft's id
-                              field.onChange(value ? value.id : ""); // Set the aircraft id in form data
-                            }}
-                            renderInput={(params) => (
-                              <TextField {...params} />
-                            )}
-                          />
+                          <TextField {...field} type="number" fullWidth />
                         )}
                       />
                     </Grid>
@@ -766,25 +563,26 @@ export default function DashboardPage() {
                     </Grid>
                   </Grid>
                 ))}
-                <Box sx={{
-                  display:"flex"
-                }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                  }}
+                >
                   <Button
                     type="button"
                     variant="contained"
                     color="primary"
-                    onClick={addItinerary} // Add a new itinerary
-                    style={{ marginTop: '10px' }}
+                    onClick={addItinerary}
+                    style={{ marginTop: "10px" }}
                   >
-                    {/* Add Itinerary */}
                     +
                   </Button>
-                  {/* Submit Button */}
+
                   <Button
                     type="submit"
                     variant="contained"
                     color="success"
-                    style={{ marginTop: '10px', marginLeft:"28px" }}
+                    style={{ marginTop: "10px", marginLeft: "28px" }}
                   >
                     Submit
                   </Button>
@@ -792,7 +590,6 @@ export default function DashboardPage() {
               </Box>
             </form>
 
-            {/* Right Calendar */}
             <div
               style={{
                 flex: 0.5,
@@ -811,7 +608,7 @@ export default function DashboardPage() {
                 headerToolbar={{
                   left: "prev,next today",
                   center: "title",
-                  right: "dayGridMonth,timeGridWeek,timeGridDay", // user can switch between the two
+                  right: "dayGridMonth,timeGridWeek,timeGridDay",
                 }}
                 events={events}
               />
@@ -831,28 +628,16 @@ export default function DashboardPage() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Sub Dialog */}
-      {/* <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
-        <DialogTitle>Add Requested By Details</DialogTitle>
-        <DialogContent>
-          <TextField label="Name" fullWidth margin="normal" />
-          <TextField label="Email" fullWidth margin="normal" />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleSubDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubDialogClose}
-            color="primary"
-            variant="contained"
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-      <RequestedByDialog subDialogOpen={subDialogOpen} handleSubDialogClose={handleSubDialogClose} />
+      {/* 
+<QuoteRequestDialog mainDialogOpen={mainDialogOpen} handleMainDialogClose={handleMainDialogClose} handleSubmit={handleSubmit}
+ onSubmit={onsubmit} control={control} clients={clients} aircraftCategories={aircraftCategories}
+  aircrafts={aircrafts} fields={fields} remove={remove} addItinerary={addItinerary} events={events}
+   handleSubDialogOpen={handleMainDialogClose} selectedAircraftCategory={selectedAircraftCategory} setSelectedAircraftCategory={setSelectedAircraftCategory} setValue={setValue} />
+      */}
+      <RequestedByDialog
+        subDialogOpen={subDialogOpen}
+        handleSubDialogClose={handleSubDialogClose}
+      />
     </div>
   );
 }
