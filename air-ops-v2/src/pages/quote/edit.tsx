@@ -22,6 +22,7 @@ import { GET_CLIENTS } from "../../lib/graphql/queries/clients";
 import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
 import AddIcon from "@mui/icons-material/Add";
+import PriceEdit from "../price/edit";
 
 interface AircraftCategory {
   id: string;
@@ -355,6 +356,7 @@ const QuoteEdit = () => {
           Save
         </Button>
       </form>
+      <PriceEdit/>
     </Paper>
   );
 };
