@@ -16,6 +16,7 @@ import useGql from "../../lib/graphql/gql";
 import { GET_QUOTES } from "../../lib/graphql/queries/quote";
 import QuoteCreate from "./create";
 import { Outlet, useNavigate } from "react-router";
+import { GET_LOGIN, SIGN_IN } from "../../lib/graphql/queries/auth";
 
 export const QuoteList = () => {
   const navigate = useNavigate();
