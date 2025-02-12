@@ -1,65 +1,3 @@
-// 'use client';
-// import * as React from 'react';
-// import Alert from '@mui/material/Alert';
-// import LinearProgress from '@mui/material/LinearProgress';
-// import { SignInPage } from '@toolpad/core/SignInPage';
-// import { Navigate, useNavigate } from 'react-router';
-// import { useSession, type Session } from '../SessionContext';
-// import { signInWithCredentials } from '../firebase/auth';
-
-// export default function SignIn() {
-//   const { session, setSession, loading } = useSession();
-//   const navigate = useNavigate();
-
-//   if (loading) {
-//     return <LinearProgress />;
-//   }
-
-//   if (session) {
-//     return <Navigate to="/" />;
-//   }
-
-//   return (
-//     <SignInPage
-//       providers={[{ id: 'credentials', name: 'Credentials' }]}
-//       signIn={async (provider, formData, callbackUrl) => {
-//         let result;
-//         try {
-
-//           if (provider.id === 'credentials') {
-//             const email = formData?.get('email') as string;
-//             const password = formData?.get('password') as string;
-
-//             if (!email || !password) {
-//               return { error: 'Email and password are required' };
-//             }
-
-//             result = await signInWithCredentials(email, password);
-//           }
-
-//           if (result?.success && result?.user) {
-//             const userSession: Session = {
-//               user: {
-//                 name: result.user.displayName || '',
-//                 email: result.user.email || '',
-//                 image: result.user.photoURL || '',
-//               },
-//             };
-//             setSession(userSession);
-//             navigate(callbackUrl || '/', { replace: true });
-//             return {};
-//           }
-//           return { error: result?.error || 'Failed to sign in' };
-//         } catch (error) {
-//           return { error: error instanceof Error ? error.message : 'An error occurred' };
-//         }
-//       }}
-
-//     />
-//   );
-// }
-// janedoe@gmail.com
-// password
 
 "use client";
 import * as React from "react";
@@ -67,22 +5,55 @@ import { SignInPage } from "@toolpad/core/SignInPage";
 import type { Session } from "@toolpad/core/AppProvider";
 import { useNavigate } from "react-router";
 import { useSession } from "../SessionContext";
+import { SIGN_IN } from "../lib/graphql/queries/auth";
+import useGql from "../lib/graphql/gql";
+
+// const fakeAsyncGetSession = async (formData: any): Promise<Session> => {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       if (formData.get("password") === "password") {
+//         resolve({
+//           user: {
+//             name: "Bharat Kashyap",
+//             email: formData.get("email") || "",
+//             image: "https://avatars.githubusercontent.com/u/19550456",
+//           },
+//         });
+//       }
+//       reject(new Error("Incorrect credentials."));
+//     }, 1000);
+//   });
+// };
 
 const fakeAsyncGetSession = async (formData: any): Promise<Session> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (formData.get("password") === "password") {
-        resolve({
-          user: {
-            name: "Bharat Kashyap",
-            email: formData.get("email") || "",
-            image: "https://avatars.githubusercontent.com/u/19550456",
-          },
-        });
-      }
-      reject(new Error("Incorrect credentials."));
-    }, 1000);
-  });
+  try {
+
+    const data = await useGql({
+      query: SIGN_IN,
+      queryName: "signIn",
+      queryType: "query-without-edge",
+      variables: {
+        "input": {
+          userName: formData.get("email"),
+          password: formData.get("password"),
+        }  
+      },
+    });
+
+    if (!data || !data.user) {
+      throw new Error("Invalid credentials.");
+    }
+
+    return {
+      user: {
+        name: data.user.name,
+        email: data.user.email,
+        image: data.user.image || "https://avatars.githubusercontent.com/u/19550456", // Default image
+      },
+    };
+  } catch (error) {
+    throw new Error("Login failed. Please check your credentials.");
+  }
 };
 
 export default function SignIn() {
@@ -92,6 +63,10 @@ export default function SignIn() {
     <SignInPage
       providers={[{ id: "credentials", name: "Credentials" }]}
       signIn={async (provider, formData, callbackUrl) => {
+
+        console.log("Raw formData:", formData);
+  console.log("formData.entries():", Array.from(formData.entries())); // Check if email/password exist
+  
         // Demo session
         try {
           const session = await fakeAsyncGetSession(formData);

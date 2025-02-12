@@ -151,6 +151,8 @@ import { ReactRouterAppProvider } from "@toolpad/core/react-router";
 import { Outlet, useNavigate } from "react-router";
 import type { Navigation, Session } from "@toolpad/core/AppProvider";
 import { SessionContext } from "./SessionContext";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./theme";
 
 const NAVIGATION: Navigation = [
   {
@@ -209,6 +211,8 @@ export default function App() {
   );
 
   return (
+    <ThemeProvider theme={theme}>
+        <CssBaseline />
     <SessionContext.Provider value={sessionContextValue}>
       <ReactRouterAppProvider
         navigation={NAVIGATION}
@@ -219,5 +223,6 @@ export default function App() {
         <Outlet />
       </ReactRouterAppProvider>
     </SessionContext.Provider>
+    </ThemeProvider>
   );
 }

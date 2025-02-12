@@ -1,5 +1,6 @@
-.heading-table {
-    width: 89%;
+
+.heading-table{
+     width: 89%;
     display: flex;
     justify-content: space-around;
 }
