@@ -1,20 +1,25 @@
-.heading-table{
-     width: 89%;
+.heading-table {
+    width: 89%;
     display: flex;
     justify-content: space-around;
 }
-.fc .fc-toolbar-title{
+
+.fc .fc-toolbar-title {
     font-size: 20px;
 }
-.form_Work .css-28116y-MuiAutocomplete-root .MuiOutlinedInput-root{
+
+.form_Work .css-28116y-MuiAutocomplete-root .MuiOutlinedInput-root {
     padding: 0px !important;
 }
-.form_Work .css-1tlcqt-MuiAutocomplete-root .MuiOutlinedInput-root{
+
+.form_Work .css-1tlcqt-MuiAutocomplete-root .MuiOutlinedInput-root {
     padding: 0px !important;
 }
-.form_Work .css-1j615le-MuiInputBase-input-MuiOutlinedInput-input{
+
+.form_Work .css-1j615le-MuiInputBase-input-MuiOutlinedInput-input {
     padding: 7.5px 0px !important;
 }
+
 .form_Work .css-1ab68zf-MuiAutocomplete-root .MuiAutocomplete-input {
     border: 1px solid #c4c4c4;
     border-radius: 4px;
@@ -22,6 +27,34 @@
     height: 39px;
     margin-top: 0px;
 }
+
 .price_table .css-1tu6adf-MuiInputBase-input-MuiOutlinedInput-input {
-    padding: 5px  14px ;
+    padding: 5px 14px;
+}
+
+.login_main_d {
+    position: relative;
+}
+
+.login_main_d .form_div {
+    border: 2px solid transparent;
+    border-radius: 12px;
+    position: absolute;
+    top: 20%;
+    right: 10%;
+    background-color: white;
+    text-align: center;
+    padding: 38px 43px;
+    width: 30%;
+}
+
+.login_main_d .logo_d {
+    border: 1px solid white;
+    background-color: white;
+    width: 15%;
+    border-radius: 50%;
+    overflow: hidden;
+    position: absolute;
+    top: 5%;
+    left: 20%;
 }

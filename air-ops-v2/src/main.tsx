@@ -54,7 +54,7 @@ import QuoteEdit from "./pages/quote/edit";
 import PriceCreate from "./pages/price/Create";
 import PriceList from "./pages/price/list";
 import PriceEdit from "./pages/price/edit";
-
+import Login from "./components/Login";
 const router = createBrowserRouter([
   {
     Component: App,
@@ -100,6 +100,10 @@ const router = createBrowserRouter([
       {
         path: "/sign-in",
         Component: SignInPage,
+      },
+      {
+        path: "/login",
+        Component: Login,
       },
     ],
   },
