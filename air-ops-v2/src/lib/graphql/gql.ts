@@ -21,7 +21,13 @@ const useGql = async (gqlParams: gqlParams) => {
     ...gqlParams,
   };
   try {
-    console.log("variables", variables);
+    console.log("🟡 Before API Call - useGql queryName:", queryName, variables);
+
+    if (!variables || Object.keys(variables).length === 0) {
+      console.error("❌ Variables are empty before API call!");
+    }
+
+    console.log("variables", variables, query);
     const result = await apolloConnection.query({
       query,
       variables,
