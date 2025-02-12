@@ -56,7 +56,7 @@ const PriceEdit = () => {
       query: GET_PRICE_BY_ID,
       queryName: "price",
       queryType: "query-without-edge",
-      variables: { id: id || "67a8e873f8410e9e02fa11fa" },
+      variables: { id: "67a8e873f8410e9e02fa11fa" },
     });
 
     console.log("response", response);
