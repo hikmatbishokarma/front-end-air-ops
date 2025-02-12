@@ -1,6 +1,5 @@
-
-.heading-table{
-     width: 89%;
+.heading-table {
+    width: 89%;
     display: flex;
     justify-content: space-around;
 }
@@ -58,4 +57,88 @@
     position: absolute;
     top: 5%;
     left: 20%;
+}
+
+/* Dashboard */
+
+.dashboard_main_d {
+    position: relative;
+
+}
+
+.dashboard_main_d .ban_img img {
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+.dashboard_main_d .heading {
+    position: absolute;
+    top: 22%;
+    left: 5%;
+}
+
+.dashboard_main_d .heading .name h2 {
+    margin: 0;
+    color: white;
+}
+
+.dashboard_main_d .heading .name p {
+    margin: 0;
+    color: white;
+}
+
+.dashboard_main_d .graphTotal {
+    position: absolute;
+    left: 5%;
+    bottom: -31%;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dashboard_main_d .graphTotal .boxes {
+    background-color: white;
+    display: flex;
+    width: 24%;
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.dashboard_main_d .graphTotal .boxes .level {
+    width: 60px;
+    height: 60px;
+}
+
+.dashboard_main_d .graphTotal .boxes .level img {
+    width: 100%;
+}
+
+.dashboard_main_d .graphTotal .boxes .text p {
+    color: #8a92a6;
+    margin: 0;
+}
+
+.dashboard_main_d .graphTotal .boxes .text h5 {
+    color: black;
+    margin: 0;
+}
+
+/* -----------    login page    ----------------- */
+.form_loginn input {
+    width: 100%;
+    border-radius: 10px;
+    padding: 12px 10px;
+    margin: 10px 0px;
+}
+.form_loginn button{
+    width: 100%;
+    /* background-color: blue; */
+    background-image: linear-gradient(to right, rgb(62, 28, 255) , rgb(8, 0, 115));
+    color: white;
+    padding: 12px 10px;
+    margin: 10px 0px;
+    border-radius: 10px;
+    border: none;
 }

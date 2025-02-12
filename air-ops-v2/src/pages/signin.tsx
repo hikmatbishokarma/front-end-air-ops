@@ -36,7 +36,7 @@ const fakeAsyncGetSession = async (formData: any): Promise<Session> => {
         "input": {
           userName: formData.get("email"),
           password: formData.get("password"),
-        }  
+        }
       },
     });
 
@@ -65,8 +65,8 @@ export default function SignIn() {
       signIn={async (provider, formData, callbackUrl) => {
 
         console.log("Raw formData:", formData);
-  console.log("formData.entries():", Array.from(formData.entries())); // Check if email/password exist
-  
+        console.log("formData.entries():", Array.from(formData.entries())); // Check if email/password exist
+
         // Demo session
         try {
           const session = await fakeAsyncGetSession(formData);
