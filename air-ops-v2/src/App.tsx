@@ -153,6 +153,7 @@ import type { Navigation, Session } from "@toolpad/core/AppProvider";
 import { SessionContext } from "./SessionContext";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme";
+import logoPhn from './Asset/images/logo_phn.png';
 
 const NAVIGATION: Navigation = [
   {
@@ -188,8 +189,8 @@ const NAVIGATION: Navigation = [
 ];
 
 const BRANDING = {
-  logo: <HomeIcon />,
-  title: "Air Ops",
+  logo: <img src={logoPhn} alt="" />,
+  title: "",
 };
 
 export default function App() {

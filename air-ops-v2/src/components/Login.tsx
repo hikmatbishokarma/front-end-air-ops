@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { useSession } from "../SessionContext";
 import { Tabs, Tab, Box, Typography } from "@mui/material";
 import { SIGN_IN } from "../lib/graphql/queries/auth";
+import { CREATE_USER } from "../lib/graphql/queries/auth";
 import useGql from "../lib/graphql/gql";
 
 const fakeAsyncGetSession = async (email, password) => {
@@ -40,6 +41,37 @@ const fakeAsyncGetSession = async (email, password) => {
     }
 };
 
+const fakeAsyncCreateUser = async (name, email, password) => {
+    try {
+        const data = await useGql({
+            query: CREATE_USER,
+            queryName: "createUser",
+            queryType: "mutation",
+            variables: {
+                input: {
+                    name: name,
+                    email: email,
+                    password: password,
+                },
+            },
+        });
+
+        if (!data || !data.user) {
+            throw new Error("Signup failed. Please try again.");
+        }
+
+        return {
+            user: {
+                name: data.user.name,
+                email: data.user.email,
+                image: data.user.image || "https://avatars.githubusercontent.com/u/19550456",
+            },
+        };
+    } catch (error) {
+        throw new Error("Signup failed. Please check your details.");
+    }
+};
+
 const TabPanel = ({ children, value, index }) => {
     return (
         <div hidden={value !== index}>
@@ -56,7 +88,7 @@ export default function Login() {
     const { setSession } = useSession();
     const navigate = useNavigate();
     const [value, setValue] = useState(0);
-
+    const [name, setName] = useState("");
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -80,10 +112,23 @@ export default function Login() {
             setError(err.message);
         }
     };
+    const handleSubmitCreate = async (e) => {
+        e.preventDefault();
+        setError(null);
+        try {
+            const session = await fakeAsyncCreateUser(name, email, password);
+            if (session) {
+                setSession(session);
+                navigate("/", { replace: true });
+            }
+        } catch (err) {
+            setError(err.message);
+        }
+    };
     return (
         <div className="login_main_d">
             <div className="img_div">
-                <img src={backImg} alt="" style={{ width: "100%", height: 'auto' }} />
+                <img src={backImg} alt="" style={{ width: "100%", height: '100%' }} />
             </div>
             <div className="logo_d">
                 <img src={logo} alt="" style={{ width: "100%", height: '100%' }} />
@@ -129,7 +174,46 @@ export default function Login() {
                         </form>
 
                     </TabPanel>
-                    <TabPanel value={value} index={1}>This is the Profile Page</TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <form onSubmit={handleSubmitCreate} className="form_loginn">
+                            <div className="mb-4">
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                    className="w-full p-2 border rounded"
+                                    placeholder="Name"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    className="w-full p-2 border rounded"
+                                    placeholder="Email Address"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className="w-full p-2 border rounded"
+                                    placeholder="Password"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                            >
+                                Sign Up
+                            </button>
+                        </form>
+                    </TabPanel>
                 </Box>
             </div>
         </div>
