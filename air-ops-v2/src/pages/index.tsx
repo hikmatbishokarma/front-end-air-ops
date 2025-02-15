@@ -14,16 +14,15 @@ import banner from "../Asset/Images/dash_banner.png";
 import level from "../Asset/Images/level.png";
 
 export default function DashboardPage() {
-
   return (
-     <div className="dashboard_main_d">
+    <div className="dashboard_main_d">
       <div className="ban_img">
         <img src={banner} alt="" />
       </div>
       <div className="heading">
         <div className="name">
           <h2>Hello</h2>
-          <p>We are on a mission to help developers like you build successful projects for FREE.</p>
+          <p> Welcome to Airops</p>
         </div>
       </div>
 
@@ -64,8 +63,7 @@ export default function DashboardPage() {
             <h5>$560K</h5>
           </div>
         </div>
-        
       </div>
-     </div>
+    </div>
   );
 }

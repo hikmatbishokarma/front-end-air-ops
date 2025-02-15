@@ -55,6 +55,8 @@ import PriceCreate from "./pages/price/Create";
 import PriceList from "./pages/price/list";
 import PriceEdit from "./pages/price/edit";
 import Login from "./components/Login";
+import RoleList from "./pages/role/list";
+import RoleCreate from "./pages/role/create";
 const router = createBrowserRouter([
   {
     Component: App,
@@ -67,10 +69,10 @@ const router = createBrowserRouter([
             path: "/",
             Component: DashboardPage,
           },
-          {
-            path: "/orders",
-            Component: OrdersPage,
-          },
+          // {
+          //   path: "/orders",
+          //   Component: OrdersPage,
+          // },
           {
             path: "/category",
             Component: Category,
@@ -94,6 +96,14 @@ const router = createBrowserRouter([
           {
             path: "prices/edit/:id",
             Component: PriceEdit,
+          },
+          {
+            path: "roles",
+            Component: RoleList,
+          },
+          {
+            path: "roles/create",
+            Component: RoleCreate,
           },
         ],
       },

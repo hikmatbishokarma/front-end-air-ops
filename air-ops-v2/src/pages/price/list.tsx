@@ -41,7 +41,7 @@ export const PriceList = () => {
         return data.map((price: any) => {
           return {
             id: price.id,
-             aircraft:price.aircraft.name,
+            aircraft: price.aircraft.name,
             createdAt: price.createdAt,
             updatedAt: price.updatedAt,
           };
@@ -65,7 +65,6 @@ export const PriceList = () => {
               <TableCell>ID</TableCell>
               <TableCell align="right">Aircraft</TableCell>
               <TableCell align="right">Updated At</TableCell>
-              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -80,7 +79,6 @@ export const PriceList = () => {
                 </TableCell>
                 <TableCell align="right">{row.aircraft}</TableCell>
                 <TableCell align="right">{row.createdAt}</TableCell>
-               
               </TableRow>
             ))}
           </TableBody>
@@ -100,7 +98,7 @@ export const PriceList = () => {
       >
         <DialogTitle>Create New Price</DialogTitle>
         <DialogContent>
-        <PriceCreate/>
+          <PriceCreate />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsNewPriceOpen(false)} color="secondary">
@@ -108,7 +106,6 @@ export const PriceList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-     
     </>
   );
 };
