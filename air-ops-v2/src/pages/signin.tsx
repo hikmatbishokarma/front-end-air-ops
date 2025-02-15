@@ -1,4 +1,3 @@
-
 "use client";
 import * as React from "react";
 import { SignInPage } from "@toolpad/core/SignInPage";
@@ -27,16 +26,15 @@ import useGql from "../lib/graphql/gql";
 
 const fakeAsyncGetSession = async (formData: any): Promise<Session> => {
   try {
-
     const data = await useGql({
       query: SIGN_IN,
       queryName: "signIn",
       queryType: "query-without-edge",
       variables: {
-        "input": {
+        input: {
           userName: formData.get("email"),
           password: formData.get("password"),
-        }
+        },
       },
     });
 
@@ -48,7 +46,8 @@ const fakeAsyncGetSession = async (formData: any): Promise<Session> => {
       user: {
         name: data.user.name,
         email: data.user.email,
-        image: data.user.image || "https://avatars.githubusercontent.com/u/19550456", // Default image
+        image:
+          data.user.image || "https://avatars.githubusercontent.com/u/19550456", // Default image
       },
     };
   } catch (error) {
@@ -63,7 +62,6 @@ export default function SignIn() {
     <SignInPage
       providers={[{ id: "credentials", name: "Credentials" }]}
       signIn={async (provider, formData, callbackUrl) => {
-
         console.log("Raw formData:", formData);
         console.log("formData.entries():", Array.from(formData.entries())); // Check if email/password exist
 

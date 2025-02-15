@@ -27,7 +27,6 @@ const useGql = async (gqlParams: gqlParams) => {
       console.error("❌ Variables are empty before API call!");
     }
 
-    console.log("variables", variables, query);
     const result = await apolloConnection.query({
       query,
       variables,
@@ -38,10 +37,9 @@ const useGql = async (gqlParams: gqlParams) => {
     }
 
     if (queryType == "query") {
-      // console.log(res);
       return result.data[queryName].nodes;
     }
-    // return result;
+    return result;
   } catch (error) {
     console.error(error);
   }
