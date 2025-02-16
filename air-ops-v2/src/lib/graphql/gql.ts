@@ -32,13 +32,18 @@ const useGql = async (gqlParams: gqlParams) => {
       variables,
     });
 
+    console.log("result111:::", queryType, result);
+
     if (queryType == "query-without-edge") {
       return result.data[queryName];
     }
 
+    console.log("result:::", queryType, result);
+
     if (queryType == "query") {
       return result.data[queryName].nodes;
     }
+    console.log("result:::", result);
     return result;
   } catch (error) {
     console.error(error);

@@ -47,7 +47,7 @@ import Layout from "./layouts/dashboard";
 import DashboardPage from "./pages";
 import OrdersPage from "./pages/orders";
 import Category from "./pages/category";
-import SignInPage from "./pages/signIn";
+import SignInPage from "./pages/sign-in";
 import FlightRequestForm from "./pages/test";
 import QuoteList from "./pages/quote/list";
 import QuoteEdit from "./pages/quote/edit";
@@ -57,6 +57,9 @@ import PriceEdit from "./pages/price/edit";
 import Login from "./components/Login";
 import RoleList from "./pages/role/list";
 import RoleCreate from "./pages/role/create";
+import Registration from "./components/login1";
+import SignUp from "./pages/sign-up";
+import SignIn from "./pages/sign-in";
 const router = createBrowserRouter([
   {
     Component: App,
@@ -107,13 +110,23 @@ const router = createBrowserRouter([
           },
         ],
       },
+      // {
+      //   path: "/sign-in",
+      //   Component: SignInPage,
+      // },
       {
         path: "/sign-in",
-        Component: SignInPage,
+        Component: SignIn,
       },
+      // {
+      //   path: "/login",
+      //   // Component: Login,
+      //   Component: Registration
+      // },
       {
-        path: "/login",
-        Component: Login,
+        path: "/sign-up",
+        // Component: Login,
+        Component: SignUp
       },
     ],
   },

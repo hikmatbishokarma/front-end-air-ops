@@ -77,6 +77,7 @@ const RoleCreate: React.FC = () => {
       const data = await useGql({
         query: CREATE_ROLE,
         queryName: "",
+        queryType:"mutation",
         variables: { input: { role: formData } },
       });
 
