@@ -163,6 +163,7 @@ import {
   Person,
   Handyman,
 } from "@mui/icons-material";
+import logoPhn from './Asset/images/logo_phn.png';
 
 const NAVIGATION: Navigation = [
   {
@@ -236,8 +237,8 @@ const NAVIGATION: Navigation = [
 ];
 
 const BRANDING = {
-  logo: <HomeIcon />,
-  title: "Air Ops",
+  logo: <img src={logoPhn} alt="" />,
+  title: "",
 };
 
 export default function App() {
@@ -246,12 +247,15 @@ export default function App() {
 
   const signIn = React.useCallback(() => {
     navigate("/sign-in");
+    // navigate("/login");
   }, [navigate]);
 
   const signOut = React.useCallback(() => {
     setSession(null);
     navigate("/sign-in");
   }, [navigate]);
+
+  console.log("session:::",session)
 
   const sessionContextValue = React.useMemo(
     () => ({ session, setSession }),
