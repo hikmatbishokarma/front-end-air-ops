@@ -19,7 +19,11 @@ import { Box, Grid } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import AirportsAutocomplete from "../../components/airport-autocommplete";
-import { DatePicker, DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DateTimePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import moment from "moment";
 import { Delete } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
@@ -422,7 +426,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           control={control}
                           render={({ field }) => (
                             <DatePicker
-                               {...field}
+                              {...field}
                               value={field.value ? moment(field.value) : null}
                               onChange={(newValue) => field.onChange(newValue)}
                               slotProps={{

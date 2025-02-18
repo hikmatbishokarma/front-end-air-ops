@@ -34,3 +34,11 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const SIGN_UP = gql`
+  mutation signUp($input: SignUpInput!) {
+    signUp(input: $input) {
+      id
+    }
+  }
+`;

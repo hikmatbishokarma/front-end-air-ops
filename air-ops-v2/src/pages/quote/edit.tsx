@@ -356,7 +356,7 @@ const QuoteEdit = () => {
           Save
         </Button>
       </form>
-      <PriceEdit/>
+      <PriceEdit />
     </Paper>
   );
 };

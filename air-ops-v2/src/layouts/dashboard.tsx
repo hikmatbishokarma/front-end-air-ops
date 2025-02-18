@@ -30,7 +30,8 @@ export default function Layout() {
   }
 
   if (!session) {
-    const redirectTo = `/sign-in?callbackUrl=${encodeURIComponent(location.pathname)}`;
+    // const redirectTo = `/sign-in?callbackUrl=${encodeURIComponent(location.pathname)}`;
+    const redirectTo = `/login?callbackUrl=${encodeURIComponent(location.pathname)}`;
     return <Navigate to={redirectTo} replace />;
   }
 
