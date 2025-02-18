@@ -43,10 +43,10 @@ type AccessPermission = {
 };
 
 type FormValues = {
-  roleType: string;
+  type: string;
   name: string;
   description: string;
-  accessPermission: AccessPermission[];
+  accessPermissions: AccessPermission[];
 };
 
 const RoleCreate: React.FC = () => {
@@ -59,17 +59,17 @@ const RoleCreate: React.FC = () => {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      roleType: "",
+      type: "",
       name: "",
       description: "",
-      accessPermission: [{ resource: "", action: [Action.CREATE] }],
+      accessPermissions: [{ resource: "", action: [Action.CREATE] }],
     },
   });
   const [apiError, setApiError] = React.useState("");
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "accessPermission",
+    name: "accessPermissions",
   });
 
   const CreateRole = async (formData) => {
@@ -113,7 +113,7 @@ const RoleCreate: React.FC = () => {
       <Grid item xs={5}>
         <FormControl sx={{ minWidth: 100, width: "100%" }} size="small">
           <Controller
-            name="roleType"
+            name="type"
             control={control}
             render={({ field }) => (
               <Select {...field} displayEmpty>
@@ -144,7 +144,7 @@ const RoleCreate: React.FC = () => {
         {/* Resource */}
         <Grid item xs={4}>
           <Controller
-            name={`accessPermission.${index}.resource`}
+            name={`accessPermissions.${index}.resource`}
             control={control}
             rules={{ required: "Label is required" }}
             render={({ field }) => (
@@ -153,8 +153,8 @@ const RoleCreate: React.FC = () => {
                 label="Resource"
                 fullWidth
                 size="small"
-                error={!!errors.accessPermission?.[index]?.resource}
-                helperText={errors.accessPermission?.[index]?.resource?.message}
+                error={!!errors.accessPermissions?.[index]?.resource}
+                helperText={errors.accessPermissions?.[index]?.resource?.message}
               />
             )}
           />
@@ -167,7 +167,7 @@ const RoleCreate: React.FC = () => {
               {Object.values(Action).map((action) => (
                 <Controller
                   key={action}
-                  name={`accessPermission.${index}.action`}
+                  name={`accessPermissions.${index}.action`}
                   control={control}
                   render={({ field }) => (
                     <FormControlLabel
@@ -189,8 +189,8 @@ const RoleCreate: React.FC = () => {
                 />
               ))}
             </FormGroup>
-            {errors.accessPermission?.[index]?.action && (
-              <p style={{ color: "red" }}>{errors.accessPermission[index].action.message}</p>
+            {errors.accessPermissions?.[index]?.action && (
+              <p style={{ color: "red" }}>{errors.accessPermissions[index].action.message}</p>
             )}
           </FormControl>
         </Grid>

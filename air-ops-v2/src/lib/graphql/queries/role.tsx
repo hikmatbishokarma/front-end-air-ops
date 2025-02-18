@@ -28,7 +28,7 @@ export const GET_ROLES = gql`
         roleType
         name
         description
-        accessPermission {
+        accessPermissions {
           action
           resource
         }
@@ -44,7 +44,7 @@ export const GET_ROLE_BY_ID = gql`
       roleType
       name
       description
-      accessPermission {
+      accessPermissions {
         action
         resource
       }
