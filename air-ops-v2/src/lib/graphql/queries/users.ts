@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const GET_USER_BY_ROLE_TYPE = gql`
+export const GET_USERS = gql`
   query getAllUser(
     $filter: UserFilter! = {}
     $paging: OffsetPaging! = { limit: 10 }
@@ -15,13 +15,11 @@ export const GET_USER_BY_ROLE_TYPE = gql`
       nodes {
         id
         name
+        email
+        phone
         role {
           id
           name
-          rolePermissions {
-            id
-            permissions
-          }
         }
       }
     }
