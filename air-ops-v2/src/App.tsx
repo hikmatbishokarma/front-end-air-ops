@@ -155,6 +155,16 @@ import type { Navigation, Session } from "@toolpad/core/AppProvider";
 import { SessionContext } from "./SessionContext";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme";
+import {
+  Flight,
+  ManageAccounts,
+  PriceChange,
+  RequestQuote,
+  Engineering,
+  Medication,
+  Person,
+  Handyman,
+} from "@mui/icons-material";
 import logoPhn from './Asset/images/logo_phn.png';
 
 const NAVIGATION: Navigation = [
@@ -169,13 +179,13 @@ const NAVIGATION: Navigation = [
   {
     segment: "quotes",
     title: "Requests/Quotes",
-    icon: <ShoppingCartIcon />,
+    icon: <RequestQuote />,
   },
-  {
-    segment: "orders",
-    title: "Orders",
-    icon: <ShoppingCartIcon />,
-  },
+  // {
+  //   segment: "orders",
+  //   title: "Orders",
+  //   icon: <ShoppingCartIcon />,
+  // },
   {
     segment: "category",
     title: "Category",
@@ -184,10 +194,48 @@ const NAVIGATION: Navigation = [
   {
     segment: "prices",
     title: "Prices",
-    icon: <ShoppingCartIcon />,
+    icon: <PriceChange />,
   },
 
- 
+  {
+    segment: "operations",
+    title: "Operations",
+    icon: <Handyman />,
+  },
+  {
+    segment: "users",
+    title: "Users",
+    icon: <Person />,
+  },
+  // {
+  //   segment: "engineers",
+  //   title: "Engineers",
+  //   icon: <Engineering />,
+  // },
+
+  // {
+  //   segment: "doctors",
+  //   title: "Doctors",
+  //   icon: <Person />,
+  // },
+
+  // {
+  //   segment: "cabin-crews",
+  //   title: "Cabin Crews",
+  //   icon: <Person />,
+  // },
+
+  // {
+  //   segment: "operation-crews",
+  //   title: "Operation Crews",
+  //   icon: <ManageAccounts />,
+  // },
+
+  {
+    segment: "roles",
+    title: "Role",
+    icon: <ManageAccounts />,
+  },
 ];
 
 const BRANDING = {
@@ -201,12 +249,15 @@ export default function App() {
 
   const signIn = React.useCallback(() => {
     navigate("/sign-in");
+    // navigate("/login");
   }, [navigate]);
 
   const signOut = React.useCallback(() => {
     setSession(null);
     navigate("/sign-in");
   }, [navigate]);
+
+  console.log("session:::",session)
 
   const sessionContextValue = React.useMemo(
     () => ({ session, setSession }),
@@ -215,17 +266,17 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-        <CssBaseline />
-    <SessionContext.Provider value={sessionContextValue}>
-      <ReactRouterAppProvider
-        navigation={NAVIGATION}
-        branding={BRANDING}
-        session={session}
-        authentication={{ signIn, signOut }}
-      >
-        <Outlet />
-      </ReactRouterAppProvider>
-    </SessionContext.Provider>
+      <CssBaseline />
+      <SessionContext.Provider value={sessionContextValue}>
+        <ReactRouterAppProvider
+          navigation={NAVIGATION}
+          branding={BRANDING}
+          session={session}
+          authentication={{ signIn, signOut }}
+        >
+          <Outlet />
+        </ReactRouterAppProvider>
+      </SessionContext.Provider>
     </ThemeProvider>
   );
 }
