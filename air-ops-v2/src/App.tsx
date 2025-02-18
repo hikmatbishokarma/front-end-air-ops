@@ -200,11 +200,11 @@ const NAVIGATION: Navigation = [
     title: "Operations",
     icon: <Handyman />,
   },
-  // {
-  //   segment: "pilots",
-  //   title: "Pilots",
-  //   icon: <Person />,
-  // },
+  {
+    segment: "users",
+    title: "Users",
+    icon: <Person />,
+  },
   // {
   //   segment: "engineers",
   //   title: "Engineers",

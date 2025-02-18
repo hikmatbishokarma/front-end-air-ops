@@ -60,6 +60,8 @@ import RoleCreate from "./pages/role/create";
 import Registration from "./components/login1";
 import SignUp from "./pages/sign-up";
 import SignIn from "./pages/sign-in";
+import UserList from "./pages/user/list";
+import UserCreate from "./pages/user/create";
 const router = createBrowserRouter([
   {
     Component: App,
@@ -108,6 +110,14 @@ const router = createBrowserRouter([
             path: "roles/create",
             Component: RoleCreate,
           },
+          {
+            path: "users",
+            Component: UserList,
+          },
+          {
+            path: "users/create",
+            Component: UserCreate,
+          }
         ],
       },
       // {
