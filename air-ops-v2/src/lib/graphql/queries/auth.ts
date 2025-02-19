@@ -34,14 +34,6 @@ export const GET_LOGIN = gql`
   }
 `;
 
-export const CREATE_USER = gql`
-  mutation signUp($input: SignUpInput!) {
-    signUp(input: $input) {
-      id
-    }
-  }
-`;
-
 export const SIGN_UP = gql`
   mutation signUp($input: SignUpInput!) {
     signUp(input: $input) {

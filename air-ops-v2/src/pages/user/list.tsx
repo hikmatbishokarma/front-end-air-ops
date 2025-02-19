@@ -17,7 +17,7 @@ import {
 import UserCreate from "./create";
 import useGql from "../../lib/graphql/gql";
 import { GET_ROLES } from "../../lib/graphql/queries/role";
-import { GET_USERS } from "../../lib/graphql/queries/users";
+import { GET_USERS } from "../../lib/graphql/queries/user";
 
 interface User {
   id: number;
@@ -26,21 +26,11 @@ interface User {
   phone: string;
 }
 
-const users: User[] = [
-  { id: 1, name: "John Doe", email: "john@example.com", phone: "9876543210" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", phone: "9123456789" },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    phone: "9988776655",
-  },
-];
-
 const UserList: React.FC = () => {
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
+  const [isUserCreate,setIsUserCreate]=useState(false)
 
   const getUsers = async () => {
     try {
@@ -59,6 +49,10 @@ const UserList: React.FC = () => {
   useEffect(() => {
     getUsers();
   }, []);
+
+  useEffect(()=>{
+if(isUserCreate) getUsers()
+  },[isUserCreate])
 
   return (
     <>
@@ -83,7 +77,7 @@ const UserList: React.FC = () => {
                 <strong>Email</strong>
               </TableCell>
               <TableCell>
-                <strong>Phone</strong>
+                <strong>Role</strong>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -92,7 +86,7 @@ const UserList: React.FC = () => {
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phone}</TableCell>
+                <TableCell>{user?.role?.name}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -106,7 +100,7 @@ const UserList: React.FC = () => {
       >
         <DialogTitle>Create New Role</DialogTitle>
         <DialogContent>
-          <UserCreate />
+          <UserCreate  setOpen={setOpen} setIsUserCreate={setIsUserCreate} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">
