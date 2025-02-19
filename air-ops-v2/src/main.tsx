@@ -115,7 +115,7 @@ const router = createBrowserRouter([
           {
             path: "users/create",
             Component: UserCreate,
-          }
+          },
         ],
       },
       // {
@@ -134,7 +134,7 @@ const router = createBrowserRouter([
       {
         path: "/sign-up",
         // Component: Login,
-        Component: SignUp
+        Component: SignUp,
       },
     ],
   },

@@ -150,7 +150,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { ReactRouterAppProvider } from "@toolpad/core/react-router";
 import { Outlet, useNavigate } from "react-router";
 import type { Navigation, Session } from "@toolpad/core/AppProvider";
-import { SessionContext } from "./SessionContext";
+import { ISession, SessionContext } from "./SessionContext";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme";
 import {
@@ -163,15 +163,16 @@ import {
   Person,
   Handyman,
 } from "@mui/icons-material";
-import logoPhn from './Asset/images/logo_phn.png';
+import logoPhn from "./Asset/images/logo_phn.png";
 
-const NAVIGATION: Navigation = [
+export const NAVIGATION: Navigation = [
   {
     kind: "header",
     title: "Main items",
   },
   {
     title: "Dashboard",
+    segment: "/",
     icon: <DashboardIcon />,
   },
   {
@@ -242,8 +243,30 @@ const BRANDING = {
 };
 
 export default function App() {
-  const [session, setSession] = React.useState<Session | null>(null);
+  const [session, setSession] = React.useState<ISession | null>(null);
   const navigate = useNavigate();
+  const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);
+
+  React.useEffect(() => {
+    if (session) {
+      const accessResources = session?.user?.role?.accessPermissions?.map(
+        (item) => item.resource,
+      );
+
+      if (accessResources && accessResources.length > 0) {
+        NAVIGATION.forEach((item: any) => {
+          if (accessResources.includes(item.segment) || item.kind) {
+            return item;
+          }
+        });
+
+        const filteredNavigation = NAVIGATION.filter(
+          (item: any) => accessResources.includes(item.segment) || item.kind,
+        );
+        setValidNavigation(filteredNavigation);
+      }
+    }
+  }, [session]);
 
   const signIn = React.useCallback(() => {
     navigate("/sign-in");
@@ -255,8 +278,6 @@ export default function App() {
     navigate("/sign-in");
   }, [navigate]);
 
-  console.log("session:::",session)
-
   const sessionContextValue = React.useMemo(
     () => ({ session, setSession }),
     [session, setSession],
@@ -267,7 +288,8 @@ export default function App() {
       <CssBaseline />
       <SessionContext.Provider value={sessionContextValue}>
         <ReactRouterAppProvider
-          navigation={NAVIGATION}
+          // navigation={NAVIGATION}
+          navigation={validNavigation}
           branding={BRANDING}
           session={session}
           authentication={{ signIn, signOut }}
