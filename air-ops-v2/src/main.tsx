@@ -54,10 +54,8 @@ import QuoteEdit from "./pages/quote/edit";
 import PriceCreate from "./pages/price/Create";
 import PriceList from "./pages/price/list";
 import PriceEdit from "./pages/price/edit";
-import Login from "./components/Login";
 import RoleList from "./pages/role/list";
 import RoleCreate from "./pages/role/create";
-import Registration from "./components/login1";
 import SignUp from "./pages/sign-up";
 import SignIn from "./pages/sign-in";
 import UserList from "./pages/user/list";
@@ -117,7 +115,7 @@ const router = createBrowserRouter([
           {
             path: "users/create",
             Component: UserCreate,
-          }
+          },
         ],
       },
       // {
@@ -136,7 +134,7 @@ const router = createBrowserRouter([
       {
         path: "/sign-up",
         // Component: Login,
-        Component: SignUp
+        Component: SignUp,
       },
     ],
   },
