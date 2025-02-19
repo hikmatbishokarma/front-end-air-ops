@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 export const CREATE_ROLE = gql`
   mutation createOneRole($input: CreateOneRoleInput!) {
     createOneRole(input: $input) {
-      roleType
+      id
     }
   }
 `;
@@ -25,7 +25,7 @@ export const GET_ROLES = gql`
     roles(filter: $filter, paging: $paging, sorting: $sorting) {
       nodes {
         id
-        roleType
+        type
         name
         description
         accessPermissions {
@@ -41,7 +41,7 @@ export const GET_ROLE_BY_ID = gql`
   query getRoleById($id: ID!) {
     role(id: $id) {
       id
-      roleType
+      type
       name
       description
       accessPermissions {

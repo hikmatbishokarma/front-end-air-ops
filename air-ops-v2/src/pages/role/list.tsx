@@ -17,6 +17,7 @@ import {
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import useGql from "../../lib/graphql/gql";
 import RoleCreate from "./create";
+import { NAVIGATION } from "../../App";
 
 // const roles = [
 //   {
@@ -79,15 +80,15 @@ const RoleList = () => {
 
   return (
     <>
-    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-        sx={{ marginBottom: 2 }}
-      >
-        Create Role
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpen}
+          sx={{ marginBottom: 2 }}
+        >
+          Create Role
+        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table>
@@ -115,11 +116,11 @@ const RoleList = () => {
           </TableHead>
           <TableBody>
             {rows.map((role, roleIndex) =>
-              role.accessPermission.map((perm, permIndex) => (
+              role.accessPermissions.map((perm, permIndex) => (
                 <TableRow key={`${role.id}-${perm.resource}`}>
                   {/* Only show role name for the first row of each role */}
                   {permIndex === 0 ? (
-                    <TableCell rowSpan={role.accessPermission.length}>
+                    <TableCell rowSpan={role.accessPermissions.length}>
                       {role.name}
                     </TableCell>
                   ) : null}
