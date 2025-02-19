@@ -7,7 +7,11 @@ export const SIGN_IN = gql`
       user {
         name
         email
-        roleType
+        role {
+          name
+          type
+          accessPermissions
+        }
       }
     }
   }
@@ -19,9 +23,12 @@ export const GET_LOGIN = gql`
       access_token
       user {
         name
-
         email
-        roleType
+        role {
+          name
+          type
+          accessPermissions
+        }
       }
     }
   }

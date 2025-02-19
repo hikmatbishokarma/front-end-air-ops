@@ -9,7 +9,7 @@
 //     </Typography>
 //   );
 // }
-import * as React from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -62,6 +62,30 @@ export default function Category() {
       setCategoryField("");
     }
   };
+
+
+
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form Submitted:", formData);
+  };
+
+
+
 
   return (
     <div style={{ margin: "20px" }}>
@@ -177,6 +201,35 @@ export default function Category() {
           </TableContainer>
         </Grid>
       </Grid>
+
+
+
+      <div style={{ border: '2px solid red' , display:'flex'}}>
+        <div className="left_inner">
+          <h2>React Hooks Form</h2>
+          <form onSubmit={handleSubmit}>
+            <label>
+              Name:
+              <input type="text" name="name" value={formData.name} onChange={handleChange} />
+            </label>
+            <br />
+            <label>
+              Email:
+              <input type="email" name="email" value={formData.email} onChange={handleChange} />
+            </label>
+            <br />
+            <label>
+              Message:
+              <textarea name="message" value={formData.message} onChange={handleChange} />
+            </label>
+            <br />
+            <button type="submit">Save</button>
+          </form>
+        </div>
+        <div className="right_inner">
+
+        </div>
+      </div>
     </div>
   );
 }

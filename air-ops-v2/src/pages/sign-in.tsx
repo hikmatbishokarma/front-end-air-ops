@@ -7,7 +7,6 @@
 // import { SIGN_IN } from "../lib/graphql/queries/auth";
 // import useGql from "../lib/graphql/gql";
 
-
 // const fakeAsyncGetSession = async (formData: any): Promise<Session> => {
 //   try {
 //     const data = await useGql({
@@ -68,7 +67,6 @@
 //   );
 // }
 
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -89,14 +87,14 @@ import {
 import backImg from "../Asset/Images/backimg.jpeg";
 import logo from "../Asset/Images/logo.jpeg";
 // import { Email,Lock } from "@mui/icons-material";
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import LockPersonOutlinedIcon from "@mui/icons-material/LockPersonOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useGql from "../lib/graphql/gql";
 import { SIGN_IN } from "../lib/graphql/queries/auth";
 import type { Session } from "@toolpad/core/AppProvider";
 import { useNavigate } from "react-router";
-import { useSession } from "../SessionContext";
+import { ISession, useSession } from "../SessionContext";
 
 export default function SignIn() {
   const {
@@ -106,18 +104,16 @@ export default function SignIn() {
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
-   const { setSession } = useSession();
-   const navigate = useNavigate();
-    const [apiError, setApiError] = useState(null);
+  const { setSession } = useSession();
+  const navigate = useNavigate();
+  const [apiError, setApiError] = useState(null);
 
-const handleTogglePassword = () => {
-  setShowPassword((prev) => !prev);
-};
+  const handleTogglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
-
-const signIn = async (formData: any): Promise<Session> => {
+  const signIn = async (formData: any): Promise<ISession> => {
     try {
-       
       const data = await useGql({
         query: SIGN_IN,
         queryName: "signIn",
@@ -130,40 +126,38 @@ const signIn = async (formData: any): Promise<Session> => {
         },
       });
 
-     
-  
       if (!data || !data.user) {
-       
         throw new Error("Invalid credentials.");
       }
-  
+
       return {
         user: {
+          id: data.user.id,
           name: data.user.name,
           email: data.user.email,
           image:
-            data.user.image || "https://avatars.githubusercontent.com/u/19550456", // Default image
+            data.user.image ||
+            "https://avatars.githubusercontent.com/u/19550456", // Default image
+          role: data.user.role,
         },
       };
     } catch (error) {
-       
-      throw new Error(error.message||"Login failed. Please check your credentials.");
+      throw new Error(
+        error.message || "Login failed. Please check your credentials.",
+      );
     }
   };
 
-
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     try {
-    
-        const session = await signIn(data);
-      console.log("session",session)
-        if (session) {
-            setSession(session);
-            navigate("/", { replace: true });
-        }
+      const session = await signIn(data);
+      console.log("session", session);
+      if (session) {
+        setSession(session);
+        navigate("/", { replace: true });
+      }
     } catch (err) {
-        
-        setApiError(err.message);
+      setApiError(err.message);
     }
   };
 
@@ -179,7 +173,10 @@ const signIn = async (formData: any): Promise<Session> => {
       }}
     >
       <Container maxWidth="md">
-        <Paper elevation={6} sx={{ borderRadius: 3, overflow: "hidden", boxShadow: 3 }}>
+        <Paper
+          elevation={6}
+          sx={{ borderRadius: 3, overflow: "hidden", boxShadow: 3 }}
+        >
           <Grid container>
             {/* Left Column (Image) */}
             <Grid
@@ -196,7 +193,17 @@ const signIn = async (formData: any): Promise<Session> => {
             />
 
             {/* Right Column (Form) */}
-            <Grid item xs={12} sm={6} sx={{ display: "flex", alignItems: "center", justifyContent: "center", p: 4 }}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                p: 4,
+              }}
+            >
               <Box
                 sx={{
                   display: "flex",
@@ -211,10 +218,14 @@ const signIn = async (formData: any): Promise<Session> => {
                 </Box>
 
                 <Typography component="h1" variant="h5">
-                  Login in to your Account 
+                  Login in to your Account
                 </Typography>
 
-                <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3, width: "90%" }}>
+                <Box
+                  component="form"
+                  onSubmit={handleSubmit(onSubmit)}
+                  sx={{ mt: 3, width: "90%" }}
+                >
                   {/* Email Field */}
                   <TextField
                     fullWidth
@@ -222,41 +233,51 @@ const signIn = async (formData: any): Promise<Session> => {
                     label="Email Address"
                     margin="normal"
                     InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <EmailOutlinedIcon fontSize="small" />
-                          </InputAdornment>
-                        ),
-                      }}
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <EmailOutlinedIcon fontSize="small" />
+                        </InputAdornment>
+                      ),
+                    }}
                     {...register("email", { required: "Email is required" })}
                     error={!!errors.email}
-                    helperText={typeof errors.email?.message === "string" ? errors.email.message : ""}
+                    helperText={
+                      typeof errors.email?.message === "string"
+                        ? errors.email.message
+                        : ""
+                    }
                   />
 
                   {/* Password Field */}
                   <TextField
                     fullWidth
-                     size="small"
+                    size="small"
                     label="Password"
                     type={showPassword ? "text" : "password"}
                     margin="normal"
                     InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <LockPersonOutlinedIcon />
-                          </InputAdornment>
-                        ),
-                        endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={handleTogglePassword} edge="end">
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                      }}
-                    {...register("password", { required: "Password is required" })}
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockPersonOutlinedIcon />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleTogglePassword} edge="end">
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    {...register("password", {
+                      required: "Password is required",
+                    })}
                     error={!!errors.password}
-                    helperText={typeof errors.password?.message === "string" ? errors.password.message : ""}
+                    helperText={
+                      typeof errors.password?.message === "string"
+                        ? errors.password.message
+                        : ""
+                    }
                   />
 
                   {/* Remember Me & Forgot Password */}
@@ -278,13 +299,22 @@ const signIn = async (formData: any): Promise<Session> => {
                   </Box>
 
                   {/* Login Button */}
-                  <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2 }}
+                  >
                     Sign In
                   </Button>
-                  <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
-                    Don't have an account? <Link href="/sign-up">Create Account</Link>
+                  <Typography
+                    variant="body2"
+                    sx={{ mt: 2, textAlign: "center" }}
+                  >
+                    Don't have an account?{" "}
+                    <Link href="/sign-up">Create Account</Link>
                   </Typography>
-                   {apiError && <Alert severity="error">{apiError}</Alert>}
+                  {apiError && <Alert severity="error">{apiError}</Alert>}
                 </Box>
               </Box>
             </Grid>
