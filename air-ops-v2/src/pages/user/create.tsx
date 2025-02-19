@@ -9,20 +9,20 @@ import {
   FormControl,
   Box,
   Autocomplete,
+  Alert,
 } from "@mui/material";
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import useGql from "../../lib/graphql/gql";
+import { CREATE_USER } from "../../lib/graphql/queries/user";
+
 
 interface FormData {
   name: string;
   email: string;
-  phone: string;
-  addresses: string;
-  image: string;
   role: string;
 }
 
-const UserCreate: React.FC = () => {
+const UserCreate = ({setOpen,setIsUserCreate}) => {
   const {
     handleSubmit,
     control,
@@ -30,9 +30,33 @@ const UserCreate: React.FC = () => {
   } = useForm<FormData>();
 
   const [roles, setRoles] = useState<any>();
+  const [apiError, setApiError] = React.useState("");
+
+  const CreateUser = async (formData) => {
+    try {
+      const data = await useGql({
+        query: CREATE_USER,
+        queryName: "",
+        queryType: "mutation",
+        variables: { input: { user: formData } },
+      });
+
+      if (!data || data.errors) {
+        throw new Error(data?.errors?.[0]?.message || "Something went wrong");
+      }
+    } catch (error) {
+      setApiError(error.message);
+    }
+  };
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    const formattedData = {
+      ...data,
+    };
+    CreateUser(formattedData);
+    <Alert severity="success">User created successfully.</Alert>
+    setOpen(false)
+    setIsUserCreate(true)
   };
 
   const getRoles = async () => {
@@ -99,69 +123,6 @@ const UserCreate: React.FC = () => {
           />
         )}
       />
-
-      {/* Phone Field */}
-      <Controller
-        name="phone"
-        control={control}
-        rules={{
-          required: "Phone is required",
-          pattern: { value: /^[0-9]{10}$/, message: "Invalid phone number" },
-        }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            size="small"
-            label="Phone"
-            fullWidth
-            error={!!errors.phone}
-            helperText={errors.phone?.message}
-          />
-        )}
-      />
-
-      {/* Address Field */}
-      <Controller
-        name="addresses"
-        control={control}
-        rules={{ required: "Address is required" }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            size="small"
-            label="Address"
-            fullWidth
-            multiline
-            error={!!errors.addresses}
-            helperText={errors.addresses?.message}
-          />
-        )}
-      />
-
-      {/* Image Field */}
-      <Controller
-        name="image"
-        control={control}
-        rules={{ required: "Image URL is required" }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            size="small"
-            label="Image URL"
-            fullWidth
-            error={!!errors.image}
-            helperText={errors.image?.message}
-          />
-        )}
-      />
-
-      {/* Role Field */}
-      {/* <Controller
-        name="role"
-        control={control}
-        rules={{ required: "Role is required" }}
-        render={({ field }) => <TextField {...field} size="small"  label="Role" fullWidth error={!!errors.role} helperText={errors.role?.message} />}
-      /> */}
 
       <Controller
         name="role"
