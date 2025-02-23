@@ -15,14 +15,13 @@ import { GET_ROLES } from "../../lib/graphql/queries/role";
 import useGql from "../../lib/graphql/gql";
 import { CREATE_USER } from "../../lib/graphql/queries/user";
 
-
 interface FormData {
   name: string;
   email: string;
   role: string;
 }
 
-const UserCreate = ({setOpen,setIsUserCreate}) => {
+export const UserCreate = ({ setOpen, setIsUserCreate }) => {
   const {
     handleSubmit,
     control,
@@ -54,9 +53,9 @@ const UserCreate = ({setOpen,setIsUserCreate}) => {
       ...data,
     };
     CreateUser(formattedData);
-    <Alert severity="success">User created successfully.</Alert>
-    setOpen(false)
-    setIsUserCreate(true)
+    <Alert severity="success">User created successfully.</Alert>;
+    setOpen(false);
+    setIsUserCreate(true);
   };
 
   const getRoles = async () => {
@@ -154,5 +153,3 @@ const UserCreate = ({setOpen,setIsUserCreate}) => {
     </form>
   );
 };
-
-export default UserCreate;

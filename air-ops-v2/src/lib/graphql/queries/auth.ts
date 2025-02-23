@@ -5,6 +5,7 @@ export const SIGN_IN = gql`
     signIn(input: $input) {
       access_token
       user {
+        id
         name
         email
         role {
@@ -38,6 +39,24 @@ export const SIGN_UP = gql`
   mutation signUp($input: SignUpInput!) {
     signUp(input: $input) {
       id
+    }
+  }
+`;
+
+export const FORGOT_PASSWORD = gql`
+  mutation forgotPassword($email: String!) {
+    forgotPassword(email: $email) {
+      message
+      status
+    }
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation resetPassword($input: ResetPasswordInput!) {
+    resetPassword(input: $input) {
+      status
+      message
     }
   }
 `;
