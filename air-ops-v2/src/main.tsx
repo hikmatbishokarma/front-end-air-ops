@@ -59,7 +59,10 @@ import RoleCreate from "./pages/role/create";
 import SignUp from "./pages/sign-up";
 import SignIn from "./pages/sign-in";
 import UserList from "./pages/user/list";
-import UserCreate from "./pages/user/create";
+import { UserProfile } from "./pages/settings/profile";
+import { UserCreate } from "./pages/user/create";
+import RoleEdit from "./pages/role/edit";
+import ChangePassword from "./pages/settings/change-password";
 const router = createBrowserRouter([
   {
     Component: App,
@@ -69,13 +72,10 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           {
-            path: "/",
+            path: "dashboard",
             Component: DashboardPage,
           },
-          // {
-          //   path: "/orders",
-          //   Component: OrdersPage,
-          // },
+         
           {
             path: "/category",
             Component: Category,
@@ -109,6 +109,10 @@ const router = createBrowserRouter([
             Component: RoleCreate,
           },
           {
+            path: "roles/edit/:id",
+            Component: RoleEdit,
+          },
+          {
             path: "users",
             Component: UserList,
           },
@@ -116,21 +120,21 @@ const router = createBrowserRouter([
             path: "users/create",
             Component: UserCreate,
           },
+          {
+            path: "settings/profile",
+            Component: UserProfile,
+          },
+          {
+            path: "settings/change-password",
+            Component: ChangePassword,
+          },
         ],
       },
-      // {
-      //   path: "/sign-in",
-      //   Component: SignInPage,
-      // },
       {
         path: "/sign-in",
         Component: SignIn,
       },
-      // {
-      //   path: "/login",
-      //   // Component: Login,
-      //   Component: Registration
-      // },
+    
       {
         path: "/sign-up",
         // Component: Login,

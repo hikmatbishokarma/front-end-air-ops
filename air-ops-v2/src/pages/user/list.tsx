@@ -14,10 +14,11 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import UserCreate from "./create";
+
 import useGql from "../../lib/graphql/gql";
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import { GET_USERS } from "../../lib/graphql/queries/user";
+import { UserCreate } from "./create";
 
 interface User {
   id: number;
@@ -30,7 +31,7 @@ const UserList: React.FC = () => {
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const [isUserCreate,setIsUserCreate]=useState(false)
+  const [isUserCreate, setIsUserCreate] = useState(false);
 
   const getUsers = async () => {
     try {
@@ -50,9 +51,9 @@ const UserList: React.FC = () => {
     getUsers();
   }, []);
 
-  useEffect(()=>{
-if(isUserCreate) getUsers()
-  },[isUserCreate])
+  useEffect(() => {
+    if (isUserCreate) getUsers();
+  }, [isUserCreate]);
 
   return (
     <>
@@ -100,7 +101,7 @@ if(isUserCreate) getUsers()
       >
         <DialogTitle>Create New Role</DialogTitle>
         <DialogContent>
-          <UserCreate  setOpen={setOpen} setIsUserCreate={setIsUserCreate} />
+          <UserCreate setOpen={setOpen} setIsUserCreate={setIsUserCreate} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">

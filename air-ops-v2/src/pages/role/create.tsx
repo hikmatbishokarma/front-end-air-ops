@@ -22,14 +22,14 @@ import AddIcon from "@mui/icons-material/Add";
 import { CREATE_ROLE } from "../../lib/graphql/queries/role";
 import { NAVIGATION } from "../../App";
 
-enum Action {
+export enum Action {
   READ = "READ",
   CREATE = "CREATE",
   UPDATE = "UPDATE",
   DELETE = "DELETE",
 }
 
-enum RoleType {
+export enum RoleType {
   ADMIN = "ADMIN",
   PARTNER = "PARTNER",
   SALES = "SALES",
@@ -129,7 +129,7 @@ const RoleCreate: React.FC = () => {
               control={control}
               render={({ field }) => (
                 <Select {...field} displayEmpty>
-                  {Object.values(RoleType).map((role) => (
+                  {Object.keys(RoleType).map((role) => (
                     <MenuItem key={role} value={role}>
                       {role}
                     </MenuItem>

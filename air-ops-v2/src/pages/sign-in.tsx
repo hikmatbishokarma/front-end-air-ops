@@ -85,6 +85,7 @@ import {
   InputAdornment,
   IconButton,
   Alert,
+  Modal,
 } from "@mui/material";
 import backImg from "../Asset/Images/backimg.jpeg";
 import logo from "../Asset/Images/logo.jpeg";
@@ -93,9 +94,9 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LockPersonOutlinedIcon from "@mui/icons-material/LockPersonOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useGql from "../lib/graphql/gql";
-import { SIGN_IN } from "../lib/graphql/queries/auth";
-import type { Session } from "@toolpad/core/AppProvider";
+import { FORGOT_PASSWORD, SIGN_IN } from "../lib/graphql/queries/auth";
 import { useNavigate } from "react-router";
+import CloseIcon from "@mui/icons-material/Close";
 import { ISession, useSession } from "../SessionContext";
 
 export default function SignIn() {
@@ -109,6 +110,29 @@ export default function SignIn() {
   const { setSession } = useSession();
   const navigate = useNavigate();
   const [apiError, setApiError] = useState(null);
+  const [openForgotPwdModel, setForgotPwdModelOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [showEmailSent, setShowEmailSent] = useState(false);
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState("");
+
+  const handleReset = async () => {
+    const data = await useGql({
+      query: FORGOT_PASSWORD,
+      queryName: "",
+      queryType: "mutation",
+      variables: {
+        email: email,
+      },
+    });
+
+    if (data?.data?.forgotPassword?.status) {
+      setShowEmailSent(true);
+      setApiError(null);
+    } else {
+      setApiError(data?.data?.forgotPassword?.message);
+    }
+  };
 
   const handleTogglePassword = () => {
     setShowPassword((prev) => !prev);
@@ -156,10 +180,24 @@ export default function SignIn() {
       console.log("session", session);
       if (session) {
         setSession(session);
-        navigate("/", { replace: true });
+        navigate("/dashboard", { replace: true });
       }
     } catch (err) {
       setApiError(err.message);
+    }
+  };
+
+  const validateEmail = (value: string) => {
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!value) {
+      setError(true);
+      setHelperText("Email is required");
+    } else if (!emailRegex.test(value)) {
+      setError(true);
+      setHelperText("Invalid email format");
+    } else {
+      setError(false);
+      setHelperText("");
     }
   };
 
@@ -295,9 +333,19 @@ export default function SignIn() {
                       control={<Checkbox {...register("rememberMe")} />}
                       label="Remember me"
                     />
-                    <Link href="#" variant="body2">
+                    {/* <Link href="#" variant="body2">
                       Forgot email?
-                    </Link>
+                    </Link> */}
+                    <Button
+                      variant="text"
+                      onClick={() => {
+                        setForgotPwdModelOpen(true), setApiError(null);
+                      }}
+                      sx={{ textTransform: "none" }}
+                    >
+                      {" "}
+                      Forgot email?
+                    </Button>
                   </Box>
 
                   {/* Login Button */}
@@ -323,6 +371,137 @@ export default function SignIn() {
           </Grid>
         </Paper>
       </Container>
+
+      <Modal
+        open={openForgotPwdModel}
+        onClose={() => setForgotPwdModelOpen(false)}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          {/* Close Button */}
+          <IconButton
+            onClick={() => setForgotPwdModelOpen(false)}
+            sx={{ position: "absolute", top: 8, right: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          {/* Modal Header */}
+          <Typography
+            variant="h6"
+            component="h2"
+            textAlign="center"
+            gutterBottom
+          >
+            Forgot your password?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Enter your register email address and we’ll send you a temporary
+            password to reset
+          </Typography>
+
+          {/* Email Input */}
+          <TextField
+            fullWidth
+            label="Email"
+            variant="outlined"
+            size="small"
+            margin="normal"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              validateEmail(e.target.value);
+            }}
+            error={error}
+            helperText={helperText}
+          />
+
+          {/* Buttons */}
+          <Box display="flex" justifyContent="space-between" mt={2}>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={() => setForgotPwdModelOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={handleReset}
+            >
+              Reset
+            </Button>
+          </Box>
+          {apiError && <Alert severity="error">{apiError}</Alert>}
+        </Box>
+      </Modal>
+      {/* Email Sent Confirmation Modal */}
+      <Modal open={showEmailSent} onClose={() => setShowEmailSent(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            textAlign: "center",
+          }}
+        >
+          <IconButton
+            onClick={() => setShowEmailSent(false)}
+            sx={{ position: "absolute", top: 8, right: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <Typography variant="h6" gutterBottom>
+            Check in your mail!
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            We just emailed you a temporary password to log in. Please log in
+            and change your password for security reasons.
+          </Typography>
+
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            For any questions, email us at
+            <Typography
+              component="span"
+              color="primary"
+              sx={{ fontWeight: "bold" }}
+            >
+              {" "}
+              helpdesk@festicket.com
+            </Typography>
+          </Typography>
+
+          <Button
+            variant="contained"
+            sx={{ mt: 3 }}
+            onClick={() => {
+              setShowEmailSent(false), setForgotPwdModelOpen(false);
+            }}
+          >
+            OK
+          </Button>
+        </Box>
+      </Modal>
     </Box>
   );
 }

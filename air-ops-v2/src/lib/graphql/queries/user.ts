@@ -33,3 +33,31 @@ export const GET_USERS = gql`
     }
   }
 `;
+
+export const GET_USER_BY_ID = gql`
+  query getUserById($id: ID!) {
+    user(id: $id) {
+      id
+      name
+      email
+      phone
+      address
+      city
+      dob
+      pinCode
+      gender
+      role {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation updateUser($input: UpdateOneUserInput!) {
+    updateOneUser(input: $input) {
+      id
+    }
+  }
+`;
