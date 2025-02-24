@@ -36,9 +36,9 @@
     position: relative;
 }
 
-.login_main_d .img_div{
-width: 100%;
-height: 10%;
+.login_main_d .img_div {
+    width: 100%;
+    height: 10%;
 }
 
 .login_main_d .form_div {
@@ -137,13 +137,23 @@ height: 10%;
     padding: 12px 10px;
     margin: 10px 0px;
 }
-.form_loginn button{
+
+.form_loginn button {
     width: 100%;
     /* background-color: blue; */
-    background-image: linear-gradient(to right, rgb(62, 28, 255) , rgb(8, 0, 115));
+    background-image: linear-gradient(to right, rgb(62, 28, 255), rgb(8, 0, 115));
     color: white;
     padding: 12px 10px;
     margin: 10px 0px;
     border-radius: 10px;
     border: none;
+}
+
+/* ======================      profile    ==================== */
+.profile_pge .leftSide {
+    width: 80%;
+}
+
+.profile_pge .rightSide {
+    width: 35%;
 }

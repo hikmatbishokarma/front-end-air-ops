@@ -231,8 +231,8 @@ label="Type"
             </Grid>
 
             {/* Actions (Checkboxes) */}
-            <Grid item xs={5}>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+            <Grid item xs={4.4}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 , justifyContent:"space-between"}}>
                   {Object.values(Action)?.map((action) => (
                     <Controller
                       key={action}
@@ -264,7 +264,7 @@ label="Type"
             </Grid>
 
             {/* Delete Button */}
-            <Grid item xs={2} sx={{ textAlign: "center" }}>
+            <Grid item xs={1} sx={{ textAlign: "center" }}>
               <IconButton onClick={() => remove(index)} color="error">
                 <Delete fontSize="small" />
               </IconButton>
@@ -280,7 +280,7 @@ label="Type"
       </Box>
 
         {/* Submit Button */}
-        <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "end", mt: 3 , width:"84%"}}>
           <Button type="submit" variant="contained" color="primary">
             Update
           </Button>

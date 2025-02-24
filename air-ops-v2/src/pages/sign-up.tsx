@@ -22,7 +22,7 @@ import {
   CheckCircle,
 } from "@mui/icons-material";
 import backImg from "../Asset/Images/backimg.jpeg";
-import logo from "../Asset/Images/logo.jpeg";
+import logo from "../Asset/Images/logo_desktop.png";
 import useGql from "../lib/graphql/gql";
 import { SIGN_UP } from "../lib/graphql/queries/auth";
 
@@ -145,13 +145,13 @@ export default function SignUp() {
                   }}
                 >
                   {/* Company Logo */}
-                  <Box sx={{ mb: 3 }}>
-                    <img src={logo} alt="Company Logo" width={100} />
+                  <Box>
+                    <img src={logo} alt="Company Logo" width={180} />
                   </Box>
 
-                  <Typography component="h1" variant="h4">
+                  {/* <Typography component="h1" variant="h4">
                     Sign Up
-                  </Typography>
+                  </Typography> */}
 
                   <Box
                     component="form"

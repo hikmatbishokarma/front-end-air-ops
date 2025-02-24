@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import useGql from "../../lib/graphql/gql";
 import { GET_USER_BY_ID, UPDATE_USER } from "../../lib/graphql/queries/user";
 import { useSession } from "../../SessionContext";
-
+import "../main.css";
 
 interface FormData {
   name: string;
@@ -114,7 +114,7 @@ export const UserProfile = () => {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
+    <div className="profile_pge" style={{ display: "flex", justifyContent: "space-between" }}>
       <div className="leftSide">
         <Card
           sx={{ maxWidth: 780, borderRadius: 3, boxShadow: 3, padding: "20px" }}
