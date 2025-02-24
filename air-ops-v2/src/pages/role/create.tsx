@@ -118,11 +118,11 @@ const RoleCreate: React.FC = () => {
     <Box
       component="form"
       onSubmit={handleSubmit(onSubmit)}
-      sx={{ maxWidth: 1000, mx: "auto", mt: 4 }}
+      sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
     >
       {/* Role Type & Name Fields */}
       <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-        <Grid item xs={5}>
+        <Grid item xs={6}>
           <FormControl sx={{ minWidth: 100, width: "100%" }} size="small">
             <Controller
               name="type"
@@ -139,7 +139,7 @@ const RoleCreate: React.FC = () => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={6}>
           <Controller
             name="name"
             control={control}
@@ -160,7 +160,7 @@ const RoleCreate: React.FC = () => {
           sx={{ mb: 2 }}
         >
           {/* Resource */}
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <Controller
               name={`accessPermissions.${index}.resource`}
               control={control}
@@ -198,9 +198,9 @@ const RoleCreate: React.FC = () => {
           </Grid>
 
           {/* Actions (Checkboxes) */}
-          <Grid item xs={6}>
+          <Grid item xs={5.5}>
             <FormControl component="fieldset" sx={{ width: "100%" }}>
-              <FormGroup row sx={{ flexWrap: "nowrap" }}>
+              <FormGroup row sx={{ flexWrap: "nowrap",  justifyContent:"space-between"}}>
                 {Object.values(Action).map((action) => (
                   <Controller
                     key={action}
@@ -237,7 +237,7 @@ const RoleCreate: React.FC = () => {
           </Grid>
 
           {/* Delete Button */}
-          <Grid item xs={2} sx={{ textAlign: "center" }}>
+          <Grid item xs={0.5} sx={{ textAlign: "center" }}>
             <IconButton onClick={() => remove(index)} color="error">
               <Delete fontSize="small" />
             </IconButton>
@@ -255,7 +255,7 @@ const RoleCreate: React.FC = () => {
       {apiError && <Alert severity="error">{apiError}</Alert>}
 
       {/* Submit Button */}
-      <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "end", mt: 3}}>
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>
