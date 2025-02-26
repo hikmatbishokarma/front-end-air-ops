@@ -34,15 +34,16 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { dataset, valueFormatter } from './weather';
 import CloseIcon from "@mui/icons-material/Close";
+import useGql from "../lib/graphql/gql";
+import { GET_SALES_DASHBOARD } from "../lib/graphql/queries/dashboard";
+import { useNavigate } from "react-router";
 export default function DashboardPage() {
-  const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [showEmailSent, setShowEmailSent] = useState(false);
 
-  const handleReset = () => {
-    console.log(`Reset link sent to: ${email}`);
-    setShowEmailSent(true);
-  };
+  const navigate = useNavigate();
+
+  const [salesDashboardData,setSalesDashboardData]=useState<any>()
+  const [rows,setRows]=useState()
+
   // chart ˚
   const chartSetting = {
     yAxis: [
@@ -59,44 +60,28 @@ export default function DashboardPage() {
     },
   };
 
+  const fethSalesDashboardData=async ()=>{
 
-
-  const [isNewQuote, setIsNewQuote] = useState(false);
-  const [rows, setRows] = useState<any[]>([]);
-
-  const getQuotes = async () => {
     try {
       const data = await useGql({
-        query: GET_QUOTES,
-        queryName: "quotes",
-        queryType: "query",
-        variables: {},
+        query: GET_SALES_DASHBOARD,
+        queryName: "getSalesDashboardData",
+        queryType: "query-without-edge",
+        variables: {
+          range:  "lastMonth"
+        },
       });
-      setRows(() => {
-        return data.map((quote: any) => {
-          return {
-            id: quote.id,
-            refrenceNo: quote.referenceNumber,
-            status: QuoteStatus[quote.status],
-            requester: quote.requestedBy.name,
-            // representative: quote.representative.name,
-            itinerary: quote.itinerary
-              .map((itinerary: any) => {
-                return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
-              })
-              .join(", "),
-            createdAt: quote.createdAt,
-            updatedAt: quote.updatedAt,
-          };
-        });
-      });
+      console.log("data:::",data)
+      setSalesDashboardData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+
+  }
+
 
   useEffect(() => {
-    getQuotes();
+    fethSalesDashboardData();
   }, []);
 
   return (
@@ -118,8 +103,8 @@ export default function DashboardPage() {
               <img src={level} alt="" />
             </div>
             <div className="text">
-              <p>Total Sales</p>
-              <h5>$560K</h5>
+              <p>New Quotes</p>
+              <h5>{salesDashboardData?.summary?.newQuotations}</h5>
             </div>
           </div>
           <div className="boxes">
@@ -127,8 +112,8 @@ export default function DashboardPage() {
               <img src={level} alt="" />
             </div>
             <div className="text">
-              <p>Total Sales</p>
-              <h5>$560K</h5>
+              <p>Confirmed quotes</p>
+              <h5>{salesDashboardData?.summary?.confirmedQuotations}</h5>
             </div>
           </div>
           <div className="boxes">
@@ -136,8 +121,8 @@ export default function DashboardPage() {
               <img src={level} alt="" />
             </div>
             <div className="text">
-              <p>Total Sales</p>
-              <h5>$560K</h5>
+              <p>Quote Sold</p>
+              <h5>{salesDashboardData?.summary?.sales}</h5>
             </div>
           </div>
           <div className="boxes">
@@ -145,8 +130,8 @@ export default function DashboardPage() {
               <img src={level} alt="" />
             </div>
             <div className="text">
-              <p>Total Sales</p>
-              <h5>$560K</h5>
+              <p>Cancelled Quotes</p>
+              <h5>{salesDashboardData?.summary?.cancellations}</h5>
             </div>
           </div>
         </div>
@@ -155,15 +140,14 @@ export default function DashboardPage() {
       <div className="chartsWork">
         <div className="innerChart_d">
           <BarChart
+           dataset={salesDashboardData?.salesTrend||[]}
             series={[
-              { data: [35, 44, 24, 34] },
-              { data: [51, 6, 49, 30] },
-              { data: [15, 25, 30, 50] },
-              { data: [60, 50, 15, 25] },
+              { dataKey: 'sales', label: 'Sales' },
+              { dataKey: 'cancellations', label: 'Cancellations' },
             ]}
             height={290}
             // width={100}
-            xAxis={[{ data: ['Q1', 'Q2', 'Q3', 'Q4'], scaleType: 'band' }]}
+            xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
             margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
           />
         </div>
@@ -171,11 +155,7 @@ export default function DashboardPage() {
           <PieChart
             series={[
               {
-                data: [
-                  { id: 0, value: 10, label: 'series A' },
-                  { id: 1, value: 15, label: 'series B' },
-                  { id: 2, value: 20, label: 'series C' },
-                ],
+                data: salesDashboardData?.quotationStatusDistribution||[],
               },
             ]}
             width={400}
@@ -195,154 +175,24 @@ export default function DashboardPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {salesDashboardData?.latestQuotations?.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 onClick={() => navigate(`/quotes/edit/${row.id}`)}
               >
                 <TableCell component="th" scope="row">
-                  {row.refrenceNo}
+                  {row.referenceNumber}
                 </TableCell>
                 <TableCell align="right">{row.status}</TableCell>
-                <TableCell align="right">{row.requester}</TableCell>
-                <TableCell align="right">{row.itinerary}</TableCell>
+                <TableCell align="right">{row.representative}</TableCell>
+                <TableCell align="right">{row?.itinerary?.map((item)=>`${item.source}-${item.destination}`)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-
-
-
-      {/* forgot pass work modal */}
-
-      <div>
-        {/* Button to Open Modal */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpen(true)}
-        >
-          Forgot Password?
-        </Button>
-
-        {/* Forgot Password Modal */}
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 400,
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              borderRadius: 2,
-            }}
-          >
-            {/* Close Button */}
-            <IconButton
-              onClick={() => setOpen(false)}
-              sx={{ position: "absolute", top: 8, right: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
-
-            {/* Modal Header */}
-            <Typography
-              variant="h6"
-              component="h2"
-              textAlign="center"
-              gutterBottom
-            >
-              Forgot your password?
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              textAlign="center"
-            >
-              Enter your email address and we’ll send you a link to reset your
-              password.
-            </Typography>
-
-            {/* Email Input */}
-            <TextField
-              fullWidth
-              label="Email Address"
-              variant="outlined"
-              margin="normal"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            {/* Buttons */}
-            <Box display="flex" justifyContent="space-between" mt={2}>
-              <Button variant="outlined" onClick={() => setOpen(false)}>
-                Cancel
-              </Button>
-              <Button variant="contained" color="primary" onClick={handleReset}>
-                Reset
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-
-        {/* Email Sent Confirmation Modal */}
-        <Modal open={showEmailSent} onClose={() => setShowEmailSent(false)}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 400,
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              borderRadius: 2,
-              textAlign: "center",
-            }}
-          >
-            <IconButton
-              onClick={() => setShowEmailSent(false)}
-              sx={{ position: "absolute", top: 8, right: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
-
-            <Typography variant="h6" gutterBottom>
-              Check in your mail!
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              We just emailed you with the instructions to reset your password.
-            </Typography>
-
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              For any questions, email us at
-              <Typography
-                component="span"
-                color="primary"
-                sx={{ fontWeight: "bold" }}
-              >
-                {" "}
-                helpdesk@festicket.com
-              </Typography>
-            </Typography>
-
-            <Button
-              variant="contained"
-              sx={{ mt: 3 }}
-              onClick={() => setShowEmailSent(false)}
-            >
-              OK
-            </Button>
-          </Box>
-        </Modal>
-      </div>
     </>
   );
 }
