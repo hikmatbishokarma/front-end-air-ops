@@ -38,9 +38,9 @@ export default function Layout() {
 
   return (
     <DashboardLayout slots={{ toolbarAccount: CustomAccount }}>
-      <PageContainer>
+      {/* <PageContainer> */}
         <Outlet />
-      </PageContainer>
+      {/* </PageContainer> */}
     </DashboardLayout>
   );
 }

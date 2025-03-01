@@ -37,12 +37,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import useGql from "../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../lib/graphql/queries/dashboard";
 import { useNavigate } from "react-router";
+import TotalDetails from "../pages/Total/TotalDetails"
 export default function DashboardPage() {
 
   const navigate = useNavigate();
 
-  const [salesDashboardData,setSalesDashboardData]=useState<any>()
-  const [rows,setRows]=useState()
+  const [salesDashboardData, setSalesDashboardData] = useState<any>()
+  const [rows, setRows] = useState()
 
   // chart ˚
   const chartSetting = {
@@ -60,7 +61,7 @@ export default function DashboardPage() {
     },
   };
 
-  const fethSalesDashboardData=async ()=>{
+  const fethSalesDashboardData = async () => {
 
     try {
       const data = await useGql({
@@ -68,10 +69,10 @@ export default function DashboardPage() {
         queryName: "getSalesDashboardData",
         queryType: "query-without-edge",
         variables: {
-          range:  "lastMonth"
+          range: "lastMonth"
         },
       });
-      console.log("data:::",data)
+      console.log("data:::", data)
       setSalesDashboardData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -96,51 +97,13 @@ export default function DashboardPage() {
             <p> Welcome to Airops</p>
           </div>
         </div>
-
-        <div className="graphTotal">
-          <div className="boxes">
-            <div className="level">
-              <img src={level} alt="" />
-            </div>
-            <div className="text">
-              <p>New Quotes</p>
-              <h5>{salesDashboardData?.summary?.newQuotations}</h5>
-            </div>
-          </div>
-          <div className="boxes">
-            <div className="level">
-              <img src={level} alt="" />
-            </div>
-            <div className="text">
-              <p>Confirmed quotes</p>
-              <h5>{salesDashboardData?.summary?.confirmedQuotations}</h5>
-            </div>
-          </div>
-          <div className="boxes">
-            <div className="level">
-              <img src={level} alt="" />
-            </div>
-            <div className="text">
-              <p>Quote Sold</p>
-              <h5>{salesDashboardData?.summary?.sales}</h5>
-            </div>
-          </div>
-          <div className="boxes">
-            <div className="level">
-              <img src={level} alt="" />
-            </div>
-            <div className="text">
-              <p>Cancelled Quotes</p>
-              <h5>{salesDashboardData?.summary?.cancellations}</h5>
-            </div>
-          </div>
-        </div>
+        <TotalDetails />
       </div>
 
       <div className="chartsWork">
         <div className="innerChart_d">
           <BarChart
-           dataset={salesDashboardData?.salesTrend||[]}
+            dataset={salesDashboardData?.salesTrend || []}
             series={[
               { dataKey: 'sales', label: 'Sales' },
               { dataKey: 'cancellations', label: 'Cancellations' },
@@ -155,7 +118,7 @@ export default function DashboardPage() {
           <PieChart
             series={[
               {
-                data: salesDashboardData?.quotationStatusDistribution||[],
+                data: salesDashboardData?.quotationStatusDistribution || [],
               },
             ]}
             width={400}
@@ -186,7 +149,7 @@ export default function DashboardPage() {
                 </TableCell>
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.representative}</TableCell>
-                <TableCell align="right">{row?.itinerary?.map((item)=>`${item.source}-${item.destination}`)}</TableCell>
+                <TableCell align="right">{row?.itinerary?.map((item) => `${item.source}-${item.destination}`)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -1,0 +1,10 @@
+.change_pss_d{
+     display: flex;
+ }
+
+ .change_pss_d .bgImge_chngePass{
+    width: 50%;
+}
+.bgImge_chngePass img{
+    width: 100%;
+}
