@@ -56,6 +56,15 @@ export const GET_QUOTE_BY_ID = gql`
       providerType
       updatedAt
       referenceNumber
+      grandTotal
+      prices {
+        currency
+        label
+        margin
+        price
+        total
+        unit
+      }
     }
   }
 `;

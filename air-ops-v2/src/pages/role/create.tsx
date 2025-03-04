@@ -200,7 +200,10 @@ const RoleCreate: React.FC = () => {
           {/* Actions (Checkboxes) */}
           <Grid item xs={5.5}>
             <FormControl component="fieldset" sx={{ width: "100%" }}>
-              <FormGroup row sx={{ flexWrap: "nowrap",  justifyContent:"space-between"}}>
+              <FormGroup
+                row
+                sx={{ flexWrap: "nowrap", justifyContent: "space-between" }}
+              >
                 {Object.values(Action).map((action) => (
                   <Controller
                     key={action}
@@ -255,7 +258,7 @@ const RoleCreate: React.FC = () => {
       {apiError && <Alert severity="error">{apiError}</Alert>}
 
       {/* Submit Button */}
-      <Box sx={{ display: "flex", justifyContent: "end", mt: 3}}>
+      <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>

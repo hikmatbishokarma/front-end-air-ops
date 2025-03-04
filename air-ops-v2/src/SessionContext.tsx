@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 export interface ISession {
   user?: {
@@ -17,13 +23,17 @@ export interface SessionContextValue {
 }
 
 // ✅ Ensure context allows `undefined` for proper usage with hooks
-export const SessionContext = createContext<SessionContextValue | undefined>(undefined);
+export const SessionContext = createContext<SessionContextValue | undefined>(
+  undefined,
+);
 
 interface SessionProviderProps {
   children: ReactNode;
 }
 
-export const SessionProvider: React.FC<SessionProviderProps> = ({ children }) => {
+export const SessionProvider: React.FC<SessionProviderProps> = ({
+  children,
+}) => {
   const [session, setSessionState] = useState<ISession | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // ✅ Initialize `loading`
 

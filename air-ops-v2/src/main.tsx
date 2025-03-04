@@ -75,7 +75,7 @@ const router = createBrowserRouter([
             path: "dashboard",
             Component: DashboardPage,
           },
-         
+
           {
             path: "/category",
             Component: Category,
@@ -134,7 +134,7 @@ const router = createBrowserRouter([
         path: "/sign-in",
         Component: SignIn,
       },
-    
+
       {
         path: "/sign-up",
         // Component: Login,

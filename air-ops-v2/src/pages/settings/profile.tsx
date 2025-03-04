@@ -19,6 +19,7 @@ import useGql from "../../lib/graphql/gql";
 import { GET_USER_BY_ID, UPDATE_USER } from "../../lib/graphql/queries/user";
 import { useSession } from "../../SessionContext";
 import "../main.css";
+import { useSnackbar } from "../../SnackbarContext";
 
 interface FormData {
   name: string;
@@ -34,17 +35,10 @@ interface FormData {
 
 export const UserProfile = () => {
   const { session } = useSession();
+  const showSnackbar = useSnackbar();
 
   const userId = session?.user?.id;
   const [userInfo, setUserInfo] = useState<any>();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<AlertColor>("success");
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
 
   const {
     register,
@@ -90,20 +84,13 @@ export const UserProfile = () => {
         variables: { input: { id, update: data } },
       });
 
-      console.log("result:::uuu", result);
       if (result.data) {
-        setSnackbarOpen(true);
-        setSnackbarMessage("User Info updated successfully.");
-        setSnackbarSeverity("success");
+        showSnackbar("User Info updated successfully!", "success");
       } else {
-        setSnackbarOpen(true);
-        setSnackbarMessage("Failed to update.");
-        setSnackbarSeverity("error");
+        showSnackbar("Failed to update!", "error");
       }
     } catch (error) {
-      setSnackbarOpen(true);
-      setSnackbarMessage("Failed to update.");
-      setSnackbarSeverity(error.message);
+      showSnackbar(error.message, "error");
     }
   };
   const onSubmit = (data: FormData) => {
@@ -114,7 +101,10 @@ export const UserProfile = () => {
   };
 
   return (
-    <div className="profile_pge" style={{ display: "flex", justifyContent: "space-between" }}>
+    <div
+      className="profile_pge"
+      style={{ display: "flex", justifyContent: "space-between" }}
+    >
       <div className="leftSide">
         <Card
           sx={{ maxWidth: 780, borderRadius: 3, boxShadow: 3, padding: "20px" }}
@@ -293,19 +283,6 @@ export const UserProfile = () => {
           </CardContent>
         </Card>
       </div>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          variant="filled"
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </div>
   );
 };

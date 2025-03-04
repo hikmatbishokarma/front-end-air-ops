@@ -24,6 +24,8 @@ import useGql from "../../lib/graphql/gql";
 import { NAVIGATION } from "../../App";
 import { Action, RoleType } from "./create";
 import AddIcon from "@mui/icons-material/Add";
+import { removeTypename } from "../../lib/utils";
+import { useSnackbar } from "../../SnackbarContext";
 
 interface accessPermission {
   action;
@@ -46,6 +48,7 @@ const resources = NAVIGATION.reduce((acc: any[], item: any) => {
 const RoleEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const showSnackbar = useSnackbar();
 
   const {
     control,
@@ -60,11 +63,7 @@ const RoleEdit = () => {
     name: "accessPermissions",
   });
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<AlertColor>("success");
-    const [roleData,setRoleData]=useState<FormData>()
+  const [roleData, setRoleData] = useState<FormData>();
 
   const fetchRoleById = async (roleId) => {
     const response = await useGql({
@@ -75,8 +74,7 @@ const RoleEdit = () => {
     });
 
     if (response) {
-      
-      setRoleData(response)
+      setRoleData(response);
     }
   };
 
@@ -88,7 +86,10 @@ const RoleEdit = () => {
     if (roleData) {
       setValue("type", roleData.type || "");
       setValue("name", roleData.name || "");
-      setValue("accessPermissions", roleData.accessPermissions || []);
+      setValue(
+        "accessPermissions",
+        removeTypename(roleData.accessPermissions) || [],
+      );
     }
   }, [roleData, setValue]);
 
@@ -101,20 +102,13 @@ const RoleEdit = () => {
         variables: { input: { id: roleId, update: data } },
       });
 
-      console.log("result:::uuu", result);
       if (result.data) {
-        setSnackbarOpen(true);
-        setSnackbarMessage("Role updated successfully.");
-        setSnackbarSeverity("success");
+        showSnackbar("Role updated successfully!", "success");
       } else {
-        setSnackbarOpen(true);
-        setSnackbarMessage("Failed to update.");
-        setSnackbarSeverity("error");
+        showSnackbar("Failed to update!", "success");
       }
     } catch (error) {
-      setSnackbarOpen(true);
-      setSnackbarMessage("Failed to update.");
-      setSnackbarSeverity(error.message);
+      showSnackbar(error.message, "error");
     }
   };
 
@@ -125,16 +119,12 @@ const RoleEdit = () => {
     updateRole(id, formattedData);
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+  const addAccessPermissionRow = () => {
+    append({
+      resource: "",
+      action: [Action.CREATE],
+    });
   };
-
-    const addAccessPermissionRow = () => {
-      append({
-        resource: "",
-        action: [Action.CREATE],
-      });
-    };
 
   return (
     <>
@@ -146,13 +136,22 @@ const RoleEdit = () => {
         {/* Role Type & Name Fields */}
         <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
           <Grid item xs={5}>
-            {/* <FormControl sx={{ minWidth: 100, width: "100%" }} size="small">
+            <FormControl sx={{ minWidth: 100, width: "100%" }} size="small">
               <Controller
                 name="type"
                 control={control}
                 render={({ field }) => (
-                  <Select {...field} displayEmpty>
-                    {Object.keys(RoleType)?.map((role) => (
+                  <Select
+                    {...field}
+                    value={field.value || ""} // Ensure the value is set
+                    onChange={(event) => field.onChange(event.target.value)}
+                    displayEmpty
+                    label="Type"
+                  >
+                    <MenuItem value="" disabled>
+                      Select Role
+                    </MenuItem>
+                    {Object.values(RoleType).map((role) => (
                       <MenuItem key={role} value={role}>
                         {role}
                       </MenuItem>
@@ -160,37 +159,20 @@ const RoleEdit = () => {
                   </Select>
                 )}
               />
-            </FormControl> */}
-            <FormControl sx={{ minWidth: 100, width: "100%" }} size="small">
-  <Controller
-    name="type"
-    control={control}
-    render={({ field }) => (
-      <Select
-        {...field}
-        value={field.value || ""} // Ensure the value is set
-        onChange={(event) => field.onChange(event.target.value)}
-        displayEmpty
-label="Type" 
->
-        <MenuItem value="" disabled>Select Role</MenuItem>
-        {Object.values(RoleType).map((role) => (
-          <MenuItem key={role} value={role}>
-            {role}
-          </MenuItem>
-        ))}
-      </Select>
-    )}
-  />
-</FormControl>
-
+            </FormControl>
           </Grid>
           <Grid item xs={5}>
             <Controller
               name="name"
               control={control}
               render={({ field }) => (
-                <TextField {...field}  value={field.value || ""} size="small" label="Name" fullWidth />
+                <TextField
+                  {...field}
+                  value={field.value || ""}
+                  size="small"
+                  label="Name"
+                  fullWidth
+                />
               )}
             />
           </Grid>
@@ -232,35 +214,42 @@ label="Type"
 
             {/* Actions (Checkboxes) */}
             <Grid item xs={4.4}>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 , justifyContent:"space-between"}}>
-                  {Object.values(Action)?.map((action) => (
-                    <Controller
-                      key={action}
-                      name={`accessPermissions.${index}.action`}
-                      control={control}
-                      render={({ field }) => (
-                        <FormControlLabel
-                          sx={{ mr: 1 }}
-                          control={
-                            <Checkbox
-                              checked={field.value.includes(action)}
-                              onChange={(e) => {
-                                const newValue = e.target.checked
-                                  ? [...field.value, action]
-                                  : field.value.filter((a) => a !== action);
-                                setValue(
-                                  `accessPermissions.${index}.action`,
-                                  newValue,
-                                );
-                              }}
-                            />
-                          }
-                          label={action.toLocaleLowerCase()}
-                        />
-                      )}
-                    />
-                  ))}
-                </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 1,
+                  justifyContent: "space-between",
+                }}
+              >
+                {Object.values(Action)?.map((action) => (
+                  <Controller
+                    key={action}
+                    name={`accessPermissions.${index}.action`}
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        sx={{ mr: 1 }}
+                        control={
+                          <Checkbox
+                            checked={field.value.includes(action)}
+                            onChange={(e) => {
+                              const newValue = e.target.checked
+                                ? [...field.value, action]
+                                : field.value.filter((a) => a !== action);
+                              setValue(
+                                `accessPermissions.${index}.action`,
+                                newValue,
+                              );
+                            }}
+                          />
+                        }
+                        label={action.toLocaleLowerCase()}
+                      />
+                    )}
+                  />
+                ))}
+              </Box>
             </Grid>
 
             {/* Delete Button */}
@@ -272,33 +261,22 @@ label="Type"
           </Grid>
         ))}
 
-         {/* Add Row Button */}
-      <Box sx={{ display: "flex", justifyContent: "start", mt: 2 }}>
-        <IconButton aria-label="Add" onClick={addAccessPermissionRow}>
-          <AddIcon />
-        </IconButton>
-      </Box>
+        {/* Add Row Button */}
+        <Box sx={{ display: "flex", justifyContent: "start", mt: 2 }}>
+          <IconButton aria-label="Add" onClick={addAccessPermissionRow}>
+            <AddIcon />
+          </IconButton>
+        </Box>
 
         {/* Submit Button */}
-        <Box sx={{ display: "flex", justifyContent: "end", mt: 3 , width:"84%"}}>
+        <Box
+          sx={{ display: "flex", justifyContent: "end", mt: 3, width: "84%" }}
+        >
           <Button type="submit" variant="contained" color="primary">
             Update
           </Button>
         </Box>
       </Box>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          variant="filled"
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

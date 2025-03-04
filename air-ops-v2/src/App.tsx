@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
@@ -22,6 +21,7 @@ import {
 } from "@mui/icons-material";
 import logoPhn from "./Asset/images/logo_phn.png";
 import { ISession, SessionProvider } from "./SessionContext";
+import { SnackbarProvider } from "./SnackbarContext";
 
 export const NAVIGATION: Navigation = [
   {
@@ -38,7 +38,7 @@ export const NAVIGATION: Navigation = [
     title: "Requests/Quotes",
     icon: <RequestQuote />,
   },
-  
+
   {
     segment: "category",
     title: "Category",
@@ -60,7 +60,7 @@ export const NAVIGATION: Navigation = [
     title: "Users",
     icon: <Person />,
   },
- 
+
   {
     segment: "roles",
     title: "Role",
@@ -135,16 +135,18 @@ export default function App() {
       <CssBaseline />
       {/* <SessionContext.Provider value={sessionContextValue}> */}
       <SessionProvider>
-        <ReactRouterAppProvider
-          navigation={NAVIGATION}
-          // navigation={validNavigation}
-          branding={BRANDING}
-          session={session}
-          authentication={{ signIn, signOut }}
-        >
-          <Outlet />
-        </ReactRouterAppProvider>
-        </SessionProvider>
+        <SnackbarProvider>
+          <ReactRouterAppProvider
+            navigation={NAVIGATION}
+            // navigation={validNavigation}
+            branding={BRANDING}
+            session={session}
+            authentication={{ signIn, signOut }}
+          >
+            <Outlet />
+          </ReactRouterAppProvider>
+        </SnackbarProvider>
+      </SessionProvider>
       {/* </SessionContext.Provider> */}
     </ThemeProvider>
   );
