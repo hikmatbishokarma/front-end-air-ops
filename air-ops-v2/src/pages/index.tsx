@@ -28,57 +28,53 @@ import {
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
-import { BarChart } from '@mui/x-charts/BarChart';
-import { PieChart } from '@mui/x-charts/PieChart';
-import { LineChart } from '@mui/x-charts/LineChart';
-import { axisClasses } from '@mui/x-charts/ChartsAxis';
-import { dataset, valueFormatter } from './weather';
+import { BarChart } from "@mui/x-charts/BarChart";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { LineChart } from "@mui/x-charts/LineChart";
+import { axisClasses } from "@mui/x-charts/ChartsAxis";
+import { dataset, valueFormatter } from "./weather";
 import CloseIcon from "@mui/icons-material/Close";
 import useGql from "../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../lib/graphql/queries/dashboard";
 import { useNavigate } from "react-router";
 export default function DashboardPage() {
-
   const navigate = useNavigate();
 
-  const [salesDashboardData,setSalesDashboardData]=useState<any>()
-  const [rows,setRows]=useState()
+  const [salesDashboardData, setSalesDashboardData] = useState<any>();
+  const [rows, setRows] = useState();
 
   // chart ˚
   const chartSetting = {
     yAxis: [
       {
-        label: 'rainfall (mm)',
+        label: "rainfall (mm)",
       },
     ],
     width: 500,
     height: 300,
     sx: {
       [`.${axisClasses.left} .${axisClasses.label}`]: {
-        transform: 'translate(-20px, 0)',
+        transform: "translate(-20px, 0)",
       },
     },
   };
 
-  const fethSalesDashboardData=async ()=>{
-
+  const fethSalesDashboardData = async () => {
     try {
       const data = await useGql({
         query: GET_SALES_DASHBOARD,
         queryName: "getSalesDashboardData",
         queryType: "query-without-edge",
         variables: {
-          range:  "lastMonth"
+          range: "lastMonth",
         },
       });
-      console.log("data:::",data)
+      console.log("data:::", data);
       setSalesDashboardData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-
-  }
-
+  };
 
   useEffect(() => {
     fethSalesDashboardData();
@@ -140,14 +136,14 @@ export default function DashboardPage() {
       <div className="chartsWork">
         <div className="innerChart_d">
           <BarChart
-           dataset={salesDashboardData?.salesTrend||[]}
+            dataset={salesDashboardData?.salesTrend || []}
             series={[
-              { dataKey: 'sales', label: 'Sales' },
-              { dataKey: 'cancellations', label: 'Cancellations' },
+              { dataKey: "sales", label: "Sales" },
+              { dataKey: "cancellations", label: "Cancellations" },
             ]}
             height={290}
             // width={100}
-            xAxis={[{ scaleType: 'band', dataKey: 'date' }]}
+            xAxis={[{ scaleType: "band", dataKey: "date" }]}
             margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
           />
         </div>
@@ -155,14 +151,13 @@ export default function DashboardPage() {
           <PieChart
             series={[
               {
-                data: salesDashboardData?.quotationStatusDistribution||[],
+                data: salesDashboardData?.quotationStatusDistribution || [],
               },
             ]}
             width={400}
             height={250}
           />
         </div>
-
       </div>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -186,13 +181,16 @@ export default function DashboardPage() {
                 </TableCell>
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.representative}</TableCell>
-                <TableCell align="right">{row?.itinerary?.map((item)=>`${item.source}-${item.destination}`)}</TableCell>
+                <TableCell align="right">
+                  {row?.itinerary?.map(
+                    (item) => `${item.source}-${item.destination}`,
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
     </>
   );
 }

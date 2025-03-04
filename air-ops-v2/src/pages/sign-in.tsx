@@ -217,7 +217,7 @@ export default function SignIn() {
                 }}
               >
                 {/* Company Logo */}
-                <Box >
+                <Box>
                   <img src={logo} alt="Company Logo" width={180} />
                 </Box>
 

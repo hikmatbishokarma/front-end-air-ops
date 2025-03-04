@@ -17,6 +17,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
 import { RESET_PASSWORD } from "../../lib/graphql/queries/auth";
 import { useSession } from "../../SessionContext";
+import { useSnackbar } from "../../SnackbarContext";
 
 // Validation Schema
 const schema = yup.object({
@@ -32,15 +33,11 @@ const schema = yup.object({
 });
 
 const ChangePassword = () => {
+  const { session } = useSession();
 
-   const { session } = useSession();
-  
-    const userId = session?.user?.id;
+  const showSnackbar = useSnackbar();
 
-     const [snackbarOpen, setSnackbarOpen] = useState(false);
-      const [snackbarMessage, setSnackbarMessage] = useState("");
-      const [snackbarSeverity, setSnackbarSeverity] =
-        useState<AlertColor>("success");
+  const userId = session?.user?.id;
 
   const [showPassword, setShowPassword] = useState({
     current: false,
@@ -56,8 +53,8 @@ const ChangePassword = () => {
     resolver: yupResolver(schema),
   });
 
-  const resetPassword=async (userId,formData)=>{
-    try{
+  const resetPassword = async (userId, formData) => {
+    try {
       const data = await useGql({
         query: RESET_PASSWORD,
         queryName: "",
@@ -65,41 +62,27 @@ const ChangePassword = () => {
         variables: {
           input: {
             userId,
-           ...formData
+            ...formData,
           },
         },
       });
       if (data?.data?.resetPassword?.status) {
-        setSnackbarOpen(true);
-        setSnackbarMessage("User Info updated successfully.");
-        setSnackbarSeverity("success");
+        showSnackbar("User Info updated successfully!", "success");
       } else {
-        setSnackbarOpen(true);
-        setSnackbarMessage(data?.errors?.[0]?.message);
-        setSnackbarSeverity("error");
+        showSnackbar(data?.errors?.[0]?.message, "error");
       }
-    }catch(error){
-      setSnackbarOpen(true);
-      setSnackbarMessage("Failed to update.");
-      setSnackbarSeverity(error.message);
+    } catch (error) {
+      showSnackbar(error.message, "error");
     }
-   
-
-
-  }
-
-  const onSubmit = (data: any) => {
-
-    const formData={
-      confirmPwd: data.confirmPassword,
-currentPwd:data.currentPassword,
-newPwd:data.newPassword,
-    }
-    resetPassword(userId,formData)
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+  const onSubmit = (data: any) => {
+    const formData = {
+      confirmPwd: data.confirmPassword,
+      currentPwd: data.currentPassword,
+      newPwd: data.newPassword,
+    };
+    resetPassword(userId, formData);
   };
 
   return (
@@ -200,20 +183,6 @@ newPwd:data.newPassword,
           Change Password
         </Button>
       </form>
-
-       <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={3000}
-              onClose={handleSnackbarClose}
-            >
-              <Alert
-                onClose={handleSnackbarClose}
-                severity={snackbarSeverity}
-                variant="filled"
-              >
-                {snackbarMessage}
-              </Alert>
-            </Snackbar>
     </Box>
   );
 };

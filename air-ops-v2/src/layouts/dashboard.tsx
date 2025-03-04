@@ -6,8 +6,6 @@ import { PageContainer } from "@toolpad/core/PageContainer";
 import { Account } from "@toolpad/core/Account";
 import { useSession } from "../SessionContext";
 
-
-
 function CustomAccount() {
   return (
     <Account

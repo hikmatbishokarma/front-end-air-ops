@@ -146,9 +146,7 @@ const RoleList = () => {
                   <TableCell>
                     {checkPermission(perm.action, "CREATE")}
                   </TableCell>
-                  <TableCell>
-                    {checkPermission(perm.action, "READ")}
-                  </TableCell>
+                  <TableCell>{checkPermission(perm.action, "READ")}</TableCell>
                   <TableCell>
                     {checkPermission(perm.action, "UPDATE")}
                   </TableCell>
