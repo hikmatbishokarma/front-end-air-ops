@@ -32,7 +32,13 @@ const useGql = async (gqlParams: gqlParams) => {
       variables,
     });
 
-    console.log("result111:::", queryType, result);
+    console.log(
+      "result111:::",
+      queryType,
+      result,
+      queryName,
+      result.data[queryName]
+    );
 
     if (queryType == "query-without-edge") {
       return result.data[queryName];
