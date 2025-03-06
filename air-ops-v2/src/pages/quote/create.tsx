@@ -30,7 +30,7 @@ import { Delete } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
 import { CREATE_QUOTE } from "../../lib/graphql/queries/quote";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft";
+import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft-detail";
 import { GET_CLIENTS } from "../../lib/graphql/queries/clients";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
 import RequestedByDialog from "../../components/client-form";

@@ -44,6 +44,7 @@ export const AircraftCategoryCreate=({onClose,refreshList})=>{
             showSnackbar(data?.errors?.[0]?.message , "error")
           }
           showSnackbar("Created Successfully" , "success")
+
         } catch (error) {
           showSnackbar(error.message||"Failed to create categories!", "error")
         }
@@ -55,6 +56,8 @@ export const AircraftCategoryCreate=({onClose,refreshList})=>{
         };
     
         CreateCategory(formattedData);
+        refreshList();
+        onClose();
       };
     
 
@@ -76,8 +79,7 @@ export const AircraftCategoryCreate=({onClose,refreshList})=>{
               )}
             />
           </Grid>
-        </Grid>
-        <Grid item xs={4}>
+          <Grid item xs={4}>
             <Controller
               name="isActive"
               control={control}
@@ -90,6 +92,8 @@ export const AircraftCategoryCreate=({onClose,refreshList})=>{
             />
           
         </Grid>
+        </Grid>
+       
        
         {/* Submit Button */}
         <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>

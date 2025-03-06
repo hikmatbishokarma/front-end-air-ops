@@ -45,6 +45,11 @@ export const NAVIGATION: Navigation = [
     icon: <ShoppingCartIcon />,
   },
   {
+    segment: "aircraft",
+    title: "Aircraft Detail",
+    icon: <ShoppingCartIcon />,
+  },
+  {
     segment: "prices",
     title: "Prices",
     icon: <PriceChange />,

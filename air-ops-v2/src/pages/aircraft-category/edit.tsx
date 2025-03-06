@@ -100,8 +100,7 @@ export const AircraftCategoryEdit=({id, onClose,refreshList})=>{
               )}
             />
           </Grid>
-        </Grid>
-        <Grid item xs={6}>
+          <Grid item xs={6}>
             <Controller
               name="name"
               control={control}
@@ -114,6 +113,8 @@ export const AircraftCategoryEdit=({id, onClose,refreshList})=>{
             />
           
         </Grid>
+        </Grid>
+     
        
         {/* Submit Button */}
         <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>

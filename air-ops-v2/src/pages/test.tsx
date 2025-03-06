@@ -252,7 +252,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import { GET_AIRCRAFT } from "../lib/graphql/queries/aircraft";
+import { GET_AIRCRAFT } from "../lib/graphql/queries/aircraft-detail";
 import useGql from "../lib/graphql/gql";
 import { GET_AIRCRAFT_CATEGORIES } from "../lib/graphql/queries/aircraft-categories";
 import AirportsAutocomplete from "../components/airport-autocommplete";

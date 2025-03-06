@@ -12,7 +12,7 @@ import {
 import { Add, Delete } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import useGql from "../../lib/graphql/gql";
-import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft";
+import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft-detail";
 import { CREATE_PRICE } from "../../lib/graphql/queries/price";
 
 type Price = {

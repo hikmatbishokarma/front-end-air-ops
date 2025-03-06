@@ -19,7 +19,7 @@ import moment from "moment";
 import useGql from "../../lib/graphql/gql";
 import { GET_QUOTE_BY_ID, UPDATE_QUOTE } from "../../lib/graphql/queries/quote";
 import { GET_CLIENTS } from "../../lib/graphql/queries/clients";
-import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft";
+import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft-detail";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
 import AddIcon from "@mui/icons-material/Add";
 import PriceEdit from "../price/edit";

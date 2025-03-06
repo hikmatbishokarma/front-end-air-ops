@@ -16,7 +16,7 @@ import { Delete } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
 import { GET_QUOTE_BY_ID, UPDATE_QUOTE } from "../../lib/graphql/queries/quote";
 
-import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft";
+import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft-detail";
 import { GET_PRICE_BY_ID, UPDATE_PRICE } from "../../lib/graphql/queries/price";
 
 interface AircraftCategory {
