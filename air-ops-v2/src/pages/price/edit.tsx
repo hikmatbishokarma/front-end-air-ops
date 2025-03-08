@@ -10,7 +10,7 @@ import {
   IconButton,
   Paper,
 } from "@mui/material";
-import { Autocomplete } from "@mui/lab";
+import Autocomplete from "@mui/material/Autocomplete";
 import { Delete } from "@mui/icons-material";
 
 import useGql from "../../lib/graphql/gql";

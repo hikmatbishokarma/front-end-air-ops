@@ -139,9 +139,10 @@ export default function SignIn() {
           id: data.user.id,
           name: data.user.name,
           email: data.user.email,
-          image:
-            data.user.image ||
-            "https://avatars.githubusercontent.com/u/19550456", // Default image
+          // image:
+          //   data.user.image ||
+          //   "https://avatars.githubusercontent.com/u/19550456", // Default image
+          image: 'https://avatars.githubusercontent.com/u/19550456',
           role: data.user.role,
         },
       };

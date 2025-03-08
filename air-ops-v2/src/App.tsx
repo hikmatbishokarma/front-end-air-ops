@@ -5,7 +5,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { ReactRouterAppProvider } from "@toolpad/core/react-router";
 import { Outlet, useNavigate } from "react-router";
 import type { Navigation, Session } from "@toolpad/core/AppProvider";
-
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme";
 import {
@@ -30,7 +29,7 @@ export const NAVIGATION: Navigation = [
   },
   {
     title: "Dashboard",
-    segment: "dashboard",
+    segment: "/",
     icon: <DashboardIcon />,
   },
   {
@@ -49,11 +48,11 @@ export const NAVIGATION: Navigation = [
     title: "Aircraft Detail",
     icon: <ShoppingCartIcon />,
   },
-  {
-    segment: "prices",
-    title: "Prices",
-    icon: <PriceChange />,
-  },
+  // {
+  //   segment: "prices",
+  //   title: "Prices",
+  //   icon: <PriceChange />,
+  // },
 
   {
     segment: "operations",
@@ -101,6 +100,8 @@ export default function App() {
   const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);
 
   React.useEffect(() => {
+
+    console.log("session::!11",session)
     if (session) {
       const accessResources = session?.user?.role?.accessPermissions?.map(
         (item) => item.resource,
