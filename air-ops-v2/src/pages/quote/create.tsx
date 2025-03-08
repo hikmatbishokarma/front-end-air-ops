@@ -35,6 +35,8 @@ import { GET_CLIENTS } from "../../lib/graphql/queries/clients";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
 import RequestedByDialog from "../../components/client-form";
 import { useSnackbar } from "../../SnackbarContext";
+import { GET_REPRESENTATIVES } from "../../lib/graphql/queries/representative";
+import RepresentativeDialog from "../../components/representative";
 
 interface AircraftCategory {
   id: string;
@@ -44,6 +46,7 @@ interface AircraftCategory {
 interface Aircraft {
   id: string;
   name: string;
+  code: string;
   category: AircraftCategory;
 }
 
@@ -82,6 +85,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
   console.log("isNewQuote::", isNewQuote);
  const showSnackbar = useSnackbar();
   const [subDialogOpen, setSubDialogOpen] = useState(false);
+  const [representativeDialogOpen, setRepresentativeDialogOpen] = useState(false);
 
   const [aircraftCategories, setAircraftCategories] = useState<
     AircraftCategory[]
@@ -94,6 +98,8 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
     { title: string; start: string; end: string }[]
   >([]);
   const [clients, setClients] = useState<any[]>([]);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [representatives, setRepresentative] = useState<any[]>([]);
 
   const { control, handleSubmit, setValue, watch, reset } = useForm({
     defaultValues,
@@ -259,7 +265,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
     try {
       const data = await useGql({
         query: GET_AIRCRAFT,
-        queryName: "aircraft",
+        queryName: "aircraftDetails",
         queryType: "query",
         variables: categoryId
           ? {
@@ -277,6 +283,26 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
       console.error("Error fetching data:", error);
     }
   };
+
+  const getRepresentative=async (clientId)=>{
+    try{
+
+      const data = await useGql({
+        query: GET_REPRESENTATIVES,
+        queryName: "representatives",
+        queryType: "query",
+        variables: clientId
+          ? {
+              filter: {client:{eq:clientId}},
+            }
+          : {},
+      });
+      setRepresentative(data);
+
+    }catch(error){
+
+    }
+  }
 
   const getClients = async () => {
     try {
@@ -302,8 +328,17 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
     getAircrafts(selectedAircraftCategory?.id);
   }, [selectedAircraftCategory]);
 
+  useEffect(()=>{
+    getRepresentative(selectedClient?.id);
+  },[selectedClient])
+
   const handleSubDialogClose = async () => {
     setSubDialogOpen(false);
+    await getClients();
+  };
+
+  const handleRepresentativeDialogClose = async () => {
+    setRepresentativeDialogOpen(false);
     await getClients();
   };
 
@@ -401,8 +436,10 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                             : null
                         }
                         onChange={(_, newValue) => {
+                          setSelectedClient(newValue);
                           field.onChange(newValue ? newValue.id : ""); // Update only the selected value
                         }}
+                        
                         renderInput={(params) => (
                           <TextField {...params} size="small" />
                         )}
@@ -421,13 +458,46 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                   <Typography>Representative:</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Controller
+                  {/* <Controller
                     name="representative"
                     control={control}
                     render={({ field }) => (
                       <TextField {...field} fullWidth size="small" />
                     )}
+                  /> */}
+
+<Controller
+                    name="representative"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        options={representatives}
+                        getOptionLabel={(option) => option.name}
+                        value={
+                          field.value
+                            ? representatives.find(
+                                (representative) => representative.id === field.value,
+                              )
+                            : null
+                        }
+                        onChange={(_, newValue) => {
+                        
+                          field.onChange(newValue ? newValue.id : ""); // Update only the selected value
+                        }}
+                        
+                        renderInput={(params) => (
+                          <TextField {...params} size="small" />
+                        )}
+                      />
+                    )}
                   />
+                </Grid>
+                <Grid item xs={2}>
+                  {" "}
+                  <IconButton onClick={() => setRepresentativeDialogOpen(true)}>
+                    <AddIcon />
+                  </IconButton>
                 </Grid>
 
                 <Grid item xs={4}>
@@ -466,7 +536,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                       <Autocomplete
                         {...field}
                         options={aircrafts}
-                        getOptionLabel={(option) => option.name}
+                        getOptionLabel={(option) => option.code}
                         value={
                           field.value
                             ? aircrafts.find(
@@ -896,6 +966,11 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
       <RequestedByDialog
         subDialogOpen={subDialogOpen}
         handleSubDialogClose={handleSubDialogClose}
+      />
+      <RepresentativeDialog
+        subDialogOpen={representativeDialogOpen}
+        handleSubDialogClose={handleRepresentativeDialogClose}
+        client={selectedClient}
       />
     </>
   );

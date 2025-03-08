@@ -5,7 +5,8 @@ import { CREATE_AIRCRAFT_CATEGORY, GET_AIRCRAFT_CATEGORIES } from '../../lib/gra
 import useGql from '../../lib/graphql/gql';
 import { useSnackbar } from '../../SnackbarContext';
 import { CREATE_AIRCRAFT_DETAIL, GET_AIRCRAFT } from '../../lib/graphql/queries/aircraft-detail';
-
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 interface sepcification{
   icon:string
@@ -182,6 +183,20 @@ export const AircraftDetailCreate=({onClose,refreshList})=>{
             />
           
           </Grid>
+          <Grid item xs={12}>
+          <Controller
+            name="termsAndConditions"
+            control={control}
+            render={({ field }) => (
+              <ReactQuill 
+                {...field}
+                theme="snow"
+                value={field.value || ""}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        </Grid>
         </Grid>
      
        

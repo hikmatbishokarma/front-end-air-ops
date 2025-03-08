@@ -74,7 +74,7 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           {
-            path: "dashboard",
+            path: '/',
             Component: DashboardPage,
           },
 
@@ -98,14 +98,14 @@ const router = createBrowserRouter([
             path: "quotes/edit/:id",
             Component: QuoteEdit,
           },
-          {
-            path: "prices",
-            Component: PriceList,
-          },
-          {
-            path: "prices/edit/:id",
-            Component: PriceEdit,
-          },
+          // {
+          //   path: "prices",
+          //   Component: PriceList,
+          // },
+          // {
+          //   path: "prices/edit/:id",
+          //   Component: PriceEdit,
+          // },
           {
             path: "roles",
             Component: RoleList,

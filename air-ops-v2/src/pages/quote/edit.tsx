@@ -9,8 +9,8 @@ import {
   Grid,
   IconButton,
   Paper,
+  Autocomplete,
 } from "@mui/material";
-import { Autocomplete } from "@mui/lab";
 import { Delete } from "@mui/icons-material";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider, DateTimePicker, DatePicker, TimeField } from "@mui/x-date-pickers";

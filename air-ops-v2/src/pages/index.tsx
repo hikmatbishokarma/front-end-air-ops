@@ -1,14 +1,4 @@
-// import * as React from 'react';
-// import Typography from '@mui/material/Typography';
 
-// export default function HomePage() {
-
-//   return (
-//       <Typography>
-//         Welcome to Toolpad Core!
-//       </Typography>
-//   );
-// }
 import React, { useEffect, useState } from "react";
 import banner from "../Asset/Images/dash_banner.png";
 import level from "../Asset/Images/level.png";
@@ -132,7 +122,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-
+{/* 
       <div className="chartsWork">
         <div className="innerChart_d">
           <BarChart
@@ -158,7 +148,7 @@ export default function DashboardPage() {
             height={250}
           />
         </div>
-      </div>
+      </div> */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
