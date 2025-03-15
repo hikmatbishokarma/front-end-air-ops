@@ -37,18 +37,8 @@ import RequestedByDialog from "../../components/client-form";
 import { useSnackbar } from "../../SnackbarContext";
 import { GET_REPRESENTATIVES } from "../../lib/graphql/queries/representative";
 import RepresentativeDialog from "../../components/representative";
-
-interface AircraftCategory {
-  id: string;
-  name: string;
-}
-
-interface Aircraft {
-  id: string;
-  name: string;
-  code: string;
-  category: AircraftCategory;
-}
+import { IaircraftCategory, Iclient } from "../../interfaces/quote.interface";
+import { useQuoteData } from "../../hooks/useQuoteData";
 
 const defaultValues = {
   requestedBy: "",
@@ -61,7 +51,7 @@ const defaultValues = {
       depatureTime: "",
       arrivalDate: "",
       arrivalTime: "",
-     
+
       paxNumber: 1,
     },
   ],
@@ -82,60 +72,71 @@ const defaultValues = {
 };
 
 export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
-  console.log("isNewQuote::", isNewQuote);
- const showSnackbar = useSnackbar();
+  const showSnackbar = useSnackbar();
   const [subDialogOpen, setSubDialogOpen] = useState(false);
-  const [representativeDialogOpen, setRepresentativeDialogOpen] = useState(false);
+  const [representativeDialogOpen, setRepresentativeDialogOpen] =
+    useState(false);
 
-  const [aircraftCategories, setAircraftCategories] = useState<
-    AircraftCategory[]
-  >([]);
-  const [aircrafts, setAircrafts] = useState<Aircraft[]>([]);
+  const {
+    aircraftCategories,
+    aircrafts,
+    representatives,
+    clients,
+    fetchClients,
+    fetchAircrafts,
+    fetchRepresentatives,
+  } = useQuoteData();
+
   const [selectedAircraftCategory, setSelectedAircraftCategory] =
-    useState<AircraftCategory | null>(null);
+    useState<IaircraftCategory | null>(null);
+
+  const [selectedClient, setSelectedClient] = useState<Iclient | null>();
 
   const [events, setEvents] = useState<
     { title: string; start: string; end: string }[]
   >([]);
-  const [clients, setClients] = useState<any[]>([]);
-  const [selectedClient, setSelectedClient] = useState<any>(null);
-  const [representatives, setRepresentative] = useState<any[]>([]);
 
   const { control, handleSubmit, setValue, watch, reset } = useForm({
     defaultValues,
   });
 
-  const { fields: itineraryFields, append: appendItinerary,remove: removeItinerary } = useFieldArray({
+  const {
+    fields: itineraryFields,
+    append: appendItinerary,
+    remove: removeItinerary,
+  } = useFieldArray({
     control,
     name: "itinerary",
   });
-  
-  const { fields: priceFields, append: appendPrice, remove: removePrice } = useFieldArray({
+
+  const {
+    fields: priceFields,
+    append: appendPrice,
+    remove: removePrice,
+  } = useFieldArray({
     control,
     name: "prices",
   });
 
-  
   const createQuote = async (formData) => {
-    try{
+    try {
       const data = await useGql({
         query: CREATE_QUOTE,
         queryName: "quote",
-        queryType:'mutation',
+        queryType: "mutation",
         variables: {
           input: {
             quote: formData,
           },
         },
       });
-      console.log("dataaaa",data)
-      if(data?.errors?.length>0){
+      console.log("dataaaa", data);
+      if (data?.errors?.length > 0) {
         showSnackbar("Failed To Create Quote!", "error");
-      }else  showSnackbar("Created new Quote!", "success");
-    }catch(error){
-      showSnackbar(error?.message||"Failed To Create Quote!", "error");
+      } else showSnackbar("Created new Quote!", "success");
+    } catch (error) {
+      showSnackbar(error?.message || "Failed To Create Quote!", "error");
     }
-   
   };
 
   const onSubmit = (data: any) => {
@@ -145,31 +146,16 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
     reset();
   };
 
- const itinerary = watch("itinerary", []);
- 
-  // const addItinerary = () => {
-  //   const lastItinerary = itinerary[itinerary.length - 1];
-
-  //   const newItinerary = {
-  //     source: lastItinerary ? lastItinerary.destination : "",
-  //     destination: "",
-  //     depatureDate: "",
-  //     depatureTime: "",
-  //     arrivalDate: "",
-  //     arrivalTime:"",
-  //     paxNumber: 1,
-  //   };
-
-  //   append(newItinerary);
-  // };
+  const itinerary = watch("itinerary", []);
 
   const addItinerary = () => {
     const lastItinerary = watch("itinerary", []); // Get the current itinerary list
-    const prevDestination = lastItinerary.length > 0 ? lastItinerary[lastItinerary.length - 1]?.destination : "";
-  
+    const prevDestination =
+      lastItinerary.length > 0
+        ? lastItinerary[lastItinerary.length - 1]?.destination
+        : "";
+
     const newIndex = lastItinerary.length; // Get the index for the new itinerary
-
-
 
     appendItinerary({
       source: prevDestination, // Auto-fill source from the last destination
@@ -180,7 +166,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
       arrivalTime: "",
       paxNumber: 1,
     });
-  
+
     // Use setValue to force update the new itinerary field
     setTimeout(() => {
       setValue(`itinerary.${newIndex}.source`, prevDestination);
@@ -190,9 +176,9 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
   useEffect(() => {
     const lastIndex = itinerary.length - 1;
     const lastItinerary = itinerary[lastIndex];
-  
+
     console.log("lastItinerary:::", lastItinerary);
-  
+
     if (
       lastItinerary?.source &&
       lastItinerary?.destination &&
@@ -202,157 +188,90 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
       lastItinerary?.arrivalTime
     ) {
       console.log("✅ All Fields Filled - Updating Event", lastItinerary);
-  
+
       setEvents((prevEvents: any) => {
         // Check if an event with the same source-destination already exists
         const updatedEvents = prevEvents.map((event: any) =>
           event.title === `${lastItinerary.source}-${lastItinerary.destination}`
             ? {
                 ...event,
-                start: moment.utc(
-                  `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
-                  "YYYY-MM-DD HH:mm"
-                ).format("YYYY-MM-DD HH:mm"),
-                end: moment.utc(
-                  `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
-                  "YYYY-MM-DD HH:mm"
-                ).format("YYYY-MM-DD HH:mm"),
+                start: moment
+                  .utc(
+                    `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
+                    "YYYY-MM-DD HH:mm",
+                  )
+                  .format("YYYY-MM-DD HH:mm"),
+                end: moment
+                  .utc(
+                    `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
+                    "YYYY-MM-DD HH:mm",
+                  )
+                  .format("YYYY-MM-DD HH:mm"),
               }
-            : event
+            : event,
         );
-  
+
         // If event does not exist, add it
         const eventExists = prevEvents.some(
-          (event: any) => event.title === `${lastItinerary.source}-${lastItinerary.destination}`
+          (event: any) =>
+            event.title ===
+            `${lastItinerary.source}-${lastItinerary.destination}`,
         );
-  
+
         if (!eventExists) {
           updatedEvents.push({
             title: `${lastItinerary.source}-${lastItinerary.destination}`,
-            start: moment.utc(
-              `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
-              "YYYY-MM-DD HH:mm"
-            ).format("YYYY-MM-DD HH:mm"),
-            end: moment.utc(
-              `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
-              "YYYY-MM-DD HH:mm"
-            ).format("YYYY-MM-DD HH:mm"),
+            start: moment
+              .utc(
+                `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
+                "YYYY-MM-DD HH:mm",
+              )
+              .format("YYYY-MM-DD HH:mm"),
+            end: moment
+              .utc(
+                `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
+                "YYYY-MM-DD HH:mm",
+              )
+              .format("YYYY-MM-DD HH:mm"),
           });
         }
-  
+
         return updatedEvents;
       });
     }
   }, [JSON.stringify(itinerary)]);
-  
-  console.log("eventss", events);
-
-  const getAircraftCategories = async () => {
-    try {
-      const data = await useGql({
-        query: GET_AIRCRAFT_CATEGORIES,
-        queryName: "aircraftCategories",
-        queryType: "query",
-        variables: {},
-      });
-      setAircraftCategories(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getAircrafts = async (categoryId) => {
-    try {
-      const data = await useGql({
-        query: GET_AIRCRAFT,
-        queryName: "aircraftDetails",
-        queryType: "query",
-        variables: categoryId
-          ? {
-              sorting: [
-                {
-                  field: "category",
-                  direction: "ASC",
-                },
-              ],
-            }
-          : {},
-      });
-      setAircrafts(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getRepresentative=async (clientId)=>{
-    try{
-
-      const data = await useGql({
-        query: GET_REPRESENTATIVES,
-        queryName: "representatives",
-        queryType: "query",
-        variables: clientId
-          ? {
-              filter: {client:{eq:clientId}},
-            }
-          : {},
-      });
-      setRepresentative(data);
-
-    }catch(error){
-
-    }
-  }
-
-  const getClients = async () => {
-    try {
-      const data = await useGql({
-        query: GET_CLIENTS,
-        queryName: "clients",
-        queryType: "query",
-        variables: {},
-      });
-      setClients(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   useEffect(() => {
-    getAircraftCategories();
-    getAircrafts(null);
-    getClients();
-  }, []);
+    if (selectedAircraftCategory?.id) {
+      fetchAircrafts(selectedAircraftCategory.id);
+    }
 
-  useEffect(() => {
-    getAircrafts(selectedAircraftCategory?.id);
-  }, [selectedAircraftCategory]);
-
-  useEffect(()=>{
-    getRepresentative(selectedClient?.id);
-  },[selectedClient])
+    if (selectedClient?.id) {
+      fetchRepresentatives(selectedClient.id);
+    }
+  }, [selectedAircraftCategory?.id, selectedClient?.id]);
 
   const handleSubDialogClose = async () => {
     setSubDialogOpen(false);
-    await getClients();
+    await fetchClients();
   };
 
   const handleRepresentativeDialogClose = async () => {
     setRepresentativeDialogOpen(false);
-    await getClients();
+    await fetchClients();
   };
 
   const handlePriceChange = (index, field, value) => {
     const prices = watch("prices");
-  
+
     prices[index][field] = value;
-  
+
     // Calculate total for this row
     const unit = Number(prices[index].unit) || 1;
     const price = Number(prices[index].price) || 0;
-  
+
     prices[index].total = unit * price;
-  
+
     setValue("prices", [...prices]); // Update form state
   };
 
@@ -360,14 +279,16 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
 
   const grandTotal = useWatch({ control, name: "grandTotal" }) || 0;
 
-
   useEffect(() => {
-    const grandTotal = prices?.reduce((sum, item) => sum + (Number(item.total) || 0), 0) || 0;
+    const grandTotal =
+      prices?.reduce((sum, item) => sum + (Number(item.total) || 0), 0) || 0;
     console.log("grandTotal", grandTotal);
-    
-    setValue("grandTotal", grandTotal, { shouldValidate: true, shouldDirty: true });
+
+    setValue("grandTotal", grandTotal, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   }, [prices, setValue]);
-  
 
   const handleAddFee = (selectedFee) => {
     console.log("selectedFee", selectedFee);
@@ -382,13 +303,11 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
       total: 0, // Calculate total
     });
   };
-  
-  
+
   const newFeeOption = [
     { label: "pilot fee", id: 1 },
     { label: "Pulp Fiction", id: 2 },
   ];
-
 
   return (
     <>
@@ -439,7 +358,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           setSelectedClient(newValue);
                           field.onChange(newValue ? newValue.id : ""); // Update only the selected value
                         }}
-                        
                         renderInput={(params) => (
                           <TextField {...params} size="small" />
                         )}
@@ -466,7 +384,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                     )}
                   /> */}
 
-<Controller
+                  <Controller
                     name="representative"
                     control={control}
                     render={({ field }) => (
@@ -477,15 +395,14 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                         value={
                           field.value
                             ? representatives.find(
-                                (representative) => representative.id === field.value,
+                                (representative) =>
+                                  representative.id === field.value,
                               )
                             : null
                         }
                         onChange={(_, newValue) => {
-                        
                           field.onChange(newValue ? newValue.id : ""); // Update only the selected value
                         }}
-                        
                         renderInput={(params) => (
                           <TextField {...params} size="small" />
                         )}
@@ -632,25 +549,33 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                       </LocalizationProvider>
                     </Grid>
                     <Grid item xs={2.5}>
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <Controller
-                        name={`itinerary.${index}.depatureTime`}
-                        control={control}
-                        render={({ field }) => (
-                          <TimeField
-                          {...field}
-                          value={field.value ? moment(field.value, "HH:mm") : null}  // Ensure it's a Moment object
-                          onChange={(newValue) => field.onChange(newValue ? moment(newValue).format("HH:mm") : "")}
-                  
-                           label="Depature Time"
-                           size="small"
-                          format="HH:mm"
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Controller
+                          name={`itinerary.${index}.depatureTime`}
+                          control={control}
+                          render={({ field }) => (
+                            <TimeField
+                              {...field}
+                              value={
+                                field.value
+                                  ? moment(field.value, "HH:mm")
+                                  : null
+                              } // Ensure it's a Moment object
+                              onChange={(newValue) =>
+                                field.onChange(
+                                  newValue
+                                    ? moment(newValue).format("HH:mm")
+                                    : "",
+                                )
+                              }
+                              label="Depature Time"
+                              size="small"
+                              format="HH:mm"
+                            />
+                          )}
                         />
-                        )}
-                      />
                       </LocalizationProvider>
                     </Grid>
-                    
 
                     <Grid item xs={2.5}>
                       <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -660,7 +585,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           render={({ field }) => (
                             <DatePicker
                               {...field}
-                                format="DD-MM-YYYY"
+                              format="DD-MM-YYYY"
                               value={field.value ? moment(field.value) : null}
                               onChange={(newValue) => field.onChange(newValue)}
                               slotProps={{
@@ -672,22 +597,31 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                       </LocalizationProvider>
                     </Grid>
                     <Grid item xs={2.5}>
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <Controller
-                        name={`itinerary.${index}.arrivalTime`}
-                        control={control}
-                        render={({ field }) => (
-                          <TimeField
-                          {...field}
-                          value={field.value ? moment(field.value, "HH:mm") : null}  // Ensure it's a Moment object
-                          onChange={(newValue) => field.onChange(newValue ? moment(newValue).format("HH:mm") : "")}
-                  
-                          label="Arrival Time"
-                          size="small"
-                          format="HH:mm"
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Controller
+                          name={`itinerary.${index}.arrivalTime`}
+                          control={control}
+                          render={({ field }) => (
+                            <TimeField
+                              {...field}
+                              value={
+                                field.value
+                                  ? moment(field.value, "HH:mm")
+                                  : null
+                              } // Ensure it's a Moment object
+                              onChange={(newValue) =>
+                                field.onChange(
+                                  newValue
+                                    ? moment(newValue).format("HH:mm")
+                                    : "",
+                                )
+                              }
+                              label="Arrival Time"
+                              size="small"
+                              format="HH:mm"
+                            />
+                          )}
                         />
-                        )}
-                      />
                       </LocalizationProvider>
                     </Grid>
                     <Grid item xs={2}>
@@ -710,226 +644,232 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                       xs={1}
                       sx={{ display: "flex", justifyContent: "center" }}
                     >
-                      <IconButton onClick={() => removeItinerary(index)} color="error">
+                      <IconButton
+                        onClick={() => removeItinerary(index)}
+                        color="error"
+                      >
                         <Delete fontSize="small" />
                       </IconButton>
                     </Grid>
                   </Grid>
                 ))}
-
-               
               </Box>
-              <Box sx={{mt:5}}>
-                   <Grid container spacing={2} sx={{ mb: 3 }}>
-                        <Grid item xs={3}>
-                          <h4 style={{ margin: "0px" }}>Label</h4>
-                        </Grid>
-                        <Grid item xs={1.5}>
-                          <h4 style={{ margin: "0px" }}>Unit</h4>
-                        </Grid>
-                        <Grid item xs={0.5}>
-                          <h4 style={{ margin: "0px" }}>X</h4>
-                        </Grid>
-                        <Grid item xs={1.5}>
-                          <h4 style={{ margin: "0px" }}>Price</h4>
-                        </Grid>
-                        <Grid item xs={1.5}>
-                          <h4 style={{ margin: "0px" }}>Currency</h4>
-                        </Grid>
-                        <Grid item xs={1.5}>
-                          <h4 style={{ margin: "0px" }}>Margin (%)</h4>
-                        </Grid>
-                        <Grid item xs={1.5}>
-                          <h4 style={{ margin: "0px" }}>Total</h4>
-                        </Grid>
+              <Box sx={{ mt: 5 }}>
+                <Grid container spacing={2} sx={{ mb: 3 }}>
+                  <Grid item xs={3}>
+                    <h4 style={{ margin: "0px" }}>Label</h4>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                    <h4 style={{ margin: "0px" }}>Unit</h4>
+                  </Grid>
+                  <Grid item xs={0.5}>
+                    <h4 style={{ margin: "0px" }}>X</h4>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                    <h4 style={{ margin: "0px" }}>Price</h4>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                    <h4 style={{ margin: "0px" }}>Currency</h4>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                    <h4 style={{ margin: "0px" }}>Margin (%)</h4>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                    <h4 style={{ margin: "0px" }}>Total</h4>
+                  </Grid>
+                </Grid>
+                {priceFields.map((field, index) => (
+                  <>
+                    <Grid
+                      container
+                      key={field.id}
+                      spacing={2}
+                      sx={{ mb: 3 }}
+                      alignItems="center"
+                    >
+                      {/* Label (Wider) */}
+                      <Grid item xs={3}>
+                        <Controller
+                          name={`prices.${index}.label`}
+                          control={control}
+                          rules={{ required: "Label is required" }}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label="Label"
+                              fullWidth
+                              size="small"
+                            />
+                          )}
+                        />
                       </Grid>
-              {priceFields.map((field, index) => (
-        <>
-          <Grid
-            container
-            key={field.id}
-            spacing={2}
-            sx={{ mb: 3 }}
-            alignItems="center"
-          >
-            {/* Label (Wider) */}
-            <Grid item xs={3}>
-              <Controller
-                name={`prices.${index}.label`}
-                control={control}
-                rules={{ required: "Label is required" }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Label"
-                    fullWidth
-                    size="small"
-                   
-                  />
-                )}
-              />
-            </Grid>
 
-            {/* Unit */}
-            <Grid item xs={1.5}>
-              <Controller
-                name={`prices.${index}.unit`}
-                control={control}
-                rules={{ required: "Unit is required" }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Unit"
-                   
-                    fullWidth
-                    size="small"
-                    onChange={(e) => handlePriceChange(index, "unit", e.target.value)}
-                  />
-                )}
-              />
-            </Grid>
+                      {/* Unit */}
+                      <Grid item xs={1.5}>
+                        <Controller
+                          name={`prices.${index}.unit`}
+                          control={control}
+                          rules={{ required: "Unit is required" }}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label="Unit"
+                              fullWidth
+                              size="small"
+                              onChange={(e) =>
+                                handlePriceChange(index, "unit", e.target.value)
+                              }
+                            />
+                          )}
+                        />
+                      </Grid>
 
-            {/* Price */}
-            <Grid item xs={1.5}>
-              <Controller
-                name={`prices.${index}.price`}
-                control={control}
-                rules={{
-                  required: "Price is required",
-                  min: { value: 1, message: "Must be > 0" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Price"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    // onChange={(e) => handlePriceChange(index, "price", e.target.value)}
-                    onChange={(e) => {
-                      const value = e.target.value ? Number(e.target.value) : "";
-                      field.onChange(value);  // ✅ Convert value to number before updating the form
-                      handlePriceChange(index, "price", value);
-                    }}
-                  />
-                )}
-              />
-            </Grid>
+                      {/* Price */}
+                      <Grid item xs={1.5}>
+                        <Controller
+                          name={`prices.${index}.price`}
+                          control={control}
+                          rules={{
+                            required: "Price is required",
+                            min: { value: 1, message: "Must be > 0" },
+                          }}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label="Price"
+                              type="number"
+                              fullWidth
+                              size="small"
+                              // onChange={(e) => handlePriceChange(index, "price", e.target.value)}
+                              onChange={(e) => {
+                                const value = e.target.value
+                                  ? Number(e.target.value)
+                                  : "";
+                                field.onChange(value); // ✅ Convert value to number before updating the form
+                                handlePriceChange(index, "price", value);
+                              }}
+                            />
+                          )}
+                        />
+                      </Grid>
 
-            {/* Currency */}
-            <Grid item xs={1.5}>
-              <Controller
-                name={`prices.${index}.currency`}
-                control={control}
-                rules={{ required: "Currency is required" }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Currency"
-                    fullWidth
-                    size="small"
-                    
-                  />
-                )}
-              />
-            </Grid>
+                      {/* Currency */}
+                      <Grid item xs={1.5}>
+                        <Controller
+                          name={`prices.${index}.currency`}
+                          control={control}
+                          rules={{ required: "Currency is required" }}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label="Currency"
+                              fullWidth
+                              size="small"
+                            />
+                          )}
+                        />
+                      </Grid>
 
-            {/* Margin */}
-            <Grid item xs={1.5}>
-              <Controller
-                name={`prices.${index}.margin`}
-                control={control}
-                rules={{
-                  required: "Margin is required",
-                  min: { value: 0, message: "Cannot be negative" },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Margin (%)"
-                    type="number"
-                    fullWidth
-                    size="small"
-                  
-                  />
-                )}
-              />
-            </Grid>
+                      {/* Margin */}
+                      <Grid item xs={1.5}>
+                        <Controller
+                          name={`prices.${index}.margin`}
+                          control={control}
+                          rules={{
+                            required: "Margin is required",
+                            min: { value: 0, message: "Cannot be negative" },
+                          }}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label="Margin (%)"
+                              type="number"
+                              fullWidth
+                              size="small"
+                            />
+                          )}
+                        />
+                      </Grid>
 
-            {/* Total (Disabled) */}
-            <Grid item xs={2}>
-              <Controller
-                name={`prices.${index}.total`}
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Total"
-                    type="number"
-                    fullWidth
-                    size="small"
-                    disabled
-                  />
-                )}
-              />
-            </Grid>
+                      {/* Total (Disabled) */}
+                      <Grid item xs={2}>
+                        <Controller
+                          name={`prices.${index}.total`}
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              label="Total"
+                              type="number"
+                              fullWidth
+                              size="small"
+                              disabled
+                            />
+                          )}
+                        />
+                      </Grid>
 
-            {/* Delete Button */}
-            <Grid item xs={1}>
-              <IconButton onClick={() => removePrice(index)} color="error">
-                <Delete fontSize="small" />
-              </IconButton>
-            </Grid>
-          </Grid>
-        </>
-      ))}
+                      {/* Delete Button */}
+                      <Grid item xs={1}>
+                        <IconButton
+                          onClick={() => removePrice(index)}
+                          color="error"
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </>
+                ))}
+                 <Grid item xs={1.5}>
+                  <IconButton aria-label="Add" onClick={()=>appendPrice}>
+                    <AddIcon />
+                  </IconButton>
+                  </Grid>
+                <Grid container spacing={2} sx={{ mt: 2 }}>
+                  {/* Autocomplete Dropdown for Adding New Fee */}
+                  {/* <Grid item xs={4.5}>
+                    <Autocomplete
+                      options={newFeeOption} // Define available fee options
+                      getOptionLabel={(option) => option.label}
+                      onChange={(event, newValue) => handleAddFee(newValue)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Add New Fee"
+                          fullWidth
+                          size="small"
+                        />
+                      )}
+                    />
+                  </Grid> */}
 
-      <Grid container spacing={2} sx={{ mt: 2 }}>
-              {/* Autocomplete Dropdown for Adding New Fee */}
-              <Grid item xs={4.5}>
-                <Autocomplete
-                  options={newFeeOption} // Define available fee options
-                  getOptionLabel={(option) => option.label}
-                  onChange={(event, newValue) => handleAddFee(newValue)}
-                  renderInput={(params) => (
+                  {/* Total Currency Display */}
+                  <Grid item xs={1.5}>
+                    <span>TOTAL</span>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                    <span>INR</span>
+                  </Grid>
+
+                  {/* Grand Total Display */}
+                  <Grid item xs={2}>
                     <TextField
-                      {...params}
-                      label="Add New Fee"
+                      value={grandTotal} // Use `useWatch` value
+                      type="number"
                       fullWidth
                       size="small"
+                      disabled
                     />
-                  )}
-                />
-              </Grid>
-      
-              {/* Total Currency Display */}
-              <Grid item xs={1.5}>
-                <span>TOTAL</span>
-              </Grid>
-              <Grid item xs={1.5}>
-                <span>INR</span>
-              </Grid>
-      
-              {/* Grand Total Display */}
-              <Grid item xs={2}>
-               <TextField
-
-    value={grandTotal} // Use `useWatch` value
-    type="number"
-    fullWidth
-    size="small"
-    disabled
-  />
-              </Grid>
-            </Grid>
-      
+                  </Grid>
+                </Grid>
               </Box>
-               {/* Buttons */}
-               <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-                  <Button type="submit" variant="contained" color="success">
-                    Submit
-                  </Button>
-                </Box>
+              {/* Buttons */}
+              <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                <Button type="submit" variant="contained" color="success">
+                  Submit
+                </Button>
+              </Box>
             </form>
 
             <div

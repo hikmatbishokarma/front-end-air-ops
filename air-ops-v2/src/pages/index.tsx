@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import banner from "../Asset/Images/dash_banner.png";
 import level from "../Asset/Images/level.png";
@@ -122,7 +121,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-{/* 
+      {/* 
       <div className="chartsWork">
         <div className="innerChart_d">
           <BarChart

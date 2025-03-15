@@ -17,8 +17,11 @@ import {
 import useGql from "../lib/graphql/gql";
 import { CREATE_REPRESENTATIVE } from "../lib/graphql/queries/representative";
 
-
-const RepresentativeDialog = ({ subDialogOpen, handleSubDialogClose,client }) => {
+const RepresentativeDialog = ({
+  subDialogOpen,
+  handleSubDialogClose,
+  client,
+}) => {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       name: "",
@@ -32,7 +35,7 @@ const RepresentativeDialog = ({ subDialogOpen, handleSubDialogClose,client }) =>
     const data = await useGql({
       query: CREATE_REPRESENTATIVE,
       queryName: "",
-      queryType:"mutation",
+      queryType: "mutation",
       variables: {
         input: {
           representative: formData,
@@ -46,8 +49,8 @@ const RepresentativeDialog = ({ subDialogOpen, handleSubDialogClose,client }) =>
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
 
-    const formData = {...data,client:client.id};
-   
+    const formData = { ...data, client: client.id };
+
     try {
       await createRepresentative(formData); // Wait for API call to complete
       handleSubDialogClose(); // Close dialog only after the API call
@@ -62,7 +65,6 @@ const RepresentativeDialog = ({ subDialogOpen, handleSubDialogClose,client }) =>
     <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
       <DialogTitle>Adding representative for {client?.name}</DialogTitle>
       <DialogContent>
-        
         <Controller
           name="name"
           control={control}

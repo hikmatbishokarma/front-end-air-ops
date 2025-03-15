@@ -1,70 +1,85 @@
-import React, { useEffect, useState } from 'react'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow,Paper, Box, Button, Switch, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material"
-import useGql from '../../lib/graphql/gql';
-import { GET_AIRCRAFT_CATEGORIES } from '../../lib/graphql/queries/aircraft-categories';
-import { useSnackbar } from '../../SnackbarContext';
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Box,
+  Button,
+  Switch,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import useGql from "../../lib/graphql/gql";
+import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
+import { useSnackbar } from "../../SnackbarContext";
 import moment from "moment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { AircraftCategoryCreate } from './create';
-import { AircraftCategoryEdit } from './edit';
+import { AircraftCategoryCreate } from "./create";
+import { AircraftCategoryEdit } from "./edit";
 
-export const AircraftCategoryList=()=>{
+export const AircraftCategoryList = () => {
+  const showSnackbar = useSnackbar();
 
-    const showSnackbar = useSnackbar();
+  const [categories, setCategories] = useState<any>([]);
+  const [open, setOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [currentRecordId, setCurrentRecordId] = useState("");
 
-    const [categories,setCategories]=useState<any>([])
-      const [open, setOpen] = useState(false);
-      const [isEdit,setIsEdit]=useState(false)
-      const [currentRecordId,setCurrentRecordId]=useState('')
+  const handleOpen = () => {
+    setOpen(true);
+    setIsEdit(false);
+  };
 
-    const handleOpen = () => {
-        setOpen(true)
-         setIsEdit(false)};
+  const getCategories = async () => {
+    try {
+      const data = await useGql({
+        query: GET_AIRCRAFT_CATEGORIES,
+        queryName: "aircraftCategories",
+        queryType: "query",
+        variables: {},
+      });
 
-    const getCategories=async()=>{
-        try{
-            const data = await useGql({
-                query: GET_AIRCRAFT_CATEGORIES,
-                queryName: "aircraftCategories",
-                queryType: "query",
-                variables: {},
-              });
-
-              console.log("data:hghg",data)
-              if(!data) showSnackbar("Failed to fetch categories!", "error")
-            setCategories(data)
-        }catch(error){
-            showSnackbar(error.message||"Failed to fetch categories!", "error")
-        }
+      console.log("data:hghg", data);
+      if (!data) showSnackbar("Failed to fetch categories!", "error");
+      setCategories(data);
+    } catch (error) {
+      showSnackbar(error.message || "Failed to fetch categories!", "error");
     }
+  };
 
-    useEffect(()=>{
-        getCategories()
-    },[])
+  useEffect(() => {
+    getCategories();
+  }, []);
 
-    const handleEdit = (id) => {
-       setIsEdit(true)
-       setOpen(true)
-       setCurrentRecordId(id)
-      };
+  const handleEdit = (id) => {
+    setIsEdit(true);
+    setOpen(true);
+    setCurrentRecordId(id);
+  };
 
-      const handleDelete = (id) => {
-        //TODO
-       };
+  const handleDelete = (id) => {
+    //TODO
+  };
 
- const handleClose = () => setOpen(false);
+  const handleClose = () => setOpen(false);
 
-// Function to refresh category list
-const refreshList = async () => {
-  // Fetch updated categories from API
-  await getCategories(); 
-};
+  // Function to refresh category list
+  const refreshList = async () => {
+    // Fetch updated categories from API
+    await getCategories();
+  };
 
-
-    return (
-        <>
-         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+  return (
+    <>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
         <Button
           variant="contained"
           color="primary"
@@ -74,47 +89,70 @@ const refreshList = async () => {
           Create Role
         </Button>
       </Box>
-        <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Category Name</TableCell>
-                  <TableCell>isActive</TableCell>
-                  <TableCell>Modified Date</TableCell>
-                  <TableCell>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {categories?.map((category, index) => (
-                  <TableRow key={category.id}>
-                    <TableCell>{category.name}</TableCell>
-                    <TableCell><Switch checked={category.isActive} size="small" /></TableCell>
-                    <TableCell>{moment(category.updatedAt).format("DD-MM-YYYY")}</TableCell>
-                    <TableCell>
-            {/* Edit Button */}
-            <IconButton color="primary" onClick={() => handleEdit(category.id)}>
-              <EditIcon />
-            </IconButton>
-            
-            {/* Delete Button */}
-            <IconButton color="secondary" onClick={() => handleDelete(category.id)}>
-              <DeleteIcon />
-            </IconButton>
-          </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Dialog
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Category Name</TableCell>
+              <TableCell>isActive</TableCell>
+              <TableCell>Modified Date</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {categories?.map((category, index) => (
+              <TableRow key={category.id}>
+                <TableCell>{category.name}</TableCell>
+                <TableCell>
+                  <Switch checked={category.isActive} size="small" />
+                </TableCell>
+                <TableCell>
+                  {moment(category.updatedAt).format("DD-MM-YYYY")}
+                </TableCell>
+                <TableCell>
+                  {/* Edit Button */}
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleEdit(category.id)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+
+                  {/* Delete Button */}
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDelete(category.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Dialog
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>{isEdit?"Edit Aircraft Category":'Edit Aircraft Category'}</DialogTitle>
+        <DialogTitle>
+          {isEdit ? "Edit Aircraft Category" : "Edit Aircraft Category"}
+        </DialogTitle>
         <DialogContent>
-         {isEdit?<AircraftCategoryEdit id={currentRecordId } onClose={handleClose} refreshList={refreshList}/>:<AircraftCategoryCreate onClose={handleClose} refreshList={refreshList}/>} 
+          {isEdit ? (
+            <AircraftCategoryEdit
+              id={currentRecordId}
+              onClose={handleClose}
+              refreshList={refreshList}
+            />
+          ) : (
+            <AircraftCategoryCreate
+              onClose={handleClose}
+              refreshList={refreshList}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">
@@ -122,6 +160,6 @@ const refreshList = async () => {
           </Button>
         </DialogActions>
       </Dialog>
-          </>
-    )
-}
+    </>
+  );
+};

@@ -65,6 +65,10 @@ export const GET_QUOTE_BY_ID = gql`
         total
         unit
       }
+      representative {
+        id
+        name
+      }
     }
   }
 `;
@@ -74,5 +78,11 @@ export const UPDATE_QUOTE = gql`
     updateOneQuote(input: $input) {
       id
     }
+  }
+`;
+
+export const SHOW_PREVIEW = gql`
+  query showPreview($id: String!) {
+    showPreview(id: $id)
   }
 `;

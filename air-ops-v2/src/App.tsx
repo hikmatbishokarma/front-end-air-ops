@@ -100,8 +100,7 @@ export default function App() {
   const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);
 
   React.useEffect(() => {
-
-    console.log("session::!11",session)
+    console.log("session::!11", session);
     if (session) {
       const accessResources = session?.user?.role?.accessPermissions?.map(
         (item) => item.resource,
