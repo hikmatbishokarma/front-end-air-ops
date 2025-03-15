@@ -23,10 +23,10 @@ import {
 } from "../../lib/graphql/queries/aircraft-detail";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { IaircraftCategory, Isepcification } from "../../interfaces/quote.interface";
-
-
-
+import {
+  IaircraftCategory,
+  Isepcification,
+} from "../../interfaces/quote.interface";
 
 type FormData = {
   name: string;
@@ -80,7 +80,10 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("code", aircraftDetailData.code || "");
       setValue("description", aircraftDetailData.description || "");
       setValue("category", aircraftDetailData.category.id || "");
-      setValue("termsAndConditions", aircraftDetailData.termsAndConditions || "");
+      setValue(
+        "termsAndConditions",
+        aircraftDetailData.termsAndConditions || "",
+      );
     }
   }, [aircraftDetailData, setValue]);
 

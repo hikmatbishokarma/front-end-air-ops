@@ -218,17 +218,8 @@ const AirportsAutocomplete = ({ value, onChange, label }: any) => {
 
   return (
     <Autocomplete
-      sx={(theme) => ({
-        display: "inline-block",
-        "& input": {
-          width: "100%",
-          padding: "4px 4px",
-          marginTop: "8px",
-          bgcolor: "background.paper",
-          color: theme.palette.getContrastText(theme.palette.background.paper),
-        },
-      })}
-      getOptionLabel={(option) => `${option.iata_code}`}
+      // getOptionLabel={(option) => `${option.iata_code}`}
+      getOptionLabel={(option) => `${option.iata_code}, ${option.city}`}
       options={options}
       value={selectedOption}
       onInputChange={(event, newValue) => {
@@ -240,20 +231,33 @@ const AirportsAutocomplete = ({ value, onChange, label }: any) => {
         setInputValue(selectedOption ? selectedOption.iata_code : "");
       }}
       renderOption={(props, option) => (
-        <li {...props} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+        <li
+          {...props}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
           <span style={{ fontWeight: "bold" }}>{option.iata_code}</span>
           <span>{`${option.city}, ${option.name}`}</span>
         </li>
       )}
       renderInput={(params) => (
-        <div ref={params.InputProps.ref}>
-          <input type="text" {...params.inputProps} value={inputValue} />
-        </div>
+        <TextField
+          {...params}
+          label={label}
+          fullWidth
+          size="small"
+          variant="outlined"
+          sx={{
+            minHeight: "50px",
+            "& .MuiInputBase-root": { minHeight: "50px" },
+          }}
+        />
       )}
     />
   );
 };
-
-
 
 export default AirportsAutocomplete;
