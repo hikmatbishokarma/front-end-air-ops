@@ -74,7 +74,7 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           {
-            path: '/',
+            path: "/",
             Component: DashboardPage,
           },
 
@@ -83,8 +83,8 @@ const router = createBrowserRouter([
             Component: AircraftCategoryList,
           },
           {
-            path:'/aircraft',
-            Component:AircraftDetailList
+            path: "/aircraft",
+            Component: AircraftDetailList,
           },
           {
             path: "flight-form",
