@@ -336,7 +336,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
               className="form_Work"
               style={{ padding: "20px", flex: 0.5 }}
             >
-             
               {activeStep === 0 && (
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={4}>

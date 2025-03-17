@@ -65,6 +65,7 @@ import RoleEdit from "./pages/role/edit";
 import ChangePassword from "./pages/settings/change-password";
 import { AircraftCategoryList } from "./pages/aircraft-category/list";
 import { AircraftDetailList } from "./pages/aircraft-detail/list";
+import { AirpotList } from "./pages/airports/list";
 const router = createBrowserRouter([
   {
     Component: App,
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
           {
             path: "/aircraft",
             Component: AircraftDetailList,
+          },
+          {
+            path: "/airports",
+            Component: AirpotList,
           },
           {
             path: "flight-form",

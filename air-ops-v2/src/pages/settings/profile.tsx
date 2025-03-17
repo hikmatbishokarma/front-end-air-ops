@@ -20,6 +20,7 @@ import { GET_USER_BY_ID, UPDATE_USER } from "../../lib/graphql/queries/user";
 import { useSession } from "../../SessionContext";
 import "../main.css";
 import { useSnackbar } from "../../SnackbarContext";
+import CityAutocomplete from "../../components/city-autocomplete";
 
 interface FormData {
   name: string;
@@ -225,13 +226,20 @@ export const UserProfile = () => {
               </Grid>
               <Grid item xs={6}>
                 <label htmlFor="City">City</label>
-                <TextField
+                {/* <TextField
                   fullWidth
                   variant="outlined"
                   size="small"
                   type="city"
                   {...register("city")}
-                />
+                /> */}
+                <Controller
+                                            name='city'
+                                            control={control}
+                                            render={({ field }) => (
+                                              <CityAutocomplete {...field} label="City" />
+                                            )}
+                                          />
               </Grid>
             </Grid>
             <Button
