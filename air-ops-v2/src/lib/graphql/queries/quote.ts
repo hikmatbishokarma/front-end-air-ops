@@ -26,6 +26,7 @@ export const GET_QUOTES = gql`
         providerType
         updatedAt
         referenceNumber
+        version
         aircraft {
           id
           name

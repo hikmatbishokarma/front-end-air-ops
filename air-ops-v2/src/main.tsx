@@ -66,6 +66,7 @@ import ChangePassword from "./pages/settings/change-password";
 import { AircraftCategoryList } from "./pages/aircraft-category/list";
 import { AircraftDetailList } from "./pages/aircraft-detail/list";
 import { AirpotList } from "./pages/airports/list";
+import Login from "./pages/login";
 const router = createBrowserRouter([
   {
     Component: App,
@@ -141,15 +142,20 @@ const router = createBrowserRouter([
           },
         ],
       },
-      {
-        path: "/sign-in",
-        Component: SignIn,
-      },
+      // {
+      //   path: "/sign-in",
+      //   Component: SignIn,
+      // },
 
+      // {
+      //   path: "/sign-up",
+      //   // Component: Login,
+      //   Component: SignUp,
+      // },
       {
-        path: "/sign-up",
+        path: "/login",
         // Component: Login,
-        Component: SignUp,
+        Component: Login,
       },
     ],
   },
