@@ -50,7 +50,7 @@ export const QuoteList = () => {
             refrenceNo: quote.referenceNumber,
             status: QuoteStatus[quote.status],
             requester: quote.requestedBy.name,
-            // representative: quote.representative.name,
+            version: quote.version,
             itinerary: quote.itinerary
               .map((itinerary: any) => {
                 return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
@@ -95,6 +95,7 @@ export const QuoteList = () => {
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Requester</TableCell>
               <TableCell align="right">Itinenary</TableCell>
+              <TableCell align="right">Version</TableCell>
               <TableCell align="right">Action</TableCell>
             </TableRow>
           </TableHead>
@@ -111,6 +112,7 @@ export const QuoteList = () => {
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell align="right">{row.itinerary}</TableCell>
+                <TableCell align="right">{row.version}</TableCell>
                 <TableCell>
                   {/* Edit Button */}
                   <IconButton
