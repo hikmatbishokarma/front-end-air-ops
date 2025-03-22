@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import { GET_AIRPORTS } from "../lib/graphql/queries/airports";
@@ -24,7 +23,7 @@ const CityAutocomplete = ({ value, onChange, label }: any) => {
           queryType: "query",
           variables: {
             filter: {
-                name: { iLike: inputValue }
+              name: { iLike: inputValue },
             },
           },
         });
@@ -78,7 +77,6 @@ const CityAutocomplete = ({ value, onChange, label }: any) => {
 
   return (
     <Autocomplete
-     
       getOptionLabel={(option) => option.name}
       options={options}
       value={selectedOption}

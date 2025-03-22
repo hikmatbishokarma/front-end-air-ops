@@ -87,3 +87,25 @@ export const SHOW_PREVIEW = gql`
     showPreview(id: $id)
   }
 `;
+
+export const GENERATE_QUOTE_PDF = gql`
+  mutation generateQuotePdf($input: GenerateQuotePdfInput!) {
+    generateQuotePdf(input: $input)
+  }
+`;
+
+export const UPDATE_QUOTE_STATUS = gql`
+  mutation updateQuoteStatus($input: UpdateQuoteStatusInput!) {
+    updateQuotationStatus(input: $input) {
+      id
+    }
+  }
+`;
+
+export const UPGRAD_QUOTE = gql`
+  mutation upgradQuote($code: String!) {
+    upgradeQuote(code: $code) {
+      id
+    }
+  }
+`;

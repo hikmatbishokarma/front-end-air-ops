@@ -104,8 +104,8 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
-      latitude:Number(data.latitude),
-      longitude:Number(data.longitude)
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
     };
 
     UpdateAirport(id, formattedData);
@@ -114,10 +114,10 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
   };
 
   const editFields = [
-    { name: "name", label: "Airport Name", xs: 6  },
-    { name: "iata_code", label: "IATA Code" , xs: 6},
+    { name: "name", label: "Airport Name", xs: 6 },
+    { name: "iata_code", label: "IATA Code", xs: 6 },
     { name: "icao_code", label: "ICAO Code", xs: 6 },
-    { name: "city", label: "City", xs: 6,options:[]  },
+    { name: "city", label: "City", xs: 6, options: [] },
     { name: "country", label: "Country", xs: 6 },
     { name: "latitude", label: "Latitude", type: "number", xs: 6 },
     { name: "longitude", label: "Longitude", type: "number", xs: 6 },

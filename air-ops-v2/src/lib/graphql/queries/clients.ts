@@ -22,3 +22,25 @@ export const CREATE_CLIENT = gql`
     }
   }
 `;
+
+export const UPDATE_CLIENT = gql`
+  mutation updateClient($input: UpdateOneClientInput!) {
+    updateOneClient(input: $input) {
+      id
+    }
+  }
+`;
+
+export const GET_CLIENT_BY_ID = gql`
+  query getClient($id: ID!) {
+    client(id: $id) {
+      id
+      isCompany
+      isPerson
+      name
+      phone
+      email
+      address
+    }
+  }
+`;
