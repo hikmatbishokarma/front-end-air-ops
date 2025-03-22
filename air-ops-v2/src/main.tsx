@@ -76,20 +76,20 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           {
-            path: "/",
+            path: "",
             Component: DashboardPage,
           },
 
           {
-            path: "/category",
+            path: "category",
             Component: AircraftCategoryList,
           },
           {
-            path: "/aircraft",
+            path: "aircraft",
             Component: AircraftDetailList,
           },
           {
-            path: "/airports",
+            path: "airports",
             Component: AirpotList,
           },
           {

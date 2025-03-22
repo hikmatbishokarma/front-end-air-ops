@@ -6,6 +6,10 @@ import {
   TextField,
   Switch,
   FormControlLabel,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import { Controller, Control, SubmitHandler } from "react-hook-form";
 import ReactQuill from "react-quill";
@@ -27,7 +31,7 @@ interface ReusableFormProps {
   defaultValues?: any;
 }
 
-const AirportChildren: React.FC<ReusableFormProps> = ({
+const ClientChildren: React.FC<ReusableFormProps> = ({
   control,
   onSubmit,
   fields,
@@ -47,10 +51,24 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
               render={({ field: controllerField }) => {
                 if (field.options) {
                   return (
-                    <CityAutocomplete
-                      {...controllerField}
-                      label={field.label}
-                    />
+                    <FormControl component="fieldset" margin="normal">
+                      <FormLabel component="legend">Select Type</FormLabel>
+                      <RadioGroup
+                        {...field}
+                        row // Makes the radio buttons appear in a row
+                      >
+                        <FormControlLabel
+                          value="COMPANY"
+                          control={<Radio />}
+                          label="Company"
+                        />
+                        <FormControlLabel
+                          value="PERSON"
+                          control={<Radio />}
+                          label="Person"
+                        />
+                      </RadioGroup>
+                    </FormControl>
                   );
                 } else
                   return (
@@ -78,4 +96,4 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
   );
 };
 
-export default AirportChildren;
+export default ClientChildren;

@@ -52,7 +52,7 @@ export const AirportCreate = ({ onClose, refreshList }) => {
     { name: "name", label: "Airport Name" },
     { name: "iata_code", label: "IATA Code" },
     { name: "icao_code", label: "ICAO Code", xs: 6 },
-    { name: "city", label: "City", xs: 6,options:[] },
+    { name: "city", label: "City", xs: 6, options: [] },
     { name: "country", label: "Country", xs: 6 },
     { name: "latitude", label: "Latitude", type: "number", xs: 6 },
     { name: "longitude", label: "Longitude", type: "number", xs: 6 },
@@ -70,8 +70,7 @@ export const AirportCreate = ({ onClose, refreshList }) => {
       if (!data || data.errors) {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
         showSnackbar(data?.errors?.[0]?.message, "error");
-      }else  showSnackbar("Created Successfully", "success");
-     
+      } else showSnackbar("Created Successfully", "success");
     } catch (error) {
       showSnackbar(error.message || "Failed to create categories!", "error");
     }
@@ -80,8 +79,8 @@ export const AirportCreate = ({ onClose, refreshList }) => {
   const onSubmit = (data: FormValues) => {
     const formattedData = {
       ...data,
-      latitude:Number(data.latitude),
-      longitude:Number(data.longitude)
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
     };
 
     CreateAirport(formattedData);

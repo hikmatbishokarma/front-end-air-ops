@@ -16,6 +16,8 @@ export interface Iclient {
   phone: string;
   email: string;
   address: string;
+  isCompany: boolean;
+  isPerson: boolean;
 }
 
 export interface Irepresentative {

@@ -234,12 +234,12 @@ export const UserProfile = () => {
                   {...register("city")}
                 /> */}
                 <Controller
-                                            name='city'
-                                            control={control}
-                                            render={({ field }) => (
-                                              <CityAutocomplete {...field} label="City" />
-                                            )}
-                                          />
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <CityAutocomplete {...field} label="City" />
+                  )}
+                />
               </Grid>
             </Grid>
             <Button

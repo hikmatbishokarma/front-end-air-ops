@@ -26,7 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { AirportCreate } from "./create";
 import { AirportEdit } from "./edit";
 import { GET_AIRPORTS } from "../../lib/graphql/queries/airports";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 export const AirpotList = () => {
   const showSnackbar = useSnackbar();
@@ -47,7 +47,7 @@ export const AirpotList = () => {
         query: GET_AIRPORTS,
         queryName: "airports",
         queryType: "query",
-        variables: {paging: {limit: 20}},
+        variables: { paging: { limit: 20 } },
       });
 
       if (!data) showSnackbar("Failed to fetch categories!", "error");
@@ -79,44 +79,44 @@ export const AirpotList = () => {
     await getAirports();
   };
 
-//   const paginationModel = { page: 0, pageSize: 10 };
+  //   const paginationModel = { page: 0, pageSize: 10 };
 
-//   const columns: GridColDef[] = [
-   
-//     { field: 'name', headerName: 'Name',  },
-//     { field: 'iata_code', headerName: 'IATA Code',},
-//     {
-//       field: 'icao_code',
-//       headerName: 'ICAO Code'
-//     },
-//     {
-//         field: 'city',
-//         headerName: 'City'
-//       },
-//       {
-//         field: "actions",
-//         headerName: "Actions",
-//         sortable: false,
-//         width: 150,
-//         renderCell: (params) => (
-//           <>
-//             <IconButton
-//               color="primary"
-//               onClick={() => handleEdit(params.row.id)}
-//             >
-//               <EditIcon />
-//             </IconButton>
-//             <IconButton
-//               color="error"
-//               onClick={() => handleDelete(params.row.id)}
-//             >
-//               <DeleteIcon />
-//             </IconButton>
-//           </>
-//         ),
-//       },
-  
-//   ];
+  //   const columns: GridColDef[] = [
+
+  //     { field: 'name', headerName: 'Name',  },
+  //     { field: 'iata_code', headerName: 'IATA Code',},
+  //     {
+  //       field: 'icao_code',
+  //       headerName: 'ICAO Code'
+  //     },
+  //     {
+  //         field: 'city',
+  //         headerName: 'City'
+  //       },
+  //       {
+  //         field: "actions",
+  //         headerName: "Actions",
+  //         sortable: false,
+  //         width: 150,
+  //         renderCell: (params) => (
+  //           <>
+  //             <IconButton
+  //               color="primary"
+  //               onClick={() => handleEdit(params.row.id)}
+  //             >
+  //               <EditIcon />
+  //             </IconButton>
+  //             <IconButton
+  //               color="error"
+  //               onClick={() => handleDelete(params.row.id)}
+  //             >
+  //               <DeleteIcon />
+  //             </IconButton>
+  //           </>
+  //         ),
+  //       },
+
+  //   ];
 
   return (
     <>
@@ -149,7 +149,6 @@ export const AirpotList = () => {
                 <TableCell>{item?.icao_code}</TableCell>
                 <TableCell>{item?.city}</TableCell>
                 <TableCell>
-                 
                   <IconButton
                     color="primary"
                     onClick={() => handleEdit(item.id)}
@@ -157,7 +156,6 @@ export const AirpotList = () => {
                     <EditIcon />
                   </IconButton>
 
-                 
                   <IconButton
                     color="secondary"
                     onClick={() => handleDelete(item.id)}
@@ -170,7 +168,7 @@ export const AirpotList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-       {/* <DataGrid
+      {/* <DataGrid
         rows={airport}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
