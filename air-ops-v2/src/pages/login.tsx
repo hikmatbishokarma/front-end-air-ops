@@ -11,25 +11,27 @@ import {
   Modal,
   FormControlLabel,
   Checkbox,
-  Typography,
-} from "@mui/material";
+  Container,
+  Typography, } from "@mui/material";
 import { useForm } from "react-hook-form";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LockPersonOutlinedIcon from "@mui/icons-material/LockPersonOutlined";
-import {
-  Email,
-  Lock,
-  Visibility,
-  VisibilityOff,
-  Person,
-  CheckCircle,
-} from "@mui/icons-material";
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
+import {    Email,
+    Lock,
+    Visibility,
+    VisibilityOff,
+    Person,
+    CheckCircle, } from "@mui/icons-material";
 import { ISession, useSession } from "../SessionContext";
 import { useNavigate } from "react-router";
 import { FORGOT_PASSWORD, SIGN_IN, SIGN_UP } from "../lib/graphql/queries/auth";
 import useGql from "../lib/graphql/gql";
 import CloseIcon from "@mui/icons-material/Close";
-
+import bgtwo from "../Asset/Images/backimg.jpeg";
+import pfIMG from "../Asset/Images/profile_view.PNG";
+import leftLogo from "../Asset/Images/Left-side-logo.png"
 export default function Login() {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -176,16 +178,35 @@ export default function Login() {
   };
 
   return (
-    <Box
+    <>
+
+<Box className="login"
       sx={{
-        width: 300,
-        mx: "auto",
-        mt: 5,
-        p: 3,
-        boxShadow: 3,
-        borderRadius: 2,
+           // display: "flex",
+        // justifyContent: "center",
+        // alignItems: "center",
+        height: "100vh",
+        // backgroundColor: "#f4f4f4",
+        // p: 2,
+        backgroundImage: `url(${bgtwo})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center center  !important",
+        backgroundAttachment:"fixed !important",
       }}
     >
+      <Container maxWidth="md" className="cnter-top">
+      <Grid container >
+      <Grid  item xs={12} md={6}>
+      <img className="left-side-logo" src={leftLogo} alt="Company Logo" />
+  </Grid>
+      <Grid  item xs={12} md={6}>
+     
+
+    <Box className="snpage-view" sx={{ width: 350, mx: "auto", mt: 5, p: 3, boxShadow: 3, borderRadius: 2 }}>
+    <Grid  item xs={12} md={12}>
+      <img className="pfimg-icon" src={pfIMG} alt="Company Logo" width={65} />
+      </Grid>
       <Tabs value={tabIndex} onChange={handleTabChange} variant="fullWidth">
         <Tab label="Sign In" />
         <Tab label="Sign Up" />
@@ -432,5 +453,12 @@ export default function Login() {
         </Box>
       </Modal>
     </Box>
+    </Grid>
+    </Grid>
+    </Container>
+
+    </Box>
+
+    </>
   );
 }
