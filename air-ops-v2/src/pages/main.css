@@ -174,3 +174,55 @@
     padding: 12px;
     margin-top: 6%;
 }
+
+/*signin page styles*/
+.paper-view-test{
+    background-color: transparent !important;
+    box-shadow: none !important;
+    padding-top: 80px;
+}
+
+/* =============    Button css     --------------- */
+.css-a8dfo2-MuiButtonBase-root-MuiButton-root{
+    background-color: #001551 !important;
+}
+.css-da42ny-MuiButtonBase-root-MuiButton-root{
+    background-color: #001551 !important;
+}
+.css-x64w7o-MuiButtonBase-root-MuiButton-root{
+    background-color: red !important;
+    color: #ffffff !important;
+}
+.css-41x60c-MuiButtonBase-root-MuiButton-root{
+    background-color: #001551 !important;
+}
+/* =============    Change password page styles     --------------- */
+.icon-svg-password .css-4uxqju-MuiSvgIcon-root{
+    height: 12px;
+    width: 12px;
+}
+
+/* =============    login page styles     --------------- */
+.snpage-view{
+    background-color: #fff;
+}
+.pfimg-icon{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.left-side-logo{
+    width: 250px;
+    height: 250px;
+    margin-top: 50px;
+
+}
+.cnter-top{
+    padding-top: 50px;
+}
+.css-pl4ugn-MuiButtonBase-root-MuiButton-root{
+    background-color: #001551 !important;
+}
+.css-echumz-MuiButtonBase-root-MuiButton-root{
+    background-color: #001551 !important;
+}
