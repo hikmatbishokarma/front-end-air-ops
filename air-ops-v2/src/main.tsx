@@ -67,100 +67,101 @@ import { AircraftCategoryList } from "./pages/aircraft-category/list";
 import { AircraftDetailList } from "./pages/aircraft-detail/list";
 import { AirpotList } from "./pages/airports/list";
 import Login from "./pages/login";
-const router = createBrowserRouter([
-  {
-    Component: App,
-    children: [
-      {
-        path: "/",
-        Component: Layout,
-        children: [
-          {
-            path: "",
-            Component: DashboardPage,
-          },
+const router = createBrowserRouter(
+  [
+    {
+      Component: App,
+      children: [
+        {
+          path: "/",
+          Component: Layout,
+          children: [
+            {
+              path: "",
+              Component: DashboardPage,
+            },
 
-          {
-            path: "category",
-            Component: AircraftCategoryList,
-          },
-          {
-            path: "aircraft",
-            Component: AircraftDetailList,
-          },
-          {
-            path: "airports",
-            Component: AirpotList,
-          },
-          {
-            path: "flight-form",
-            Component: PriceCreate,
-          },
-          {
-            path: "quotes",
-            Component: QuoteList,
-          },
-          {
-            path: "quotes/edit/:id",
-            Component: QuoteEdit,
-          },
-          // {
-          //   path: "prices",
-          //   Component: PriceList,
-          // },
-          // {
-          //   path: "prices/edit/:id",
-          //   Component: PriceEdit,
-          // },
-          {
-            path: "roles",
-            Component: RoleList,
-          },
-          {
-            path: "roles/create",
-            Component: RoleCreate,
-          },
-          {
-            path: "roles/edit/:id",
-            Component: RoleEdit,
-          },
-          {
-            path: "users",
-            Component: UserList,
-          },
-          {
-            path: "users/create",
-            Component: UserCreate,
-          },
-          {
-            path: "settings/profile",
-            Component: UserProfile,
-          },
-          {
-            path: "settings/change-password",
-            Component: ChangePassword,
-          },
-        ],
-      },
-      // {
-      //   path: "/sign-in",
-      //   Component: SignIn,
-      // },
+            {
+              path: "category",
+              Component: AircraftCategoryList,
+            },
+            {
+              path: "aircraft",
+              Component: AircraftDetailList,
+            },
+            {
+              path: "airports",
+              Component: AirpotList,
+            },
+            {
+              path: "flight-form",
+              Component: PriceCreate,
+            },
+            {
+              path: "quotes",
+              Component: QuoteList,
+            },
+            {
+              path: "quotes/edit/:id",
+              Component: QuoteEdit,
+            },
+            // {
+            //   path: "prices",
+            //   Component: PriceList,
+            // },
+            // {
+            //   path: "prices/edit/:id",
+            //   Component: PriceEdit,
+            // },
+            {
+              path: "roles",
+              Component: RoleList,
+            },
+            {
+              path: "roles/create",
+              Component: RoleCreate,
+            },
+            {
+              path: "roles/edit/:id",
+              Component: RoleEdit,
+            },
+            {
+              path: "users",
+              Component: UserList,
+            },
+            {
+              path: "users/create",
+              Component: UserCreate,
+            },
+            {
+              path: "settings/profile",
+              Component: UserProfile,
+            },
+            {
+              path: "settings/change-password",
+              Component: ChangePassword,
+            },
+          ],
+        },
+        // {
+        //   path: "/sign-in",
+        //   Component: SignIn,
+        // },
 
-      // {
-      //   path: "/sign-up",
-      //   // Component: Login,
-      //   Component: SignUp,
-      // },
-      {
-        path: "/login",
-        // Component: Login,
-        Component: Login,
-      },
-    ],
-  },
-],
-{ basename: "/test" } // ✅ Add this
+        // {
+        //   path: "/sign-up",
+        //   // Component: Login,
+        //   Component: SignUp,
+        // },
+        {
+          path: "/login",
+          // Component: Login,
+          Component: Login,
+        },
+      ],
+    },
+  ],
+  { basename: "/test" }, // ✅ Add this
 );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

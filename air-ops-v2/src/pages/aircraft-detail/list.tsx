@@ -87,7 +87,7 @@ export const AircraftDetailList = () => {
           onClick={handleOpen}
           sx={{ marginBottom: 2 }}
         >
-          Create Role
+          Create
         </Button>
       </Box>
       <TableContainer component={Paper}>

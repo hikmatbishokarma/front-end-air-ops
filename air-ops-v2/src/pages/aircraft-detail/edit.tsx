@@ -148,7 +148,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
             name="name"
             control={control}
             render={({ field }) => (
-              <TextField {...field} size="small" label="Name" fullWidth />
+              <TextField {...field} size="small" label="Name" fullWidth  InputLabelProps={{ shrink: !!field.value }}  />
             )}
           />
         </Grid>
@@ -157,7 +157,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
             name="code"
             control={control}
             render={({ field }) => (
-              <TextField {...field} size="small" label="Code" fullWidth />
+              <TextField {...field} size="small" label="Code" fullWidth  InputLabelProps={{ shrink: !!field.value }} />
             )}
           />
         </Grid>
@@ -166,7 +166,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
             name="image"
             control={control}
             render={({ field }) => (
-              <TextField {...field} size="small" label="Image url" fullWidth />
+              <TextField {...field} size="small" label="Image url" fullWidth  InputLabelProps={{ shrink: !!field.value }} />
             )}
           />
         </Grid>
@@ -181,6 +181,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
                 label="Description"
                 fullWidth
                 multiline
+                InputLabelProps={{ shrink: !!field.value }}
               />
             )}
           />

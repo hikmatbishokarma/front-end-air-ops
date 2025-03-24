@@ -21,6 +21,8 @@ type FormData = {
 export const EditClient = ({ id }) => {
   const showSnackbar = useSnackbar();
 
+  console.log("EditClient:::", id);
+
   const editFields = [
     { name: "type", label: "Type", options: [] },
     { name: "name", label: "Name", xs: 6 },
