@@ -13,14 +13,14 @@ import { EditClient } from "./edit";
 const ClientDialog = ({
   subDialogOpen,
   handleSubDialogClose,
-  clientId,
+  clientId = "",
   isEdit = false,
 }) => {
   return (
     <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
       <DialogTitle>{isEdit ? "Edit" : "Add"} Requested By Details</DialogTitle>
       <DialogContent>
-        {isEdit ? <CreateClient /> : <EditClient id={clientId} />}
+        {isEdit ? <EditClient id={clientId} /> : <CreateClient />}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubDialogClose} color="primary">

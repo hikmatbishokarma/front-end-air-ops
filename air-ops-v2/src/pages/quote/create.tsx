@@ -31,12 +31,12 @@ import useGql from "../../lib/graphql/gql";
 import { CREATE_QUOTE } from "../../lib/graphql/queries/quote";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
-import RequestedByDialog from "../../components/client-form";
 import { useSnackbar } from "../../SnackbarContext";
 
-import RepresentativeDialog from "../../components/representative";
 import { IaircraftCategory, Iclient } from "../../interfaces/quote.interface";
 import { useQuoteData } from "../../hooks/useQuoteData";
+import ClientDialog from "../clients/dialog";
+import RepresentativeDialog from "../representative/dialog";
 
 const defaultValues = {
   requestedBy: "",
@@ -307,11 +307,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
       total: 0, // Calculate total
     });
   };
-
-  const newFeeOption = [
-    { label: "pilot fee", id: 1 },
-    { label: "Pulp Fiction", id: 2 },
-  ];
 
   return (
     <>
@@ -797,7 +792,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                               min: { value: 1, message: "Must be > 0" },
                             }}
                             render={({ field }) => (
-                              
                               <TextField
                                 {...field}
                                 label="Price"
@@ -941,13 +935,23 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <RequestedByDialog
+      {/* <RequestedByDialog
+        subDialogOpen={subDialogOpen}
+        handleSubDialogClose={handleSubDialogClose}
+      /> */}
+      <ClientDialog
         subDialogOpen={subDialogOpen}
         handleSubDialogClose={handleSubDialogClose}
       />
-      <RepresentativeDialog
+      {/* <RepresentativeDialog
         subDialogOpen={representativeDialogOpen}
         handleSubDialogClose={handleRepresentativeDialogClose}
+        client={selectedClient}
+      /> */}
+
+      <RepresentativeDialog
+        dialogOpen={representativeDialogOpen}
+        handleDialogClose={handleRepresentativeDialogClose}
         client={selectedClient}
       />
     </>

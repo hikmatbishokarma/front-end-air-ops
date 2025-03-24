@@ -36,7 +36,9 @@ export const GET_REPRESENTATIVE_BY_ID = gql`
     representative(id: $id) {
       id
       name
+      email
       phone
+      address
     }
   }
 `;

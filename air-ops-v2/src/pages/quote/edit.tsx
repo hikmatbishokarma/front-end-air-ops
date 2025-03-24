@@ -32,12 +32,18 @@ import AddIcon from "@mui/icons-material/Add";
 import AirportsAutocomplete from "../../components/airport-autocommplete";
 
 import { useQuoteData } from "../../hooks/useQuoteData";
-import { IaircraftCategory, Iclient } from "../../interfaces/quote.interface";
+import {
+  IaircraftCategory,
+  Iclient,
+  Irepresentative,
+} from "../../interfaces/quote.interface";
 
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
+import ClientDialog from "../clients/dialog";
+import RepresentativeDialog from "../representative/dialog";
 
 const QuoteEdit = () => {
   const { id } = useParams();
@@ -50,11 +56,14 @@ const QuoteEdit = () => {
     clients,
     fetchAircrafts,
     fetchRepresentatives,
+    fetchClients,
   } = useQuoteData();
   const [selectedAircraftCategory, setSelectedAircraftCategory] =
     useState<IaircraftCategory | null>(null);
 
   const [selectedClient, setSelectedClient] = useState<Iclient | null>();
+  const [selectedRepresentative, setSelectedRepresentative] =
+    useState<Irepresentative | null>();
 
   const {
     fields: itineraryFields,
@@ -80,6 +89,10 @@ const QuoteEdit = () => {
     { title: string; start: string; end: string }[]
   >([]);
 
+  const [subDialogOpen, setSubDialogOpen] = useState(false);
+  const [representativeDialogOpen, setRepresentativeDialogOpen] =
+    useState(false);
+
   // Fetch existing quote details
 
   const fetchQuote = async () => {
@@ -95,15 +108,15 @@ const QuoteEdit = () => {
       setValue("referenceNo", response.referenceNo);
       setValue("status", response.status);
       setValue("requestedBy", response.requestedBy.id);
-      setValue("representative", response.representative);
+      setValue("representative", response.representative.id);
       setSelectedAircraftCategory(response.category);
       setValue("category", response.category.id);
       setValue("aircraft", response.aircraft.id);
       setValue("itinerary", response.itinerary);
       setValue("prices", response.prices);
       setValue("grandTotal", response.grandTotal);
-      setValue("representative", response.representative.id);
-      setSelectedClient(response.requestedBy.id);
+      setSelectedRepresentative(response.representative);
+      setSelectedClient(response.requestedBy);
     }
 
     setLoading(false);
@@ -199,6 +212,16 @@ const QuoteEdit = () => {
 
   const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
+
+  const handleSubDialogClose = async () => {
+    setSubDialogOpen(false);
+    await fetchClients();
+  };
+
+  const handleRepresentativeDialogClose = async () => {
+    setRepresentativeDialogOpen(false);
+    await fetchClients();
+  };
 
   if (loading) return <p>Loading...</p>;
 
@@ -731,7 +754,7 @@ const QuoteEdit = () => {
                 <Button
                   variant="outlined"
                   startIcon={<AddIcon />}
-                  // onClick={() => setSubDialogOpen(true)}
+                  onClick={() => setSubDialogOpen(true)}
                 >
                   Edit Client
                 </Button>
@@ -760,6 +783,7 @@ const QuoteEdit = () => {
                           : null
                       }
                       onChange={(_, newValue) => {
+                        setSelectedRepresentative(newValue);
                         field.onChange(newValue ? newValue.id : ""); // Update only the selected value
                       }}
                       renderInput={(params) => (
@@ -778,7 +802,7 @@ const QuoteEdit = () => {
                 <Button
                   variant="outlined"
                   startIcon={<AddIcon />}
-                  // onClick={() => setRepresentativeDialogOpen(true)}
+                  onClick={() => setRepresentativeDialogOpen(true)}
                 >
                   Edit Rep
                 </Button>
@@ -1266,6 +1290,20 @@ const QuoteEdit = () => {
             )}
           </Box>
         </form>
+        <ClientDialog
+          subDialogOpen={subDialogOpen}
+          handleSubDialogClose={handleSubDialogClose}
+          clientId={selectedClient?.id}
+          isEdit={true}
+        />
+
+        <RepresentativeDialog
+          dialogOpen={representativeDialogOpen}
+          handleDialogClose={handleRepresentativeDialogClose}
+          client={selectedClient}
+          representativeId={selectedRepresentative?.id}
+          isEdit={true}
+        />
       </Box>
     </>
   );

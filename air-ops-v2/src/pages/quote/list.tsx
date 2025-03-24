@@ -17,9 +17,13 @@ import {
   TextField,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { QuoteStatus } from "../../lib/utils";
+
 import useGql from "../../lib/graphql/gql";
-import { GENERATE_QUOTE_PDF, GET_QUOTES, SHOW_PREVIEW } from "../../lib/graphql/queries/quote";
+import {
+  GENERATE_QUOTE_PDF,
+  GET_QUOTES,
+  SHOW_PREVIEW,
+} from "../../lib/graphql/queries/quote";
 import QuoteCreate from "./create";
 import { Outlet, useNavigate } from "react-router";
 import { GET_LOGIN, SIGN_IN } from "../../lib/graphql/queries/auth";
@@ -27,8 +31,10 @@ import { useSnackbar } from "../../SnackbarContext";
 import EditIcon from "@mui/icons-material/Edit";
 import PreviewIcon from "@mui/icons-material/Preview";
 import QuotePreview from "../../components/quote-preview";
-import EmailIcon from '@mui/icons-material/Email';
-import SendIcon from '@mui/icons-material/Send';
+import EmailIcon from "@mui/icons-material/Email";
+import SendIcon from "@mui/icons-material/Send";
+import QuotationWorkflowField from "./fields/quota-workflow-field";
+import { QuotationStatus } from "../../lib/utils";
 
 export const QuoteList = () => {
   const navigate = useNavigate();
@@ -56,9 +62,11 @@ export const QuoteList = () => {
           return {
             id: quote.id,
             refrenceNo: quote.referenceNumber,
-            status: QuoteStatus[quote.status],
+            status: QuotationStatus[quote.status],
             requester: quote.requestedBy.name,
             version: quote.version,
+            revision:quote.revision,
+            revisedQuoteNo:quote.revision?`${quote.referenceNumber}/R${quote.revision}`:"",
             itinerary: quote.itinerary
               .map((itinerary: any) => {
                 return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
@@ -66,6 +74,7 @@ export const QuoteList = () => {
               .join(", "),
             createdAt: quote.createdAt,
             updatedAt: quote.updatedAt,
+            code: quote.code,
           };
         });
       });
@@ -132,13 +141,18 @@ export const QuoteList = () => {
     setShowEmailDialog(false);
   };
 
+  const refreshList = async () => {
+    
+    await getQuotes();
+  };
+
   return (
     <>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+              <TableCell>Quotation No</TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Requester</TableCell>
               <TableCell align="right">Itinenary</TableCell>
@@ -155,14 +169,21 @@ export const QuoteList = () => {
                 // onClick={() => navigate(`/quotes/edit/${row.id}`)}
               >
                 <TableCell component="th" scope="row">
-                  {row.refrenceNo}
+                  {row.revisedQuoteNo?row.revisedQuoteNo:row.refrenceNo}
                 </TableCell>
-                <TableCell align="right">{row.status}</TableCell>
+                <TableCell align="right">
+                  <QuotationWorkflowField
+                    status={row.status}
+                    id={row.id}
+                    code={row.code}
+                    refreshList={refreshList}
+                  />
+                </TableCell>
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell align="right">{row.itinerary}</TableCell>
                 <TableCell align="right">{row.version}</TableCell>
                 <TableCell align="right">
-                <IconButton
+                  <IconButton
                     color="primary"
                     onClick={() => handelPreview(row.id)}
                   >
@@ -170,8 +191,6 @@ export const QuoteList = () => {
                   </IconButton>
                 </TableCell>
                 <TableCell>
-                 
-                
                   <IconButton
                     color="secondary"
                     onClick={() => navigate(`/quotes/edit/${row.id}`)}
@@ -218,41 +237,36 @@ export const QuoteList = () => {
         onClose={() => setShowEmailDialog(false)}
         fullWidth
         maxWidth="xs" // Smaller size
-  sx={{ "& .MuiDialog-paper": { width: "auto", padding: 2 } }} // Adjust width
+        sx={{ "& .MuiDialog-paper": { width: "auto", padding: 2 } }} // Adjust width
       >
         <DialogTitle>Send Quote via email</DialogTitle>
         <DialogContent>
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+              size="small"
+              margin="normal"
+              value={clientEmail}
+              onChange={(e) => {
+                setClientEmail(e.target.value);
+                validateEmail(e.target.value);
+              }}
+              error={error}
+              helperText={helperText}
+            />
 
- <TextField
-            fullWidth
-            label="Email"
-            variant="outlined"
-            size="small"
-            margin="normal"
-            value={clientEmail}
-            onChange={(e) => {
-              setClientEmail(e.target.value);
-              validateEmail(e.target.value);
-            }}
-            error={error}
-            helperText={helperText}
-          />
-
-
- <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            onClick={handelSendQuoteThroughEmail}
-            endIcon={<SendIcon />}
-          >
-            Send
-          </Button>
-          
-
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={handelSendQuoteThroughEmail}
+              endIcon={<SendIcon />}
+            >
+              Send
+            </Button>
           </Box>
-         
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowEmailDialog(false)} color="secondary">

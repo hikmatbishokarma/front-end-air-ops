@@ -17,6 +17,7 @@ export const GET_QUOTES = gql`
     quotes(filter: $filter, paging: $paging, sorting: $sorting) {
       nodes {
         id
+        code
         requestedBy {
           id
           name
@@ -27,6 +28,7 @@ export const GET_QUOTES = gql`
         updatedAt
         referenceNumber
         version
+        revision
         aircraft {
           id
           name
@@ -40,6 +42,7 @@ export const GET_QUOTE_BY_ID = gql`
   query getQuote($id: ID!) {
     quote(id: $id) {
       id
+      code
       requestedBy {
         id
         name
