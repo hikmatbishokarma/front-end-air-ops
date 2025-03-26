@@ -21,6 +21,7 @@ import {
 } from "../../lib/graphql/queries/aircraft-detail";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import FileUpload from "../../components/fileupload";
 
 interface sepcification {
   icon: string;
@@ -143,7 +144,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Controller
             name="image"
             control={control}
@@ -151,7 +152,18 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
               <TextField {...field} size="small" label="Image Url" fullWidth />
             )}
           />
-        </Grid>
+        </Grid> */}
+         <Grid item xs={12}>
+    <Controller
+      name="image"
+      control={control}
+      render={({ field }) => (
+        <FileUpload
+          onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+        />
+      )}
+    />
+  </Grid>
         <Grid item xs={12}>
           <Controller
             name="description"
