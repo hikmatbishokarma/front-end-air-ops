@@ -1,15 +1,22 @@
+// export enum QuotationStatus {
+//   NEW_REQUEST = "new request",
+//   QUOTED = "quoted",
+//   CANCELLED = "cancelled",
+//   CONFIRMED = "confirmed",
+//   OPTION = "option",
+//   BOOKED = "booked",
+//   CONTRACT_SENT = "contract sent",
+//   INVOICE_SENT = "invoice sent",
+//   BRIEFING_SENT = "briefing sent",
+//   DONE = "done",
+//   UPGRADED = "upgraded",
+// }
+
 export enum QuotationStatus {
-  NEW_REQUEST = "new request",
-  QUOTED = "quoted",
-  CANCELLED = "cancelled",
-  CONFIRMED = "confirmed",
-  OPTION = "option",
-  BOOKED = "booked",
-  CONTRACT_SENT = "contract sent",
-  INVOICE_SENT = "invoice sent",
-  BRIEFING_SENT = "briefing sent",
-  DONE = "done",
-  UPGRADED = "upgraded",
+  QUOTE = "Quote",
+  PROFOMA_INVOICE = "Proforma Invoice",
+  TAX_INVOICE = "Tax Invoice",
+  CANCELLED = "Cancelled",
 }
 
 export const removeTypename = (obj: any): any => {
@@ -23,4 +30,8 @@ export const removeTypename = (obj: any): any => {
     }, {} as any);
   }
   return obj;
+};
+
+export const getStatusKeyByValue = (obj, value) => {
+  return Object.keys(obj).find((key) => obj[key] === value);
 };

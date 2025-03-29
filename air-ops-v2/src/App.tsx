@@ -17,6 +17,7 @@ import {
   Person,
   Handyman,
   Settings,
+  AccountBalance,
 } from "@mui/icons-material";
 import logoPhn from "./Asset/images/logo_phn.png";
 import { ISession, SessionProvider } from "./SessionContext";
@@ -32,48 +33,104 @@ export const NAVIGATION: Navigation = [
     segment: "",
     icon: <DashboardIcon />,
   },
-  {
-    segment: "quotes",
-    title: "Requests/Quotes",
-    icon: <RequestQuote />,
-  },
-
-  {
-    segment: "category",
-    title: "Category",
-    icon: <ShoppingCartIcon />,
-  },
-  {
-    segment: "aircraft",
-    title: "Aircraft Detail",
-    icon: <ShoppingCartIcon />,
-  },
-  {
-    segment: "airports",
-    title: "Airports",
-    icon: <ShoppingCartIcon />,
-  },
   // {
-  //   segment: "prices",
-  //   title: "Prices",
-  //   icon: <PriceChange />,
+  //   segment: "quotes",
+  //   title: "Requests/Quotes",
+  //   icon: <RequestQuote />,
   // },
+
+
 
   {
     segment: "operations",
-    title: "Operations",
+    title: "Ops",
     icon: <Handyman />,
   },
   {
-    segment: "users",
-    title: "Users",
+    segment: "security",
+    title: "Security",
+    icon: <Handyman />,
+  },
+
+  {
+    segment: "camo",
+    title: "CAMO",
+    icon: <Person />,
+  },
+
+  
+  {
+    segment: "engineering",
+    title: "Engineering",
     icon: <Person />,
   },
 
   {
-    segment: "roles",
-    title: "Role",
-    icon: <ManageAccounts />,
+    segment: "crew",
+    title: "CREW",
+    icon: <Person />,
+  },
+
+  {
+    segment: "training-sales",
+    title: "Training & Sales",
+    icon: <Person />,
+  },
+  {
+    segment: "manuals",
+    title: "Manuals",
+    icon: <Person />,
+  },
+
+  {
+    segment: "accounts",
+    title: "Accounts",
+    icon: <AccountBalance />,
+  },
+
+  {
+    segment: "audit",
+    title: "Audit",
+    icon: <Person />,
+  },
+
+  // {
+  //   segment: "roles",
+  //   title: "Role",
+  //   icon: <ManageAccounts />,
+  // },
+
+  {
+    segment: "admin", 
+    title: "Admin",
+    icon: <Settings />,
+    children:[{
+      segment: "roles",
+      title: "Role",
+      icon: <ManageAccounts />,
+    },
+  
+    {
+      segment: "category",
+      title: "Category",
+      icon: <ShoppingCartIcon />,
+    },
+    {
+      segment: "aircraft",
+      title: "Aircraft Detail",
+      icon: <ShoppingCartIcon />,
+    },
+    {
+      segment: "airports",
+      title: "Airports",
+      icon: <ShoppingCartIcon />,
+    },
+    {
+      segment: "users",
+      title: "Users",
+      icon: <Person />,
+    },
+  ]
   },
   {
     segment: "settings",

@@ -29,6 +29,6 @@ export interface Irepresentative {
 }
 
 export interface Isepcification {
-  icon: string;
-  name: string;
+  title: string;
+  value: string;
 }

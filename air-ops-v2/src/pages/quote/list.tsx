@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Grid,
   IconButton,
@@ -15,6 +16,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -23,6 +25,8 @@ import {
   GENERATE_QUOTE_PDF,
   GET_QUOTES,
   SHOW_PREVIEW,
+  UPDATE_QUOTE_STATUS,
+  UPGRAD_QUOTE,
 } from "../../lib/graphql/queries/quote";
 import QuoteCreate from "./create";
 import { Outlet, useNavigate } from "react-router";
@@ -34,9 +38,12 @@ import QuotePreview from "../../components/quote-preview";
 import EmailIcon from "@mui/icons-material/Email";
 import SendIcon from "@mui/icons-material/Send";
 import QuotationWorkflowField from "./fields/quota-workflow-field";
-import { QuotationStatus } from "../../lib/utils";
+import { getStatusKeyByValue, QuotationStatus } from "../../lib/utils";
 
-export const QuoteList = () => {
+import QuotationWorkflowUpgradeConfirmation from "./quotation-workflow-upgrade-confirmation";
+import QuotationCancellationConfirmation from "./quotation-cancellation";
+
+export const QuoteList = ({filter}) => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
   const [isNewQuote, setIsNewQuote] = useState(false);
@@ -48,6 +55,9 @@ export const QuoteList = () => {
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
   const [currentId, setCurrentId] = useState();
+  
+ 
+
 
   const getQuotes = async () => {
     try {
@@ -55,18 +65,20 @@ export const QuoteList = () => {
         query: GET_QUOTES,
         queryName: "quotes",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: filter
+        },
       });
       setRows(() => {
         return data.map((quote: any) => {
           return {
             id: quote.id,
-            refrenceNo: quote.referenceNumber,
+            quotationNo:quote?.quotationNo,
+            revisedQuotationNo:quote?.revisedQuotationNo,
             status: QuotationStatus[quote.status],
             requester: quote.requestedBy.name,
             version: quote.version,
             revision:quote.revision,
-            revisedQuoteNo:quote.revision?`${quote.referenceNumber}/R${quote.revision}`:"",
             itinerary: quote.itinerary
               .map((itinerary: any) => {
                 return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
@@ -85,7 +97,7 @@ export const QuoteList = () => {
 
   useEffect(() => {
     getQuotes();
-  }, []);
+  }, [filter]);
 
   const handelPreview = async (quoteId) => {
     const result = await useGql({
@@ -98,6 +110,7 @@ export const QuoteList = () => {
     if (!result) {
       showSnackbar("Internal server error!", "error");
     }
+    setCurrentId(quoteId)
     setPreviewData(result);
     setShowPreview(true);
   };
@@ -146,6 +159,76 @@ export const QuoteList = () => {
     await getQuotes();
   };
 
+
+  const updateQuoteStatus = async (id, toStatus) => {
+    try {
+      const data = await useGql({
+        query: UPDATE_QUOTE_STATUS,
+        queryName: "",
+        queryType: "mutation",
+        variables: {
+          input: {
+            id: id,
+            status: getStatusKeyByValue(QuotationStatus, toStatus),
+          },
+        },
+      });
+
+      if (data?.errors?.length > 0) {
+        showSnackbar("Failed To Update status!", "error");
+      } else showSnackbar("Update status!", "success");
+    } catch (error) {
+      showSnackbar(error?.message || "Failed To Update Status!", "error");
+    }
+    finally{
+      refreshList()
+    }
+  };
+
+
+   const handelCancellation = async (id) => {
+   
+      try {
+        await updateQuoteStatus(id, QuotationStatus.CANCELLED);
+       
+      } catch (error) {
+        console.error("Error transitioning state:", error);
+      } finally {
+       
+      }
+    };
+
+    const upgradQuote = async (code) => {
+      try {
+        const data = await useGql({
+          query: UPGRAD_QUOTE,
+          queryName: "",
+          queryType: "mutation",
+          variables: {
+            code: code,
+          },
+        });
+  
+        if (data?.errors?.length > 0) {
+          showSnackbar("Failed To Update status!", "error");
+        } else showSnackbar("Update status!", "success");
+      } catch (error) {
+        showSnackbar(error?.message || "Failed To Update Status!", "error");
+      }
+    };
+
+    
+  const handleUpgradeClick = async (code) => {
+    try {
+      await upgradQuote(code);
+    } catch (error) {
+      console.error("Error upgrading quotation:", error);
+    } finally {
+      refreshList()
+    }
+  };
+
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -156,8 +239,8 @@ export const QuoteList = () => {
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Requester</TableCell>
               <TableCell align="right">Itinenary</TableCell>
-              <TableCell align="right">Version</TableCell>
-              <TableCell align="right">Preview</TableCell>
+              {/* <TableCell align="right">Version</TableCell> */}
+              {/* <TableCell align="right">Preview</TableCell> */}
               <TableCell align="right">Action</TableCell>
             </TableRow>
           </TableHead>
@@ -166,55 +249,71 @@ export const QuoteList = () => {
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                // onClick={() => navigate(`/quotes/edit/${row.id}`)}
+                //onClick={() => handelPreview(row.id)}
               >
                 <TableCell component="th" scope="row">
-                  {row.revisedQuoteNo?row.revisedQuoteNo:row.refrenceNo}
+                  {row.revisedQuotationNo||row.quotationNo}
                 </TableCell>
-                <TableCell align="right">
-                  <QuotationWorkflowField
-                    status={row.status}
-                    id={row.id}
-                    code={row.code}
-                    refreshList={refreshList}
-                  />
-                </TableCell>
+                <TableCell align="right">{row.status}</TableCell>
+               
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell align="right">{row.itinerary}</TableCell>
-                <TableCell align="right">{row.version}</TableCell>
-                <TableCell align="right">
+                
+                <TableCell>
+                 
                   <IconButton
                     color="primary"
                     onClick={() => handelPreview(row.id)}
                   >
                     <PreviewIcon fontSize="small" />
                   </IconButton>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => navigate(`/quotes/edit/${row.id}`)}
-                  >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
+
+
+                  {QuotationStatus.QUOTE == row.status && (<>
+
+                    <Tooltip title="Cancel">
+                    <IconButton
+                 
+                >
+                  <QuotationCancellationConfirmation
+                   onCancellation={()=>handelCancellation(row.id)}
+                    quotationNo={row.revisedQuotationNo||row.quotationNo}
+                     quotationId={row.id} />
+                </IconButton>
+                </Tooltip>
+
+                    <Tooltip title="Upgrade">
+            <IconButton size="small">
+              <QuotationWorkflowUpgradeConfirmation
+                onUpgrade={()=>handleUpgradeClick(row.code)}
+                currentState={row.status}
+                code={row.code}
+              />
+            </IconButton>
+          </Tooltip>
+                  </>
+                
+                
+                )}
+
+                  {/* <IconButton
                     color="primary"
                     onClick={() => handelEmailNotification(row.id)}
                   >
                     <EmailIcon fontSize="small" />
-                  </IconButton>
+                  </IconButton> */}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
+      {/* <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
         <Button variant="contained" onClick={() => setIsNewQuote(true)}>
           NEW QUOTE
         </Button>
-      </Box>
-      <QuoteCreate isNewQuote={isNewQuote} setIsNewQuote={setIsNewQuote} />
+      </Box> */}
+      {/* <QuoteCreate isNewQuote={isNewQuote} setIsNewQuote={setIsNewQuote} /> */}
 
       <Dialog
         open={showPreview}
@@ -223,8 +322,9 @@ export const QuoteList = () => {
         maxWidth="md"
       >
         <DialogTitle> Quote Preview</DialogTitle>
+
         <DialogContent>
-          <QuotePreview htmlContent={previewData} />
+          <QuotePreview htmlContent={previewData} currentId={currentId} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowPreview(false)} color="secondary">
@@ -274,6 +374,7 @@ export const QuoteList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
     </>
   );
 };
