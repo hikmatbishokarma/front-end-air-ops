@@ -37,6 +37,7 @@ import { IaircraftCategory, Iclient } from "../../interfaces/quote.interface";
 import { useQuoteData } from "../../hooks/useQuoteData";
 import ClientDialog from "../clients/dialog";
 import RepresentativeDialog from "../representative/dialog";
+import { useNavigate } from "react-router";
 
 const defaultValues = {
   requestedBy: "",
@@ -69,7 +70,10 @@ const defaultValues = {
   grandTotal: 0,
 };
 
-export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
+export const QuoteCreate = ( ) => {
+
+   const navigate = useNavigate();
+
   const showSnackbar = useSnackbar();
   const [subDialogOpen, setSubDialogOpen] = useState(false);
   const [representativeDialogOpen, setRepresentativeDialogOpen] =
@@ -146,7 +150,8 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
   const onSubmit = (data: any) => {
     console.log("Form Data:", data);
     createQuote(data);
-    setIsNewQuote(false);
+    // setIsNewQuote(false);
+    navigate("/");
     reset();
   };
 
@@ -310,7 +315,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
 
   return (
     <>
-      <Dialog
+      {/* <Dialog
         open={isNewQuote}
         onClose={() => setIsNewQuote(false)}
         maxWidth="lg"
@@ -356,7 +361,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           }
                           onChange={(_, newValue) => {
                             setSelectedClient(newValue);
-                            field.onChange(newValue ? newValue.id : ""); // Update only the selected value
+                            field.onChange(newValue ? newValue.id : ""); 
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -402,7 +407,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                               : null
                           }
                           onChange={(_, newValue) => {
-                            field.onChange(newValue ? newValue.id : ""); // Update only the selected value
+                            field.onChange(newValue ? newValue.id : ""); 
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -489,7 +494,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
               )}
               {activeStep === 1 && (
                 <Box sx={{ display: "flex", mt: 5 }}>
-                  {/* Left Section - Itinerary Form */}
+                 
                   <Box sx={{ flex: 0.4, pr: 2 }}>
                     {itineraryFields.map((item, index) => (
                       <Grid
@@ -499,7 +504,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                         alignItems="center"
                         sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
                       >
-                        {/* Source and Destination in one line */}
+                       
                         <Grid item xs={6}>
                           <Controller
                             name={`itinerary.${index}.source`}
@@ -522,7 +527,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Departure Date and Time in one line */}
                         <Grid item xs={6}>
                           <LocalizationProvider dateAdapter={AdapterMoment}>
                             <Controller
@@ -578,7 +582,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           </LocalizationProvider>
                         </Grid>
 
-                        {/* Arrival Date and Time in one line */}
+                      
                         <Grid item xs={6}>
                           <LocalizationProvider dateAdapter={AdapterMoment}>
                             <Controller
@@ -634,7 +638,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           </LocalizationProvider>
                         </Grid>
 
-                        {/* PAX Number */}
+                      
                         <Grid item xs={6}>
                           <Controller
                             name={`itinerary.${index}.paxNumber`}
@@ -651,15 +655,13 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Remove Itinerary Button */}
+                     
                         <Grid
                           item
                           xs={6}
                           sx={{ display: "flex", justifyContent: "flex-end" }}
                         >
-                          {/* <IconButton onClick={() => removeItinerary(index)} color="error">
-            <Delete fontSize="small" />
-          </IconButton> */}
+                         
                           <Button
                             variant="outlined"
                             startIcon={<Delete />}
@@ -681,7 +683,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                     </Button>
                   </Box>
 
-                  {/* Right Section - Calendar */}
+        
                   <Box
                     sx={{
                       flex: 0.6,
@@ -741,7 +743,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                         sx={{ mb: 3 }}
                         alignItems="center"
                       >
-                        {/* Label (Wider) */}
+                       
                         <Grid item xs={3}>
                           <Controller
                             name={`prices.${index}.label`}
@@ -758,7 +760,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Unit */}
+                        
                         <Grid item xs={1.5}>
                           <Controller
                             name={`prices.${index}.unit`}
@@ -782,7 +784,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Price */}
+                       
                         <Grid item xs={1.5}>
                           <Controller
                             name={`prices.${index}.price`}
@@ -798,12 +800,12 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                                 type="number"
                                 fullWidth
                                 size="small"
-                                // onChange={(e) => handlePriceChange(index, "price", e.target.value)}
+                               
                                 onChange={(e) => {
                                   const value = e.target.value
                                     ? Number(e.target.value)
                                     : "";
-                                  field.onChange(value); // ✅ Convert value to number before updating the form
+                                  field.onChange(value); 
                                   handlePriceChange(index, "price", value);
                                 }}
                               />
@@ -811,7 +813,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Currency */}
+                       
                         <Grid item xs={1.5}>
                           <Controller
                             name={`prices.${index}.currency`}
@@ -828,7 +830,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Margin */}
+         
                         <Grid item xs={1.5}>
                           <Controller
                             name={`prices.${index}.margin`}
@@ -849,7 +851,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Total (Disabled) */}
+                       
                         <Grid item xs={2}>
                           <Controller
                             name={`prices.${index}.total`}
@@ -867,7 +869,6 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                           />
                         </Grid>
 
-                        {/* Delete Button */}
                         <Grid item xs={1}>
                           <IconButton
                             onClick={() => removePrice(index)}
@@ -885,7 +886,7 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                     </IconButton>
                   </Grid>
                   <Grid container spacing={2} sx={{ mt: 2 }}>
-                    {/* Total Currency Display */}
+                   
                     <Grid item xs={1.5}>
                       <span>TOTAL</span>
                     </Grid>
@@ -893,10 +894,10 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
                       <span>INR</span>
                     </Grid>
 
-                    {/* Grand Total Display */}
+                   
                     <Grid item xs={2}>
                       <TextField
-                        value={grandTotal} // Use `useWatch` value
+                        value={grandTotal} 
                         type="number"
                         fullWidth
                         size="small"
@@ -927,28 +928,626 @@ export const QuoteCreate = ({ isNewQuote, setIsNewQuote }) => {
               </Box>
             </form>
           </Box>
-          {/* </div> */}
+ 
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsNewQuote(false)} color="primary">
             Cancel
           </Button>
         </DialogActions>
-      </Dialog>
-      {/* <RequestedByDialog
-        subDialogOpen={subDialogOpen}
-        handleSubDialogClose={handleSubDialogClose}
-      /> */}
+      </Dialog> */}
+   
+   <Box sx={{ width: "100%" }}>
+            <Stepper activeStep={activeStep} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="form_Work"
+              style={{ padding: "20px", flex: 0.5 }}
+            >
+              {activeStep === 0 && (
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={4}>
+                    <Typography sx={{ whiteSpace: "nowrap" }}>
+                      Requested by:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Controller
+                      name="requestedBy"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={clients}
+                          getOptionLabel={(option) => option.name}
+                          value={
+                            field.value
+                              ? clients.find(
+                                  (client) => client.id === field.value,
+                                )
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            setSelectedClient(newValue);
+                            field.onChange(newValue ? newValue.id : ""); 
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              fullWidth
+                              label="Requested By"
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={() => setSubDialogOpen(true)}
+                    >
+                      Add Client
+                    </Button>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Typography sx={{ whiteSpace: "nowrap" }}>
+                      Representative:
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Controller
+                      name="representative"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={representatives}
+                          getOptionLabel={(option) => option.name}
+                          value={
+                            field.value
+                              ? representatives.find(
+                                  (representative) =>
+                                    representative.id === field.value,
+                                )
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            field.onChange(newValue ? newValue.id : ""); 
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              fullWidth
+                              label="Representative"
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    {" "}
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={() => setRepresentativeDialogOpen(true)}
+                    >
+                      Add Rep
+                    </Button>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Typography sx={{ whiteSpace: "nowrap" }}>
+                      Category:
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Controller
+                      name="category"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={aircraftCategories}
+                          getOptionLabel={(option: any) => option?.name}
+                          value={selectedAircraftCategory}
+                          onChange={(_, newValue) => {
+                            setSelectedAircraftCategory(newValue);
+                            field.onChange(newValue?.id || "");
+                          }}
+                          renderInput={(params) => (
+                            <TextField {...params} fullWidth label="Category" />
+                          )}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Typography sx={{ whiteSpace: "nowrap" }}>
+                      Aircraft:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Controller
+                      name="aircraft"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={aircrafts}
+                          getOptionLabel={(option) => option.code}
+                          value={
+                            field.value
+                              ? aircrafts.find(
+                                  (aircraft) => aircraft.id === field.value,
+                                )
+                              : null
+                          }
+                          onChange={(_, value) => {
+                            field.onChange(value ? value.id : "");
+                          }}
+                          renderInput={(params) => (
+                            <TextField {...params} fullWidth label="Aircraft" />
+                          )}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              )}
+              {activeStep === 1 && (
+                <Box sx={{ display: "flex", mt: 5 }}>
+                 
+                  <Box sx={{ flex: 0.4, pr: 2 }}>
+                    {itineraryFields.map((item, index) => (
+                      <Grid
+                        container
+                        spacing={2}
+                        key={item.id}
+                        alignItems="center"
+                        sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
+                      >
+                       
+                        <Grid item xs={6}>
+                          <Controller
+                            name={`itinerary.${index}.source`}
+                            control={control}
+                            render={({ field }) => (
+                              <AirportsAutocomplete {...field} label="Source" />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Controller
+                            name={`itinerary.${index}.destination`}
+                            control={control}
+                            render={({ field }) => (
+                              <AirportsAutocomplete
+                                {...field}
+                                label="Destination"
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <Controller
+                              name={`itinerary.${index}.depatureDate`}
+                              control={control}
+                              render={({ field }) => (
+                                <DatePicker
+                                  {...field}
+                                  format="DD-MM-YYYY"
+                                  value={
+                                    field.value ? moment(field.value) : null
+                                  }
+                                  onChange={(newValue) =>
+                                    field.onChange(newValue)
+                                  }
+                                  slotProps={{
+                                    textField: {
+                                      fullWidth: true,
+                                      size: "small",
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <Controller
+                              name={`itinerary.${index}.depatureTime`}
+                              control={control}
+                              render={({ field }) => (
+                                <TimeField
+                                  {...field}
+                                  value={
+                                    field.value
+                                      ? moment(field.value, "HH:mm")
+                                      : null
+                                  }
+                                  onChange={(newValue) =>
+                                    field.onChange(
+                                      newValue
+                                        ? moment(newValue).format("HH:mm")
+                                        : "",
+                                    )
+                                  }
+                                  label="Departure Time"
+                                  size="small"
+                                  format="HH:mm"
+                                />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        </Grid>
+
+                      
+                        <Grid item xs={6}>
+                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <Controller
+                              name={`itinerary.${index}.arrivalDate`}
+                              control={control}
+                              render={({ field }) => (
+                                <DatePicker
+                                  {...field}
+                                  format="DD-MM-YYYY"
+                                  value={
+                                    field.value ? moment(field.value) : null
+                                  }
+                                  onChange={(newValue) =>
+                                    field.onChange(newValue)
+                                  }
+                                  slotProps={{
+                                    textField: {
+                                      fullWidth: true,
+                                      size: "small",
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <Controller
+                              name={`itinerary.${index}.arrivalTime`}
+                              control={control}
+                              render={({ field }) => (
+                                <TimeField
+                                  {...field}
+                                  value={
+                                    field.value
+                                      ? moment(field.value, "HH:mm")
+                                      : null
+                                  }
+                                  onChange={(newValue) =>
+                                    field.onChange(
+                                      newValue
+                                        ? moment(newValue).format("HH:mm")
+                                        : "",
+                                    )
+                                  }
+                                  label="Arrival Time"
+                                  size="small"
+                                  format="HH:mm"
+                                />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        </Grid>
+
+                      
+                        <Grid item xs={6}>
+                          <Controller
+                            name={`itinerary.${index}.paxNumber`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                type="number"
+                                fullWidth
+                                size="small"
+                                label="PAX"
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                     
+                        <Grid
+                          item
+                          xs={6}
+                          sx={{ display: "flex", justifyContent: "flex-end" }}
+                        >
+                         
+                          <Button
+                            variant="outlined"
+                            startIcon={<Delete />}
+                            onClick={() => removeItinerary(index)}
+                            color="error"
+                          >
+                            Remove
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    ))}
+
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={addItinerary}
+                    >
+                      Add Itinerary
+                    </Button>
+                  </Box>
+
+        
+                  <Box
+                    sx={{
+                      flex: 0.6,
+                      backgroundColor: "#fff",
+                      borderLeft: "1px solid grey",
+                      paddingLeft: "8px",
+                    }}
+                  >
+                    <Typography variant="h6" gutterBottom>
+                      Calendar
+                    </Typography>
+
+                    <FullCalendar
+                      plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+                      initialView="dayGridMonth"
+                      headerToolbar={{
+                        left: "prev,next today",
+                        center: "title",
+                        right: "dayGridMonth,timeGridWeek,timeGridDay",
+                      }}
+                      events={events}
+                    />
+                  </Box>
+                </Box>
+              )}
+              {activeStep === 2 && (
+                <Box sx={{ mt: 5 }}>
+                  <Grid container spacing={2} sx={{ mb: 3 }}>
+                    <Grid item xs={3}>
+                      <h4 style={{ margin: "0px" }}>Label</h4>
+                    </Grid>
+                    <Grid item xs={1.5}>
+                      <h4 style={{ margin: "0px" }}>Unit</h4>
+                    </Grid>
+                    <Grid item xs={0.5}>
+                      <h4 style={{ margin: "0px" }}>X</h4>
+                    </Grid>
+                    <Grid item xs={1.5}>
+                      <h4 style={{ margin: "0px" }}>Price</h4>
+                    </Grid>
+                    <Grid item xs={1.5}>
+                      <h4 style={{ margin: "0px" }}>Currency</h4>
+                    </Grid>
+                    <Grid item xs={1.5}>
+                      <h4 style={{ margin: "0px" }}>Margin (%)</h4>
+                    </Grid>
+                    <Grid item xs={1.5}>
+                      <h4 style={{ margin: "0px" }}>Total</h4>
+                    </Grid>
+                  </Grid>
+                  {priceFields.map((field, index) => (
+                    <>
+                      <Grid
+                        container
+                        key={field.id}
+                        spacing={2}
+                        sx={{ mb: 3 }}
+                        alignItems="center"
+                      >
+                       
+                        <Grid item xs={3}>
+                          <Controller
+                            name={`prices.${index}.label`}
+                            control={control}
+                            rules={{ required: "Label is required" }}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Label"
+                                fullWidth
+                                size="small"
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                        
+                        <Grid item xs={1.5}>
+                          <Controller
+                            name={`prices.${index}.unit`}
+                            control={control}
+                            rules={{ required: "Unit is required" }}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Unit"
+                                fullWidth
+                                size="small"
+                                onChange={(e) =>
+                                  handlePriceChange(
+                                    index,
+                                    "unit",
+                                    e.target.value,
+                                  )
+                                }
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                       
+                        <Grid item xs={1.5}>
+                          <Controller
+                            name={`prices.${index}.price`}
+                            control={control}
+                            rules={{
+                              required: "Price is required",
+                              min: { value: 1, message: "Must be > 0" },
+                            }}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Price"
+                                type="number"
+                                fullWidth
+                                size="small"
+                               
+                                onChange={(e) => {
+                                  const value = e.target.value
+                                    ? Number(e.target.value)
+                                    : "";
+                                  field.onChange(value); 
+                                  handlePriceChange(index, "price", value);
+                                }}
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                       
+                        <Grid item xs={1.5}>
+                          <Controller
+                            name={`prices.${index}.currency`}
+                            control={control}
+                            rules={{ required: "Currency is required" }}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Currency"
+                                fullWidth
+                                size="small"
+                              />
+                            )}
+                          />
+                        </Grid>
+
+         
+                        <Grid item xs={1.5}>
+                          <Controller
+                            name={`prices.${index}.margin`}
+                            control={control}
+                            rules={{
+                              required: "Margin is required",
+                              min: { value: 0, message: "Cannot be negative" },
+                            }}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Margin (%)"
+                                type="number"
+                                fullWidth
+                                size="small"
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                       
+                        <Grid item xs={2}>
+                          <Controller
+                            name={`prices.${index}.total`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField
+                                {...field}
+                                label="Total"
+                                type="number"
+                                fullWidth
+                                size="small"
+                                disabled
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                        <Grid item xs={1}>
+                          <IconButton
+                            onClick={() => removePrice(index)}
+                            color="error"
+                          >
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                    </>
+                  ))}
+                  <Grid item xs={1.5}>
+                    <IconButton aria-label="Add" onClick={handleAddFee}>
+                      <AddIcon />
+                    </IconButton>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ mt: 2 }}>
+                   
+                    <Grid item xs={1.5}>
+                      <span>TOTAL</span>
+                    </Grid>
+                    <Grid item xs={1.5}>
+                      <span>INR</span>
+                    </Grid>
+
+                   
+                    <Grid item xs={2}>
+                      <TextField
+                        value={grandTotal} 
+                        type="number"
+                        fullWidth
+                        size="small"
+                        disabled
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", p: 3 }}
+              >
+                <Button disabled={activeStep === 0} onClick={handleBack}>
+                  Back
+                </Button>
+                {activeStep === steps.length - 1 ? (
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                    <Button type="submit" variant="contained" color="success">
+                      Submit
+                    </Button>
+                  </Box>
+                ) : (
+                  <Button variant="contained" onClick={handleNext}>
+                    Next
+                  </Button>
+                )}
+              </Box>
+            </form>
+          </Box>
+ 
       <ClientDialog
         subDialogOpen={subDialogOpen}
         handleSubDialogClose={handleSubDialogClose}
       />
-      {/* <RepresentativeDialog
-        subDialogOpen={representativeDialogOpen}
-        handleSubDialogClose={handleRepresentativeDialogClose}
-        client={selectedClient}
-      /> */}
-
+    
       <RepresentativeDialog
         dialogOpen={representativeDialogOpen}
         handleDialogClose={handleRepresentativeDialogClose}

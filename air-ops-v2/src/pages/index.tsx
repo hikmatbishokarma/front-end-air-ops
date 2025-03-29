@@ -32,7 +32,7 @@ export default function DashboardPage() {
   const [salesDashboardData, setSalesDashboardData] = useState<any>();
   const [rows, setRows] = useState();
 
-  // chart ˚
+  // chart 
   const chartSetting = {
     yAxis: [
       {
@@ -166,7 +166,7 @@ export default function DashboardPage() {
                 onClick={() => navigate(`/quotes/edit/${row.id}`)}
               >
                 <TableCell component="th" scope="row">
-                  {row.referenceNumber}
+                  {row.revisedQuotatioNo||row.quotationNo}
                 </TableCell>
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.representative}</TableCell>

@@ -5,10 +5,14 @@ import {
   Button,
   FormControlLabel,
   Grid,
+  IconButton,
+  Step,
+  StepLabel,
+  Stepper,
   Switch,
   TextField,
 } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   CREATE_AIRCRAFT_CATEGORY,
   GET_AIRCRAFT_CATEGORIES,
@@ -22,10 +26,12 @@ import {
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import FileUpload from "../../components/fileupload";
+import AddIcon from "@mui/icons-material/Add";
+import { Delete } from "@mui/icons-material";
 
 interface sepcification {
-  icon: string;
-  name: string;
+  title: string;
+  value: string;
 }
 
 interface AircraftCategory {
@@ -118,14 +124,56 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
     onClose();
   };
 
+    const {
+      fields: specificationsField,
+      append: appendSpecification,
+      remove: removeSpecification,
+    } = useFieldArray({
+      control,
+      name: "specifications",
+    });
+  
+
+  const steps = ["Basic", "Itinerary DetailsSpecification", "Terms And Condition"];
+
+    const [activeStep, setActiveStep] = useState(0);
+  
+    const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
+    const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
+
   return (
+
+    <>
+     <Stepper activeStep={activeStep} alternativeLabel>
+                  {steps.map((label) => (
+                    <Step key={label}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
     <Box
       component="form"
       onSubmit={handleSubmit(onSubmit)}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
     >
-      {/* Role Type & Name Fields */}
+  
+      {activeStep === 0 &&(
+         
       <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
+
+        
+        <Grid item xs={4}>
+          <Controller
+            name="isActive"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={<Switch {...field} defaultChecked size="small" />}
+                label="isActive"
+              />
+            )}
+          />
+        </Grid>
         <Grid item xs={6}>
           <Controller
             name="name"
@@ -144,15 +192,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
             )}
           />
         </Grid>
-        {/* <Grid item xs={12}>
-          <Controller
-            name="image"
-            control={control}
-            render={({ field }) => (
-              <TextField {...field} size="small" label="Image Url" fullWidth />
-            )}
-          />
-        </Grid> */}
+       
          <Grid item xs={12}>
     <Controller
       name="image"
@@ -202,40 +242,110 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
             )}
           />
         </Grid>
-        <Grid item xs={4}>
-          <Controller
-            name="isActive"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={<Switch {...field} defaultChecked size="small" />}
-                label="isActive"
-              />
-            )}
-          />
         </Grid>
-        <Grid item xs={12}>
-          <Controller
-            name="termsAndConditions"
-            control={control}
-            render={({ field }) => (
-              <ReactQuill
-                {...field}
-                theme="snow"
-                value={field.value || ""}
-                onChange={field.onChange}
-              />
-            )}
-          />
-        </Grid>
-      </Grid>
+
+)}
+{
+  activeStep==1 &&(<>
+          <Box sx={{ flex: 0.4, pr: 2 }}>
+                    {specificationsField.map((item, index) => (
+                      <Grid
+                        container
+                        spacing={2}
+                        key={item.id}
+                        alignItems="center"
+                        sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
+                      >
+                       
+                        <Grid item xs={6}>
+                          <Controller
+                            name={`specifications.${index}.title`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField {...field} size="small" label="Title" fullWidth />
+                            )}
+                          />
+                        </Grid>
+                        <Grid item xs={5}>
+                          <Controller
+                            name={`specifications.${index}.value`}
+                            control={control}
+                            render={({ field }) => (
+                              <TextField {...field} size="small" label="Value" fullWidth />
+                            )}
+                          />
+                        </Grid>
+
+                        <Grid item xs={1}>
+                          <IconButton
+                            onClick={() => removeSpecification(index)}
+                            color="error"
+                          >
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </Grid>
+
+                      </Grid>
+                    ))}
+
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={()=>appendSpecification({title:"",value:""})}
+                    >
+                      Add Itinerary
+                    </Button>
+                  </Box>
+  </>)
+}
+
+{
+  
+  activeStep==2 &&(<>
+    <Grid item xs={12}>
+    <Controller
+      name="termsAndConditions"
+      control={control}
+      render={({ field }) => (
+        <ReactQuill
+          {...field}
+          theme="snow"
+          value={field.value || ""}
+          onChange={field.onChange}
+        />
+      )}
+    />
+  </Grid>
+</>)
+}
+
+
 
       {/* Submit Button */}
-      <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
+      {/* <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>
-      </Box>
+      </Box> */}
+      <Box
+                      sx={{ display: "flex", justifyContent: "space-between", p: 3 }}
+                    >
+                      <Button disabled={activeStep === 0} onClick={handleBack}>
+                        Back
+                      </Button>
+                      {activeStep === steps.length - 1 ? (
+                        <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                          <Button type="submit" variant="contained" color="success">
+                            Submit
+                          </Button>
+                        </Box>
+                      ) : (
+                        <Button variant="contained" onClick={handleNext}>
+                          Next
+                        </Button>
+                      )}
+                    </Box>
     </Box>
+    </>
   );
 };

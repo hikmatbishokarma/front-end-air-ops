@@ -67,6 +67,9 @@ import { AircraftCategoryList } from "./pages/aircraft-category/list";
 import { AircraftDetailList } from "./pages/aircraft-detail/list";
 import { AirpotList } from "./pages/airports/list";
 import Login from "./pages/login";
+import DashboardIndex from "./pages/dashboard";
+import QuoteCreate from "./pages/quote/create";
+
 const router = createBrowserRouter(
   [
     {
@@ -78,32 +81,37 @@ const router = createBrowserRouter(
           children: [
             {
               path: "",
-              Component: DashboardPage,
+              // Component: DashboardPage,
+              Component: DashboardIndex,
             },
 
             {
-              path: "category",
+              path: "admin/category",
               Component: AircraftCategoryList,
             },
             {
-              path: "aircraft",
+              path: "admin/aircraft",
               Component: AircraftDetailList,
             },
             {
-              path: "airports",
+              path: "admin/airports",
               Component: AirpotList,
             },
-            {
-              path: "flight-form",
-              Component: PriceCreate,
-            },
-            {
-              path: "quotes",
-              Component: QuoteList,
-            },
+            // {
+            //   path: "flight-form",
+            //   Component: PriceCreate,
+            // },
+            // {
+            //   path: "quotes",
+            //   Component: QuoteList,
+            // },
             {
               path: "quotes/edit/:id",
               Component: QuoteEdit,
+            },
+            {
+              path: "quotes/create",
+              Component: QuoteCreate,
             },
             // {
             //   path: "prices",
@@ -114,23 +122,23 @@ const router = createBrowserRouter(
             //   Component: PriceEdit,
             // },
             {
-              path: "roles",
+              path: "admin/roles",
               Component: RoleList,
             },
             {
-              path: "roles/create",
+              path: "admin/roles/create",
               Component: RoleCreate,
             },
             {
-              path: "roles/edit/:id",
+              path: "admin/roles/edit/:id",
               Component: RoleEdit,
             },
             {
-              path: "users",
+              path: "admin/users",
               Component: UserList,
             },
             {
-              path: "users/create",
+              path: "admin/users/create",
               Component: UserCreate,
             },
             {

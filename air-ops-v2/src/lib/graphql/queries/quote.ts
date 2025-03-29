@@ -26,13 +26,15 @@ export const GET_QUOTES = gql`
         itinerary
         providerType
         updatedAt
-        referenceNumber
+        quotationNo
+        revisedQuotationNo
         version
         revision
         aircraft {
           id
           name
         }
+        grandTotal
       }
     }
   }
@@ -59,7 +61,8 @@ export const GET_QUOTE_BY_ID = gql`
       itinerary
       providerType
       updatedAt
-      referenceNumber
+      quotationNo
+      revisedQuotationNo
       grandTotal
       prices {
         currency
