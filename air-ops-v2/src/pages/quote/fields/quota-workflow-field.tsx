@@ -6,16 +6,21 @@ const QuotationWorkflowField = ({
   status,
   id,
   code,
-  refreshList
+  refreshList,
 }: {
   status: QuotationStatus;
   id: string;
   code: string;
-  refreshList: () => void; 
+  refreshList: () => void;
 }) => {
-
-  
-  return <QuotationWorkflow currentState={status} id={id} code={code} refreshList={refreshList} />;
+  return (
+    <QuotationWorkflow
+      currentState={status}
+      id={id}
+      code={code}
+      refreshList={refreshList}
+    />
+  );
 };
 
 export default QuotationWorkflowField;

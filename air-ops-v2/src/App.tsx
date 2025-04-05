@@ -39,8 +39,6 @@ export const NAVIGATION: Navigation = [
   //   icon: <RequestQuote />,
   // },
 
-
-
   {
     segment: "operations",
     title: "Ops",
@@ -58,7 +56,6 @@ export const NAVIGATION: Navigation = [
     icon: <Person />,
   },
 
-  
   {
     segment: "engineering",
     title: "Engineering",
@@ -101,36 +98,37 @@ export const NAVIGATION: Navigation = [
   // },
 
   {
-    segment: "admin", 
+    segment: "admin",
     title: "Admin",
     icon: <Settings />,
-    children:[{
-      segment: "roles",
-      title: "Role",
-      icon: <ManageAccounts />,
-    },
-  
-    {
-      segment: "category",
-      title: "Category",
-      icon: <ShoppingCartIcon />,
-    },
-    {
-      segment: "aircraft",
-      title: "Aircraft Detail",
-      icon: <ShoppingCartIcon />,
-    },
-    {
-      segment: "airports",
-      title: "Airports",
-      icon: <ShoppingCartIcon />,
-    },
-    {
-      segment: "users",
-      title: "Users",
-      icon: <Person />,
-    },
-  ]
+    children: [
+      {
+        segment: "roles",
+        title: "Role",
+        icon: <ManageAccounts />,
+      },
+
+      {
+        segment: "category",
+        title: "Category",
+        icon: <ShoppingCartIcon />,
+      },
+      {
+        segment: "aircraft",
+        title: "Aircraft Detail",
+        icon: <ShoppingCartIcon />,
+      },
+      {
+        segment: "airports",
+        title: "Airports",
+        icon: <ShoppingCartIcon />,
+      },
+      {
+        segment: "users",
+        title: "Users",
+        icon: <Person />,
+      },
+    ],
   },
   {
     segment: "settings",

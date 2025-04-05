@@ -11,14 +11,14 @@ import {
 import { useState } from "react";
 
 type UpgradeConfirmationProps = {
-  onUpgrade: (code:string) => void;
+  onUpgrade: (code: string) => void;
   currentState: string;
-  code:string
+  code: string;
 };
 function QuotationWorkflowUpgradeConfirmation({
   onUpgrade,
   currentState,
-  code
+  code,
 }: UpgradeConfirmationProps) {
   const [open, setOpen] = useState(false);
 
