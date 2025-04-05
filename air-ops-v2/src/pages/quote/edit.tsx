@@ -230,7 +230,7 @@ const QuoteEdit = () => {
       <Typography variant="h5" sx={{ mb: 2 }}>
         Edit Quote
       </Typography>
-    
+
       <Box sx={{ width: "100%" }}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (

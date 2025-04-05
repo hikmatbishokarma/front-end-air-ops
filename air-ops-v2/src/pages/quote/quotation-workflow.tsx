@@ -17,8 +17,6 @@ import {
 import { useSnackbar } from "../../SnackbarContext";
 import { QuotationStatus } from "../../lib/utils";
 
-
-
 const quotationWorkflowTransition: Record<string, QuotationStatus[]> = {
   "new request": [QuotationStatus.QUOTED],
   quoted: [QuotationStatus.CONFIRMED, QuotationStatus.CANCELLED],
@@ -31,14 +29,14 @@ interface ActionMenuProps {
   currentState: QuotationStatus;
   id: string;
   code: string;
-  refreshList:()=>void
+  refreshList: () => void;
 }
 
 const QuotationWorkflow: React.FC<ActionMenuProps> = ({
   currentState: initialCurrentState,
   id,
   code,
-  refreshList
+  refreshList,
 }) => {
   const showSnackbar = useSnackbar();
   const [currentState, setCurrentState] =
@@ -83,9 +81,8 @@ const QuotationWorkflow: React.FC<ActionMenuProps> = ({
       } else showSnackbar("Update status!", "success");
     } catch (error) {
       showSnackbar(error?.message || "Failed To Update Status!", "error");
-    }
-    finally{
-      refreshList()
+    } finally {
+      refreshList();
     }
   };
 
@@ -126,7 +123,7 @@ const QuotationWorkflow: React.FC<ActionMenuProps> = ({
       console.error("Error upgrading quotation:", error);
     } finally {
       handleClose();
-      refreshList()
+      refreshList();
     }
   };
 
@@ -150,7 +147,9 @@ const QuotationWorkflow: React.FC<ActionMenuProps> = ({
           {currentState?.toUpperCase()}
         </Box>
 
-        { ![QuotationStatus.BOOKED,QuotationStatus.UPGRADED].includes(currentState)   && (
+        {![QuotationStatus.BOOKED, QuotationStatus.UPGRADED].includes(
+          currentState,
+        ) && (
           <IconButton size="small" aria-label="menu" onClick={handleClick}>
             <ArrowDropDown />
           </IconButton>

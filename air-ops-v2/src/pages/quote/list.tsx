@@ -43,7 +43,7 @@ import { getStatusKeyByValue, QuotationStatus } from "../../lib/utils";
 import QuotationWorkflowUpgradeConfirmation from "./quotation-workflow-upgrade-confirmation";
 import QuotationCancellationConfirmation from "./quotation-cancellation";
 
-export const QuoteList = ({filter}) => {
+export const QuoteList = ({ filter }) => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
   const [isNewQuote, setIsNewQuote] = useState(false);
@@ -55,9 +55,6 @@ export const QuoteList = ({filter}) => {
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
   const [currentId, setCurrentId] = useState();
-  
- 
-
 
   const getQuotes = async () => {
     try {
@@ -66,19 +63,19 @@ export const QuoteList = ({filter}) => {
         queryName: "quotes",
         queryType: "query",
         variables: {
-          filter: filter
+          filter: filter,
         },
       });
       setRows(() => {
         return data.map((quote: any) => {
           return {
             id: quote.id,
-            quotationNo:quote?.quotationNo,
-            revisedQuotationNo:quote?.revisedQuotationNo,
+            quotationNo: quote?.quotationNo,
+            revisedQuotationNo: quote?.revisedQuotationNo,
             status: QuotationStatus[quote.status],
             requester: quote.requestedBy.name,
             version: quote.version,
-            revision:quote.revision,
+            revision: quote.revision,
             itinerary: quote.itinerary
               .map((itinerary: any) => {
                 return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
@@ -110,7 +107,7 @@ export const QuoteList = ({filter}) => {
     if (!result) {
       showSnackbar("Internal server error!", "error");
     }
-    setCurrentId(quoteId)
+    setCurrentId(quoteId);
     setPreviewData(result);
     setShowPreview(true);
   };
@@ -155,10 +152,8 @@ export const QuoteList = ({filter}) => {
   };
 
   const refreshList = async () => {
-    
     await getQuotes();
   };
-
 
   const updateQuoteStatus = async (id, toStatus) => {
     try {
@@ -179,55 +174,48 @@ export const QuoteList = ({filter}) => {
       } else showSnackbar("Update status!", "success");
     } catch (error) {
       showSnackbar(error?.message || "Failed To Update Status!", "error");
-    }
-    finally{
-      refreshList()
+    } finally {
+      refreshList();
     }
   };
 
+  const handelCancellation = async (id) => {
+    try {
+      await updateQuoteStatus(id, QuotationStatus.CANCELLED);
+    } catch (error) {
+      console.error("Error transitioning state:", error);
+    } finally {
+    }
+  };
 
-   const handelCancellation = async (id) => {
-   
-      try {
-        await updateQuoteStatus(id, QuotationStatus.CANCELLED);
-       
-      } catch (error) {
-        console.error("Error transitioning state:", error);
-      } finally {
-       
-      }
-    };
+  const upgradQuote = async (code) => {
+    try {
+      const data = await useGql({
+        query: UPGRAD_QUOTE,
+        queryName: "",
+        queryType: "mutation",
+        variables: {
+          code: code,
+        },
+      });
 
-    const upgradQuote = async (code) => {
-      try {
-        const data = await useGql({
-          query: UPGRAD_QUOTE,
-          queryName: "",
-          queryType: "mutation",
-          variables: {
-            code: code,
-          },
-        });
-  
-        if (data?.errors?.length > 0) {
-          showSnackbar("Failed To Update status!", "error");
-        } else showSnackbar("Update status!", "success");
-      } catch (error) {
-        showSnackbar(error?.message || "Failed To Update Status!", "error");
-      }
-    };
+      if (data?.errors?.length > 0) {
+        showSnackbar("Failed To Update status!", "error");
+      } else showSnackbar("Update status!", "success");
+    } catch (error) {
+      showSnackbar(error?.message || "Failed To Update Status!", "error");
+    }
+  };
 
-    
   const handleUpgradeClick = async (code) => {
     try {
       await upgradQuote(code);
     } catch (error) {
       console.error("Error upgrading quotation:", error);
     } finally {
-      refreshList()
+      refreshList();
     }
   };
-
 
   return (
     <>
@@ -252,15 +240,14 @@ export const QuoteList = ({filter}) => {
                 //onClick={() => handelPreview(row.id)}
               >
                 <TableCell component="th" scope="row">
-                  {row.revisedQuotationNo||row.quotationNo}
+                  {row.revisedQuotationNo || row.quotationNo}
                 </TableCell>
                 <TableCell align="right">{row.status}</TableCell>
-               
+
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell align="right">{row.itinerary}</TableCell>
-                
+
                 <TableCell>
-                 
                   <IconButton
                     color="primary"
                     onClick={() => handelPreview(row.id)}
@@ -268,33 +255,31 @@ export const QuoteList = ({filter}) => {
                     <PreviewIcon fontSize="small" />
                   </IconButton>
 
+                  {QuotationStatus.QUOTE == row.status && (
+                    <>
+                      <Tooltip title="Cancel">
+                        <IconButton>
+                          <QuotationCancellationConfirmation
+                            onCancellation={() => handelCancellation(row.id)}
+                            quotationNo={
+                              row.revisedQuotationNo || row.quotationNo
+                            }
+                            quotationId={row.id}
+                          />
+                        </IconButton>
+                      </Tooltip>
 
-                  {QuotationStatus.QUOTE == row.status && (<>
-
-                    <Tooltip title="Cancel">
-                    <IconButton
-                 
-                >
-                  <QuotationCancellationConfirmation
-                   onCancellation={()=>handelCancellation(row.id)}
-                    quotationNo={row.revisedQuotationNo||row.quotationNo}
-                     quotationId={row.id} />
-                </IconButton>
-                </Tooltip>
-
-                    <Tooltip title="Upgrade">
-            <IconButton size="small">
-              <QuotationWorkflowUpgradeConfirmation
-                onUpgrade={()=>handleUpgradeClick(row.code)}
-                currentState={row.status}
-                code={row.code}
-              />
-            </IconButton>
-          </Tooltip>
-                  </>
-                
-                
-                )}
+                      <Tooltip title="Upgrade">
+                        <IconButton size="small">
+                          <QuotationWorkflowUpgradeConfirmation
+                            onUpgrade={() => handleUpgradeClick(row.code)}
+                            currentState={row.status}
+                            code={row.code}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  )}
 
                   {/* <IconButton
                     color="primary"
@@ -374,7 +359,6 @@ export const QuoteList = ({filter}) => {
           </Button>
         </DialogActions>
       </Dialog>
-
     </>
   );
 };

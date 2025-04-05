@@ -8,19 +8,18 @@ import {
   DialogContentText,
 } from "@mui/material";
 import { useState } from "react";
-import CancelIcon from '@mui/icons-material/Cancel';
+import CancelIcon from "@mui/icons-material/Cancel";
 
 type CancellationConfirmationProps = {
-onCancellation: (id:string) => void;
+  onCancellation: (id: string) => void;
   quotationNo: string;
-  quotationId:string
+  quotationId: string;
 };
 function QuotationCancellationConfirmation({
   onCancellation,
   quotationNo,
-  quotationId
+  quotationId,
 }: CancellationConfirmationProps) {
-
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -30,8 +29,6 @@ function QuotationCancellationConfirmation({
     setOpen(false);
   };
   const handelCancellation = () => {
-
-   
     setOpen(false);
     onCancellation(quotationId);
   };
@@ -39,7 +36,7 @@ function QuotationCancellationConfirmation({
     <div>
       <CancelIcon style={{ color: "red" }} onClick={handleClickOpen} />
 
-      <Dialog open={open} onClose={()=>setOpen(false)}>
+      <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Confirm Cancellation</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -47,11 +44,14 @@ function QuotationCancellationConfirmation({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">No</Button>
-          <Button onClick={handelCancellation} color="secondary">Yes</Button>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button onClick={handelCancellation} color="secondary">
+            Yes
+          </Button>
         </DialogActions>
       </Dialog>
-
     </div>
   );
 }
