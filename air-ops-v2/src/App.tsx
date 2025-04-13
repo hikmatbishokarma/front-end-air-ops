@@ -29,7 +29,7 @@ export const NAVIGATION: Navigation = [
     title: "Main items",
   },
   {
-    title: "Dashboard",
+    title: "Quotes",
     segment: "",
     icon: <DashboardIcon />,
   },
