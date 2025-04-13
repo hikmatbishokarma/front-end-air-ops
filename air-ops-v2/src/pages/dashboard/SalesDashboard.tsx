@@ -18,6 +18,7 @@ import useGql from "../../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getStatusKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
+import Dbanner from "./Asset/Images/dash_banner.png";
 
 const SalesDashboard = () => {
   const navigate = useNavigate();
@@ -84,7 +85,20 @@ const SalesDashboard = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <>
+
+       <div className="dashboard_main_d">
+            <div className="ban_img">
+               
+            </div>
+            {/* <div className="heading">
+              <div className="name">
+                <h2>Hello</h2>
+                <p> Welcome to Airops</p>
+              </div>
+            </div> */}
+
+    <div style={{ padding: 20 }} className="v1_board">
       {/* Table Section */}
       <Grid
         container
@@ -92,9 +106,9 @@ const SalesDashboard = () => {
         alignItems="center"
         style={{ marginTop: 20 }}
       >
-        <Typography variant="h6">{selectedTab.toUpperCase()}</Typography>
+        <Typography className="v1_h6" variant="h6">{selectedTab.toUpperCase()}</Typography>
         {(selectedTab == "Quotes" || selectedTab == "Invoices") && (
-          <Button
+          <Button className="v1_quote_btn"
             variant="contained"
             color="primary"
             onClick={() => handelCreate(selectedTab)}
@@ -118,7 +132,7 @@ const SalesDashboard = () => {
               }}
             >
               <CardContent>
-                <Typography variant="h6">{item.name.toUpperCase()}</Typography>
+                <Typography className="v1-card-h6" variant="h6">{item.name.toUpperCase()}</Typography>
                 <Typography variant="body1">
                   {salesDashboardData?.summary[item.name.toLowerCase()]}
                 </Typography>
@@ -130,6 +144,8 @@ const SalesDashboard = () => {
 
       <QuoteList filter={filter} />
     </div>
+    </div>
+    </>
   );
 };
 
