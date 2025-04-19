@@ -69,6 +69,7 @@ import { AirpotList } from "./pages/airports/list";
 import Login from "./pages/login";
 import DashboardIndex from "./pages/dashboard";
 import QuoteCreate from "./pages/quote/create";
+import GenerateInvoice from "./pages/quote/generate-invoice";
 
 const router = createBrowserRouter(
   [
@@ -166,14 +167,18 @@ const router = createBrowserRouter(
           // Component: Login,
           Component: Login,
         },
+        {
+          path: "/invoices/preview",
+          Component: GenerateInvoice,
+        },
       ],
     },
   ],
-  { basename: "/test" }, // ✅ Add this
+  { basename: "/test" } // ✅ Add this
 );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>,
+  </React.StrictMode>
 );

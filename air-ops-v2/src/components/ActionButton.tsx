@@ -1,0 +1,186 @@
+import React, { useState, useCallback } from "react";
+import {
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Box,
+  Button,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import EmailIcon from "@mui/icons-material/Email";
+import PrintIcon from "@mui/icons-material/Print";
+import SendIcon from "@mui/icons-material/Send";
+import DownloadIcon from "@mui/icons-material/Download";
+import { useNavigate } from "react-router";
+import { useReactToPrint } from "react-to-print";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import useGql from "../lib/graphql/gql";
+import { SEND_ACKNOWLEDGEMENT } from "../lib/graphql/queries/quote";
+import { useSnackbar } from "../SnackbarContext";
+import { getEnumKeyByValue, SalesDocumentType } from "../lib/utils";
+
+const ActionButton = ({
+  currentId,
+  currentQuotation,
+  htmlRef,
+  documentType = "",
+  editPath = "",
+  showEdit = true,
+  showEmail = true,
+  showPrint = true,
+  showDownload = true,
+}) => {
+  const navigate = useNavigate();
+  const showSnackbar = useSnackbar();
+
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [clientEmail, setClientEmail] = useState("");
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState("");
+
+  const validateEmail = (value) => {
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!value) {
+      setError(true);
+      setHelperText("Email is required");
+    } else if (!emailRegex.test(value)) {
+      setError(true);
+      setHelperText("Invalid email format");
+    } else {
+      setError(false);
+      setHelperText("");
+    }
+  };
+
+  const handleSendEmail = async () => {
+    const result = await useGql({
+      query: SEND_ACKNOWLEDGEMENT,
+      queryName: "",
+      queryType: "mutation",
+      variables: {
+        input: {
+          quotationNo: currentQuotation,
+          email: clientEmail,
+          documentType: getEnumKeyByValue(
+            SalesDocumentType,
+            SalesDocumentType[documentType]
+          ),
+        },
+      },
+    });
+
+    setShowEmailDialog(false);
+    if (!result) {
+      showSnackbar("Internal server error!", "error");
+    } else {
+      showSnackbar("Quote sent successfully!", "success");
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!htmlRef.current) return;
+
+    const canvas = await html2canvas(htmlRef.current, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`${documentType}_Document.pdf`);
+  };
+
+  const handleAfterPrint = useCallback(() => {
+    console.log("Printed");
+  }, []);
+
+  const printFn = useReactToPrint({
+    contentRef: htmlRef,
+    documentTitle: `${documentType}_Preview`,
+    onAfterPrint: handleAfterPrint,
+  });
+
+  return (
+    <Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+      {showEdit && (
+        <IconButton
+          color="secondary"
+          onClick={() => navigate(`${editPath}/${currentId}`)}
+        >
+          <EditIcon fontSize="small" />
+        </IconButton>
+      )}
+
+      {showEmail && (
+        <>
+          <IconButton color="primary" onClick={() => setShowEmailDialog(true)}>
+            <EmailIcon fontSize="small" />
+          </IconButton>
+
+          <Dialog
+            open={showEmailDialog}
+            onClose={() => setShowEmailDialog(false)}
+            fullWidth
+            maxWidth="xs"
+          >
+            <DialogTitle>Send via Email</DialogTitle>
+            <DialogContent>
+              <Box display="flex" gap={2} alignItems="center">
+                <TextField
+                  fullWidth
+                  label="Email"
+                  variant="outlined"
+                  size="small"
+                  margin="normal"
+                  value={clientEmail}
+                  onChange={(e) => {
+                    setClientEmail(e.target.value);
+                    validateEmail(e.target.value);
+                  }}
+                  error={error}
+                  helperText={helperText}
+                />
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSendEmail}
+                  endIcon={<SendIcon />}
+                >
+                  Send
+                </Button>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setShowEmailDialog(false)}
+                color="secondary"
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      )}
+
+      {showPrint && (
+        <IconButton color="primary" onClick={printFn}>
+          <PrintIcon fontSize="small" />
+        </IconButton>
+      )}
+
+      {showDownload && (
+        <IconButton color="secondary" onClick={handleDownloadPDF}>
+          <DownloadIcon fontSize="small" />
+        </IconButton>
+      )}
+    </Box>
+  );
+};
+
+export default ActionButton;

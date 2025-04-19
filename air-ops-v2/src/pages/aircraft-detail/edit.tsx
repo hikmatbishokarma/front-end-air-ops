@@ -34,16 +34,29 @@ import {
 import FileUpload from "../../components/fileupload";
 import AddIcon from "@mui/icons-material/Add";
 import { Delete } from "@mui/icons-material";
+import { StepperFormLayout } from "../../components/StepperFormLayout";
+import {
+  BasicInfoStep,
+  MediaStep,
+  SpecificationStep,
+  TermsStep,
+} from "./children";
 
 type FormData = {
   name: string;
   code: string;
   description: string;
   image: string;
+  noteText: string;
+  warningText: string;
   category: any;
   specifications: Isepcification[];
   termsAndConditions: string;
   isActive: boolean;
+  warningImage: string;
+  flightImages: string;
+  seatLayoutImage: string;
+  rangeMapImage: string;
 };
 
 export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
@@ -91,7 +104,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
 
   useEffect(() => {
     if (aircraftDetailData) {
-      setValue("isActive", aircraftDetailData.isActive || false);
+      // setValue("isActive", aircraftDetailData.isActive || false);
       setValue("name", aircraftDetailData.name || "");
       setValue("code", aircraftDetailData.code || "");
       setValue("description", aircraftDetailData.description || "");
@@ -99,8 +112,14 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("specifications", aircraftDetailData.specifications || []);
       setValue(
         "termsAndConditions",
-        aircraftDetailData.termsAndConditions || "",
+        aircraftDetailData.termsAndConditions || ""
       );
+      setValue("noteText", aircraftDetailData.noteText || "");
+      setValue("warningText", aircraftDetailData.warningText || "");
+      setValue("warningImage", aircraftDetailData.warningImage || "");
+      setValue("flightImages", aircraftDetailData.flightImages || "");
+      setValue("seatLayoutImage", aircraftDetailData.seatLayoutImage || "");
+      setValue("rangeMapImage", aircraftDetailData.rangeMapImage || "");
     }
   }, [aircraftDetailData, setValue]);
 
@@ -262,236 +281,243 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   //   </Box>
   // );
 
-  const steps = [
-    "Basic",
-    "Itinerary DetailsSpecification",
-    "Terms And Condition",
-  ];
+  const steps = ["Basic", "Specification", "Terms And Condition", "media"];
 
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  return (
-    <>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
-      >
-        {activeStep === 0 && (
-          <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-            <Grid item xs={4}>
-              <Controller
-                name="isActive"
-                control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={<Switch {...field} defaultChecked size="small" />}
-                    label="isActive"
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Controller
-                name="name"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    size="small"
-                    label="Name"
-                    fullWidth
-                    InputLabelProps={{ shrink: !!field.value }}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Controller
-                name="code"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    size="small"
-                    label="Code"
-                    fullWidth
-                    InputLabelProps={{ shrink: !!field.value }}
-                  />
-                )}
-              />
-            </Grid>
+  // return (
+  //   <>
+  //     <Stepper activeStep={activeStep} alternativeLabel>
+  //       {steps.map((label) => (
+  //         <Step key={label}>
+  //           <StepLabel>{label}</StepLabel>
+  //         </Step>
+  //       ))}
+  //     </Stepper>
+  //     <Box
+  //       component="form"
+  //       onSubmit={handleSubmit(onSubmit)}
+  //       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
+  //     >
+  //       {activeStep === 0 && (
+  //         <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
+  //           <Grid item xs={4}>
+  //             <Controller
+  //               name="isActive"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <FormControlLabel
+  //                   control={<Switch {...field} defaultChecked size="small" />}
+  //                   label="isActive"
+  //                 />
+  //               )}
+  //             />
+  //           </Grid>
+  //           <Grid item xs={6}>
+  //             <Controller
+  //               name="name"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <TextField
+  //                   {...field}
+  //                   size="small"
+  //                   label="Name"
+  //                   fullWidth
+  //                   InputLabelProps={{ shrink: !!field.value }}
+  //                 />
+  //               )}
+  //             />
+  //           </Grid>
+  //           <Grid item xs={6}>
+  //             <Controller
+  //               name="code"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <TextField
+  //                   {...field}
+  //                   size="small"
+  //                   label="Code"
+  //                   fullWidth
+  //                   InputLabelProps={{ shrink: !!field.value }}
+  //                 />
+  //               )}
+  //             />
+  //           </Grid>
 
-            <Grid item xs={12}>
-              {/* <Controller
-      name="image"
-      control={control}
-      render={({ field }) => (
-        <FileUpload
-          onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+  //           <Grid item xs={12}>
+  //             <Controller
+  //               name="description"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <TextField
+  //                   {...field}
+  //                   size="small"
+  //                   label="Description"
+  //                   fullWidth
+  //                   multiline
+  //                   InputLabelProps={{ shrink: !!field.value }}
+  //                 />
+  //               )}
+  //             />
+  //           </Grid>
+
+  //           <Grid item xs={8}>
+  //             <Controller
+  //               name="category"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <Autocomplete
+  //                   {...field}
+  //                   options={aircraftCategories}
+  //                   getOptionLabel={(option) => option.name}
+  //                   value={
+  //                     aircraftCategories.find(
+  //                       (aircraft: any) => aircraft.id === field.value
+  //                     ) || null
+  //                   }
+  //                   onChange={(_, newValue) =>
+  //                     field.onChange(newValue ? newValue.id : "")
+  //                   }
+  //                   renderInput={(params) => (
+  //                     <TextField {...params} size="small" />
+  //                   )}
+  //                 />
+  //               )}
+  //             />
+  //           </Grid>
+  //         </Grid>
+  //       )}
+  //       {activeStep == 1 && (
+  //         <>
+  //           <Box sx={{ flex: 0.4, pr: 2 }}>
+  //             {specificationsField.map((item, index) => (
+  //               <Grid
+  //                 container
+  //                 spacing={2}
+  //                 key={item.id}
+  //                 alignItems="center"
+  //                 sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
+  //               >
+  //                 <Grid item xs={6}>
+  //                   <Controller
+  //                     name={`specifications.${index}.title`}
+  //                     control={control}
+  //                     render={({ field }) => (
+  //                       <TextField
+  //                         {...field}
+  //                         size="small"
+  //                         label="Title"
+  //                         fullWidth
+  //                         InputLabelProps={{ shrink: !!field.value }}
+  //                       />
+  //                     )}
+  //                   />
+  //                 </Grid>
+  //                 <Grid item xs={5}>
+  //                   <Controller
+  //                     name={`specifications.${index}.value`}
+  //                     control={control}
+  //                     render={({ field }) => (
+  //                       <TextField
+  //                         {...field}
+  //                         size="small"
+  //                         label="Value"
+  //                         fullWidth
+  //                         InputLabelProps={{ shrink: !!field.value }}
+  //                       />
+  //                     )}
+  //                   />
+  //                 </Grid>
+
+  //                 <Grid item xs={1}>
+  //                   <IconButton
+  //                     onClick={() => removeSpecification(index)}
+  //                     color="error"
+  //                   >
+  //                     <Delete fontSize="small" />
+  //                   </IconButton>
+  //                 </Grid>
+  //               </Grid>
+  //             ))}
+
+  //             <Button
+  //               variant="outlined"
+  //               startIcon={<AddIcon />}
+  //               onClick={() => appendSpecification({ title: "", value: "" })}
+  //             >
+  //               Add Itinerary
+  //             </Button>
+  //           </Box>
+  //         </>
+  //       )}
+
+  //       {activeStep == 2 && (
+  //         <>
+  //           <Grid item xs={12}>
+  //             <Controller
+  //               name="termsAndConditions"
+  //               control={control}
+  //               render={({ field }) => (
+  //                 <ReactQuill
+  //                   {...field}
+  //                   theme="snow"
+  //                   value={field.value || ""}
+  //                   onChange={field.onChange}
+  //                 />
+  //               )}
+  //             />
+  //           </Grid>
+  //         </>
+  //       )}
+
+  //       {/* Submit Button */}
+  //       {/* <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
+  //       <Button type="submit" variant="contained" color="primary">
+  //         Submit
+  //       </Button>
+  //     </Box> */}
+  //       <Box sx={{ display: "flex", justifyContent: "space-between", p: 3 }}>
+  //         <Button disabled={activeStep === 0} onClick={handleBack}>
+  //           Back
+  //         </Button>
+  //         {activeStep === steps.length - 1 ? (
+  //           <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+  //             <Button type="submit" variant="contained" color="success">
+  //               Submit
+  //             </Button>
+  //           </Box>
+  //         ) : (
+  //           <Button variant="contained" onClick={handleNext}>
+  //             Next
+  //           </Button>
+  //         )}
+  //       </Box>
+  //     </Box>
+  //   </>
+  // );
+
+  return (
+    <StepperFormLayout
+      steps={steps}
+      activeStep={activeStep}
+      handleNext={handleNext}
+      handleBack={handleBack}
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      {activeStep === 0 && <BasicInfoStep control={control} />}
+      {activeStep === 1 && (
+        <SpecificationStep
+          control={control}
+          specificationsField={specificationsField}
+          removeSpecification={removeSpecification}
+          appendSpecification={appendSpecification}
         />
       )}
-    /> */}
-            </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="description"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    size="small"
-                    label="Description"
-                    fullWidth
-                    multiline
-                    InputLabelProps={{ shrink: !!field.value }}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={8}>
-              <Controller
-                name="category"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
-                    options={aircraftCategories}
-                    getOptionLabel={(option) => option.name}
-                    value={
-                      aircraftCategories.find(
-                        (aircraft: any) => aircraft.id === field.value,
-                      ) || null
-                    }
-                    onChange={(_, newValue) =>
-                      field.onChange(newValue ? newValue.id : "")
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} size="small" />
-                    )}
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-        )}
-        {activeStep == 1 && (
-          <>
-            <Box sx={{ flex: 0.4, pr: 2 }}>
-              {specificationsField.map((item, index) => (
-                <Grid
-                  container
-                  spacing={2}
-                  key={item.id}
-                  alignItems="center"
-                  sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
-                >
-                  <Grid item xs={6}>
-                    <Controller
-                      name={`specifications.${index}.title`}
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          size="small"
-                          label="Title"
-                          fullWidth
-                          InputLabelProps={{ shrink: !!field.value }}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={5}>
-                    <Controller
-                      name={`specifications.${index}.value`}
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          size="small"
-                          label="Value"
-                          fullWidth
-                          InputLabelProps={{ shrink: !!field.value }}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid item xs={1}>
-                    <IconButton
-                      onClick={() => removeSpecification(index)}
-                      color="error"
-                    >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              ))}
-
-              <Button
-                variant="outlined"
-                startIcon={<AddIcon />}
-                onClick={() => appendSpecification({ title: "", value: "" })}
-              >
-                Add Itinerary
-              </Button>
-            </Box>
-          </>
-        )}
-
-        {activeStep == 2 && (
-          <>
-            <Grid item xs={12}>
-              <Controller
-                name="termsAndConditions"
-                control={control}
-                render={({ field }) => (
-                  <ReactQuill
-                    {...field}
-                    theme="snow"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-            </Grid>
-          </>
-        )}
-
-        {/* Submit Button */}
-        {/* <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
-      </Box> */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", p: 3 }}>
-          <Button disabled={activeStep === 0} onClick={handleBack}>
-            Back
-          </Button>
-          {activeStep === steps.length - 1 ? (
-            <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-              <Button type="submit" variant="contained" color="success">
-                Submit
-              </Button>
-            </Box>
-          ) : (
-            <Button variant="contained" onClick={handleNext}>
-              Next
-            </Button>
-          )}
-        </Box>
-      </Box>
-    </>
+      {activeStep === 2 && <TermsStep control={control} />}
+      {activeStep === 3 && <MediaStep control={control} />}
+    </StepperFormLayout>
   );
 };

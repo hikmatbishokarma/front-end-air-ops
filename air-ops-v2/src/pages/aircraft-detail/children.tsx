@@ -46,7 +46,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
 
   return (
     <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-      <Grid item xs={4}>
+      {/* <Grid item xs={4}>
         <Controller
           name="isActive"
           control={control}
@@ -57,57 +57,90 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
             />
           )}
         />
-      </Grid>
+      </Grid> */}
       <Grid item xs={6}>
         <Controller
           name="name"
           control={control}
           render={({ field }) => (
-            <TextField {...field} size="small" label="Name" fullWidth />
+            <TextField
+              {...field}
+              size="small"
+              label="Name"
+              fullWidth
+              InputLabelProps={{ shrink: !!field.value }}
+            />
           )}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={2}>
         <Controller
           name="code"
           control={control}
           render={({ field }) => (
-            <TextField {...field} size="small" label="Code" fullWidth />
+            <TextField
+              {...field}
+              size="small"
+              label="Code"
+              fullWidth
+              InputLabelProps={{ shrink: !!field.value }}
+            />
           )}
         />
       </Grid>
-
+      <Grid item xs={4}>
+        <Controller
+          name="category"
+          control={control}
+          render={({ field }) => (
+            <Autocomplete
+              {...field}
+              options={aircraftCategories}
+              getOptionLabel={(option) => option.name}
+              value={
+                aircraftCategories.find(
+                  (aircraft: any) => aircraft.id === field.value
+                ) || null
+              }
+              onChange={(_, newValue) =>
+                field.onChange(newValue ? newValue.id : "")
+              }
+              renderInput={(params) => <TextField {...params} size="small" />}
+            />
+          )}
+        />
+      </Grid>
       <Grid item xs={12}>
-        <Grid item xs={6}>
-          <Controller
-            name="noteText"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                multiline
-                size="small"
-                label="Name"
-                fullWidth
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Controller
-            name="warningText"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                multiline
-                size="small"
-                label="Name"
-                fullWidth
-              />
-            )}
-          />
-        </Grid>
+        <Controller
+          name="noteText"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              multiline
+              size="small"
+              label="Note Text"
+              fullWidth
+              InputLabelProps={{ shrink: !!field.value }}
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <Controller
+          name="warningText"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              multiline
+              size="small"
+              label="Warning Text"
+              fullWidth
+              InputLabelProps={{ shrink: !!field.value }}
+            />
+          )}
+        />
       </Grid>
       <Grid item xs={12}>
         <Controller
@@ -120,29 +153,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
               label="Description"
               fullWidth
               multiline
-            />
-          )}
-        />
-      </Grid>
-
-      <Grid item xs={8}>
-        <Controller
-          name="category"
-          control={control}
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              options={aircraftCategories}
-              getOptionLabel={(option) => option.name}
-              value={
-                aircraftCategories.find(
-                  (aircraft: any) => aircraft.id === field.value,
-                ) || null
-              }
-              onChange={(_, newValue) =>
-                field.onChange(newValue ? newValue.id : "")
-              }
-              renderInput={(params) => <TextField {...params} size="small" />}
+              InputLabelProps={{ shrink: !!field.value }}
             />
           )}
         />
@@ -277,6 +288,5 @@ export const MediaStep = ({ control }: { control: any }) => (
         />
       </Grid>
     </Grid>
-  
   </Grid>
 );

@@ -78,11 +78,16 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       name: "",
       code: "",
       description: "",
-      image: "",
+      noteText: "",
+      warningText: "",
       category: {},
       specifications: [],
       termsAndConditions: "",
       isActive: true,
+      warningImage: "",
+      flightImages: "",
+      seatLayoutImage: "",
+      rangeMapImage: "",
     },
   });
 
@@ -453,13 +458,12 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       setActiveStep((prevStep) => prevStep + 1);
     }
   };
-  
+
   const handleBack = () => {
     if (activeStep > 0) {
       setActiveStep((prevStep) => prevStep - 1);
     }
   };
-  
 
   return (
     <StepperFormLayout

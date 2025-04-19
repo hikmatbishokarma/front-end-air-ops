@@ -32,6 +32,11 @@ export const removeTypename = (obj: any): any => {
   return obj;
 };
 
-export const getStatusKeyByValue = (obj, value) => {
+export const getEnumKeyByValue = (obj, value) => {
   return Object.keys(obj).find((key) => obj[key] === value);
 };
+
+export enum SalesDocumentType {
+  QUOTATION = "quotation",
+  INVOICE = "invoice",
+}

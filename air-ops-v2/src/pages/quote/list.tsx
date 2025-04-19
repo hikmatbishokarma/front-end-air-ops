@@ -22,7 +22,7 @@ import Paper from "@mui/material/Paper";
 
 import useGql from "../../lib/graphql/gql";
 import {
-  GENERATE_QUOTE_PDF,
+  SEND_ACKNOWLEDGEMENT,
   GET_QUOTES,
   SHOW_PREVIEW,
   UPDATE_QUOTE_STATUS,
@@ -38,7 +38,11 @@ import QuotePreview from "../../components/quote-preview";
 import EmailIcon from "@mui/icons-material/Email";
 import SendIcon from "@mui/icons-material/Send";
 import QuotationWorkflowField from "./fields/quota-workflow-field";
-import { getStatusKeyByValue, QuotationStatus } from "../../lib/utils";
+import {
+  getEnumKeyByValue,
+  QuotationStatus,
+  SalesDocumentType,
+} from "../../lib/utils";
 
 import QuotationWorkflowUpgradeConfirmation from "./quotation-workflow-upgrade-confirmation";
 import QuotationCancellationConfirmation from "./quotation-cancellation";
@@ -55,6 +59,7 @@ export const QuoteList = ({ filter }) => {
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
   const [currentId, setCurrentId] = useState();
+  const [currentQuotation, setCurrentQuotation] = useState();
 
   const getQuotes = async () => {
     try {
@@ -71,7 +76,6 @@ export const QuoteList = ({ filter }) => {
           return {
             id: quote.id,
             quotationNo: quote?.quotationNo,
-            revisedQuotationNo: quote?.revisedQuotationNo,
             status: QuotationStatus[quote.status],
             requester: quote.requestedBy.name,
             version: quote.version,
@@ -96,18 +100,19 @@ export const QuoteList = ({ filter }) => {
     getQuotes();
   }, [filter]);
 
-  const handelPreview = async (quoteId) => {
+  const handelPreview = async (quotationNo, quoteId) => {
     const result = await useGql({
       query: SHOW_PREVIEW,
       queryName: "showPreview",
       queryType: "query-without-edge",
-      variables: { id: quoteId },
+      variables: { quotationNo },
     });
 
     if (!result) {
       showSnackbar("Internal server error!", "error");
     }
     setCurrentId(quoteId);
+    setCurrentQuotation(quotationNo);
     setPreviewData(result);
     setShowPreview(true);
   };
@@ -133,13 +138,14 @@ export const QuoteList = ({ filter }) => {
 
   const handelSendQuoteThroughEmail = async () => {
     const result = await useGql({
-      query: GENERATE_QUOTE_PDF,
+      query: SEND_ACKNOWLEDGEMENT,
       queryName: "",
       queryType: "query-without-edge",
       variables: {
         input: {
-          id: currentId,
+          quotationNo: currentQuotation,
           email: clientEmail,
+          documentType: SalesDocumentType.QUOTATION,
         },
       },
     });
@@ -164,7 +170,7 @@ export const QuoteList = ({ filter }) => {
         variables: {
           input: {
             id: id,
-            status: getStatusKeyByValue(QuotationStatus, toStatus),
+            status: getEnumKeyByValue(QuotationStatus, toStatus),
           },
         },
       });
@@ -240,7 +246,7 @@ export const QuoteList = ({ filter }) => {
                 //onClick={() => handelPreview(row.id)}
               >
                 <TableCell component="th" scope="row">
-                  {row.revisedQuotationNo || row.quotationNo}
+                  {row.quotationNo}
                 </TableCell>
                 <TableCell align="right">{row.status}</TableCell>
 
@@ -250,7 +256,7 @@ export const QuoteList = ({ filter }) => {
                 <TableCell>
                   <IconButton
                     color="primary"
-                    onClick={() => handelPreview(row.id)}
+                    onClick={() => handelPreview(row.quotationNo, row.id)}
                   >
                     <PreviewIcon fontSize="small" />
                   </IconButton>
@@ -261,9 +267,7 @@ export const QuoteList = ({ filter }) => {
                         <IconButton>
                           <QuotationCancellationConfirmation
                             onCancellation={() => handelCancellation(row.id)}
-                            quotationNo={
-                              row.revisedQuotationNo || row.quotationNo
-                            }
+                            quotationNo={row.quotationNo}
                             quotationId={row.id}
                           />
                         </IconButton>
@@ -309,7 +313,11 @@ export const QuoteList = ({ filter }) => {
         <DialogTitle> Quote Preview</DialogTitle>
 
         <DialogContent>
-          <QuotePreview htmlContent={previewData} currentId={currentId} />
+          <QuotePreview
+            htmlContent={previewData}
+            currentId={currentId}
+            currentQuotation={currentQuotation}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowPreview(false)} color="secondary">

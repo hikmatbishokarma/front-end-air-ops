@@ -12,11 +12,16 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
 } from "@mui/material";
 import QuoteList from "../quote/list";
 import useGql from "../../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
-import { getStatusKeyByValue, QuotationStatus } from "../../lib/utils";
+import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 
 const SalesDashboard = () => {
@@ -28,6 +33,9 @@ const SalesDashboard = () => {
     isLatest: { is: true },
     or: [{ status: { eq: "QUOTE" } }],
   });
+
+  const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
+  const [quotationNumber, setQuotationNumber] = useState("");
 
   const [salesDashboardData, setSalesDashboardData] = useState<any>();
 
@@ -56,17 +64,13 @@ const SalesDashboard = () => {
     setSelectedTab(data.name);
 
     const statusFilter = data.status.map((s) => ({
-      status: { eq: getStatusKeyByValue(QuotationStatus, s) },
+      status: { eq: getEnumKeyByValue(QuotationStatus, s) },
     }));
 
     const _filter = { isLatest: { is: true }, or: statusFilter };
 
-    console.log("_filter:::", _filter);
-
     setFilter(_filter);
   };
-
-  console.log("filter", filter);
 
   // const categories = ["Quote", "Invoice", "Cancelled", "Revenue"];
 
@@ -78,58 +82,103 @@ const SalesDashboard = () => {
   ];
 
   const handelCreate = (selectedTab) => {
-    const redirectTo = selectedTab == "Quotes" ? "/quotes/create" : "";
+    // const redirectTo = selectedTab == "Quotes" ? "/quotes/create" : "";
 
-    navigate(redirectTo);
+    // navigate(redirectTo);
+
+    if (selectedTab === "Quotes") {
+      navigate("/quotes/create");
+    } else if (selectedTab === "Invoices") {
+      setOpenInvoiceDialog(true); // Open modal
+    }
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      {/* Table Section */}
-      <Grid
-        container
-        justifyContent="space-between"
-        alignItems="center"
-        style={{ marginTop: 20 }}
+    <>
+      <Dialog
+        open={openInvoiceDialog}
+        onClose={() => setOpenInvoiceDialog(false)}
       >
-        <Typography variant="h6">{selectedTab.toUpperCase()}</Typography>
-        {(selectedTab == "Quotes" || selectedTab == "Invoices") && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handelCreate(selectedTab)}
-          >
-            Create {selectedTab.slice(0, -1)}
+        <DialogTitle>Enter Quotation Number</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Quotation Number"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={quotationNumber}
+            onChange={(e) => setQuotationNumber(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenInvoiceDialog(false)} color="secondary">
+            Cancel
           </Button>
-        )}
-      </Grid>
-
-      {/* Top Section with Cards */}
-      <Grid container spacing={2}>
-        {categories.map((item) => (
-          <Grid item xs={3} key={item.name}>
-            <Card
-              onClick={() => handelFilter(item)}
-              style={{
-                cursor: "pointer",
-                backgroundColor: selectedTab === item.name ? "#1976d2" : "#fff",
-                color: selectedTab === item.name ? "#fff" : "#000",
-                textAlign: "center",
-              }}
+          <Button
+            onClick={() => {
+              setOpenInvoiceDialog(false);
+              navigate(`/invoices/preview?quotationNo=${quotationNumber}`);
+            }}
+            color="primary"
+            variant="contained"
+            disabled={!quotationNumber}
+          >
+            Generate Invoice
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <div style={{ padding: 20 }}>
+        {/* Table Section */}
+        <Grid
+          container
+          justifyContent="space-between"
+          alignItems="center"
+          style={{ marginTop: 20 }}
+        >
+          <Typography variant="h6">{selectedTab.toUpperCase()}</Typography>
+          {(selectedTab == "Quotes" || selectedTab == "Invoices") && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handelCreate(selectedTab)}
             >
-              <CardContent>
-                <Typography variant="h6">{item.name.toUpperCase()}</Typography>
-                <Typography variant="body1">
-                  {salesDashboardData?.summary[item.name.toLowerCase()]}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+              Create {selectedTab.slice(0, -1)}
+            </Button>
+          )}
+        </Grid>
 
-      <QuoteList filter={filter} />
-    </div>
+        {/* Top Section with Cards */}
+        <Grid container spacing={2}>
+          {categories.map((item) => (
+            <Grid item xs={3} key={item.name}>
+              <Card
+                onClick={() => handelFilter(item)}
+                style={{
+                  cursor: "pointer",
+                  backgroundColor:
+                    selectedTab === item.name ? "#1976d2" : "#fff",
+                  color: selectedTab === item.name ? "#fff" : "#000",
+                  textAlign: "center",
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h6">
+                    {item.name.toUpperCase()}
+                  </Typography>
+                  <Typography variant="body1">
+                    {salesDashboardData?.summary[item.name.toLowerCase()]}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        <QuoteList filter={filter} />
+      </div>
+    </>
   );
 };
 

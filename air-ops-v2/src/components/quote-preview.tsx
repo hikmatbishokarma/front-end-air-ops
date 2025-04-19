@@ -18,42 +18,16 @@ import { useNavigate } from "react-router";
 import EmailIcon from "@mui/icons-material/Email";
 import EditIcon from "@mui/icons-material/Edit";
 import useGql from "../lib/graphql/gql";
-import { GENERATE_QUOTE_PDF } from "../lib/graphql/queries/quote";
+import { SEND_ACKNOWLEDGEMENT } from "../lib/graphql/queries/quote";
 import { useSnackbar } from "../SnackbarContext";
 import SendIcon from "@mui/icons-material/Send";
 import DownloadIcon from "@mui/icons-material/Download";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { getEnumKeyByValue, SalesDocumentType } from "../lib/utils";
+import ActionButton from "./ActionButton";
 
-const FlightQuotePreview = ({ htmlContent, currentId }) => {
-  // useEffect(() => {
-  //   // Extract styles and apply them to the document head
-  //   const tempDiv = document.createElement("div");
-  //   tempDiv.innerHTML = htmlContent;
-  //   const styleTags = tempDiv.getElementsByTagName("style");
-
-  //   const styleElements = [];
-
-  //   if (styleTags.length > 0) {
-  //     const styleContent = styleTags[0].innerHTML;
-  //     const styleElement = document.createElement("style");
-  //     styleElement.innerHTML = styleContent;
-  //     document.head.appendChild(styleElement);
-  //   }
-
-  //   return () => {
-  //     // Cleanup styles when component unmounts or htmlContent updates
-  //     styleElements.forEach((styleElement) => document.head.removeChild(styleElement));
-  //   };
-
-  // }, [htmlContent]);
-
-  // const sanitizedHTML = DOMPurify.sanitize(htmlContent, {
-  //   ADD_TAGS: ["style"],
-  // });
-
-  // const contentRef = useRef<HTMLDivElement>(null);
-
+const QuotePreview = ({ htmlContent, currentId, currentQuotation }) => {
   const [showEmailDialog, setShowEmailDialog] = useState(false);
 
   const navigate = useNavigate();
@@ -81,7 +55,7 @@ const FlightQuotePreview = ({ htmlContent, currentId }) => {
     return () => {
       // Cleanup styles when component unmounts or htmlContent updates
       styleElements.forEach((styleElement) =>
-        document.head.removeChild(styleElement),
+        document.head.removeChild(styleElement)
       );
     };
   }, [htmlContent]);
@@ -92,31 +66,35 @@ const FlightQuotePreview = ({ htmlContent, currentId }) => {
 
   const componentRef = React.useRef(null);
 
-  const handleAfterPrint = React.useCallback(() => {
-    console.log("`onAfterPrint` called");
-  }, []);
+  // const handleAfterPrint = React.useCallback(() => {
+  //   console.log("`onAfterPrint` called");
+  // }, []);
 
-  const handleBeforePrint = React.useCallback(() => {
-    console.log("`onBeforePrint` called");
-    return Promise.resolve();
-  }, []);
+  // const handleBeforePrint = React.useCallback(() => {
+  //   console.log("`onBeforePrint` called");
+  //   return Promise.resolve();
+  // }, []);
 
-  const printFn = useReactToPrint({
-    contentRef: componentRef,
-    documentTitle: "AwesomeFileName",
-    onAfterPrint: handleAfterPrint,
-    onBeforePrint: handleBeforePrint,
-  });
+  // const printFn = useReactToPrint({
+  //   contentRef: componentRef,
+  //   documentTitle: "AwesomeFileName",
+  //   onAfterPrint: handleAfterPrint,
+  //   onBeforePrint: handleBeforePrint,
+  // });
 
   const handelSendQuoteThroughEmail = async () => {
     const result = await useGql({
-      query: GENERATE_QUOTE_PDF,
+      query: SEND_ACKNOWLEDGEMENT,
       queryName: "",
       queryType: "mutation",
       variables: {
         input: {
-          id: currentId,
+          quotationNo: currentQuotation,
           email: clientEmail,
+          documentType: getEnumKeyByValue(
+            SalesDocumentType,
+            SalesDocumentType?.QUOTATION
+          ),
         },
       },
     });
@@ -140,23 +118,23 @@ const FlightQuotePreview = ({ htmlContent, currentId }) => {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    if (!componentRef.current) return;
+  // const handleDownloadPDF = async () => {
+  //   if (!componentRef.current) return;
 
-    const canvas = await html2canvas(componentRef.current, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
+  //   const canvas = await html2canvas(componentRef.current, { scale: 2 });
+  //   const imgData = canvas.toDataURL("image/png");
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  //   const pdf = new jsPDF("p", "mm", "a4");
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("Flight_Quote.pdf");
-  };
+  //   pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //   pdf.save("Flight_Quote.pdf");
+  // };
 
   return (
     <Box>
-      <Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+      {/* <Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
         <IconButton
           color="secondary"
           onClick={() => navigate(`/quotes/edit/${currentId}`)}
@@ -175,7 +153,19 @@ const FlightQuotePreview = ({ htmlContent, currentId }) => {
         <IconButton color="secondary" onClick={handleDownloadPDF}>
           <DownloadIcon fontSize="small" />
         </IconButton>
-      </Box>
+      </Box> */}
+
+      <ActionButton
+        currentId={currentId}
+        currentQuotation={currentQuotation}
+        htmlRef={componentRef}
+        documentType="QUOTATION"
+        editPath="/quotes/edit"
+        showEdit={true}
+        showEmail={true}
+        showPrint={true}
+        showDownload={true}
+      />
 
       <Paper elevation={3} sx={{ padding: 2, overflow: "auto" }}>
         <div
@@ -184,7 +174,7 @@ const FlightQuotePreview = ({ htmlContent, currentId }) => {
         />
       </Paper>
 
-      <Dialog
+      {/* <Dialog
         open={showEmailDialog}
         onClose={() => setShowEmailDialog(false)}
         fullWidth
@@ -225,9 +215,9 @@ const FlightQuotePreview = ({ htmlContent, currentId }) => {
             Cancel
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 };
 
-export default FlightQuotePreview;
+export default QuotePreview;

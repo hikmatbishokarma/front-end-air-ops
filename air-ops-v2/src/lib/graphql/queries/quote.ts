@@ -27,7 +27,6 @@ export const GET_QUOTES = gql`
         providerType
         updatedAt
         quotationNo
-        revisedQuotationNo
         version
         revision
         aircraft {
@@ -62,7 +61,6 @@ export const GET_QUOTE_BY_ID = gql`
       providerType
       updatedAt
       quotationNo
-      revisedQuotationNo
       grandTotal
       prices {
         currency
@@ -89,14 +87,14 @@ export const UPDATE_QUOTE = gql`
 `;
 
 export const SHOW_PREVIEW = gql`
-  query showPreview($id: String!) {
-    showPreview(id: $id)
+  query showPreview($quotationNo: String!) {
+    showPreview(quotationNo: $quotationNo)
   }
 `;
 
-export const GENERATE_QUOTE_PDF = gql`
-  mutation generateQuotePdf($input: GenerateQuotePdfInput!) {
-    generateQuotePdf(input: $input)
+export const SEND_ACKNOWLEDGEMENT = gql`
+  mutation sendAcknowledgement($input: acknowledgementInput!) {
+    sendAcknowledgement(input: $input)
   }
 `;
 
