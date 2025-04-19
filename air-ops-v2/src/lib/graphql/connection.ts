@@ -13,7 +13,7 @@ const defaultOptions: DefaultOptions = {
 
 const apolloConnection = new ApolloClient({
   // add graphql endpoint from env
-  uri: "http://localhost:3000/graphql",
+  uri: "https://airops.in/graphql",
   cache: new InMemoryCache(),
   defaultOptions: defaultOptions,
 });
