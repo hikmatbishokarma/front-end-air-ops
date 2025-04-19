@@ -29,7 +29,12 @@ export const GET_AIRCRAFT_DETAIL_BY_ID = gql`
       name
       code
       description
-      image
+      noteText
+      warningText
+      warningImage
+      flightImages
+      seatLayoutImage
+      rangeMapImage
       termsAndConditions
       specifications
       category {
