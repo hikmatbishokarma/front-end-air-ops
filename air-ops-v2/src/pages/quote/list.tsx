@@ -72,7 +72,7 @@ export const QuoteList = ({ filter }) => {
         },
       });
       setRows(() => {
-        return data.map((quote: any) => {
+        return data?.map((quote: any) => {
           return {
             id: quote.id,
             quotationNo: quote?.quotationNo,
@@ -81,7 +81,7 @@ export const QuoteList = ({ filter }) => {
             version: quote.version,
             revision: quote.revision,
             itinerary: quote.itinerary
-              .map((itinerary: any) => {
+              ?.map((itinerary: any) => {
                 return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
               })
               .join(", "),
@@ -239,7 +239,7 @@ export const QuoteList = ({ filter }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows?.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

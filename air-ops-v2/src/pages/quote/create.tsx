@@ -97,10 +97,10 @@ export const QuoteCreate = () => {
     { title: string; start: string; end: string }[]
   >([]);
 
-  const { control, handleSubmit, setValue, watch, reset } = useForm({
+  const { control, handleSubmit, setValue, watch, reset, getValues } = useForm({
     defaultValues,
   });
-  const steps = ["General Information", "Itinerary Details", "Price"];
+  const steps = ["General Information", "Itinerary Details", "Price", "Review"];
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -206,24 +206,24 @@ export const QuoteCreate = () => {
                 start: moment
                   .utc(
                     `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
-                    "YYYY-MM-DD HH:mm",
+                    "YYYY-MM-DD HH:mm"
                   )
                   .format("YYYY-MM-DD HH:mm"),
                 end: moment
                   .utc(
                     `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
-                    "YYYY-MM-DD HH:mm",
+                    "YYYY-MM-DD HH:mm"
                   )
                   .format("YYYY-MM-DD HH:mm"),
               }
-            : event,
+            : event
         );
 
         // If event does not exist, add it
         const eventExists = prevEvents.some(
           (event: any) =>
             event.title ===
-            `${lastItinerary.source}-${lastItinerary.destination}`,
+            `${lastItinerary.source}-${lastItinerary.destination}`
         );
 
         if (!eventExists) {
@@ -232,13 +232,13 @@ export const QuoteCreate = () => {
             start: moment
               .utc(
                 `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
-                "YYYY-MM-DD HH:mm",
+                "YYYY-MM-DD HH:mm"
               )
               .format("YYYY-MM-DD HH:mm"),
             end: moment
               .utc(
                 `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
-                "YYYY-MM-DD HH:mm",
+                "YYYY-MM-DD HH:mm"
               )
               .format("YYYY-MM-DD HH:mm"),
           });
@@ -314,628 +314,6 @@ export const QuoteCreate = () => {
 
   return (
     <>
-      {/* <Dialog
-        open={isNewQuote}
-        onClose={() => setIsNewQuote(false)}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogTitle>Add New Quote Request</DialogTitle>
-        <DialogContent>
-          <Box sx={{ width: "100%" }}>
-            <Stepper activeStep={activeStep} alternativeLabel>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="form_Work"
-              style={{ padding: "20px", flex: 0.5 }}
-            >
-              {activeStep === 0 && (
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={4}>
-                    <Typography sx={{ whiteSpace: "nowrap" }}>
-                      Requested by:
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Controller
-                      name="requestedBy"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={clients}
-                          getOptionLabel={(option) => option.name}
-                          value={
-                            field.value
-                              ? clients.find(
-                                  (client) => client.id === field.value,
-                                )
-                              : null
-                          }
-                          onChange={(_, newValue) => {
-                            setSelectedClient(newValue);
-                            field.onChange(newValue ? newValue.id : ""); 
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              fullWidth
-                              label="Requested By"
-                            />
-                          )}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      onClick={() => setSubDialogOpen(true)}
-                    >
-                      Add Client
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography sx={{ whiteSpace: "nowrap" }}>
-                      Representative:
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Controller
-                      name="representative"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={representatives}
-                          getOptionLabel={(option) => option.name}
-                          value={
-                            field.value
-                              ? representatives.find(
-                                  (representative) =>
-                                    representative.id === field.value,
-                                )
-                              : null
-                          }
-                          onChange={(_, newValue) => {
-                            field.onChange(newValue ? newValue.id : ""); 
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              fullWidth
-                              label="Representative"
-                            />
-                          )}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    {" "}
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      onClick={() => setRepresentativeDialogOpen(true)}
-                    >
-                      Add Rep
-                    </Button>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Typography sx={{ whiteSpace: "nowrap" }}>
-                      Category:
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Controller
-                      name="category"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={aircraftCategories}
-                          getOptionLabel={(option: any) => option?.name}
-                          value={selectedAircraftCategory}
-                          onChange={(_, newValue) => {
-                            setSelectedAircraftCategory(newValue);
-                            field.onChange(newValue?.id || "");
-                          }}
-                          renderInput={(params) => (
-                            <TextField {...params} fullWidth label="Category" />
-                          )}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Typography sx={{ whiteSpace: "nowrap" }}>
-                      Aircraft:
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Controller
-                      name="aircraft"
-                      control={control}
-                      render={({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={aircrafts}
-                          getOptionLabel={(option) => option.code}
-                          value={
-                            field.value
-                              ? aircrafts.find(
-                                  (aircraft) => aircraft.id === field.value,
-                                )
-                              : null
-                          }
-                          onChange={(_, value) => {
-                            field.onChange(value ? value.id : "");
-                          }}
-                          renderInput={(params) => (
-                            <TextField {...params} fullWidth label="Aircraft" />
-                          )}
-                        />
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-              )}
-              {activeStep === 1 && (
-                <Box sx={{ display: "flex", mt: 5 }}>
-                 
-                  <Box sx={{ flex: 0.4, pr: 2 }}>
-                    {itineraryFields.map((item, index) => (
-                      <Grid
-                        container
-                        spacing={2}
-                        key={item.id}
-                        alignItems="center"
-                        sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
-                      >
-                       
-                        <Grid item xs={6}>
-                          <Controller
-                            name={`itinerary.${index}.source`}
-                            control={control}
-                            render={({ field }) => (
-                              <AirportsAutocomplete {...field} label="Source" />
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Controller
-                            name={`itinerary.${index}.destination`}
-                            control={control}
-                            render={({ field }) => (
-                              <AirportsAutocomplete
-                                {...field}
-                                label="Destination"
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <Controller
-                              name={`itinerary.${index}.depatureDate`}
-                              control={control}
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  format="DD-MM-YYYY"
-                                  value={
-                                    field.value ? moment(field.value) : null
-                                  }
-                                  onChange={(newValue) =>
-                                    field.onChange(newValue)
-                                  }
-                                  slotProps={{
-                                    textField: {
-                                      fullWidth: true,
-                                      size: "small",
-                                    },
-                                  }}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <Controller
-                              name={`itinerary.${index}.depatureTime`}
-                              control={control}
-                              render={({ field }) => (
-                                <TimeField
-                                  {...field}
-                                  value={
-                                    field.value
-                                      ? moment(field.value, "HH:mm")
-                                      : null
-                                  }
-                                  onChange={(newValue) =>
-                                    field.onChange(
-                                      newValue
-                                        ? moment(newValue).format("HH:mm")
-                                        : "",
-                                    )
-                                  }
-                                  label="Departure Time"
-                                  size="small"
-                                  format="HH:mm"
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        </Grid>
-
-                      
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <Controller
-                              name={`itinerary.${index}.arrivalDate`}
-                              control={control}
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  format="DD-MM-YYYY"
-                                  value={
-                                    field.value ? moment(field.value) : null
-                                  }
-                                  onChange={(newValue) =>
-                                    field.onChange(newValue)
-                                  }
-                                  slotProps={{
-                                    textField: {
-                                      fullWidth: true,
-                                      size: "small",
-                                    },
-                                  }}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <Controller
-                              name={`itinerary.${index}.arrivalTime`}
-                              control={control}
-                              render={({ field }) => (
-                                <TimeField
-                                  {...field}
-                                  value={
-                                    field.value
-                                      ? moment(field.value, "HH:mm")
-                                      : null
-                                  }
-                                  onChange={(newValue) =>
-                                    field.onChange(
-                                      newValue
-                                        ? moment(newValue).format("HH:mm")
-                                        : "",
-                                    )
-                                  }
-                                  label="Arrival Time"
-                                  size="small"
-                                  format="HH:mm"
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        </Grid>
-
-                      
-                        <Grid item xs={6}>
-                          <Controller
-                            name={`itinerary.${index}.paxNumber`}
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                type="number"
-                                fullWidth
-                                size="small"
-                                label="PAX"
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                     
-                        <Grid
-                          item
-                          xs={6}
-                          sx={{ display: "flex", justifyContent: "flex-end" }}
-                        >
-                         
-                          <Button
-                            variant="outlined"
-                            startIcon={<Delete />}
-                            onClick={() => removeItinerary(index)}
-                            color="error"
-                          >
-                            Remove
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    ))}
-
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      onClick={addItinerary}
-                    >
-                      Add Itinerary
-                    </Button>
-                  </Box>
-
-        
-                  <Box
-                    sx={{
-                      flex: 0.6,
-                      backgroundColor: "#fff",
-                      borderLeft: "1px solid grey",
-                      paddingLeft: "8px",
-                    }}
-                  >
-                    <Typography variant="h6" gutterBottom>
-                      Calendar
-                    </Typography>
-
-                    <FullCalendar
-                      plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
-                      initialView="dayGridMonth"
-                      headerToolbar={{
-                        left: "prev,next today",
-                        center: "title",
-                        right: "dayGridMonth,timeGridWeek,timeGridDay",
-                      }}
-                      events={events}
-                    />
-                  </Box>
-                </Box>
-              )}
-              {activeStep === 2 && (
-                <Box sx={{ mt: 5 }}>
-                  <Grid container spacing={2} sx={{ mb: 3 }}>
-                    <Grid item xs={3}>
-                      <h4 style={{ margin: "0px" }}>Label</h4>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                      <h4 style={{ margin: "0px" }}>Unit</h4>
-                    </Grid>
-                    <Grid item xs={0.5}>
-                      <h4 style={{ margin: "0px" }}>X</h4>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                      <h4 style={{ margin: "0px" }}>Price</h4>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                      <h4 style={{ margin: "0px" }}>Currency</h4>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                      <h4 style={{ margin: "0px" }}>Margin (%)</h4>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                      <h4 style={{ margin: "0px" }}>Total</h4>
-                    </Grid>
-                  </Grid>
-                  {priceFields.map((field, index) => (
-                    <>
-                      <Grid
-                        container
-                        key={field.id}
-                        spacing={2}
-                        sx={{ mb: 3 }}
-                        alignItems="center"
-                      >
-                       
-                        <Grid item xs={3}>
-                          <Controller
-                            name={`prices.${index}.label`}
-                            control={control}
-                            rules={{ required: "Label is required" }}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Label"
-                                fullWidth
-                                size="small"
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                        
-                        <Grid item xs={1.5}>
-                          <Controller
-                            name={`prices.${index}.unit`}
-                            control={control}
-                            rules={{ required: "Unit is required" }}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Unit"
-                                fullWidth
-                                size="small"
-                                onChange={(e) =>
-                                  handlePriceChange(
-                                    index,
-                                    "unit",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                       
-                        <Grid item xs={1.5}>
-                          <Controller
-                            name={`prices.${index}.price`}
-                            control={control}
-                            rules={{
-                              required: "Price is required",
-                              min: { value: 1, message: "Must be > 0" },
-                            }}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Price"
-                                type="number"
-                                fullWidth
-                                size="small"
-                               
-                                onChange={(e) => {
-                                  const value = e.target.value
-                                    ? Number(e.target.value)
-                                    : "";
-                                  field.onChange(value); 
-                                  handlePriceChange(index, "price", value);
-                                }}
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                       
-                        <Grid item xs={1.5}>
-                          <Controller
-                            name={`prices.${index}.currency`}
-                            control={control}
-                            rules={{ required: "Currency is required" }}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Currency"
-                                fullWidth
-                                size="small"
-                              />
-                            )}
-                          />
-                        </Grid>
-
-         
-                        <Grid item xs={1.5}>
-                          <Controller
-                            name={`prices.${index}.margin`}
-                            control={control}
-                            rules={{
-                              required: "Margin is required",
-                              min: { value: 0, message: "Cannot be negative" },
-                            }}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Margin (%)"
-                                type="number"
-                                fullWidth
-                                size="small"
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                       
-                        <Grid item xs={2}>
-                          <Controller
-                            name={`prices.${index}.total`}
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Total"
-                                type="number"
-                                fullWidth
-                                size="small"
-                                disabled
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                        <Grid item xs={1}>
-                          <IconButton
-                            onClick={() => removePrice(index)}
-                            color="error"
-                          >
-                            <Delete fontSize="small" />
-                          </IconButton>
-                        </Grid>
-                      </Grid>
-                    </>
-                  ))}
-                  <Grid item xs={1.5}>
-                    <IconButton aria-label="Add" onClick={handleAddFee}>
-                      <AddIcon />
-                    </IconButton>
-                  </Grid>
-                  <Grid container spacing={2} sx={{ mt: 2 }}>
-                   
-                    <Grid item xs={1.5}>
-                      <span>TOTAL</span>
-                    </Grid>
-                    <Grid item xs={1.5}>
-                      <span>INR</span>
-                    </Grid>
-
-                   
-                    <Grid item xs={2}>
-                      <TextField
-                        value={grandTotal} 
-                        type="number"
-                        fullWidth
-                        size="small"
-                        disabled
-                      />
-                    </Grid>
-                  </Grid>
-                </Box>
-              )}
-
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", p: 3 }}
-              >
-                <Button disabled={activeStep === 0} onClick={handleBack}>
-                  Back
-                </Button>
-                {activeStep === steps.length - 1 ? (
-                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-                    <Button type="submit" variant="contained" color="success">
-                      Submit
-                    </Button>
-                  </Box>
-                ) : (
-                  <Button variant="contained" onClick={handleNext}>
-                    Next
-                  </Button>
-                )}
-              </Box>
-            </form>
-          </Box>
- 
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsNewQuote(false)} color="primary">
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-
       <Box sx={{ width: "100%" }}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
@@ -1009,7 +387,7 @@ export const QuoteCreate = () => {
                         field.value
                           ? representatives.find(
                               (representative) =>
-                                representative.id === field.value,
+                                representative.id === field.value
                             )
                           : null
                       }
@@ -1079,7 +457,7 @@ export const QuoteCreate = () => {
                       value={
                         field.value
                           ? aircrafts.find(
-                              (aircraft) => aircraft.id === field.value,
+                              (aircraft) => aircraft.id === field.value
                             )
                           : null
                       }
@@ -1167,7 +545,7 @@ export const QuoteCreate = () => {
                                 field.onChange(
                                   newValue
                                     ? moment(newValue).format("HH:mm")
-                                    : "",
+                                    : ""
                                 )
                               }
                               label="Departure Time"
@@ -1218,7 +596,7 @@ export const QuoteCreate = () => {
                                 field.onChange(
                                   newValue
                                     ? moment(newValue).format("HH:mm")
-                                    : "",
+                                    : ""
                                 )
                               }
                               label="Arrival Time"
@@ -1304,7 +682,7 @@ export const QuoteCreate = () => {
                   <h4 style={{ margin: "0px" }}>Label</h4>
                 </Grid>
                 <Grid item xs={1.5}>
-                  <h4 style={{ margin: "0px" }}>Unit</h4>
+                  <h4 style={{ margin: "0px" }}>Unit (Hrs)</h4>
                 </Grid>
                 <Grid item xs={0.5}>
                   <h4 style={{ margin: "0px" }}>X</h4>
@@ -1358,15 +736,37 @@ export const QuoteCreate = () => {
                             label="Unit"
                             fullWidth
                             size="small"
-                            onChange={(e) =>
-                              handlePriceChange(index, "unit", e.target.value)
-                            }
+                            // onChange={(e) =>
+                            //   handlePriceChange(index, "unit", e.target.value)
+                            // }
+
+                            onChange={(e) => {
+                              const value = e.target.value;
+
+                              // Regex to validate a number (positive integer or decimal)
+                              const numberRegex = /^[0-9]*(\.[0-9]+)?$/;
+
+                              // Check if the value matches the regex or is empty (allow clearing the input)
+                              if (numberRegex.test(value) || value === "") {
+                                // If valid, update the field value as a number or empty string
+                                field.onChange(value ? Number(value) : "");
+
+                                // Calculate the total based on unit and price
+                                const priceValue = getValues(
+                                  `prices.${index}.price`
+                                );
+                                if (priceValue && value) {
+                                  const total = priceValue * Number(value); // Calculate total based on unit and price
+                                  setValue(`prices.${index}.total`, total); // Update the total field
+                                }
+                              }
+                            }}
                           />
                         )}
                       />
                     </Grid>
 
-                    <Grid item xs={1.5}>
+                    {/* <Grid item xs={1.5}>
                       <Controller
                         name={`prices.${index}.price`}
                         control={control}
@@ -1387,6 +787,61 @@ export const QuoteCreate = () => {
                                 : "";
                               field.onChange(value);
                               handlePriceChange(index, "price", value);
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid> */}
+
+                    <Grid item xs={1.5}>
+                      <Controller
+                        name={`prices.${index}.price`}
+                        control={control}
+                        rules={{
+                          required: "Price is required",
+                          min: { value: 1, message: "Must be > 0" },
+                        }}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            label="Price1"
+                            fullWidth
+                            size="small"
+                            // onChange={(e) => {
+                            //   const value = e.target.value;
+
+                            //   // Regex to validate a number (positive integer or decimal)
+                            //   const numberRegex = /^[0-9]*(\.[0-9]+)?$/;
+
+                            //   // Check if the value matches the regex or is empty (allow clearing the input)
+                            //   if (numberRegex.test(value) || value === "") {
+                            //     // If valid, update the field value
+                            //     field.onChange(value ? value : "");
+                            //     // handlePriceChange(index, "price", value);
+                            //   }
+                            // }}
+
+                            onChange={(e) => {
+                              const value = e.target.value;
+
+                              // Regex to validate a number (positive integer or decimal)
+                              const numberRegex = /^[0-9]*(\.[0-9]+)?$/;
+
+                              // Check if the value matches the regex or is empty (allow clearing the input)
+                              if (numberRegex.test(value) || value === "") {
+                                // If valid, update the field value as a number or empty string
+                                field.onChange(value ? Number(value) : "");
+
+                                // Calculate the total based on unit and price
+                                const unitValue = getValues(
+                                  `prices.${index}.unit`
+                                );
+                                if (unitValue && value) {
+                                  const total =
+                                    Number(unitValue) * Number(value); // Calculate total based on unit and price
+                                  setValue(`prices.${index}.total`, total); // Update the total field
+                                }
+                              }
                             }}
                           />
                         )}
@@ -1481,6 +936,307 @@ export const QuoteCreate = () => {
                 </Grid>
               </Grid>
             </Box>
+          )}
+          {activeStep === 3 && (
+            <>
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Basic Info</h2>
+
+                <div className="space-y-2">
+                  <p>
+                    <strong>Requested By:</strong>{" "}
+                    {clients?.find(
+                      (client) => client.id === getValues("requestedBy")
+                    )?.name || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Representative:</strong>{" "}
+                    {representatives?.find(
+                      (rep) => rep.id === getValues("representative")
+                    )?.name || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Category:</strong>{" "}
+                    {aircraftCategories?.find(
+                      (category) => category.id === getValues("category")
+                    )?.name || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Aircraft:</strong>{" "}
+                    {aircrafts?.find(
+                      (aircraft) => aircraft.id === getValues("aircraft")
+                    )?.name || "N/A"}
+                  </p>
+                  {/* Repeat similar lines for other fields if needed */}
+                </div>
+
+                {/* Itinerary Section */}
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    marginTop: "24px",
+                  }}
+                >
+                  Itinerary
+                </h2>
+                <div style={{ overflowX: "auto" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      border: "1px solid #ccc",
+                      borderCollapse: "collapse",
+                      marginTop: "8px",
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: "#f5f5f5" }}>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Source
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Destination
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Depature Date
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Depature Time
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Arrival Date
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Arrival Time
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Pax
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getValues("itinerary")?.length > 0 ? (
+                        getValues("itinerary").map((item, index) => (
+                          <tr key={index}>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.source}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.destination}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {moment(item.depatureDate).format("DD-MM-YYYY")}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.depatureTime}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {moment(item.arrivalDate).format("DD-MM-YYYY")}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.arrivalTime}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.paxNumber}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px",
+                              textAlign: "center",
+                            }}
+                          >
+                            No itinerary
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Price Section */}
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    marginTop: "24px",
+                  }}
+                >
+                  Price
+                </h2>
+                <div style={{ overflowX: "auto" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      border: "1px solid #ccc",
+                      borderCollapse: "collapse",
+                      marginTop: "8px",
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: "#f5f5f5" }}>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Label
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Unit(Hrs)
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Price
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Currency
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Margin
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Total
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getValues("prices")?.length > 0 ? (
+                        getValues("prices").map((item, index) => (
+                          <tr key={index}>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.label}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.unit}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.price}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.currency}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.margin}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.total}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={6}
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px",
+                              textAlign: "center",
+                            }}
+                          >
+                            No price details
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <p>
+                  <strong>Total:</strong> {getValues("grandTotal") || "N/A"}
+                </p>
+              </div>
+            </>
           )}
 
           <Box sx={{ display: "flex", justifyContent: "space-between", p: 3 }}>
