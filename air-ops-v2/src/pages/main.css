@@ -226,3 +226,31 @@
 .css-echumz-MuiButtonBase-root-MuiButton-root{
     background-color: #001551 !important;
 }
+.ban_img{
+    background-image: url(../Asset/Images/dashbanner.png) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 204px;
+    border-radius: 15px;
+}
+.v1_board{
+ 
+    position: absolute;
+    width: 100%;
+    top: 64px;
+}
+.v1_quote_btn{
+    margin-bottom: 20px !important;
+}
+.v1_board .v1_h6{
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+}
+.css-f84ov1-MuiTypography-root{
+    display: none
+    ;
+}
+.v1_board .v1-card-h6{
+    font-size: 14px;
+}

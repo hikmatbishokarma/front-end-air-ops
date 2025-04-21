@@ -33,7 +33,6 @@ const SalesDashboard = () => {
     isLatest: { is: true },
     or: [{ status: { eq: "QUOTE" } }],
   });
-
   const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
   const [quotationNumber, setQuotationNumber] = useState("");
 
@@ -49,7 +48,7 @@ const SalesDashboard = () => {
           range: "lastMonth",
         },
       });
-      console.log("data:::", data);
+
       setSalesDashboardData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -129,54 +128,61 @@ const SalesDashboard = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div style={{ padding: 20 }}>
-        {/* Table Section */}
-        <Grid
-          container
-          justifyContent="space-between"
-          alignItems="center"
-          style={{ marginTop: 20 }}
-        >
-          <Typography variant="h6">{selectedTab.toUpperCase()}</Typography>
-          {(selectedTab == "Quotes" || selectedTab == "Invoices") && (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handelCreate(selectedTab)}
-            >
-              Create {selectedTab.slice(0, -1)}
-            </Button>
-          )}
-        </Grid>
+      <div className="dashboard_main_d">
+        <div className="ban_img"></div>
 
-        {/* Top Section with Cards */}
-        <Grid container spacing={2}>
-          {categories.map((item) => (
-            <Grid item xs={3} key={item.name}>
-              <Card
-                onClick={() => handelFilter(item)}
-                style={{
-                  cursor: "pointer",
-                  backgroundColor:
-                    selectedTab === item.name ? "#1976d2" : "#fff",
-                  color: selectedTab === item.name ? "#fff" : "#000",
-                  textAlign: "center",
-                }}
+        <div style={{ padding: 20 }} className="v1_board">
+          {/* Table Section */}
+          <Grid
+            container
+            justifyContent="space-between"
+            alignItems="center"
+            style={{ marginTop: 20 }}
+          >
+            <Typography className="v1_h6" variant="h6">
+              {selectedTab.toUpperCase()}
+            </Typography>
+            {(selectedTab == "Quotes" || selectedTab == "Invoices") && (
+              <Button
+                className="v1_quote_btn"
+                variant="contained"
+                color="primary"
+                onClick={() => handelCreate(selectedTab)}
               >
-                <CardContent>
-                  <Typography variant="h6">
-                    {item.name.toUpperCase()}
-                  </Typography>
-                  <Typography variant="body1">
-                    {salesDashboardData?.summary[item.name.toLowerCase()]}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                Create {selectedTab.slice(0, -1)}
+              </Button>
+            )}
+          </Grid>
 
-        <QuoteList filter={filter} />
+          {/* Top Section with Cards */}
+          <Grid container spacing={2}>
+            {categories.map((item) => (
+              <Grid item xs={3} key={item.name}>
+                <Card
+                  onClick={() => handelFilter(item)}
+                  style={{
+                    cursor: "pointer",
+                    backgroundColor:
+                      selectedTab === item.name ? "#1976d2" : "#fff",
+                    color: selectedTab === item.name ? "#fff" : "#000",
+                    textAlign: "center",
+                  }}
+                >
+                  <CardContent>
+                    <Typography className="v1-card-h6" variant="h6">
+                      {item.name.toUpperCase()}
+                    </Typography>
+                    <Typography variant="body1">
+                      {salesDashboardData?.summary[item.name.toLowerCase()]}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
+          <QuoteList filter={filter} />
+        </div>
       </div>
     </>
   );
