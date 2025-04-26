@@ -8,6 +8,7 @@ import {
   TextField,
   Box,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
@@ -41,6 +42,7 @@ const ActionButton = ({
   const [clientEmail, setClientEmail] = useState("");
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (value) => {
     const emailRegex = /^\S+@\S+\.\S+$/;
@@ -57,27 +59,34 @@ const ActionButton = ({
   };
 
   const handleSendEmail = async () => {
-    const result = await useGql({
-      query: SEND_ACKNOWLEDGEMENT,
-      queryName: "",
-      queryType: "mutation",
-      variables: {
-        input: {
-          quotationNo: currentQuotation,
-          email: clientEmail,
-          documentType: getEnumKeyByValue(
-            SalesDocumentType,
-            SalesDocumentType[documentType]
-          ),
+    try {
+      setLoading(true);
+      const result = await useGql({
+        query: SEND_ACKNOWLEDGEMENT,
+        queryName: "",
+        queryType: "mutation",
+        variables: {
+          input: {
+            quotationNo: currentQuotation,
+            email: clientEmail,
+            documentType: getEnumKeyByValue(
+              SalesDocumentType,
+              SalesDocumentType[documentType]
+            ),
+          },
         },
-      },
-    });
+      });
 
-    setShowEmailDialog(false);
-    if (!result) {
+      setShowEmailDialog(false);
+      if (!result) {
+        showSnackbar("Internal server error!", "error");
+      } else {
+        showSnackbar("Quote sent successfully!", "success");
+      }
+    } catch (err) {
       showSnackbar("Internal server error!", "error");
-    } else {
-      showSnackbar("Quote sent successfully!", "success");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -152,7 +161,11 @@ const ActionButton = ({
                   onClick={handleSendEmail}
                   endIcon={<SendIcon />}
                 >
-                  Send
+                  {loading ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Send"
+                  )}
                 </Button>
               </Box>
             </DialogContent>
