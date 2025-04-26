@@ -117,45 +117,45 @@ export const QuoteList = ({ filter }) => {
     setShowPreview(true);
   };
 
-  const validateEmail = (value: string) => {
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!value) {
-      setError(true);
-      setHelperText("Email is required");
-    } else if (!emailRegex.test(value)) {
-      setError(true);
-      setHelperText("Invalid email format");
-    } else {
-      setError(false);
-      setHelperText("");
-    }
-  };
+  // const validateEmail = (value: string) => {
+  //   const emailRegex = /^\S+@\S+\.\S+$/;
+  //   if (!value) {
+  //     setError(true);
+  //     setHelperText("Email is required");
+  //   } else if (!emailRegex.test(value)) {
+  //     setError(true);
+  //     setHelperText("Invalid email format");
+  //   } else {
+  //     setError(false);
+  //     setHelperText("");
+  //   }
+  // };
 
-  const handelEmailNotification = (id) => {
-    setCurrentId(id);
-    setShowEmailDialog(true);
-  };
+  // const handelEmailNotification = (id) => {
+  //   setCurrentId(id);
+  //   setShowEmailDialog(true);
+  // };
 
-  const handelSendQuoteThroughEmail = async () => {
-    const result = await useGql({
-      query: SEND_ACKNOWLEDGEMENT,
-      queryName: "",
-      queryType: "query-without-edge",
-      variables: {
-        input: {
-          quotationNo: currentQuotation,
-          email: clientEmail,
-          documentType: SalesDocumentType.QUOTATION,
-        },
-      },
-    });
+  // const handelSendQuoteThroughEmail = async () => {
+  //   const result = await useGql({
+  //     query: SEND_ACKNOWLEDGEMENT,
+  //     queryName: "",
+  //     queryType: "query-without-edge",
+  //     variables: {
+  //       input: {
+  //         quotationNo: currentQuotation,
+  //         email: clientEmail,
+  //         documentType: SalesDocumentType.QUOTATION,
+  //       },
+  //     },
+  //   });
 
-    if (!result) {
-      showSnackbar("Internal server error!", "error");
-    } else showSnackbar("Quote sent successfully!", "success");
+  //   if (!result) {
+  //     showSnackbar("Internal server error!", "error");
+  //   } else showSnackbar("Quote sent successfully!", "success");
 
-    setShowEmailDialog(false);
-  };
+  //   setShowEmailDialog(false);
+  // };
 
   const refreshList = async () => {
     await getQuotes();
@@ -213,15 +213,15 @@ export const QuoteList = ({ filter }) => {
     }
   };
 
-  const handleUpgradeClick = async (code) => {
-    try {
-      await upgradQuote(code);
-    } catch (error) {
-      console.error("Error upgrading quotation:", error);
-    } finally {
-      refreshList();
-    }
-  };
+  // const handleUpgradeClick = async (code) => {
+  //   try {
+  //     await upgradQuote(code);
+  //   } catch (error) {
+  //     console.error("Error upgrading quotation:", error);
+  //   } finally {
+  //     refreshList();
+  //   }
+  // };
 
   return (
     <>
@@ -273,7 +273,7 @@ export const QuoteList = ({ filter }) => {
                         </IconButton>
                       </Tooltip>
 
-                      <Tooltip title="Upgrade">
+                      {/* <Tooltip title="Upgrade">
                         <IconButton size="small">
                           <QuotationWorkflowUpgradeConfirmation
                             onUpgrade={() => handleUpgradeClick(row.code)}
@@ -281,7 +281,7 @@ export const QuoteList = ({ filter }) => {
                             code={row.code}
                           />
                         </IconButton>
-                      </Tooltip>
+                      </Tooltip> */}
                     </>
                   )}
 
@@ -325,7 +325,8 @@ export const QuoteList = ({ filter }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
+
+      {/* <Dialog
         open={showEmailDialog}
         onClose={() => setShowEmailDialog(false)}
         fullWidth
@@ -366,7 +367,7 @@ export const QuoteList = ({ filter }) => {
             Cancel
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };

@@ -44,11 +44,13 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import ClientDialog from "../clients/dialog";
 import RepresentativeDialog from "../representative/dialog";
+import { parseUnitToDecimal } from "./create";
 
 const QuoteEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { control, handleSubmit, setValue, watch, register } = useForm();
+  const { control, handleSubmit, setValue, watch, register, getValues } =
+    useForm();
   const {
     aircraftCategories,
     aircrafts,
@@ -103,20 +105,24 @@ const QuoteEdit = () => {
       variables: { id },
     });
 
-    console.log("response", response);
+    console.log("response", response.prices);
     if (response) {
-      setValue("referenceNo", response.referenceNo);
-      setValue("status", response.status);
+      //setValue("referenceNo", response.referenceNo);
+      // setValue("status", response.status);
       setValue("requestedBy", response.requestedBy.id);
       setValue("representative", response.representative.id);
       setSelectedAircraftCategory(response.category);
       setValue("category", response.category.id);
       setValue("aircraft", response.aircraft.id);
       setValue("itinerary", response.itinerary);
-      setValue("prices", response.prices);
+      setValue(
+        "prices",
+        response?.prices?.map(({ __typename, ...rest }) => rest)
+      );
       setValue("grandTotal", response.grandTotal);
       setSelectedRepresentative(response.representative);
       setSelectedClient(response.requestedBy);
+      setSelectedClient(response.providerType);
     }
 
     setLoading(false);
@@ -132,8 +138,9 @@ const QuoteEdit = () => {
   const onSubmit = async (data) => {
     await useGql({
       query: UPDATE_QUOTE,
-      queryName: "updateQuote",
-      variables: { id, input: data },
+      queryName: "",
+      queryType: "mutation",
+      variables: { input: { id, update: { ...data, providerType: "airops" } } },
     });
     navigate("/");
   };
@@ -157,9 +164,11 @@ const QuoteEdit = () => {
   const grandTotal = useWatch({ control, name: "grandTotal" }) || 0;
 
   useEffect(() => {
-    const grandTotal =
+    let grandTotal =
       prices?.reduce((sum, item) => sum + (Number(item.total) || 0), 0) || 0;
     console.log("grandTotal", grandTotal);
+
+    grandTotal = Math.round(grandTotal * 100) / 100;
 
     setValue("grandTotal", grandTotal, {
       shouldValidate: true,
@@ -206,7 +215,8 @@ const QuoteEdit = () => {
     }, 0); // Delay to ensure the new field is registered
   };
 
-  const steps = ["General Information", "Itinerary Details", "Price"];
+  // const steps = ["General Information", "Itinerary Details", "Price"];
+  const steps = ["General Information", "Itinerary Details", "Price", "Review"];
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -304,7 +314,7 @@ const QuoteEdit = () => {
                         field.value
                           ? representatives.find(
                               (representative) =>
-                                representative.id === field.value,
+                                representative.id === field.value
                             )
                           : null
                       }
@@ -375,7 +385,7 @@ const QuoteEdit = () => {
                       value={
                         field.value
                           ? aircrafts.find(
-                              (aircraft) => aircraft.id === field.value,
+                              (aircraft) => aircraft.id === field.value
                             )
                           : null
                       }
@@ -438,6 +448,7 @@ const QuoteEdit = () => {
                               format="DD-MM-YYYY"
                               value={field.value ? moment(field.value) : null}
                               onChange={(newValue) => field.onChange(newValue)}
+                              minDate={moment()} // Disable past dates
                               slotProps={{
                                 textField: {
                                   fullWidth: true,
@@ -466,7 +477,7 @@ const QuoteEdit = () => {
                                 field.onChange(
                                   newValue
                                     ? moment(newValue).format("HH:mm")
-                                    : "",
+                                    : ""
                                 )
                               }
                               label="Departure Time"
@@ -490,6 +501,7 @@ const QuoteEdit = () => {
                               format="DD-MM-YYYY"
                               value={field.value ? moment(field.value) : null}
                               onChange={(newValue) => field.onChange(newValue)}
+                              minDate={moment()} // Disable past dates
                               slotProps={{
                                 textField: {
                                   fullWidth: true,
@@ -518,7 +530,7 @@ const QuoteEdit = () => {
                                 field.onChange(
                                   newValue
                                     ? moment(newValue).format("HH:mm")
-                                    : "",
+                                    : ""
                                 )
                               }
                               label="Arrival Time"
@@ -666,9 +678,47 @@ const QuoteEdit = () => {
                             label="Unit"
                             fullWidth
                             size="small"
-                            onChange={(e) =>
-                              handlePriceChange(index, "unit", e.target.value)
-                            }
+                            onChange={(e) => {
+                              let value = e.target.value;
+
+                              // Allow only digits and colon
+                              value = value.replace(/[^0-9:]/g, "");
+
+                              // Allow only one colon
+                              const parts = value.split(":");
+                              if (parts.length > 2) {
+                                value = parts[0] + ":" + parts[1]; // Remove extra colons
+                              }
+
+                              // Validate minutes if colon exists
+                              if (parts.length === 2) {
+                                const minutes = parts[1];
+                                if (
+                                  minutes.length > 2 ||
+                                  Number(minutes) >= 60
+                                ) {
+                                  // Block invalid minutes (>59)
+                                  return; // Simply do not update field
+                                }
+                              }
+
+                              field.onChange(value);
+
+                              // Calculate total
+                              const priceValue = getValues(
+                                `prices.${index}.price`
+                              );
+                              if (priceValue && value) {
+                                const unitDecimal = parseUnitToDecimal(value);
+                                const total = unitDecimal * priceValue;
+
+                                // Round to 2 decimals
+                                const roundedTotal =
+                                  Math.round(total * 100) / 100;
+
+                                setValue(`prices.${index}.total`, roundedTotal);
+                              }
+                            }}
                           />
                         )}
                       />
@@ -690,13 +740,31 @@ const QuoteEdit = () => {
                             type="number"
                             fullWidth
                             size="small"
-                            // onChange={(e) => handlePriceChange(index, "price", e.target.value)}
                             onChange={(e) => {
-                              const value = e.target.value
-                                ? Number(e.target.value)
-                                : "";
-                              field.onChange(value); // ✅ Convert value to number before updating the form
-                              handlePriceChange(index, "price", value);
+                              const value = e.target.value;
+                              if (
+                                /^[0-9]*(\.[0-9]+)?$/.test(value) ||
+                                value === ""
+                              ) {
+                                field.onChange(value ? Number(value) : "");
+
+                                const unitString = getValues(
+                                  `prices.${index}.unit`
+                                );
+                                const decimalUnit =
+                                  parseUnitToDecimal(unitString);
+                                if (unitString && decimalUnit) {
+                                  const total = decimalUnit * Number(value);
+                                  // Round to 2 decimals
+                                  const roundedTotal =
+                                    Math.round(total * 100) / 100;
+
+                                  setValue(
+                                    `prices.${index}.total`,
+                                    roundedTotal
+                                  );
+                                }
+                              }
                             }}
                           />
                         )}
@@ -797,6 +865,307 @@ const QuoteEdit = () => {
                 </Grid>
               </Grid>
             </Box>
+          )}
+          {activeStep === 3 && (
+            <>
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Basic Info</h2>
+
+                <div className="space-y-2">
+                  <p>
+                    <strong>Requested By:</strong>{" "}
+                    {clients?.find(
+                      (client) => client.id === getValues("requestedBy")
+                    )?.name || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Representative:</strong>{" "}
+                    {representatives?.find(
+                      (rep) => rep.id === getValues("representative")
+                    )?.name || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Category:</strong>{" "}
+                    {aircraftCategories?.find(
+                      (category) => category.id === getValues("category")
+                    )?.name || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Aircraft:</strong>{" "}
+                    {aircrafts?.find(
+                      (aircraft) => aircraft.id === getValues("aircraft")
+                    )?.name || "N/A"}
+                  </p>
+                  {/* Repeat similar lines for other fields if needed */}
+                </div>
+
+                {/* Itinerary Section */}
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    marginTop: "24px",
+                  }}
+                >
+                  Itinerary
+                </h2>
+                <div style={{ overflowX: "auto" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      border: "1px solid #ccc",
+                      borderCollapse: "collapse",
+                      marginTop: "8px",
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: "#f5f5f5" }}>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Source
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Destination
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Depature Date
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Depature Time
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Arrival Date
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Arrival Time
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Pax
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getValues("itinerary")?.length > 0 ? (
+                        getValues("itinerary").map((item, index) => (
+                          <tr key={index}>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.source}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.destination}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {moment(item.depatureDate).format("DD-MM-YYYY")}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.depatureTime}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {moment(item.arrivalDate).format("DD-MM-YYYY")}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.arrivalTime}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.paxNumber}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px",
+                              textAlign: "center",
+                            }}
+                          >
+                            No itinerary
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Price Section */}
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    marginTop: "24px",
+                  }}
+                >
+                  Price
+                </h2>
+                <div style={{ overflowX: "auto" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      border: "1px solid #ccc",
+                      borderCollapse: "collapse",
+                      marginTop: "8px",
+                    }}
+                  >
+                    <thead>
+                      <tr style={{ backgroundColor: "#f5f5f5" }}>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Label
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Unit(Hrs)
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Price
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Currency
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Margin
+                        </th>
+                        <th
+                          style={{ border: "1px solid #ccc", padding: "8px" }}
+                        >
+                          Total
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getValues("prices")?.length > 0 ? (
+                        getValues("prices").map((item, index) => (
+                          <tr key={index}>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.label}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.unit}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.price}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.currency}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.margin}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                              }}
+                            >
+                              {item.total}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={6}
+                            style={{
+                              border: "1px solid #ccc",
+                              padding: "8px",
+                              textAlign: "center",
+                            }}
+                          >
+                            No price details
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <p>
+                  <strong>Total:</strong> {getValues("grandTotal") || "N/A"}
+                </p>
+              </div>
+            </>
           )}
 
           <Box sx={{ display: "flex", justifyContent: "space-between", p: 3 }}>

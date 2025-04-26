@@ -70,6 +70,22 @@ const defaultValues = {
   grandTotal: 0,
 };
 
+export const parseUnitToDecimal = (unitString: string): number => {
+  if (!unitString) return 0;
+
+  if (unitString.includes(":")) {
+    const [hoursStr, minutesStr] = unitString.split(":");
+    const hours = Number(hoursStr);
+    const minutes = Number(minutesStr);
+
+    if (isNaN(hours) || isNaN(minutes)) return 0;
+    return hours + minutes / 60;
+  } else {
+    const hours = Number(unitString);
+    return isNaN(hours) ? 0 : hours;
+  }
+};
+
 export const QuoteCreate = () => {
   const navigate = useNavigate();
 
@@ -288,9 +304,10 @@ export const QuoteCreate = () => {
   const grandTotal = useWatch({ control, name: "grandTotal" }) || 0;
 
   useEffect(() => {
-    const grandTotal =
+    let grandTotal =
       prices?.reduce((sum, item) => sum + (Number(item.total) || 0), 0) || 0;
-    console.log("grandTotal", grandTotal);
+
+    grandTotal = Math.round(grandTotal * 100) / 100;
 
     setValue("grandTotal", grandTotal, {
       shouldValidate: true,
@@ -517,6 +534,7 @@ export const QuoteCreate = () => {
                               format="DD-MM-YYYY"
                               value={field.value ? moment(field.value) : null}
                               onChange={(newValue) => field.onChange(newValue)}
+                              minDate={moment()} // Disable past dates
                               slotProps={{
                                 textField: {
                                   fullWidth: true,
@@ -568,6 +586,7 @@ export const QuoteCreate = () => {
                               format="DD-MM-YYYY"
                               value={field.value ? moment(field.value) : null}
                               onChange={(newValue) => field.onChange(newValue)}
+                              minDate={moment()} // Disable past dates
                               slotProps={{
                                 textField: {
                                   fullWidth: true,
@@ -736,29 +755,45 @@ export const QuoteCreate = () => {
                             label="Unit"
                             fullWidth
                             size="small"
-                            // onChange={(e) =>
-                            //   handlePriceChange(index, "unit", e.target.value)
-                            // }
-
                             onChange={(e) => {
-                              const value = e.target.value;
+                              let value = e.target.value;
 
-                              // Regex to validate a number (positive integer or decimal)
-                              const numberRegex = /^[0-9]*(\.[0-9]+)?$/;
+                              // Allow only digits and colon
+                              value = value.replace(/[^0-9:]/g, "");
 
-                              // Check if the value matches the regex or is empty (allow clearing the input)
-                              if (numberRegex.test(value) || value === "") {
-                                // If valid, update the field value as a number or empty string
-                                field.onChange(value ? Number(value) : "");
+                              // Allow only one colon
+                              const parts = value.split(":");
+                              if (parts.length > 2) {
+                                value = parts[0] + ":" + parts[1]; // Remove extra colons
+                              }
 
-                                // Calculate the total based on unit and price
-                                const priceValue = getValues(
-                                  `prices.${index}.price`
-                                );
-                                if (priceValue && value) {
-                                  const total = priceValue * Number(value); // Calculate total based on unit and price
-                                  setValue(`prices.${index}.total`, total); // Update the total field
+                              // Validate minutes if colon exists
+                              if (parts.length === 2) {
+                                const minutes = parts[1];
+                                if (
+                                  minutes.length > 2 ||
+                                  Number(minutes) >= 60
+                                ) {
+                                  // Block invalid minutes (>59)
+                                  return; // Simply do not update field
                                 }
+                              }
+
+                              field.onChange(value);
+
+                              // Calculate total
+                              const priceValue = getValues(
+                                `prices.${index}.price`
+                              );
+                              if (priceValue && value) {
+                                const unitDecimal = parseUnitToDecimal(value);
+                                const total = unitDecimal * priceValue;
+
+                                // Round to 2 decimals
+                                const roundedTotal =
+                                  Math.round(total * 100) / 100;
+
+                                setValue(`prices.${index}.total`, roundedTotal);
                               }
                             }}
                           />
@@ -804,42 +839,32 @@ export const QuoteCreate = () => {
                         render={({ field }) => (
                           <TextField
                             {...field}
-                            label="Price1"
+                            label="Price"
                             fullWidth
                             size="small"
-                            // onChange={(e) => {
-                            //   const value = e.target.value;
-
-                            //   // Regex to validate a number (positive integer or decimal)
-                            //   const numberRegex = /^[0-9]*(\.[0-9]+)?$/;
-
-                            //   // Check if the value matches the regex or is empty (allow clearing the input)
-                            //   if (numberRegex.test(value) || value === "") {
-                            //     // If valid, update the field value
-                            //     field.onChange(value ? value : "");
-                            //     // handlePriceChange(index, "price", value);
-                            //   }
-                            // }}
-
                             onChange={(e) => {
                               const value = e.target.value;
-
-                              // Regex to validate a number (positive integer or decimal)
-                              const numberRegex = /^[0-9]*(\.[0-9]+)?$/;
-
-                              // Check if the value matches the regex or is empty (allow clearing the input)
-                              if (numberRegex.test(value) || value === "") {
-                                // If valid, update the field value as a number or empty string
+                              if (
+                                /^[0-9]*(\.[0-9]+)?$/.test(value) ||
+                                value === ""
+                              ) {
                                 field.onChange(value ? Number(value) : "");
 
-                                // Calculate the total based on unit and price
-                                const unitValue = getValues(
+                                const unitString = getValues(
                                   `prices.${index}.unit`
                                 );
-                                if (unitValue && value) {
-                                  const total =
-                                    Number(unitValue) * Number(value); // Calculate total based on unit and price
-                                  setValue(`prices.${index}.total`, total); // Update the total field
+                                const decimalUnit =
+                                  parseUnitToDecimal(unitString);
+                                if (unitString && decimalUnit) {
+                                  const total = decimalUnit * Number(value);
+                                  // Round to 2 decimals
+                                  const roundedTotal =
+                                    Math.round(total * 100) / 100;
+
+                                  setValue(
+                                    `prices.${index}.total`,
+                                    roundedTotal
+                                  );
                                 }
                               }
                             }}

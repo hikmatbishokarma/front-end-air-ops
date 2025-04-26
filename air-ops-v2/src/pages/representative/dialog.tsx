@@ -25,9 +25,16 @@ const RepresentativeDialog = ({
 
       <DialogContent>
         {isEdit ? (
-          <EditRepresentative client={client} id={representativeId} />
+          <EditRepresentative
+            client={client}
+            id={representativeId}
+            handleDialogClose={handleDialogClose}
+          />
         ) : (
-          <CreateRepresentative client={client} />
+          <CreateRepresentative
+            client={client}
+            handleDialogClose={handleDialogClose}
+          />
         )}
       </DialogContent>
       <DialogActions>

@@ -22,6 +22,11 @@ interface FormField {
   type?: string;
   xs?: number;
   options?: any[];
+  required?: boolean;
+  pattern?: {
+    value: RegExp;
+    message: string;
+  };
 }
 
 interface ReusableFormProps {
@@ -48,7 +53,11 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
             <Controller
               name={field.name}
               control={control}
-              render={({ field: controllerField }) => {
+              rules={{
+                required: field.required ? `${field.label} is required` : false,
+                pattern: field.pattern,
+              }}
+              render={({ field: controllerField, fieldState: { error } }) => {
                 if (field.options) {
                   return (
                     <FormControl component="fieldset" margin="normal">
@@ -78,6 +87,8 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                       label={field.label}
                       fullWidth
                       type={field.type || "text"}
+                      error={!!error}
+                      helperText={error?.message}
                       InputLabelProps={{ shrink: !!controllerField.value }} // Ensure label shrinks when there's a value
                     />
                   );

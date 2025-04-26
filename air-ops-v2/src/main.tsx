@@ -70,6 +70,7 @@ import Login from "./pages/login";
 import DashboardIndex from "./pages/dashboard";
 import QuoteCreate from "./pages/quote/create";
 import GenerateInvoice from "./pages/quote/generate-invoice";
+import OpsDashboard from "./pages/dashboard/OpsDashboard";
 
 const router = createBrowserRouter(
   [
@@ -86,6 +87,10 @@ const router = createBrowserRouter(
               Component: DashboardIndex,
             },
 
+            {
+              path: "operations",
+              Component: OpsDashboard,
+            },
             {
               path: "admin/category",
               Component: AircraftCategoryList,
