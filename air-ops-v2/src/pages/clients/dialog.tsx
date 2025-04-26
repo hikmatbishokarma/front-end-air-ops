@@ -20,7 +20,14 @@ const ClientDialog = ({
     <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
       <DialogTitle>{isEdit ? "Edit" : "Add"} Requested By Details</DialogTitle>
       <DialogContent>
-        {isEdit ? <EditClient id={clientId} /> : <CreateClient />}
+        {isEdit ? (
+          <EditClient
+            id={clientId}
+            handleSubDialogClose={handleSubDialogClose}
+          />
+        ) : (
+          <CreateClient handleSubDialogClose={handleSubDialogClose} />
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleSubDialogClose} color="primary">

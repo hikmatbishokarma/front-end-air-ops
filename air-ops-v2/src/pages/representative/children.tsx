@@ -22,6 +22,11 @@ interface FormField {
   type?: string;
   xs?: number;
   options?: any[];
+  required?: boolean;
+  pattern?: {
+    value: RegExp;
+    message: string;
+  };
 }
 
 interface ReusableFormProps {
@@ -45,7 +50,7 @@ const RepresentativeChildren: React.FC<ReusableFormProps> = ({
       <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
         {fields.map((field) => (
           <Grid item xs={field.xs || 6} key={field.name}>
-            <Controller
+            {/* <Controller
               name={field.name}
               control={control}
               render={({ field: controllerField }) => (
@@ -56,6 +61,27 @@ const RepresentativeChildren: React.FC<ReusableFormProps> = ({
                   fullWidth
                   type={field.type || "text"}
                   InputLabelProps={{ shrink: !!controllerField.value }} // Ensure label shrinks when there's a value
+                />
+              )}
+            /> */}
+
+            <Controller
+              name={field.name}
+              control={control}
+              rules={{
+                required: field.required ? `${field.label} is required` : false,
+                pattern: field.pattern,
+              }}
+              render={({ field: controllerField, fieldState: { error } }) => (
+                <TextField
+                  {...controllerField}
+                  size="small"
+                  label={field.label}
+                  fullWidth
+                  type={field.type || "text"}
+                  error={!!error}
+                  helperText={error?.message}
+                  InputLabelProps={{ shrink: !!controllerField.value }}
                 />
               )}
             />

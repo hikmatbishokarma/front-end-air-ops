@@ -16,14 +16,32 @@ type FormData = {
   address: string;
 };
 
-export const EditRepresentative = ({ client, id }) => {
+export const EditRepresentative = ({ client, id, handleDialogClose }) => {
   const showSnackbar = useSnackbar();
 
   const editFields = [
-    { name: "name", label: "Name", xs: 6 },
-    { name: "phone", label: "Phone", xs: 6 },
-    { name: "email", label: "Email", xs: 6 },
-    { name: "address", label: "Address", xs: 6 },
+    { name: "name", label: "Name", xs: 6, required: true },
+    {
+      name: "phone",
+      label: "Phone",
+      xs: 6,
+      required: true,
+      pattern: {
+        value: /^[0-9]{10}$/, // Simple 10-digit number validation
+        message: "Phone number must be 10 digits",
+      },
+    },
+    {
+      name: "email",
+      label: "Email",
+      xs: 6,
+      required: true,
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Invalid email address",
+      },
+    },
+    { name: "address", label: "Address", xs: 6, required: true },
   ];
 
   const { control, handleSubmit, reset, setValue, setError } =
@@ -73,7 +91,7 @@ export const EditRepresentative = ({ client, id }) => {
     } catch (error) {
       showSnackbar(
         error.message || "Failed to update representative!",
-        "error",
+        "error"
       );
     }
   };
@@ -84,6 +102,7 @@ export const EditRepresentative = ({ client, id }) => {
       UpdateRepresentative(id, formData);
 
       reset(); // Reset form after successful submission
+      handleDialogClose(); // <-- Close dialog after creating
     } catch (error) {
       console.error("Error during API call:", error);
     }

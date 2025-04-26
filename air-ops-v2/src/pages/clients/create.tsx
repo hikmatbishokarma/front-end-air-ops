@@ -4,13 +4,31 @@ import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import ClientChildren from "./children";
 
-export const CreateClient = () => {
+export const CreateClient = ({ handleSubDialogClose }) => {
   const createFields = [
     { name: "type", label: "Type", options: [] },
-    { name: "name", label: "Name", xs: 6 },
-    { name: "phone", label: "Phone", xs: 6 },
-    { name: "email", label: "Email", xs: 6 },
-    { name: "address", label: "Address", xs: 6 },
+    { name: "name", label: "Name", xs: 6, required: true },
+    {
+      name: "phone",
+      label: "Phone",
+      xs: 6,
+      required: true,
+      pattern: {
+        value: /^[0-9]{10}$/, // Simple 10-digit number validation
+        message: "Phone number must be 10 digits",
+      },
+    },
+    {
+      name: "email",
+      label: "Email",
+      xs: 6,
+      required: true,
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Invalid email address",
+      },
+    },
+    { name: "address", label: "Address", xs: 6, required: true },
   ];
 
   const { control, handleSubmit, reset } = useForm({
@@ -46,6 +64,7 @@ export const CreateClient = () => {
     try {
       await createClient(formData); // Wait for API call to complete
       reset(); // Reset form after successful submission
+      handleSubDialogClose(); // <-- Close dialog after creating
     } catch (error) {
       console.error("Error during API call:", error);
       // Handle error if necessary

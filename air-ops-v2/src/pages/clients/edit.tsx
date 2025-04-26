@@ -18,17 +18,35 @@ type FormData = {
   type: string;
 };
 
-export const EditClient = ({ id }) => {
+export const EditClient = ({ id, handleSubDialogClose }) => {
   const showSnackbar = useSnackbar();
 
   console.log("EditClient:::", id);
 
   const editFields = [
     { name: "type", label: "Type", options: [] },
-    { name: "name", label: "Name", xs: 6 },
-    { name: "phone", label: "Phone", xs: 6 },
-    { name: "email", label: "Email", xs: 6 },
-    { name: "address", label: "Address", xs: 6 },
+    { name: "name", label: "Name", xs: 6, required: true },
+    {
+      name: "phone",
+      label: "Phone",
+      xs: 6,
+      required: true,
+      pattern: {
+        value: /^[0-9]{10}$/, // Simple 10-digit number validation
+        message: "Phone number must be 10 digits",
+      },
+    },
+    {
+      name: "email",
+      label: "Email",
+      xs: 6,
+      required: true,
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Invalid email address",
+      },
+    },
+    { name: "address", label: "Address", xs: 6, required: true },
   ];
 
   const { control, handleSubmit, reset, setValue, setError } =
@@ -89,6 +107,7 @@ export const EditClient = ({ id }) => {
     } else formData["isPerson"] = true;
 
     UpdateClient(id, formData);
+    handleSubDialogClose();
   };
 
   return (

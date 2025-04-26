@@ -23,6 +23,7 @@ import useGql from "../../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
+import DashboardBoardSection from "../../components/DashboardBoardSection";
 
 const SalesDashboard = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const SalesDashboard = () => {
   const [selectedTab, setSelectedTab] = useState("Quotes");
 
   const [filter, setFilter] = useState({
-    isLatest: { is: true },
+    // isLatest: { is: true },
     or: [{ status: { eq: "QUOTE" } }],
   });
   const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
@@ -66,7 +67,10 @@ const SalesDashboard = () => {
       status: { eq: getEnumKeyByValue(QuotationStatus, s) },
     }));
 
-    const _filter = { isLatest: { is: true }, or: statusFilter };
+    const _filter = {
+      // isLatest: { is: true },
+      or: statusFilter,
+    };
 
     setFilter(_filter);
   };
@@ -128,11 +132,11 @@ const SalesDashboard = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className="dashboard_main_d">
+      {/* <div className="dashboard_main_d">
         <div className="ban_img"></div>
 
         <div style={{ padding: 20 }} className="v1_board">
-          {/* Table Section */}
+          
           <Grid
             container
             justifyContent="space-between"
@@ -154,7 +158,7 @@ const SalesDashboard = () => {
             )}
           </Grid>
 
-          {/* Top Section with Cards */}
+         
           <Grid container spacing={2}>
             {categories.map((item) => (
               <Grid item xs={3} key={item.name}>
@@ -180,10 +184,18 @@ const SalesDashboard = () => {
               </Grid>
             ))}
           </Grid>
-
-          <QuoteList filter={filter} />
         </div>
-      </div>
+      </div> */}
+
+      <DashboardBoardSection
+        selectedTab={selectedTab}
+        categories={categories}
+        salesDashboardData={salesDashboardData}
+        onCreate={handelCreate}
+        onFilter={handelFilter}
+        createEnabledTabs={["Quotes", "Invoices"]}
+      />
+      <QuoteList filter={filter} />
     </>
   );
 };
