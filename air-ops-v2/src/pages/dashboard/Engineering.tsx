@@ -55,7 +55,7 @@ const EngineeringDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Ops", "Invoices"]}
       />
-      <p>Comming soon</p>
+      <p className="coming-soon">Comming soon</p>
     </>
   );
 };
