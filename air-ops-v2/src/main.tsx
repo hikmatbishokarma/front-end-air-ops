@@ -71,6 +71,14 @@ import DashboardIndex from "./pages/dashboard";
 import QuoteCreate from "./pages/quote/create";
 import GenerateInvoice from "./pages/quote/generate-invoice";
 import OpsDashboard from "./pages/dashboard/OpsDashboard";
+import SecurityDashboard from "./pages/dashboard/Security";
+import CamoDashboard from "./pages/dashboard/Camo";
+import EngineeringDashboard from "./pages/dashboard/Engineering";
+import CrewDashboard from "./pages/dashboard/Crew";
+import TrainingDashboard from "./pages/dashboard/Trainingsales";
+import ManualsDashboard from "./pages/dashboard/Manuals";
+import AccountsDashboard from "./pages/dashboard/Accounts";
+import AuditDashboard from "./pages/dashboard/Audit";
 
 const router = createBrowserRouter(
   [
@@ -90,6 +98,38 @@ const router = createBrowserRouter(
             {
               path: "operations",
               Component: OpsDashboard,
+            },
+            {
+              path: "security",
+              Component: SecurityDashboard,
+            },
+            {
+              path: "camo",
+              Component: CamoDashboard,
+            },
+            {
+              path: "engineering",
+              Component: EngineeringDashboard,
+            },
+            {
+              path: "crew",
+              Component: CrewDashboard,
+            },
+            {
+              path: "training-sales",
+              Component: TrainingDashboard,
+            },
+            {
+              path: "manuals",
+              Component: ManualsDashboard,
+            },
+            {
+              path: "accounts",
+              Component: AccountsDashboard,
+            },
+            {
+              path: "audit",
+              Component: AuditDashboard,
             },
             {
               path: "admin/category",
