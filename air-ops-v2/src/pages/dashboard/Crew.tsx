@@ -7,7 +7,7 @@ import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
 
-const SecurityDashboard = () => {
+const CrewDashboard = () => {
   const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = useState("Quotes");
@@ -60,4 +60,4 @@ const SecurityDashboard = () => {
   );
 };
 
-export default SecurityDashboard;
+export default CrewDashboard;
