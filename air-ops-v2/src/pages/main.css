@@ -244,7 +244,7 @@
 }
 .v1_board .v1_h6{
     color: #fff;
-    font-size: 16px;
+    font-size: 24px;
     font-weight: bold;
 }
 .css-f84ov1-MuiTypography-root{
@@ -253,4 +253,23 @@
 }
 .v1_board .v1-card-h6{
     font-size: 14px;
+}
+.css-r75yrr-MuiButtonBase-root-MuiButton-root{
+    margin-right: 24px !important;
+}
+.css-r75yrr-MuiButtonBase-root-MuiButton-root{
+    margin-right: 24px !important;
+    background-color: red !important;
+    color: #ffffff !important;
+}
+.table-top-status{
+    margin-top:100px;
+}
+
+/*Dashboard table css*/
+.dash-table{
+    margin-top: 80px;
+}
+.coming-soon{
+    padding-top: 20px;
 }

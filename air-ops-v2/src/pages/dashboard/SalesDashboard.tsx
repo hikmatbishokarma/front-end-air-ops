@@ -187,7 +187,7 @@ const SalesDashboard = () => {
         </div>
       </div> */}
 
-      <DashboardBoardSection
+      <DashboardBoardSection 
         selectedTab={selectedTab}
         categories={categories}
         salesDashboardData={salesDashboardData}
@@ -195,7 +195,7 @@ const SalesDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Quotes", "Invoices"]}
       />
-      <QuoteList filter={filter} />
+      <QuoteList  filter={filter} />
     </>
   );
 };
