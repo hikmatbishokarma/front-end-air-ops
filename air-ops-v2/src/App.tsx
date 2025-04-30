@@ -1,27 +1,23 @@
 import * as React from "react";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import HomeIcon from "@mui/icons-material/Home";
+
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { ReactRouterAppProvider } from "@toolpad/core/react-router";
-import { Outlet, useNavigate } from "react-router";
+
 import type { Navigation, Session } from "@toolpad/core/AppProvider";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme";
 import {
-  Flight,
   ManageAccounts,
-  PriceChange,
-  RequestQuote,
-  Engineering,
-  Medication,
   Person,
   Handyman,
   Settings,
   AccountBalance,
 } from "@mui/icons-material";
 import logoPhn from "./Asset/images/logo_phn.png";
-import { ISession, SessionProvider } from "./SessionContext";
+import { SessionProvider } from "./SessionContext";
 import { SnackbarProvider } from "./SnackbarContext";
+
+import AppWithSession from "./AppWithSession";
 
 export const NAVIGATION: Navigation = [
   {
@@ -155,66 +151,78 @@ const BRANDING = {
 };
 
 export default function App() {
-  const [session, setSession] = React.useState<ISession | null>(null);
-  const navigate = useNavigate();
-  const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);
+  // // const [session, setSession] = React.useState<ISession | null>(null);
+  // const { session, loading } = useSession();
 
-  React.useEffect(() => {
-    console.log("session::!11", session);
-    if (session) {
-      const accessResources = session?.user?.role?.accessPermissions?.map(
-        (item) => item.resource,
-      );
+  // const navigate = useNavigate();
+  // const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);
 
-      if (accessResources && accessResources.length > 0) {
-        NAVIGATION.forEach((item: any) => {
-          if (accessResources.includes(item.segment) || item.kind) {
-            return item;
-          }
-        });
+  // // React.useEffect(() => {
+  // //   console.log("session::!11", session);
+  // //   if (session) {
+  // //     const accessResources = session?.user?.role?.accessPermissions?.map(
+  // //       (item) => item.resource
+  // //     );
 
-        const filteredNavigation = NAVIGATION.filter(
-          (item: any) => accessResources.includes(item.segment) || item.kind,
-        );
-        setValidNavigation(filteredNavigation);
-      }
-    }
-  }, [session]);
+  // //     if (accessResources && accessResources.length > 0) {
+  // //       // NAVIGATION.forEach((item: any) => {
+  // //       //   if (accessResources.includes(item.segment) || item.kind) {
+  // //       //     return item;
+  // //       //   }
+  // //       // });
 
-  const signIn = React.useCallback(() => {
-    // navigate("/sign-in");
-    navigate("/login");
-  }, [navigate]);
+  // //       const filteredNavigation = NAVIGATION.filter(
+  // //         (item: any) => accessResources.includes(item.segment) || item.kind
+  // //       );
+  // //       setValidNavigation(filteredNavigation);
+  // //     }
+  // //   }
+  // // }, [session]);
 
-  const signOut = React.useCallback(() => {
-    setSession(null);
-    // navigate("/sign-in");
-    navigate("/login");
-  }, [navigate]);
+  // React.useEffect(() => {
+  //   if (loading) return; // Don't run until session is loaded
 
-  const sessionContextValue = React.useMemo(
-    () => ({ session, setSession }),
-    [session, setSession],
-  );
+  //   console.log("session::!11", session);
+
+  //   if (session) {
+  //     const accessResources = session.user?.role?.accessPermissions?.map(
+  //       (item) => item.resource
+  //     );
+
+  //     if (accessResources && accessResources.length > 0) {
+  //       const filteredNavigation = NAVIGATION.filter(
+  //         (item) => accessResources.includes(item.segment) || item.kind
+  //       );
+  //       setValidNavigation(filteredNavigation);
+  //     }
+  //   }
+  // }, [session, loading]);
+
+  // const signIn = React.useCallback(() => {
+  //   // navigate("/sign-in");
+  //   navigate("/login");
+  // }, [navigate]);
+
+  // const signOut = React.useCallback(() => {
+  //   setSession(null);
+  //   // navigate("/sign-in");
+  //   navigate("/login");
+  // }, [navigate]);
+
+  // const sessionContextValue = React.useMemo(
+  //   () => ({ session, setSession }),
+  //   [session, setSession]
+  // );
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {/* <SessionContext.Provider value={sessionContextValue}> */}
+
       <SessionProvider>
         <SnackbarProvider>
-          <ReactRouterAppProvider
-            navigation={NAVIGATION}
-            // navigation={validNavigation}
-            branding={BRANDING}
-            session={session}
-            authentication={{ signIn, signOut }}
-          >
-            <Outlet />
-          </ReactRouterAppProvider>
+          <AppWithSession />
         </SnackbarProvider>
       </SessionProvider>
-      {/* </SessionContext.Provider> */}
     </ThemeProvider>
   );
 }

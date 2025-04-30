@@ -24,7 +24,7 @@ export interface SessionContextValue {
 
 // ✅ Ensure context allows `undefined` for proper usage with hooks
 export const SessionContext = createContext<SessionContextValue | undefined>(
-  undefined,
+  undefined
 );
 
 interface SessionProviderProps {
@@ -47,6 +47,7 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({
   }, []);
 
   const setSession = (newSession: ISession | null) => {
+    console.log("newSession", newSession);
     setSessionState(newSession);
     if (newSession) {
       localStorage.setItem("session", JSON.stringify(newSession));

@@ -33,7 +33,7 @@ import { FORGOT_PASSWORD, SIGN_IN, SIGN_UP } from "../lib/graphql/queries/auth";
 import useGql from "../lib/graphql/gql";
 import CloseIcon from "@mui/icons-material/Close";
 import bgtwo from "../Asset/Images/backimg.jpeg";
-import pfIMG from "../Asset/Images/profile_view.PNG";
+import pfIMG from "../Asset/Images/profile_view.png";
 import leftLogo from "../Asset/Images/Left-side-logo.png";
 export default function Login() {
   const [tabIndex, setTabIndex] = useState(0);
@@ -113,7 +113,7 @@ export default function Login() {
       };
     } catch (error) {
       throw new Error(
-        error.message || "Login failed. Please check your credentials.",
+        error.message || "Login failed. Please check your credentials."
       );
     }
   };
@@ -149,7 +149,7 @@ export default function Login() {
     try {
       if (tabIndex === 0) {
         const session = await signIn(data);
-        console.log("session", session);
+
         if (session) {
           setSession(session);
           navigate("/", { replace: true });
@@ -492,6 +492,51 @@ export default function Login() {
                       }}
                     >
                       OK
+                    </Button>
+                  </Box>
+                </Modal>
+
+                <Modal
+                  open={isSignUpSuccess}
+                  onClose={() => setIsSignUpSuccess(false)}
+                >
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: 400,
+                      bgcolor: "background.paper",
+                      boxShadow: 24,
+                      p: 4,
+                      borderRadius: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => setIsSignUpSuccess(false)}
+                      sx={{ position: "absolute", top: 8, right: 8 }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+
+                    <Typography variant="h6" gutterBottom>
+                      Sign up successful!
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      You can now sign in with your new credentials.
+                    </Typography>
+
+                    <Button
+                      variant="contained"
+                      sx={{ mt: 3 }}
+                      onClick={() => {
+                        setIsSignUpSuccess(false);
+                        setTabIndex(0); // Switch back to Sign In tab
+                      }}
+                    >
+                      Go to Sign In
                     </Button>
                   </Box>
                 </Modal>
