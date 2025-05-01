@@ -21,6 +21,7 @@ import { useSession } from "../../SessionContext";
 import "../main.css";
 import { useSnackbar } from "../../SnackbarContext";
 import CityAutocomplete from "../../components/city-autocomplete";
+import FileUpload from "../../components/fileupload";
 
 interface FormData {
   name: string;
@@ -40,6 +41,8 @@ export const UserProfile = () => {
 
   const userId = session?.user?.id;
   const [userInfo, setUserInfo] = useState<any>();
+
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   const {
     register,
@@ -278,6 +281,11 @@ export const UserProfile = () => {
               border: "4px solid white",
             }}
           />
+          {/* <FileUpload
+            value={imageUrl}
+            onUpload={(url) => setImageUrl(url)}
+            label=""
+          /> */}
           <CardContent>
             <Typography variant="h6" fontWeight="bold">
               {userInfo?.role?.name}

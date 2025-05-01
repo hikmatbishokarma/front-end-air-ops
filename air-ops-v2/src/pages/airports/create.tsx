@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 import { Controller, useForm } from "react-hook-form";
-import {
-  CREATE_AIRCRAFT_CATEGORY,
-  GET_AIRCRAFT_CATEGORIES,
-} from "../../lib/graphql/queries/aircraft-categories";
+
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
-import {
-  CREATE_AIRCRAFT_DETAIL,
-  GET_AIRCRAFT,
-} from "../../lib/graphql/queries/aircraft-detail";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+
 import AirportChildren from "./children";
 import { CREATE_AIRPORT } from "../../lib/graphql/queries/airports";
 
