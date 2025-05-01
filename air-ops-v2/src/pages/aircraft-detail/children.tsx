@@ -14,8 +14,10 @@ import useGql from "../../lib/graphql/gql";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
 import { Delete } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import ReactQuill from "react-quill";
+
 import FileUpload from "../../components/fileupload";
+import Editor from "../../components/Editor";
+
 interface AircraftCategory {
   id: string;
   name: string;
@@ -115,14 +117,15 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           name="noteText"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              multiline
-              size="small"
-              label="Note Text"
-              fullWidth
-              InputLabelProps={{ shrink: !!field.value }}
-            />
+            // <TextField
+            //   {...field}
+            //   multiline
+            //   size="small"
+            //   label="Note Text"
+            //   fullWidth
+            //   InputLabelProps={{ shrink: !!field.value }}
+            // />
+            <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
       </Grid>
@@ -131,14 +134,15 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           name="warningText"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              multiline
-              size="small"
-              label="Warning Text"
-              fullWidth
-              InputLabelProps={{ shrink: !!field.value }}
-            />
+            // <TextField
+            //   {...field}
+            //   multiline
+            //   size="small"
+            //   label="Warning Text"
+            //   fullWidth
+            //   InputLabelProps={{ shrink: !!field.value }}
+            // />
+            <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
       </Grid>
@@ -147,14 +151,15 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           name="description"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              size="small"
-              label="Description"
-              fullWidth
-              multiline
-              InputLabelProps={{ shrink: !!field.value }}
-            />
+            // <TextField
+            //   {...field}
+            //   size="small"
+            //   label="Description"
+            //   fullWidth
+            //   multiline
+            //   InputLabelProps={{ shrink: !!field.value }}
+            // />
+            <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
       </Grid>
@@ -226,12 +231,7 @@ export const TermsStep = ({ control }: { control: any }) => (
         name="termsAndConditions"
         control={control}
         render={({ field }) => (
-          <ReactQuill
-            {...field}
-            theme="snow"
-            value={field.value || ""}
-            onChange={field.onChange}
-          />
+          <Editor value={field.value || ""} onChange={field.onChange} />
         )}
       />
     </Grid>
@@ -241,13 +241,15 @@ export const TermsStep = ({ control }: { control: any }) => (
 // components/steps/MediaStep.tsx
 export const MediaStep = ({ control }: { control: any }) => (
   <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-    <Grid item xs={4}>
+    <Grid item xs={6}>
       <Controller
         name="flightImages"
         control={control}
         render={({ field }) => (
           <FileUpload
+            value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            label="Flight Images"
           />
         )}
       />
@@ -258,7 +260,9 @@ export const MediaStep = ({ control }: { control: any }) => (
         control={control}
         render={({ field }) => (
           <FileUpload
+            value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            label="Seat Layout Image"
           />
         )}
       />
@@ -269,24 +273,26 @@ export const MediaStep = ({ control }: { control: any }) => (
         control={control}
         render={({ field }) => (
           <FileUpload
+            value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            label="Range Map Image"
           />
         )}
       />
     </Grid>
 
-    <Grid item xs={12}>
-      <Grid item xs={6}>
-        <Controller
-          name="warningImage"
-          control={control}
-          render={({ field }) => (
-            <FileUpload
-              onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
-            />
-          )}
-        />
-      </Grid>
+    <Grid item xs={6}>
+      <Controller
+        name="warningImage"
+        control={control}
+        render={({ field }) => (
+          <FileUpload
+            value={field.value}
+            onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            label="Warning Image"
+          />
+        )}
+      />
     </Grid>
   </Grid>
 );

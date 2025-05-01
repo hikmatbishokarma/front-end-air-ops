@@ -12,16 +12,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
-import {
-  GET_AIRCRAFT_DETAIL_BY_ID,
-  UPDATE_AIRCRAFT_DETAIL,
-} from "../../lib/graphql/queries/aircraft-detail";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import {
-  IaircraftCategory,
-  Isepcification,
-} from "../../interfaces/quote.interface";
+
 import AirportChildren from "./children";
 import {
   GET_AIRPORT_BY_ID,

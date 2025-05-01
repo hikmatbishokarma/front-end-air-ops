@@ -1,0 +1,21 @@
+.ql-editor p {
+  margin: 0 0 0.75em 0; /* Reduce bottom margin */
+  line-height: 1.5;
+}
+
+/* Keep the paragraph with a line break */
+.ql-editor p:empty,
+.ql-editor p:has(br:only-child) {
+  display: block; /* Don't hide empty paragraphs */
+}
+
+.ql-editor strong {
+  font-weight: bold; /* Apply bold without making it block-level */
+  margin-bottom: 0.5em;
+}
+
+.ql-editor {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  white-space: pre-wrap; /* Preserve spacing inside paragraphs */
+}

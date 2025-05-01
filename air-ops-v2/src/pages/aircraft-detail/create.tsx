@@ -1,33 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Step,
-  StepLabel,
-  Stepper,
-  Switch,
-  TextField,
-} from "@mui/material";
+
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-import {
-  CREATE_AIRCRAFT_CATEGORY,
-  GET_AIRCRAFT_CATEGORIES,
-} from "../../lib/graphql/queries/aircraft-categories";
+
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
 import {
   CREATE_AIRCRAFT_DETAIL,
   GET_AIRCRAFT,
 } from "../../lib/graphql/queries/aircraft-detail";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import FileUpload from "../../components/fileupload";
-import AddIcon from "@mui/icons-material/Add";
-import { Delete } from "@mui/icons-material";
+
 import { StepperFormLayout } from "../../components/StepperFormLayout";
 import {
   BasicInfoStep,
@@ -135,6 +116,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
   const onSubmit = (data: FormValues) => {
     const formattedData = {
       ...data,
+      termandconditions: data.termsAndConditions.replace(/<p><br><\/p>/g, ""),
     };
 
     CreateAircraftDetail(formattedData);
