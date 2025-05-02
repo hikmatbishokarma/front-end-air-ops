@@ -34,7 +34,7 @@ const FileUpload = ({ onUpload, value, label, category = "others" }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/media/upload/${category}`,
+        `https://airops.in/api/media/upload/${category}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -141,7 +141,7 @@ const FileUpload = ({ onUpload, value, label, category = "others" }) => {
       {value && (
         <Box sx={{ mt: 2 }}>
           <img
-            src={`http://localhost:3000/${value}`}
+            src={`https://airops.in/${value}`}
             alt="Uploaded"
             width="150"
             style={{
