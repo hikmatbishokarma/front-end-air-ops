@@ -108,7 +108,7 @@ export default function Login() {
           email: data.user.email,
 
           image:
-            `http://localhost:3000/${data?.user?.image}` ||
+            `https://airops.in/${data?.user?.image}` ||
             "https://avatars.githubusercontent.com/u/19550456",
           role: data.user.role,
         },
