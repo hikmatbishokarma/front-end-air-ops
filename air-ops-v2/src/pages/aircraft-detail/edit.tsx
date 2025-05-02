@@ -34,7 +34,7 @@ type FormData = {
   termsAndConditions: string;
   isActive: boolean;
   warningImage: string;
-  flightImages: string;
+  flightImages: [string];
   seatLayoutImage: string;
   rangeMapImage: string;
 };
@@ -98,7 +98,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("noteText", aircraftDetailData.noteText || "");
       setValue("warningText", aircraftDetailData.warningText || "");
       setValue("warningImage", aircraftDetailData.warningImage || "");
-      setValue("flightImages", aircraftDetailData.flightImages || "");
+      setValue("flightImages", aircraftDetailData.flightImages || []);
       setValue("seatLayoutImage", aircraftDetailData.seatLayoutImage || "");
       setValue("rangeMapImage", aircraftDetailData.rangeMapImage || "");
     }

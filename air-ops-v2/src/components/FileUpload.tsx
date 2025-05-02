@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
-import { Box, Typography, LinearProgress, Paper } from "@mui/material";
+import { Box, Typography, LinearProgress, Paper, Button } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-const FileUpload = ({ onUpload, value, label }) => {
+const FileUpload = ({ onUpload, value, label, category = "others" }) => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  // Explicitly type the ref
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Handle drop of files
   const onDrop = (acceptedFiles) => {
@@ -31,7 +34,7 @@ const FileUpload = ({ onUpload, value, label }) => {
 
     try {
       const response = await axios.post(
-        "https://airops.in/api/media/upload",
+        `http://localhost:3000/api/media/upload/${category}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -53,6 +56,13 @@ const FileUpload = ({ onUpload, value, label }) => {
     }
   };
 
+  // Trigger file input on Change Image button click
+  const handleChangeImage = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Trigger file input click programmatically
+    }
+  };
+
   // React Dropzone hook
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -64,17 +74,7 @@ const FileUpload = ({ onUpload, value, label }) => {
 
   return (
     <Box
-      sx={{
-        width: "100%",
-        maxWidth: 400,
-        margin: "auto",
-        textAlign: "center",
-        padding: 2,
-        border: "1px solid #ccc",
-        borderRadius: 4,
-        boxShadow: 2,
-        backgroundColor: "background.paper",
-      }}
+      sx={{ textAlign: "center", width: "100%", maxWidth: 400, margin: "auto" }}
     >
       {!value && (
         <>
@@ -87,24 +87,32 @@ const FileUpload = ({ onUpload, value, label }) => {
             sx={{
               padding: 3,
               border: "2px dashed #1976d2",
-              backgroundColor: "#f9f9f9",
+              backgroundColor: "#f0f0f0", // Gray background
               cursor: "pointer",
               textAlign: "center",
               borderRadius: 2,
               "&:hover": {
-                backgroundColor: "#e3f2fd",
+                backgroundColor: "#e3e3e3", // Lighter gray on hover
               },
             }}
           >
             <input {...getInputProps()} onChange={handleFileChange} />
 
-            {/* Upload Icon */}
             <CloudUploadIcon color="primary" fontSize="large" />
-
-            <Typography variant="body2" color="text.secondary">
-              Drag & Drop a file here, or{" "}
-              <span style={{ color: "#1976d2" }}>Choose File</span>
-            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                Drag & Drop a file here
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                or
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "#1976d2", cursor: "pointer" }}
+              >
+                Choose File
+              </Typography>
+            </Box>
           </Paper>
         </>
       )}
@@ -117,28 +125,67 @@ const FileUpload = ({ onUpload, value, label }) => {
           <LinearProgress
             variant="determinate"
             value={progress}
-            sx={{ mt: 1 }}
+            sx={{
+              mt: 1,
+              borderRadius: 2,
+              height: "6px",
+              backgroundColor: "#f0f0f0",
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: "#1976d2",
+              },
+            }}
           />
         </Box>
       )}
 
       {value && (
-        <Box sx={{ mt: 2, textAlign: "center" }}>
+        <Box sx={{ mt: 2 }}>
           <img
-            src={`https://airops.in/${value}`}
+            src={`http://localhost:3000/${value}`}
             alt="Uploaded"
-            width="100"
-            style={{ borderRadius: 8, marginTop: 8 }}
+            width="150"
+            style={{
+              borderRadius: "8px",
+              marginBottom: "16px",
+              maxWidth: "100%",
+              objectFit: "cover",
+            }}
           />
           <Typography
-            variant="caption"
+            variant="body2"
             color="text.secondary"
             sx={{ mt: 1, display: "block" }}
           >
             {label}
           </Typography>
+
+          <Button
+            variant="text"
+            sx={{
+              mt: 2,
+              color: "#1976d2",
+              textTransform: "none",
+              fontSize: "14px",
+              "&:hover": {
+                backgroundColor: "transparent",
+                textDecoration: "underline",
+              },
+            }}
+            onClick={handleChangeImage}
+          >
+            Change Image
+          </Button>
         </Box>
       )}
+
+      {/* Hidden file input to trigger via button click */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
     </Box>
   );
 };

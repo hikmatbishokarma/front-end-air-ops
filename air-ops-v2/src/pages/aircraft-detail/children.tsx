@@ -17,6 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 import FileUpload from "../../components/fileupload";
 import Editor from "../../components/Editor";
+import MultiFileUpload from "../../components/MultiFileUploader";
 
 interface AircraftCategory {
   id: string;
@@ -250,7 +251,16 @@ export const MediaStep = ({ control }: { control: any }) => (
             value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
             label="Flight Images"
+            category="aircraft"
           />
+
+          // <MultiFileUpload
+          //   value={field.value || []}
+          //   onUpload={(url) => field.onChange([...(field.value || []), url])}
+          //   onChange={field.onChange} // Pass for deletion handling
+          //   label="Flight Images"
+          //   category="aircraft"
+          // />
         )}
       />
     </Grid>
@@ -263,6 +273,7 @@ export const MediaStep = ({ control }: { control: any }) => (
             value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
             label="Seat Layout Image"
+            category="aircraft"
           />
         )}
       />
@@ -276,6 +287,7 @@ export const MediaStep = ({ control }: { control: any }) => (
             value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
             label="Range Map Image"
+            category="aircraft"
           />
         )}
       />
@@ -290,6 +302,7 @@ export const MediaStep = ({ control }: { control: any }) => (
             value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
             label="Warning Image"
+            category="aircraft"
           />
         )}
       />

@@ -44,6 +44,11 @@ export const UserProfile = () => {
 
   const [imageUrl, setImageUrl] = useState<string>("");
 
+  const handelOnProfileUpload = async (url: string) => {
+    setImageUrl(url);
+    await updateUserProfile(userId, { image: url });
+  };
+
   const {
     register,
     handleSubmit,
@@ -70,8 +75,10 @@ export const UserProfile = () => {
       setValue("address", response.address);
       setValue("city", response.city);
       setValue("pinCode", response.pinCode);
+
       reset({ gender: response.gender });
       setUserInfo(response);
+      setImageUrl(response.image);
     }
   };
 
@@ -100,6 +107,7 @@ export const UserProfile = () => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
+      image: imageUrl || "",
     };
     updateUserProfile(userId, formattedData);
   };
@@ -272,7 +280,7 @@ export const UserProfile = () => {
               backgroundSize: "cover",
             }}
           />
-          <Avatar
+          {/* <Avatar
             src="https://source.unsplash.com/100x100/?portrait"
             sx={{
               width: 80,
@@ -280,12 +288,13 @@ export const UserProfile = () => {
               margin: "-40px auto 10px",
               border: "4px solid white",
             }}
-          />
-          {/* <FileUpload
-            value={imageUrl}
-            onUpload={(url) => setImageUrl(url)}
-            label=""
           /> */}
+          <FileUpload
+            value={imageUrl}
+            onUpload={(url) => handelOnProfileUpload(url)}
+            label=""
+            category="profile"
+          />
           <CardContent>
             <Typography variant="h6" fontWeight="bold">
               {userInfo?.role?.name}
