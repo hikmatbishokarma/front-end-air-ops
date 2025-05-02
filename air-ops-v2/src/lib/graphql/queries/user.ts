@@ -46,6 +46,7 @@ export const GET_USER_BY_ID = gql`
       dob
       pinCode
       gender
+      image
       role {
         id
         name

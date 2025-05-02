@@ -107,7 +107,9 @@ export default function Login() {
           name: data.user.name,
           email: data.user.email,
 
-          image: "https://avatars.githubusercontent.com/u/19550456",
+          image:
+            `http://localhost:3000/${data?.user?.image}` ||
+            "https://avatars.githubusercontent.com/u/19550456",
           role: data.user.role,
         },
       };

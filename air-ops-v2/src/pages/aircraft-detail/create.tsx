@@ -39,7 +39,7 @@ type FormValues = {
   termsAndConditions: string;
   isActive: boolean;
   warningImage: string;
-  flightImages: string;
+  flightImages: [string];
   seatLayoutImage: string;
   rangeMapImage: string;
 };
@@ -66,7 +66,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       termsAndConditions: "",
       isActive: true,
       warningImage: "",
-      flightImages: "",
+      flightImages: [],
       seatLayoutImage: "",
       rangeMapImage: "",
     },
