@@ -101,6 +101,8 @@ export default function Login() {
         throw new Error("Invalid credentials.");
       }
 
+      localStorage.setItem("token", data.access_token);
+
       return {
         user: {
           id: data.user.id,
@@ -110,7 +112,7 @@ export default function Login() {
           image:
             `https://airops.in/${data?.user?.image}` ||
             "https://avatars.githubusercontent.com/u/19550456",
-          role: data.user.role,
+          // role: data.user.role,
         },
       };
     } catch (error) {

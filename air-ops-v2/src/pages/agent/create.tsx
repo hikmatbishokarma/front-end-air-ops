@@ -1,0 +1,62 @@
+import React, { useState } from "react";
+
+import { useForm } from "react-hook-form";
+import { Pattern } from "@mui/icons-material";
+import { FormControl, FormLabel, RadioGroup, Select } from "@mui/material";
+import useGql from "../../lib/graphql/gql";
+import { CREATE_AGENT } from "../../lib/graphql/queries/agent";
+import { useSnackbar } from "../../SnackbarContext";
+import { AgentFormValues } from "./type";
+import { agentFormFields } from "./formfields";
+import AgentChildren from "./children";
+
+const AgentCreate = ({ onClose, refreshList }) => {
+  const showSnackbar = useSnackbar();
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    setError,
+    formState: { errors },
+  } = useForm<AgentFormValues>();
+
+  const CreateAgent = async (formData) => {
+    try {
+      const data = await useGql({
+        query: CREATE_AGENT,
+        queryName: "",
+        queryType: "mutation",
+        variables: { agent: formData },
+      });
+
+      if (!data || data.errors) {
+        showSnackbar(data?.errors?.[0]?.message, "error");
+      } else showSnackbar("Created Successfully", "success");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to create categories!", "error");
+    }
+  };
+
+  const onSubmit = async (data: AgentFormValues) => {
+    const formattedData = {
+      ...data,
+    };
+    await CreateAgent(formattedData); // ✅ Wait for completion
+    await refreshList(); // ✅ Now refresh data
+    onClose(); // ✅ Then close dialog
+  };
+
+  return (
+    <div>
+      <AgentChildren
+        control={control}
+        onSubmit={handleSubmit(onSubmit)}
+        fields={agentFormFields}
+      />
+    </div>
+  );
+};
+
+export default AgentCreate;

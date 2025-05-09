@@ -19,7 +19,6 @@ import SignUp from "./pages/sign-up";
 import SignIn from "./pages/sign-in";
 import UserList from "./pages/user/list";
 import { UserProfile } from "./pages/settings/profile";
-import { UserCreate } from "./pages/user/create";
 import RoleEdit from "./pages/role/edit";
 import ChangePassword from "./pages/settings/change-password";
 import { AircraftCategoryList } from "./pages/aircraft-category/list";
@@ -38,6 +37,9 @@ import TrainingDashboard from "./pages/dashboard/Trainingsales";
 import ManualsDashboard from "./pages/dashboard/Manuals";
 import AccountsDashboard from "./pages/dashboard/Accounts";
 import AuditDashboard from "./pages/dashboard/Audit";
+import UserCreate from "./pages/user/create";
+import AgentCreate from "./pages/agent/create";
+import { AgentList } from "./pages/agent/list";
 
 const router = createBrowserRouter(
   [
@@ -142,9 +144,13 @@ const router = createBrowserRouter(
               path: "admin/users",
               Component: UserList,
             },
+            // {
+            //   path: "admin/users/create",
+            //   Component: UserCreate,
+            // },
             {
-              path: "admin/users/create",
-              Component: UserCreate,
+              path: "admin/agents",
+              Component: AgentList,
             },
             {
               path: "settings/profile",

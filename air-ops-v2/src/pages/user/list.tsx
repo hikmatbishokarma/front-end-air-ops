@@ -18,7 +18,7 @@ import {
 import useGql from "../../lib/graphql/gql";
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import { GET_USERS } from "../../lib/graphql/queries/user";
-import { UserCreate } from "./create";
+import UserCreate from "./create";
 
 interface User {
   id: number;
@@ -31,7 +31,8 @@ const UserList: React.FC = () => {
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const [isUserCreate, setIsUserCreate] = useState(false);
+
+  const handleClose = () => setOpen(false);
 
   const getUsers = async () => {
     try {
@@ -51,9 +52,11 @@ const UserList: React.FC = () => {
     getUsers();
   }, []);
 
-  useEffect(() => {
-    if (isUserCreate) getUsers();
-  }, [isUserCreate]);
+  // Function to refresh category list
+  const refreshList = async () => {
+    // Fetch updated categories from API
+    await getUsers();
+  };
 
   return (
     <>
@@ -64,7 +67,7 @@ const UserList: React.FC = () => {
           onClick={handleOpen}
           sx={{ marginBottom: 2 }}
         >
-          Create Role
+          Create User
         </Button>
       </Box>
       <TableContainer component={Paper}>
@@ -78,6 +81,9 @@ const UserList: React.FC = () => {
                 <strong>Email</strong>
               </TableCell>
               <TableCell>
+                <strong>Phone</strong>
+              </TableCell>
+              <TableCell>
                 <strong>Role</strong>
               </TableCell>
             </TableRow>
@@ -87,6 +93,7 @@ const UserList: React.FC = () => {
               <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
+                <TableCell>{user.phone}</TableCell>
                 <TableCell>{user?.role?.name}</TableCell>
               </TableRow>
             ))}
@@ -99,9 +106,9 @@ const UserList: React.FC = () => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>Create New Role</DialogTitle>
+        <DialogTitle>Create New User</DialogTitle>
         <DialogContent>
-          <UserCreate setOpen={setOpen} setIsUserCreate={setIsUserCreate} />
+          <UserCreate onClose={handleClose} refreshList={refreshList} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">

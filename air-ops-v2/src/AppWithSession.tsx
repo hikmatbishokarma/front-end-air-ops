@@ -127,6 +127,11 @@ export const NAVIGATION: Navigation = [
         title: "Users",
         icon: <Person />,
       },
+      {
+        segment: "agents",
+        title: "Agents",
+        icon: <Person />,
+      },
     ],
   },
   {
