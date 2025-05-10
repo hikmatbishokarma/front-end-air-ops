@@ -30,12 +30,13 @@ export enum Action {
 }
 
 export enum RoleType {
+  SUPER_ADMIN = "SUPER_ADMIN",
   ADMIN = "ADMIN",
-  PARTNER = "PARTNER",
   SALES = "SALES",
   OPERATOR = "OPERATOR",
-  SITE_ADMIN = "SITE ADMIN",
-  USER = "USER",
+  ENGINEERING = "ENGINEERING",
+  AUDIT = "AUDIT",
+  ACCOUNTING = "ACCOUNTING",
 }
 
 type AccessPermission = {
@@ -182,7 +183,7 @@ const RoleCreate: React.FC = () => {
                   value={
                     field.value
                       ? resources.find(
-                          (resource) => resource.id === field.value,
+                          (resource) => resource.id === field.value
                         )
                       : null
                   }
@@ -219,7 +220,7 @@ const RoleCreate: React.FC = () => {
                               const newValue = e.target.checked
                                 ? [...field.value, action]
                                 : field.value.filter(
-                                    (a: string) => a !== action,
+                                    (a: string) => a !== action
                                   );
                               field.onChange(newValue);
                             }}

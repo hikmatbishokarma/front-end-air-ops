@@ -19,6 +19,7 @@ import useGql from "../../lib/graphql/gql";
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import { GET_USERS } from "../../lib/graphql/queries/user";
 import UserCreate from "./create";
+import { useSession } from "../../SessionContext";
 
 interface User {
   id: number;
@@ -28,6 +29,10 @@ interface User {
 }
 
 const UserList: React.FC = () => {
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -40,7 +45,7 @@ const UserList: React.FC = () => {
         query: GET_USERS,
         queryName: "users",
         queryType: "query",
-        variables: {},
+        variables: { filter: { agentId: { eq: agentId } } },
       });
       setRows(data);
     } catch (error) {
@@ -86,6 +91,9 @@ const UserList: React.FC = () => {
               <TableCell>
                 <strong>Role</strong>
               </TableCell>
+              <TableCell>
+                <strong>Type</strong>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -94,7 +102,11 @@ const UserList: React.FC = () => {
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone}</TableCell>
-                <TableCell>{user?.role?.name}</TableCell>
+                <TableCell>
+                  {user?.roles.length &&
+                    user?.roles?.map((role) => role?.name)?.join(",")}
+                </TableCell>
+                <TableCell>{user?.type}</TableCell>
               </TableRow>
             ))}
           </TableBody>

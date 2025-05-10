@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Controller, Control, SubmitHandler } from "react-hook-form";
 import CityAutocomplete from "../../components/city-autocomplete";
+import MultiSelectAutoComplete from "../../components/MultiSelectAutoComplete";
 
 interface FormField {
   name: string;
@@ -36,6 +37,7 @@ const UserChildren: React.FC<ReusableFormProps> = ({
   onSubmit,
   fields,
 }) => {
+  console.log("fields", fields);
   return (
     <Box
       component="form"
@@ -58,6 +60,19 @@ const UserChildren: React.FC<ReusableFormProps> = ({
                     <CityAutocomplete
                       {...controllerField}
                       label={field.label}
+                    />
+                  );
+                } else if (field.name === "roles" && field.options?.length) {
+                  return (
+                    <MultiSelectAutoComplete
+                      value={controllerField.value || []}
+                      onChange={controllerField.onChange}
+                      label={field.label}
+                      options={field.options}
+                      getOptionLabel={(option) => option.name}
+                      isOptionEqualToValue={(a, b) => a.id === b.id}
+                      error={!!error}
+                      helperText={error?.message}
                     />
                   );
                 } else

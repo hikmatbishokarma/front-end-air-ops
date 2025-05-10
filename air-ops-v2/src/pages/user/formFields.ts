@@ -21,4 +21,5 @@ export const userFormFields = [
     },
   },
   { name: "address", label: "Address" },
+  { name: "roles", label: "Roles", type: "select", options: [] },
 ];

@@ -21,7 +21,7 @@ export const GET_AGENTS = gql`
         email
         phone
         address
-        zipCode
+        pinCode
         city
         companyName
         supportEmail
@@ -39,7 +39,7 @@ export const GET_AGENT_BY_ID = gql`
       email
       phone
       address
-      zipCode
+      pinCode
       city
       companyName
       companyLogo

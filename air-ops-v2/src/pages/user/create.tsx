@@ -154,7 +154,7 @@
 //   );
 // };
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import { useSnackbar } from "../../SnackbarContext";
@@ -163,10 +163,17 @@ import useGql from "../../lib/graphql/gql";
 import { CREATE_USER } from "../../lib/graphql/queries/user";
 import UserChildren from "./children";
 import { userFormFields } from "./formFields";
+import { GET_ROLES } from "../../lib/graphql/queries/role";
+import { RoleType } from "../role/create";
+import { useSession } from "../../SessionContext";
 
 const UserCreate = ({ onClose, refreshList }) => {
-  const showSnackbar = useSnackbar();
+  const { session, setSession, loading } = useSession();
 
+  const agentId = session?.user.agent?.id || null;
+
+  const showSnackbar = useSnackbar();
+  const [roleOptions, setRoleOptions] = useState([]);
   const {
     control,
     handleSubmit,
@@ -176,13 +183,15 @@ const UserCreate = ({ onClose, refreshList }) => {
     formState: { errors },
   } = useForm<UserFormValues>();
 
+  const [formFields, setFormFields] = useState<any[]>([]);
+
   const CreateUser = async (formData) => {
     try {
       const data = await useGql({
         query: CREATE_USER,
         queryName: "",
         queryType: "mutation",
-        variables: { user: formData },
+        variables: { input: { user: formData } },
       });
 
       if (!data || data.errors) {
@@ -193,22 +202,57 @@ const UserCreate = ({ onClose, refreshList }) => {
     }
   };
 
-  const onSubmit = (data: UserFormValues) => {
+  const onSubmit = async (data: UserFormValues) => {
     const formattedData = {
       ...data,
+      agentId,
     };
 
-    CreateUser(formattedData);
-    refreshList();
+    // Handle roles to extract only the ids
+    if (formattedData.roles) {
+      formattedData.roles = formattedData.roles.map((role: any) => role.id); // Assuming each role has an `id`
+    }
+
+    await CreateUser(formattedData);
+    await refreshList();
     onClose();
   };
+
+  const getRoles = async () => {
+    try {
+      const data = await useGql({
+        query: GET_ROLES,
+        queryName: "roles",
+        queryType: "query",
+        variables: { filter: { type: { neq: RoleType.SUPER_ADMIN } } },
+      });
+      // setRoleOptions(data);
+
+      // Update the userFormFields with roles options
+      const updatedFields = userFormFields.map((field) => {
+        if (field.name === "roles") {
+          return { ...field, options: data };
+        }
+        return field;
+      });
+
+      setFormFields(updatedFields);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getRoles();
+  }, []);
 
   return (
     <div>
       <UserChildren
         control={control}
         onSubmit={handleSubmit(onSubmit)}
-        fields={userFormFields}
+        // fields={userFormFields}
+        fields={formFields}
       />
     </div>
   );

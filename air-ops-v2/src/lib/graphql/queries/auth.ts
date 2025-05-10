@@ -9,9 +9,14 @@ export const SIGN_IN = gql`
         name
         email
         image
-
         roles
+        type
         permissions
+        agent {
+          id
+          name
+          companyLogo
+        }
       }
     }
   }

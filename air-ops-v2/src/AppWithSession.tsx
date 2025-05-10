@@ -21,6 +21,7 @@ import {
 import logoPhn from "./Asset/images/logo_phn.png";
 
 import { useSession } from "./SessionContext"; // import your hook
+import { set } from "react-hook-form";
 
 export const NAVIGATION: Navigation = [
   {
@@ -161,8 +162,14 @@ const BRANDING = {
 export default function AppWithSession() {
   const { session, setSession, loading } = useSession();
 
+  console.log("session111", session);
+
   const navigate = useNavigate();
   const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);
+  const [branding, setBranding] = React.useState<{
+    logo: JSX.Element;
+    title: string;
+  } | null>(null);
 
   // React.useEffect(() => {
 
@@ -170,7 +177,27 @@ export default function AppWithSession() {
     if (loading) return; // Don't run until session is loaded
 
     if (session) {
-      const accessResources = session.user?.role?.accessPermissions?.map(
+      const logoImg = session?.user?.agent?.companyLogo ? (
+        <img
+          src={`https://airops.in/${session.user.agent.companyLogo}`}
+          alt=""
+        />
+      ) : (
+        <img src={logoPhn} alt="" />
+      );
+
+      const updatedBranding = {
+        logo: logoImg,
+        title: "", // or session.user.agent.companyName
+      };
+
+      setBranding(updatedBranding);
+
+      // const accessResources = session.user?.role?.accessPermissions?.map(
+      //   (item) => item.resource
+      // );
+
+      const accessResources = session.user?.permissions?.map(
         (item) => item.resource
       );
 
@@ -194,11 +221,14 @@ export default function AppWithSession() {
     navigate("/login");
   }, [navigate]);
 
+  console.log("branding", branding);
+
   return (
     <ReactRouterAppProvider
       navigation={NAVIGATION}
       // navigation={validNavigation}
-      branding={BRANDING}
+      // branding={BRANDING}
+      branding={branding}
       session={session}
       authentication={{ signIn, signOut }}
     >

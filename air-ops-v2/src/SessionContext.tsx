@@ -6,13 +6,26 @@ import React, {
   ReactNode,
 } from "react";
 
+export interface IAgent {
+  id: string;
+  name?: string;
+  email?: string;
+  companyLogo: string;
+  phone?: string;
+  address?: string;
+  companyName?: string;
+}
 export interface ISession {
-  user?: {
+  user: {
     id?: string | null;
     name?: string | null;
     image?: string | null;
     email?: string | null;
     role?: any | null;
+    roles?: string[] | null;
+    type: string;
+    permissions?: any;
+    agent?: IAgent;
   };
 }
 
