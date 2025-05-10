@@ -108,11 +108,14 @@ export default function Login() {
           id: data.user.id,
           name: data.user.name,
           email: data.user.email,
-
+          type: data.user.type,
           image:
             `https://airops.in/${data?.user?.image}` ||
             "https://avatars.githubusercontent.com/u/19550456",
           // role: data.user.role,
+          roles: data.user.roles,
+          permissions: data.user.permissions,
+          agent: data?.user?.agent,
         },
       };
     } catch (error) {
@@ -154,6 +157,7 @@ export default function Login() {
       if (tabIndex === 0) {
         const session = await signIn(data);
 
+        console.log("setSession", session);
         if (session) {
           setSession(session);
           navigate("/", { replace: true });

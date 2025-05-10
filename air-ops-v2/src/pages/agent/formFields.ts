@@ -25,8 +25,8 @@ export const agentFormFields = [
   { name: "city", label: "City", options: [] },
   { name: "state", label: "State" },
   {
-    name: "zipCode",
-    label: "Zip Code",
+    name: "pinCode",
+    label: "Pin Code",
     xs: 6,
     Pattern: {
       value: /^[0-9]{6}$/, // Simple 10-digit number validation

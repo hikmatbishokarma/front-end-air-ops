@@ -11,7 +11,7 @@ export const CREATE_USER = gql`
 export const GET_USERS = gql`
   query getAllUser(
     $filter: UserFilter! = {}
-    $paging: OffsetPaging! = { limit: 10 }
+    $paging: OffsetPaging! = { limit: 100 }
     $sorting: [UserSort!]! = []
   ) {
     users(filter: $filter, paging: $paging, sorting: $sorting) {
@@ -25,7 +25,8 @@ export const GET_USERS = gql`
         name
         email
         phone
-        role {
+        type
+        roles {
           id
           name
         }
@@ -47,7 +48,7 @@ export const GET_USER_BY_ID = gql`
       pinCode
       gender
       image
-      role {
+      roles {
         id
         name
       }

@@ -51,7 +51,7 @@ export const AgentEdit = ({ id, onClose, refreshList }) => {
       setValue("address", agent.address || "");
       setValue("city", agent.city || "");
       setValue("country", agent.country || "");
-      setValue("zipCode", agent.zipCode || "");
+      setValue("pinCode", agent.pinCode || "");
       setValue("supportEmail", agent.supportEmail || "");
       setValue("websiteUrl", agent.websiteUrl || "");
     }

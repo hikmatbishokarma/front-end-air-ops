@@ -3,4 +3,5 @@ export type UserFormValues = {
   email: string;
   phone: string;
   address: string;
+  roles: string[];
 };

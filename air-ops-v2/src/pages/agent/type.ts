@@ -6,7 +6,7 @@ export type AgentFormValues = {
   city: string;
   state: string;
   country: string;
-  zipCode: string;
+  pinCode: string;
   companyName: string;
   companyAddress: string;
   companyEmail: string;
