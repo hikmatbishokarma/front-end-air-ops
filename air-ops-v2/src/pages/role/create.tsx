@@ -20,7 +20,7 @@ import { Add, Delete } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
 import AddIcon from "@mui/icons-material/Add";
 import { CREATE_ROLE } from "../../lib/graphql/queries/role";
-import { NAVIGATION } from "../../App";
+import { NAVIGATION } from "../../AppWithSession";
 
 export enum Action {
   READ = "READ",
@@ -52,13 +52,26 @@ type FormValues = {
 };
 
 const resources = NAVIGATION.reduce((acc: any[], item: any) => {
+  if (item.segment && item?.children?.length > 0) {
+    item.children.forEach((child: any) => {
+      if (child.segment) {
+        acc.push({ label: child.title, id: child.segment });
+      }
+    });
+  }
   if (item.segment) {
     acc.push({ label: item.title, id: item.segment });
   }
   return acc;
 }, []);
 
-const RoleCreate: React.FC = () => {
+// Correct way to define props
+type ComponentProps = {
+  onClose: () => void;
+  refreshList: () => void;
+};
+
+const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
   const {
     control,
     handleSubmit,
@@ -98,12 +111,14 @@ const RoleCreate: React.FC = () => {
     }
   };
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     const formattedData = {
       ...data,
     };
 
-    CreateRole(formattedData);
+    await CreateRole(formattedData);
+    await refreshList();
+    onClose();
   };
 
   const addAccessPermissionRow = () => {
@@ -128,6 +143,7 @@ const RoleCreate: React.FC = () => {
             <Controller
               name="type"
               control={control}
+              rules={{ required: "Type is required" }}
               render={({ field }) => (
                 <Select {...field} displayEmpty>
                   {Object.keys(RoleType).map((role) => (
@@ -144,6 +160,7 @@ const RoleCreate: React.FC = () => {
           <Controller
             name="name"
             control={control}
+            rules={{ required: "Name is required" }}
             render={({ field }) => (
               <TextField {...field} size="small" label="Name" fullWidth />
             )}

@@ -6,6 +6,8 @@ import {
   from,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+const graphqlApiUrl = import.meta.env.VITE_GRAPHQL_API_URL;
+
 const defaultOptions: DefaultOptions = {
   watchQuery: {
     fetchPolicy: "no-cache",
@@ -19,8 +21,11 @@ const defaultOptions: DefaultOptions = {
 
 // Create HTTP link for your GraphQL endpoint
 const httpLink = new HttpLink({
-  uri: "http://localhost:3000/graphql/",
+  // uri: "http://localhost:3000/graphql/",
+  uri: `${graphqlApiUrl}`,
 });
+
+console.log("graphqlApiUrl", graphqlApiUrl);
 
 // Set context to add Authorization header
 const authLink = setContext((_, { headers }) => {

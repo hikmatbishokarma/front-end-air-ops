@@ -18,7 +18,6 @@ import {
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import useGql from "../../lib/graphql/gql";
 import RoleCreate from "./create";
-import { NAVIGATION } from "../../App";
 
 import {
   TextField,
@@ -93,6 +92,14 @@ const RoleList = () => {
     getRoles();
   }, []);
 
+  const handleClose = () => setOpen(false);
+
+  // Function to refresh category list
+  const refreshList = async () => {
+    // Fetch updated categories from API
+    await getRoles();
+  };
+
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
@@ -134,7 +141,7 @@ const RoleList = () => {
               role.accessPermissions.map((perm, permIndex) => (
                 <TableRow
                   key={`${role.id}-${perm.resource}`}
-                  onClick={() => navigate(`/roles/edit/${role.id}`)}
+                  onClick={() => navigate(`/admin/roles/edit/${role.id}`)}
                 >
                   {/* Only show role name for the first row of each role */}
                   {permIndex === 0 ? (
@@ -154,7 +161,7 @@ const RoleList = () => {
                     {checkPermission(perm.action, "DELETE")}
                   </TableCell>
                 </TableRow>
-              )),
+              ))
             )}
           </TableBody>
         </Table>
@@ -167,7 +174,7 @@ const RoleList = () => {
       >
         <DialogTitle>Create New Role</DialogTitle>
         <DialogContent>
-          <RoleCreate />
+          <RoleCreate onClose={handleClose} refreshList={refreshList} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">

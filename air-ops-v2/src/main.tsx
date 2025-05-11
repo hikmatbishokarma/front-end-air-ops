@@ -40,6 +40,7 @@ import AuditDashboard from "./pages/dashboard/Audit";
 import UserCreate from "./pages/user/create";
 import AgentCreate from "./pages/agent/create";
 import { AgentList } from "./pages/agent/list";
+import SalesDashboard from "./pages/dashboard/SalesDashboard";
 
 const router = createBrowserRouter(
   [
@@ -52,8 +53,14 @@ const router = createBrowserRouter(
           children: [
             {
               path: "",
-              // Component: DashboardPage,
-              Component: DashboardIndex,
+              Component: DashboardPage,
+              //Component: DashboardIndex,
+            },
+
+            {
+              path: "quotes",
+              Component: SalesDashboard,
+              //Component: DashboardIndex,
             },
 
             {
@@ -160,6 +167,10 @@ const router = createBrowserRouter(
               path: "settings/change-password",
               Component: ChangePassword,
             },
+            {
+              path: "invoices/preview",
+              Component: GenerateInvoice,
+            },
           ],
         },
         // {
@@ -176,10 +187,6 @@ const router = createBrowserRouter(
           path: "/login",
           // Component: Login,
           Component: Login,
-        },
-        {
-          path: "/invoices/preview",
-          Component: GenerateInvoice,
         },
       ],
     },

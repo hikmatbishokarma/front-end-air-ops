@@ -38,6 +38,7 @@ import { useQuoteData } from "../../hooks/useQuoteData";
 import ClientDialog from "../clients/dialog";
 import RepresentativeDialog from "../representative/dialog";
 import { useNavigate } from "react-router";
+import { useSession } from "../../SessionContext";
 
 const defaultValues = {
   requestedBy: "",
@@ -87,6 +88,10 @@ export const parseUnitToDecimal = (unitString: string): number => {
 };
 
 export const QuoteCreate = () => {
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const navigate = useNavigate();
 
   const showSnackbar = useSnackbar();
@@ -163,10 +168,9 @@ export const QuoteCreate = () => {
   };
 
   const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
-    createQuote(data);
+    createQuote({ ...data, agentId });
     // setIsNewQuote(false);
-    navigate("/");
+    navigate("/quotes");
     reset();
   };
 
