@@ -273,3 +273,24 @@
 .coming-soon{
     padding-top: 20px;
 }
+.dash-table .css-1xp5r68-MuiFormControl-root-MuiTextField-root{
+    margin-top: 20px;
+}
+.dash-table .css-1e9c3nx-MuiTableCell-root{
+    text-align: left;
+}
+.dash-table .css-3wds0e-MuiTableCell-root{
+text-align: left;
+}
+.dash-table .css-qfdd9t{
+    align-items: flex-start;
+    margin-top: 46px;
+}
+/*Edit Aircraft Category page*/
+.edit-role-category .css-1v24f9t-MuiOutlinedInput-notchedOutline{
+    top: -14px;
+}
+
+.edit-role-category .css-1tu6adf-MuiInputBase-input-MuiOutlinedInput-input{
+    margin-top: 19px;
+}
