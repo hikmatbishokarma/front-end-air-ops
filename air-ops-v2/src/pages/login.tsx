@@ -35,6 +35,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import bgtwo from "../Asset/Images/backimg.jpeg";
 import pfIMG from "../Asset/Images/profile_view.png";
 import leftLogo from "../Asset/Images/Left-side-logo.png";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export default function Login() {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -109,9 +110,7 @@ export default function Login() {
           name: data.user.name,
           email: data.user.email,
           type: data.user.type,
-          image:
-            `https://airops.in/${data?.user?.image}` ||
-            "https://avatars.githubusercontent.com/u/19550456",
+          image: `${apiBaseUrl}${data?.user?.image}` || "",
           // role: data.user.role,
           roles: data.user.roles,
           permissions: data.user.permissions,

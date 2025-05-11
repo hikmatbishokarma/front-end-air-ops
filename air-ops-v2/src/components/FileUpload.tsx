@@ -3,6 +3,7 @@ import axios from "axios";
 import { Box, Typography, LinearProgress, Paper, Button } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const FileUpload = ({ onUpload, value, label, category = "others" }) => {
   const [uploading, setUploading] = useState(false);
@@ -34,7 +35,7 @@ const FileUpload = ({ onUpload, value, label, category = "others" }) => {
 
     try {
       const response = await axios.post(
-        `https://airops.in/api/media/upload/${category}`,
+        `${apiBaseUrl}api/media/upload/${category}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -141,7 +142,7 @@ const FileUpload = ({ onUpload, value, label, category = "others" }) => {
       {value && (
         <Box sx={{ mt: 2 }}>
           <img
-            src={`https://airops.in/${value}`}
+            src={`${apiBaseUrl}${value}`}
             alt="Uploaded"
             width="150"
             style={{

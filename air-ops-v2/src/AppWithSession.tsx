@@ -21,7 +21,7 @@ import {
 import logoPhn from "./Asset/images/logo_phn.png";
 
 import { useSession } from "./SessionContext"; // import your hook
-import { set } from "react-hook-form";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export const NAVIGATION: Navigation = [
   {
@@ -29,9 +29,14 @@ export const NAVIGATION: Navigation = [
     title: "Main items",
   },
   {
-    title: "Quotes",
+    title: "Dashboard",
     segment: "",
     icon: <DashboardIcon />,
+  },
+  {
+    title: "Quotes",
+    segment: "quotes",
+    icon: <RequestQuote />,
   },
   // {
   //   segment: "quotes",
@@ -154,6 +159,14 @@ export const NAVIGATION: Navigation = [
   },
 ];
 
+const defaultNavigation: Navigation = [
+  {
+    title: "Dashboard",
+    segment: "",
+    icon: <DashboardIcon />,
+  },
+];
+
 const BRANDING = {
   logo: <img src={logoPhn} alt="" />,
   title: "",
@@ -161,8 +174,7 @@ const BRANDING = {
 
 export default function AppWithSession() {
   const { session, setSession, loading } = useSession();
-
-  console.log("session111", session);
+  const apiBaseUrl = console.log("session111", session);
 
   const navigate = useNavigate();
   const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);
@@ -178,10 +190,7 @@ export default function AppWithSession() {
 
     if (session) {
       const logoImg = session?.user?.agent?.companyLogo ? (
-        <img
-          src={`https://airops.in/${session.user.agent.companyLogo}`}
-          alt=""
-        />
+        <img src={`${apiBaseUrl}${session.user.agent.companyLogo}`} alt="" />
       ) : (
         <img src={logoPhn} alt="" />
       );
@@ -193,22 +202,40 @@ export default function AppWithSession() {
 
       setBranding(updatedBranding);
 
-      // const accessResources = session.user?.role?.accessPermissions?.map(
-      //   (item) => item.resource
-      // );
-
       const accessResources = session.user?.permissions?.map(
         (item) => item.resource
       );
 
       if (accessResources && accessResources.length > 0) {
-        const filteredNavigation = NAVIGATION.filter(
-          (item: any) => accessResources.includes(item.segment) || item.kind
-        );
-        setValidNavigation(filteredNavigation);
+        const filterNavigation = (item: any) => {
+          // Check if the main item matches
+          if (accessResources.includes(item.segment) || item.kind) {
+            return true;
+          }
+
+          // If the item has children, recursively check the children
+          if (item.children && item.children.length > 0) {
+            const filteredChildren = item.children.filter(
+              (child: any) =>
+                accessResources.includes(child.segment) || child.kind
+            );
+
+            // If there are any valid children, keep this item
+            return filteredChildren.length > 0;
+          }
+
+          // If no match found in the item or its children
+          return false;
+        };
+
+        const filteredNavigation = NAVIGATION.filter(filterNavigation);
+
+        setValidNavigation([...defaultNavigation, ...filteredNavigation]);
       }
     }
   }, [session, loading]);
+
+  console.log("validNavigation", validNavigation);
 
   const signIn = React.useCallback(() => {
     // navigate("/sign-in");
@@ -225,8 +252,8 @@ export default function AppWithSession() {
 
   return (
     <ReactRouterAppProvider
-      navigation={NAVIGATION}
-      // navigation={validNavigation}
+      // navigation={NAVIGATION}
+      navigation={validNavigation}
       // branding={BRANDING}
       branding={branding}
       session={session}

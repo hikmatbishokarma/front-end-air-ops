@@ -24,14 +24,18 @@ import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
+import { useSession } from "../../SessionContext";
 
 const SalesDashboard = () => {
   const navigate = useNavigate();
 
   const [selectedTab, setSelectedTab] = useState("Quotes");
 
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const [filter, setFilter] = useState({
-    // isLatest: { is: true },
     or: [{ status: { eq: "QUOTE" } }],
   });
   const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
@@ -46,7 +50,7 @@ const SalesDashboard = () => {
         queryName: "getSalesDashboardData",
         queryType: "query-without-edge",
         variables: {
-          range: "lastMonth",
+          agentId: agentId,
         },
       });
 
@@ -187,7 +191,7 @@ const SalesDashboard = () => {
         </div>
       </div> */}
 
-      <DashboardBoardSection 
+      <DashboardBoardSection
         selectedTab={selectedTab}
         categories={categories}
         salesDashboardData={salesDashboardData}
@@ -195,7 +199,7 @@ const SalesDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Quotes", "Invoices"]}
       />
-      <QuoteList  filter={filter} />
+      <QuoteList filter={filter} />
     </>
   );
 };

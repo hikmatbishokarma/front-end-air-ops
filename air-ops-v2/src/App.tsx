@@ -19,136 +19,136 @@ import { SnackbarProvider } from "./SnackbarContext";
 
 import AppWithSession from "./AppWithSession";
 
-export const NAVIGATION: Navigation = [
-  {
-    kind: "header",
-    title: "Main items",
-  },
-  {
-    title: "Quotes",
-    segment: "",
-    icon: <DashboardIcon />,
-  },
-  // {
-  //   segment: "quotes",
-  //   title: "Requests/Quotes",
-  //   icon: <RequestQuote />,
-  // },
+// export const NAVIGATION: Navigation = [
+//   {
+//     kind: "header",
+//     title: "Main items",
+//   },
+//   {
+//     title: "Quotes",
+//     segment: "",
+//     icon: <DashboardIcon />,
+//   },
+//   // {
+//   //   segment: "quotes",
+//   //   title: "Requests/Quotes",
+//   //   icon: <RequestQuote />,
+//   // },
 
-  {
-    segment: "operations",
-    title: "Ops",
-    icon: <Handyman />,
-  },
-  {
-    segment: "security",
-    title: "Security",
-    icon: <Handyman />,
-  },
+//   {
+//     segment: "operations",
+//     title: "Ops",
+//     icon: <Handyman />,
+//   },
+//   {
+//     segment: "security",
+//     title: "Security",
+//     icon: <Handyman />,
+//   },
 
-  {
-    segment: "camo",
-    title: "CAMO",
-    icon: <Person />,
-  },
+//   {
+//     segment: "camo",
+//     title: "CAMO",
+//     icon: <Person />,
+//   },
 
-  {
-    segment: "engineering",
-    title: "Engineering",
-    icon: <Person />,
-  },
+//   {
+//     segment: "engineering",
+//     title: "Engineering",
+//     icon: <Person />,
+//   },
 
-  {
-    segment: "crew",
-    title: "CREW",
-    icon: <Person />,
-  },
+//   {
+//     segment: "crew",
+//     title: "CREW",
+//     icon: <Person />,
+//   },
 
-  {
-    segment: "training-sales",
-    title: "Training & Sales",
-    icon: <Person />,
-  },
-  {
-    segment: "manuals",
-    title: "Manuals",
-    icon: <Person />,
-  },
+//   {
+//     segment: "training-sales",
+//     title: "Training & Sales",
+//     icon: <Person />,
+//   },
+//   {
+//     segment: "manuals",
+//     title: "Manuals",
+//     icon: <Person />,
+//   },
 
-  {
-    segment: "accounts",
-    title: "Accounts",
-    icon: <AccountBalance />,
-  },
+//   {
+//     segment: "accounts",
+//     title: "Accounts",
+//     icon: <AccountBalance />,
+//   },
 
-  {
-    segment: "audit",
-    title: "Audit",
-    icon: <Person />,
-  },
+//   {
+//     segment: "audit",
+//     title: "Audit",
+//     icon: <Person />,
+//   },
 
-  // {
-  //   segment: "roles",
-  //   title: "Role",
-  //   icon: <ManageAccounts />,
-  // },
+//   // {
+//   //   segment: "roles",
+//   //   title: "Role",
+//   //   icon: <ManageAccounts />,
+//   // },
 
-  {
-    segment: "admin",
-    title: "Admin",
-    icon: <Settings />,
-    children: [
-      {
-        segment: "roles",
-        title: "Role",
-        icon: <ManageAccounts />,
-      },
+//   {
+//     segment: "admin",
+//     title: "Admin",
+//     icon: <Settings />,
+//     children: [
+//       {
+//         segment: "roles",
+//         title: "Role",
+//         icon: <ManageAccounts />,
+//       },
 
-      {
-        segment: "category",
-        title: "Category",
-        icon: <ShoppingCartIcon />,
-      },
-      {
-        segment: "aircraft",
-        title: "Aircraft Detail",
-        icon: <ShoppingCartIcon />,
-      },
-      {
-        segment: "airports",
-        title: "Airports",
-        icon: <ShoppingCartIcon />,
-      },
-      {
-        segment: "users",
-        title: "Users",
-        icon: <Person />,
-      },
-    ],
-  },
-  {
-    segment: "settings",
-    title: "Setting",
-    icon: <Settings />,
-    children: [
-      {
-        segment: "profile",
-        title: "Profile",
-        icon: <Person />,
-      },
-      {
-        segment: "change-password",
-        title: "Change Password",
-        icon: <Person />,
-      },
-    ],
-  },
-];
+//       {
+//         segment: "category",
+//         title: "Category",
+//         icon: <ShoppingCartIcon />,
+//       },
+//       {
+//         segment: "aircraft",
+//         title: "Aircraft Detail",
+//         icon: <ShoppingCartIcon />,
+//       },
+//       {
+//         segment: "airports",
+//         title: "Airports",
+//         icon: <ShoppingCartIcon />,
+//       },
+//       {
+//         segment: "users",
+//         title: "Users",
+//         icon: <Person />,
+//       },
+//     ],
+//   },
+//   {
+//     segment: "settings",
+//     title: "Setting",
+//     icon: <Settings />,
+//     children: [
+//       {
+//         segment: "profile",
+//         title: "Profile",
+//         icon: <Person />,
+//       },
+//       {
+//         segment: "change-password",
+//         title: "Change Password",
+//         icon: <Person />,
+//       },
+//     ],
+//   },
+// ];
 
-const BRANDING = {
-  logo: <img src={logoPhn} alt="" />,
-  title: "",
-};
+// const BRANDING = {
+//   logo: <img src={logoPhn} alt="" />,
+//   title: "",
+// };
 
 export default function App() {
   // // const [session, setSession] = React.useState<ISession | null>(null);

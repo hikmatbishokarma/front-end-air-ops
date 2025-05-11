@@ -44,8 +44,13 @@ import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import QuotationCancellationConfirmation from "./quotation-cancellation";
 import SearchIcon from "@mui/icons-material/Search";
 import { useQuoteData } from "../../hooks/useQuoteData";
+import { useSession } from "../../SessionContext";
 
 export const QuoteList = ({ filter }) => {
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
 
@@ -70,6 +75,7 @@ export const QuoteList = ({ filter }) => {
             ...(selectedRequester && {
               requestedBy: { eq: selectedRequester },
             }),
+            ...(agentId && { agentId: { eq: agentId } }),
           },
         },
       });

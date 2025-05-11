@@ -113,14 +113,14 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
     }
   };
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     const formattedData = {
       ...data,
       termandconditions: data.termsAndConditions.replace(/<p><br><\/p>/g, ""),
     };
 
-    CreateAircraftDetail(formattedData);
-    refreshList();
+    await CreateAircraftDetail(formattedData);
+    await refreshList();
     onClose();
   };
 

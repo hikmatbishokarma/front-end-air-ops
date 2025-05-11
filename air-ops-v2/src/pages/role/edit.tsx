@@ -21,11 +21,12 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { GET_ROLE_BY_ID, UPDATE_ROLE } from "../../lib/graphql/queries/role";
 import useGql from "../../lib/graphql/gql";
-import { NAVIGATION } from "../../App";
+
 import { Action, RoleType } from "./create";
 import AddIcon from "@mui/icons-material/Add";
 import { removeTypename } from "../../lib/utils";
 import { useSnackbar } from "../../SnackbarContext";
+import { NAVIGATION } from "../../AppWithSession";
 
 interface accessPermission {
   action;
@@ -38,12 +39,28 @@ interface FormData {
   accessPermissions: accessPermission[];
 }
 
+// const resources = NAVIGATION.reduce((acc: any[], item: any) => {
+//   if (item.segment) {
+//     acc.push({ label: item.title, id: item.segment });
+//   }
+//   return acc;
+// }, []);
+
 const resources = NAVIGATION.reduce((acc: any[], item: any) => {
+  if (item.segment && item?.children?.length > 0) {
+    item.children.forEach((child: any) => {
+      if (child.segment) {
+        acc.push({ label: child.title, id: child.segment });
+      }
+    });
+  }
   if (item.segment) {
     acc.push({ label: item.title, id: item.segment });
   }
   return acc;
 }, []);
+
+console.log("resources", resources);
 
 const RoleEdit = () => {
   const { id } = useParams();
@@ -88,7 +105,7 @@ const RoleEdit = () => {
       setValue("name", roleData.name || "");
       setValue(
         "accessPermissions",
-        removeTypename(roleData.accessPermissions) || [],
+        removeTypename(roleData.accessPermissions) || []
       );
     }
   }, [roleData, setValue]);
@@ -117,6 +134,7 @@ const RoleEdit = () => {
       ...data,
     };
     updateRole(id, formattedData);
+    navigate("/admin/roles");
   };
 
   const addAccessPermissionRow = () => {
@@ -140,6 +158,7 @@ const RoleEdit = () => {
               <Controller
                 name="type"
                 control={control}
+                rules={{ required: "Type is required" }}
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -165,6 +184,7 @@ const RoleEdit = () => {
             <Controller
               name="name"
               control={control}
+              rules={{ required: "Name is required" }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -201,7 +221,7 @@ const RoleEdit = () => {
                     onChange={(_, value) =>
                       setValue(
                         `accessPermissions.${index}.resource`,
-                        value?.id || "",
+                        value?.id || ""
                       )
                     }
                     renderInput={(params) => (
@@ -239,7 +259,7 @@ const RoleEdit = () => {
                                 : field.value.filter((a) => a !== action);
                               setValue(
                                 `accessPermissions.${index}.action`,
-                                newValue,
+                                newValue
                               );
                             }}
                           />
