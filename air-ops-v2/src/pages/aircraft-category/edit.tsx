@@ -88,7 +88,7 @@ export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
   };
 
   return (
-    <Box
+    <Box className="edit-role-category"
       component="form"
       onSubmit={handleSubmit(onSubmit)}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
