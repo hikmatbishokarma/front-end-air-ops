@@ -41,6 +41,7 @@ import UserCreate from "./pages/user/create";
 import AgentCreate from "./pages/agent/create";
 import { AgentList } from "./pages/agent/list";
 import SalesDashboard from "./pages/dashboard/SalesDashboard";
+import "../src/Airops.css";
 
 const router = createBrowserRouter(
   [
