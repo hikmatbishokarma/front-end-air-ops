@@ -34,7 +34,7 @@ export const NAVIGATION: Navigation = [
     icon: <DashboardIcon />,
   },
   {
-    title: "Quotes",
+    title: "Quotations",
     segment: "quotes",
     icon: <RequestQuote />,
   },
@@ -142,7 +142,7 @@ export const NAVIGATION: Navigation = [
   },
   {
     segment: "settings",
-    title: "Setting",
+    title: "Settings",
     icon: <Settings />,
     children: [
       {
