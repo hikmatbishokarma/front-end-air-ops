@@ -42,6 +42,7 @@ import AgentCreate from "./pages/agent/create";
 import { AgentList } from "./pages/agent/list";
 import SalesDashboard from "./pages/dashboard/SalesDashboard";
 //import "../src/index.css";
+import "../dist/assets/styleview.css";
 
 const router = createBrowserRouter(
   [

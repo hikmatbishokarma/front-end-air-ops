@@ -7,6 +7,7 @@ import type { Navigation, Session } from "@toolpad/core/AppProvider";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme";
 //import "../src/index.css";
+import "../dist/assets/styleview.css";
 
 import {
   ManageAccounts,
