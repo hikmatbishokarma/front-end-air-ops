@@ -11,7 +11,7 @@ import {
   RadioGroup,
   Radio,
 } from "@mui/material";
-import { Controller, Control, SubmitHandler } from "react-hook-form";
+import { Controller, Control, SubmitHandler, useWatch } from "react-hook-form";
 import ReactQuill from "react-quill";
 import Autocomplete from "@mui/material/Autocomplete";
 import CityAutocomplete from "../../components/city-autocomplete";
@@ -41,6 +41,10 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
   onSubmit,
   fields,
 }) => {
+  const selectedType = useWatch({ control, name: "type" });
+
+  console.log("selectedType:::", selectedType);
+
   return (
     <Box
       component="form"
@@ -60,11 +64,31 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
               render={({ field: controllerField, fieldState: { error } }) => {
                 if (field.options) {
                   return (
+                    // <FormControl component="fieldset" margin="normal">
+                    //   <FormLabel component="legend">Select Type</FormLabel>
+                    //   <RadioGroup
+                    //     {...field}
+                    //     row // Makes the radio buttons appear in a row
+                    //   >
+                    //     <FormControlLabel
+                    //       value="COMPANY"
+                    //       control={<Radio />}
+                    //       label="Company"
+                    //     />
+                    //     <FormControlLabel
+                    //       value="PERSON"
+                    //       control={<Radio />}
+                    //       label="Person"
+                    //     />
+                    //   </RadioGroup>
+                    // </FormControl>
                     <FormControl component="fieldset" margin="normal">
-                      <FormLabel component="legend">Select Type</FormLabel>
+                      {/* <FormLabel component="legend">Select Type</FormLabel> */}
                       <RadioGroup
-                        {...field}
-                        row // Makes the radio buttons appear in a row
+                        row
+                        value={controllerField.value}
+                        onChange={controllerField.onChange}
+                        onBlur={controllerField.onBlur}
                       >
                         <FormControlLabel
                           value="COMPANY"
@@ -84,12 +108,23 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                     <TextField
                       {...controllerField}
                       size="small"
-                      label={field.label}
+                      // label={field.label}
+                      label={
+                        field.name === "name"
+                          ? selectedType === "COMPANY"
+                            ? "Company Name"
+                            : "Name"
+                          : field.label
+                      }
                       fullWidth
                       type={field.type || "text"}
                       error={!!error}
                       helperText={error?.message}
-                      InputLabelProps={{ shrink: !!controllerField.value }} // Ensure label shrinks when there's a value
+                      required={field.required} // ✅ this adds the asterisk
+                      InputLabelProps={{
+                        shrink: !!controllerField.value,
+                        required: field.required, // ✅ optional: forces asterisk even with custom labels
+                      }}
                     />
                   );
               }}

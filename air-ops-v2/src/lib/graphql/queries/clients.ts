@@ -10,6 +10,8 @@ export const GET_CLIENTS = gql`
       nodes {
         id
         name
+        isCompany
+        isPerson
       }
     }
   }

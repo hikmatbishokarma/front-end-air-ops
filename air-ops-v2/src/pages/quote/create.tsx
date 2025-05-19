@@ -114,6 +114,8 @@ export const QuoteCreate = () => {
 
   const [selectedClient, setSelectedClient] = useState<Iclient | null>();
 
+  console.log("selectedClient", selectedClient);
+
   const [events, setEvents] = useState<
     { title: string; start: string; end: string }[]
   >([]);
@@ -286,7 +288,7 @@ export const QuoteCreate = () => {
 
   const handleRepresentativeDialogClose = async () => {
     setRepresentativeDialogOpen(false);
-    await fetchClients();
+    await fetchRepresentatives(selectedClient?.id);
   };
 
   const handlePriceChange = (index, field, value) => {
@@ -374,7 +376,12 @@ export const QuoteCreate = () => {
                         field.onChange(newValue ? newValue.id : "");
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} fullWidth label="Requested By" />
+                        <TextField
+                          {...params}
+                          fullWidth
+                          required={true}
+                          label="Requested By"
+                        />
                       )}
                     />
                   )}
@@ -389,53 +396,60 @@ export const QuoteCreate = () => {
                   Add Client
                 </Button>
               </Grid>
-              <Grid item xs={4}>
-                <Typography sx={{ whiteSpace: "nowrap" }}>
-                  Representative:
-                </Typography>
-              </Grid>
 
-              <Grid item xs={4}>
-                <Controller
-                  name="representative"
-                  control={control}
-                  render={({ field }) => (
-                    <Autocomplete
-                      {...field}
-                      options={representatives}
-                      getOptionLabel={(option) => option.name}
-                      value={
-                        field.value
-                          ? representatives.find(
-                              (representative) =>
-                                representative.id === field.value
-                            )
-                          : null
-                      }
-                      onChange={(_, newValue) => {
-                        field.onChange(newValue ? newValue.id : "");
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth
-                          label="Representative"
+              {selectedClient?.isCompany && (
+                <>
+                  <Grid item xs={4}>
+                    <Typography sx={{ whiteSpace: "nowrap" }}>
+                      Representative:
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Controller
+                      name="representative"
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={representatives}
+                          getOptionLabel={(option) => option.name}
+                          value={
+                            field.value
+                              ? representatives.find(
+                                  (representative) =>
+                                    representative.id === field.value
+                                )
+                              : null
+                          }
+                          onChange={(_, newValue) => {
+                            field.onChange(newValue ? newValue.id : "");
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              fullWidth
+                              required={true}
+                              label="Representative"
+                            />
+                          )}
                         />
                       )}
                     />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                {" "}
-                <Button
-                  variant="outlined"
-                  startIcon={<AddIcon />}
-                  onClick={() => setRepresentativeDialogOpen(true)}
-                >
-                  Add Rep
-                </Button>
-              </Grid>
+                  </Grid>
+
+                  <Grid item xs={2}>
+                    {" "}
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={() => setRepresentativeDialogOpen(true)}
+                    >
+                      Add Rep
+                    </Button>
+                  </Grid>
+                </>
+              )}
 
               <Grid item xs={4}>
                 <Typography sx={{ whiteSpace: "nowrap" }}>Category:</Typography>
@@ -456,7 +470,12 @@ export const QuoteCreate = () => {
                         field.onChange(newValue?.id || "");
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} fullWidth label="Category" />
+                        <TextField
+                          {...params}
+                          fullWidth
+                          required={true}
+                          label="Category"
+                        />
                       )}
                     />
                   )}
@@ -486,7 +505,12 @@ export const QuoteCreate = () => {
                         field.onChange(value ? value.id : "");
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} fullWidth label="Aircraft" />
+                        <TextField
+                          {...params}
+                          fullWidth
+                          required={true}
+                          label="Aircraft"
+                        />
                       )}
                     />
                   )}
@@ -510,7 +534,11 @@ export const QuoteCreate = () => {
                         name={`itinerary.${index}.source`}
                         control={control}
                         render={({ field }) => (
-                          <AirportsAutocomplete {...field} label="Source" />
+                          <AirportsAutocomplete
+                            {...field}
+                            label="Source"
+                            isRequired={true}
+                          />
                         )}
                       />
                     </Grid>
@@ -522,6 +550,7 @@ export const QuoteCreate = () => {
                           <AirportsAutocomplete
                             {...field}
                             label="Destination"
+                            isRequired={true}
                           />
                         )}
                       />

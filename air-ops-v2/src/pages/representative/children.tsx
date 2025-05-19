@@ -81,6 +81,7 @@ const RepresentativeChildren: React.FC<ReusableFormProps> = ({
                   type={field.type || "text"}
                   error={!!error}
                   helperText={error?.message}
+                  required={field.required}
                   InputLabelProps={{ shrink: !!controllerField.value }}
                 />
               )}

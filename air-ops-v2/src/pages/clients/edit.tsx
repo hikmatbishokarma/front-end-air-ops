@@ -24,7 +24,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
   console.log("EditClient:::", id);
 
   const editFields = [
-    { name: "type", label: "Type", options: [] },
+    { name: "type", label: "Type", options: [], xs: 12, required: true },
     { name: "name", label: "Name", xs: 6, required: true },
     {
       name: "phone",
@@ -50,7 +50,11 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
   ];
 
   const { control, handleSubmit, reset, setValue, setError } =
-    useForm<FormData>();
+    useForm<FormData>({
+      defaultValues: {
+        type: "PERSON", // <- make sure this exists
+      },
+    });
 
   const [client, setClient] = useState<Iclient>();
 

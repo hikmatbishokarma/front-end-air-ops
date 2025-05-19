@@ -240,7 +240,7 @@ export default function Login() {
                   variant="fullWidth"
                 >
                   <Tab label="Sign In" />
-                  <Tab label="Sign Up" />
+                  {/* <Tab label="Sign Up" /> */}
                 </Tabs>
 
                 <Box sx={{ mt: 2 }}>

@@ -71,6 +71,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
               size="small"
               label="Name"
               fullWidth
+              required={true}
               InputLabelProps={{ shrink: !!field.value }}
             />
           )}
@@ -86,6 +87,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
               size="small"
               label="Code"
               fullWidth
+              required={true}
               InputLabelProps={{ shrink: !!field.value }}
             />
           )}
@@ -108,7 +110,14 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
               onChange={(_, newValue) =>
                 field.onChange(newValue ? newValue.id : "")
               }
-              renderInput={(params) => <TextField {...params} size="small" />}
+              renderInput={(params) => (
+                <TextField
+                  required={true}
+                  {...params}
+                  size="small"
+                  label="Category"
+                />
+              )}
             />
           )}
         />
@@ -189,7 +198,13 @@ export const SpecificationStep = ({
               name={`specifications.${index}.title`}
               control={control}
               render={({ field }) => (
-                <TextField {...field} size="small" label="Title" fullWidth />
+                <TextField
+                  {...field}
+                  size="small"
+                  label="Title"
+                  fullWidth
+                  required={true}
+                />
               )}
             />
           </Grid>
@@ -198,7 +213,13 @@ export const SpecificationStep = ({
               name={`specifications.${index}.value`}
               control={control}
               render={({ field }) => (
-                <TextField {...field} size="small" label="Value" fullWidth />
+                <TextField
+                  {...field}
+                  size="small"
+                  label="Value"
+                  fullWidth
+                  required={true}
+                />
               )}
             />
           </Grid>
