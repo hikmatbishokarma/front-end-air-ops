@@ -76,7 +76,14 @@ export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
             name="name"
             control={control}
             render={({ field }) => (
-              <TextField {...field} size="small" label="Name" fullWidth />
+              <TextField
+                {...field}
+                size="small"
+                label="Name"
+                fullWidth
+                required={true} // ✅ this adds the asterisk
+                InputLabelProps={{ shrink: !!field.value }}
+              />
             )}
           />
         </Grid>

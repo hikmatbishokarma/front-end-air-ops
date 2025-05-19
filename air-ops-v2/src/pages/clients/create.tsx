@@ -6,7 +6,7 @@ import ClientChildren from "./children";
 
 export const CreateClient = ({ handleSubDialogClose }) => {
   const createFields = [
-    { name: "type", label: "Type", options: [] },
+    { name: "type", label: "Type", options: [], xs: 12, required: true },
     { name: "name", label: "Name", xs: 6, required: true },
     {
       name: "phone",
@@ -37,7 +37,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       phone: "",
       email: "",
       address: "",
-      type: "",
+      type: "PERSON",
     },
   });
 

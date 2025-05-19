@@ -122,7 +122,7 @@ const QuoteEdit = () => {
       setValue("grandTotal", response.grandTotal);
       setSelectedRepresentative(response.representative);
       setSelectedClient(response.requestedBy);
-      setSelectedClient(response.providerType);
+      // setSelectedClient(response.providerType);
     }
 
     setLoading(false);
@@ -234,6 +234,8 @@ const QuoteEdit = () => {
   };
 
   if (loading) return <p>Loading...</p>;
+
+  console.log("selectedClient::::", selectedClient);
 
   return (
     <>

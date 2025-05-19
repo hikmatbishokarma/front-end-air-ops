@@ -142,7 +142,12 @@ type Airport = {
 //   );
 // };
 
-const AirportsAutocomplete = ({ value, onChange, label }: any) => {
+const AirportsAutocomplete = ({
+  value,
+  onChange,
+  label,
+  isRequired = false,
+}: any) => {
   const [inputValue, setInputValue] = useState(""); // Stores user input
   const [options, setOptions] = useState<Airport[]>([]); // Stores fetched airport options
   const [loading, setLoading] = useState(false); // Indicates loading state
@@ -248,6 +253,7 @@ const AirportsAutocomplete = ({ value, onChange, label }: any) => {
           {...params}
           label={label}
           fullWidth
+          required={true}
           size="small"
           variant="outlined"
           sx={{
