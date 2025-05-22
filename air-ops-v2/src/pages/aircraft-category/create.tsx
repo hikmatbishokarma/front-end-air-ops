@@ -11,6 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import { CREATE_AIRCRAFT_CATEGORY } from "../../lib/graphql/queries/aircraft-categories";
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
 
 type FormValues = {
   name: string;
@@ -19,6 +20,9 @@ type FormValues = {
 
 export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -58,7 +62,7 @@ export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
       ...data,
     };
 
-    CreateCategory(formattedData);
+    CreateCategory({ formattedData, agentId });
     refreshList();
     onClose();
   };

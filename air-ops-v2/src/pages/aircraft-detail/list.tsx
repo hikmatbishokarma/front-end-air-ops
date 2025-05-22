@@ -26,9 +26,13 @@ import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft-detail";
 import { AircraftDetailCreate } from "./create";
 import { AircraftDetailEdit } from "./edit";
 import CloseIcon from "@mui/icons-material/Close";
+import { useSession } from "../../SessionContext";
 
 export const AircraftDetailList = () => {
   const showSnackbar = useSnackbar();
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
 
   const [aircraftDetail, setAircraftDetail] = useState<any>([]);
   const [open, setOpen] = useState(false);
@@ -46,7 +50,11 @@ export const AircraftDetailList = () => {
         query: GET_AIRCRAFT,
         queryName: "aircraftDetails",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(agentId && { agentId: { eq: agentId } }),
+          },
+        },
       });
 
       console.log("data:hghg", data);

@@ -15,6 +15,7 @@ export const GET_QUOTES = gql`
     $sorting: [QuoteSort!]! = []
   ) {
     quotes(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
       nodes {
         id
         code
