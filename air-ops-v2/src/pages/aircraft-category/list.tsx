@@ -26,9 +26,14 @@ import { AircraftCategoryCreate } from "./create";
 import { AircraftCategoryEdit } from "./edit";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { useSession } from "../../SessionContext";
 
 export const AircraftCategoryList = () => {
   const showSnackbar = useSnackbar();
+
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
 
   const [categories, setCategories] = useState<any>([]);
   const [open, setOpen] = useState(false);
@@ -46,7 +51,11 @@ export const AircraftCategoryList = () => {
         query: GET_AIRCRAFT_CATEGORIES,
         queryName: "aircraftCategories",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(agentId && { agentId: { eq: agentId } }),
+          },
+        },
       });
 
       console.log("data:hghg", data);

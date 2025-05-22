@@ -147,6 +147,7 @@ const AirportsAutocomplete = ({
   onChange,
   label,
   isRequired = false,
+  error = null,
 }: any) => {
   const [inputValue, setInputValue] = useState(""); // Stores user input
   const [options, setOptions] = useState<Airport[]>([]); // Stores fetched airport options
@@ -169,6 +170,7 @@ const AirportsAutocomplete = ({
               or: [
                 { name: { iLike: inputValue } },
                 { city: { iLike: inputValue } },
+                { iata_code: { iLike: inputValue } },
               ],
             },
           },
@@ -253,13 +255,21 @@ const AirportsAutocomplete = ({
           {...params}
           label={label}
           fullWidth
-          required={true}
+          placeholder={label}
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+            },
+          }}
+          required={isRequired}
           size="small"
           variant="outlined"
           sx={{
             minHeight: "50px",
             "& .MuiInputBase-root": { minHeight: "50px" },
           }}
+          error={!!error}
+          helperText={error?.message}
         />
       )}
     />

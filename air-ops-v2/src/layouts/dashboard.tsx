@@ -5,6 +5,7 @@ import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import { Account } from "@toolpad/core/Account";
 import { useSession } from "../SessionContext";
+import { Box } from "@mui/material";
 
 function CustomAccount() {
   return (
@@ -35,10 +36,18 @@ export default function Layout() {
   }
 
   return (
-    <DashboardLayout slots={{ toolbarAccount: CustomAccount }}>
-      <PageContainer>
-        <Outlet />
-      </PageContainer>
-    </DashboardLayout>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#f5f5f5", // Light gray background
+        padding: 2, // Optional
+      }}
+    >
+      <DashboardLayout slots={{ toolbarAccount: CustomAccount }}>
+        <PageContainer>
+          <Outlet />
+        </PageContainer>
+      </DashboardLayout>
+    </Box>
   );
 }

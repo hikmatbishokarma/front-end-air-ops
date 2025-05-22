@@ -22,6 +22,7 @@ import {
   TableRow,
   TextField,
   Tooltip,
+  TablePagination,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -63,12 +64,19 @@ export const QuoteList = ({ filter }) => {
 
   const [selectedRequester, setSelectedRequester] = useState("");
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [page, setPage] = useState(0); // page number starting at 0
+  const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
+
+  const [totalCount, setTotalCount] = useState(0); // total count from backend
+
   const getQuotes = async () => {
     try {
       const data = await useGql({
         query: GET_QUOTES,
         queryName: "quotes",
-        queryType: "query",
+        queryType: "query-with-count",
         variables: {
           filter: {
             ...filter,
@@ -77,9 +85,15 @@ export const QuoteList = ({ filter }) => {
             }),
             ...(agentId && { agentId: { eq: agentId } }),
           },
+          "paging": {
+            "offset": page * rowsPerPage,
+            "limit": rowsPerPage,
+          },
+          "sorting": [{ "field": "createdAt", "direction": "DESC" }],
         },
       });
-      const result = data?.map((quote: any) => {
+
+      const result = data?.data?.map((quote: any) => {
         return {
           id: quote.id,
           quotationNo: quote?.quotationNo,
@@ -98,6 +112,8 @@ export const QuoteList = ({ filter }) => {
           code: quote.code,
         };
       });
+      console.log("result:::", result);
+      setTotalCount(data?.totalCount || 0);
       setRows(result);
       // Extract unique requesters for dropdown
     } catch (error) {
@@ -107,7 +123,7 @@ export const QuoteList = ({ filter }) => {
 
   useEffect(() => {
     getQuotes();
-  }, [filter, selectedRequester]);
+  }, [filter, selectedRequester, page, rowsPerPage]);
 
   const handelPreview = async (quotationNo, quoteId) => {
     const result = await useGql({
@@ -182,8 +198,6 @@ export const QuoteList = ({ filter }) => {
   //   }
   // };
 
-  const [searchTerm, setSearchTerm] = useState("");
-
   const filteredRows = rows?.filter((row) =>
     row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
@@ -199,6 +213,16 @@ export const QuoteList = ({ filter }) => {
   //     refreshList();
   //   }
   // };
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // reset to first page when rows per page changes
+  };
 
   return (
     <>
@@ -314,6 +338,15 @@ export const QuoteList = ({ filter }) => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={totalCount}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
       </TableContainer>
 
       <Dialog

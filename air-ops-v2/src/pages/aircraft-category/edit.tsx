@@ -15,6 +15,7 @@ import {
 } from "../../lib/graphql/queries/aircraft-categories";
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
 
 type FormData = {
   name: string;
@@ -23,6 +24,10 @@ type FormData = {
 
 export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
+
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -82,6 +87,7 @@ export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
+      agentId,
     };
 
     UpdateCategory(id, formattedData);

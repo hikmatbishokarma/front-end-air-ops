@@ -21,6 +21,7 @@ import {
   SpecificationStep,
   TermsStep,
 } from "./children";
+import { useSession } from "../../SessionContext";
 
 type FormData = {
   name: string;
@@ -41,6 +42,9 @@ type FormData = {
 
 export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -127,6 +131,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
+      agentId,
     };
 
     UpdateAircraftDetail(id, formattedData);

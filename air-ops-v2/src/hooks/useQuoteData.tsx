@@ -10,11 +10,17 @@ import {
   Iclient,
   Irepresentative,
 } from "../interfaces/quote.interface";
+import { useSession } from "../SessionContext";
 
 export const useQuoteData = () => {
   const [aircraftCategories, setAircraftCategories] = useState<
     IaircraftCategory[]
   >([]);
+
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const [aircrafts, setAircrafts] = useState<Iaircraft[]>([]);
   const [representatives, setRepresentatives] = useState<Irepresentative[]>([]);
   const [clients, setClients] = useState<Iclient[]>([]);
@@ -26,7 +32,11 @@ export const useQuoteData = () => {
         query: GET_AIRCRAFT_CATEGORIES,
         queryName: "aircraftCategories",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(agentId && { agentId: { eq: agentId } }),
+          },
+        },
       });
       setAircraftCategories(data);
     } catch (error) {
@@ -41,11 +51,20 @@ export const useQuoteData = () => {
         query: GET_AIRCRAFT,
         queryName: "aircraftDetails",
         queryType: "query",
-        variables: categoryId
-          ? {
-              sorting: [{ field: "category", direction: "ASC" }],
-            }
-          : {},
+        // variables: categoryId
+        //   ? {
+        //       sorting: [{ field: "category", direction: "ASC" }],
+
+        //     }
+        //   : {},
+        variables: {
+          filter: {
+            ...(agentId && { agentId: { eq: agentId } }),
+          },
+          ...(categoryId && {
+            sorting: [{ field: "category", direction: "ASC" }],
+          }),
+        },
       });
       setAircrafts(data);
     } catch (error) {
@@ -75,7 +94,11 @@ export const useQuoteData = () => {
         query: GET_CLIENTS,
         queryName: "clients",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(agentId && { agentId: { eq: agentId } }),
+          },
+        },
       });
       setClients(data);
     } catch (error) {

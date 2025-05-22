@@ -16,6 +16,7 @@ import {
   SpecificationStep,
   TermsStep,
 } from "./children";
+import { useSession } from "../../SessionContext";
 
 interface sepcification {
   title: string;
@@ -46,6 +47,10 @@ type FormValues = {
 
 export const AircraftDetailCreate = ({ onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
+
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -119,7 +124,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       termandconditions: data.termsAndConditions.replace(/<p><br><\/p>/g, ""),
     };
 
-    await CreateAircraftDetail(formattedData);
+    await CreateAircraftDetail({ formattedData, agentId });
     await refreshList();
     onClose();
   };

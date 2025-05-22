@@ -21,6 +21,7 @@ import useGql from "../../lib/graphql/gql";
 import AddIcon from "@mui/icons-material/Add";
 import { CREATE_ROLE } from "../../lib/graphql/queries/role";
 import { NAVIGATION } from "../../AppWithSession";
+import { useSession } from "../../SessionContext";
 
 export enum Action {
   READ = "READ",
@@ -72,6 +73,10 @@ type ComponentProps = {
 };
 
 const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const {
     control,
     handleSubmit,
@@ -87,6 +92,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
       accessPermissions: [{ resource: "", action: [Action.CREATE] }],
     },
   });
+
   const [apiError, setApiError] = React.useState("");
 
   const { fields, append, remove } = useFieldArray({
@@ -114,6 +120,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
   const onSubmit = async (data: FormValues) => {
     const formattedData = {
       ...data,
+      agentId,
     };
 
     await CreateRole(formattedData);
