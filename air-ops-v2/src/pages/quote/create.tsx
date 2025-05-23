@@ -51,7 +51,7 @@ import { useSession } from "../../SessionContext";
 
 const defaultValues = {
   requestedBy: "",
-  representative: "",
+  representative: undefined,
   itinerary: [
     {
       source: "",
@@ -66,8 +66,8 @@ const defaultValues = {
     },
   ],
   providerType: "airops",
-  category: "",
-  aircraft: "",
+  category: undefined,
+  aircraft: undefined,
   prices: [
     {
       label: "Discount",

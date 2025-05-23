@@ -174,7 +174,6 @@ const BRANDING = {
 
 export default function AppWithSession() {
   const { session, setSession, loading } = useSession();
-  const apiBaseUrl = console.log("session111", session);
 
   const navigate = useNavigate();
   const [validNavigation, setValidNavigation] = React.useState<Navigation>([]);

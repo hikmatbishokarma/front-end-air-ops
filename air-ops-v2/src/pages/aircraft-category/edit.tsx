@@ -94,14 +94,9 @@ export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
   };
 
   return (
-    <Box
-      className="edit-role-category"
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
-    >
+    <Box component="form" onSubmit={handleSubmit(onSubmit)}>
       {/* Role Type & Name Fields */}
-      <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
+      <Grid container spacing={1} alignItems="center">
         <Grid item xs={6}>
           <Controller
             name="name"
@@ -113,7 +108,11 @@ export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
                 label="Name"
                 fullWidth
                 required={true}
-                InputLabelProps={{ shrink: !!field.value }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
               />
             )}
           />

@@ -18,6 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FileUpload from "../../components/fileupload";
 import Editor from "../../components/Editor";
 import MultiFileUpload from "../../components/MultiFileUploader";
+import { useSession } from "../../SessionContext";
 
 interface AircraftCategory {
   id: string;
@@ -29,13 +30,21 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
     AircraftCategory[]
   >([]);
 
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const getAircraftCategories = async () => {
     try {
       const data = await useGql({
         query: GET_AIRCRAFT_CATEGORIES,
         queryName: "aircraftCategories",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(agentId && { agentId: { eq: agentId } }),
+          },
+        },
       });
       setAircraftCategories(data);
     } catch (error) {
@@ -49,30 +58,24 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
 
   return (
     <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-      {/* <Grid item xs={4}>
-        <Controller
-          name="isActive"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={<Switch {...field} defaultChecked size="small" />}
-              label="isActive"
-            />
-          )}
-        />
-      </Grid> */}
       <Grid item xs={6}>
         <Controller
           name="name"
           control={control}
-          render={({ field }) => (
+          rules={{ required: "Name is required" }}
+          render={({ field, fieldState: { error } }) => (
             <TextField
               {...field}
               size="small"
               label="Name"
               fullWidth
-              required={true}
-              InputLabelProps={{ shrink: !!field.value }}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              error={!!error}
+              helperText={error?.message}
             />
           )}
         />
@@ -81,14 +84,21 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
         <Controller
           name="code"
           control={control}
-          render={({ field }) => (
+          rules={{ required: "Code is required" }}
+          render={({ field, fieldState: { error } }) => (
             <TextField
               {...field}
               size="small"
               label="Code"
               fullWidth
-              required={true}
-              InputLabelProps={{ shrink: !!field.value }}
+              // required={true}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              error={!!error}
+              helperText={error?.message}
             />
           )}
         />
@@ -97,7 +107,8 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
         <Controller
           name="category"
           control={control}
-          render={({ field }) => (
+          rules={{ required: "Category is required" }}
+          render={({ field, fieldState: { error } }) => (
             <Autocomplete
               {...field}
               options={aircraftCategories}
@@ -112,15 +123,52 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
               }
               renderInput={(params) => (
                 <TextField
-                  required={true}
+                  // required={true}
                   {...params}
                   size="small"
                   label="Category"
+                  error={!!error}
+                  helperText={error?.message}
                 />
               )}
             />
           )}
         />
+
+        {/* <Controller
+          name="category"
+          control={control}
+          rules={{ required: "Category is required" }}
+          render={({
+            field: { onChange, value, ref },
+            fieldState: { error },
+          }) => {
+            // Find the option object from id stored in form
+            const selectedOption =
+              aircraftCategories.find((cat) => cat.id === value) || null;
+
+            return (
+              <Autocomplete
+                options={aircraftCategories}
+                getOptionLabel={(option) => option.name || ""}
+                value={selectedOption}
+                onChange={(_, newValue) =>
+                  onChange(newValue ? newValue.id : "")
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    inputRef={ref}
+                    label="Category"
+                    size="small"
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                )}
+              />
+            );
+          }}
+        /> */}
       </Grid>
       <Grid item xs={12}>
         <Controller

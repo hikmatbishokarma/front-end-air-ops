@@ -62,19 +62,15 @@ export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
       ...data,
     };
 
-    CreateCategory({ formattedData, agentId });
+    CreateCategory({ ...formattedData, agentId });
     refreshList();
     onClose();
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
-    >
+    <Box component="form" onSubmit={handleSubmit(onSubmit)}>
       {/* Role Type & Name Fields */}
-      <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
+      <Grid container spacing={1} alignItems="center">
         <Grid item xs={6}>
           <Controller
             name="name"
@@ -86,7 +82,11 @@ export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
                 label="Name"
                 fullWidth
                 required={true} // ✅ this adds the asterisk
-                InputLabelProps={{ shrink: !!field.value }}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
               />
             )}
           />
