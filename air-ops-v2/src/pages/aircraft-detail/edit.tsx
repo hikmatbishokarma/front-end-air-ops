@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
@@ -46,6 +51,17 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
 
   const agentId = session?.user.agent?.id || null;
 
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   watch,
+  //   setValue,
+  //   setError,
+  //   formState: { errors },
+  // } = useForm<FormData>();
+
+  const methods = useForm<FormData>({});
+
   const {
     control,
     handleSubmit,
@@ -53,7 +69,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<FormData>();
+  } = methods;
 
   const [aircraftDetailData, setAircraftDetailData] = useState<FormData>();
   const [aircraftCategories, setAircraftCategories] = useState<
@@ -102,7 +118,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("noteText", aircraftDetailData.noteText || "");
       setValue("warningText", aircraftDetailData.warningText || "");
       setValue("warningImage", aircraftDetailData.warningImage || "");
-      setValue("flightImages", aircraftDetailData.flightImages || []);
+      setValue("flightImages", aircraftDetailData.flightImages || null);
       setValue("seatLayoutImage", aircraftDetailData.seatLayoutImage || "");
       setValue("rangeMapImage", aircraftDetailData.rangeMapImage || "");
     }
@@ -275,24 +291,26 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
   return (
-    <StepperFormLayout
-      steps={steps}
-      activeStep={activeStep}
-      handleNext={handleNext}
-      handleBack={handleBack}
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      {activeStep === 0 && <BasicInfoStep control={control} />}
-      {activeStep === 1 && (
-        <SpecificationStep
-          control={control}
-          specificationsField={specificationsField}
-          removeSpecification={removeSpecification}
-          appendSpecification={appendSpecification}
-        />
-      )}
-      {activeStep === 2 && <TermsStep control={control} />}
-      {activeStep === 3 && <MediaStep control={control} />}
-    </StepperFormLayout>
+    <FormProvider {...methods}>
+      <StepperFormLayout
+        steps={steps}
+        activeStep={activeStep}
+        handleNext={handleNext}
+        handleBack={handleBack}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        {activeStep === 0 && <BasicInfoStep control={control} />}
+        {activeStep === 1 && (
+          <SpecificationStep
+            control={control}
+            specificationsField={specificationsField}
+            removeSpecification={removeSpecification}
+            appendSpecification={appendSpecification}
+          />
+        )}
+        {activeStep === 2 && <TermsStep control={control} />}
+        {activeStep === 3 && <MediaStep control={control} />}
+      </StepperFormLayout>
+    </FormProvider>
   );
 };

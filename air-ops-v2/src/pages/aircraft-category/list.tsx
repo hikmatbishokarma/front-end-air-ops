@@ -149,7 +149,7 @@ export const AircraftCategoryList = () => {
         maxWidth="sm"
       >
         <DialogTitle>
-          {isEdit ? "Edit Aircraft Category" : "Edit Aircraft Category"}
+          {isEdit ? "Edit Aircraft Category" : "Create Aircraft Category"}
 
           <IconButton
             aria-label="close"

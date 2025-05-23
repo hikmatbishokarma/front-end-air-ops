@@ -9,6 +9,7 @@ import {
 import ClientChildren from "./children";
 import { Iclient } from "../../interfaces/quote.interface";
 import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
 
 type FormData = {
   name: string;
@@ -21,7 +22,9 @@ type FormData = {
 export const EditClient = ({ id, handleSubDialogClose }) => {
   const showSnackbar = useSnackbar();
 
-  console.log("EditClient:::", id);
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
 
   const editFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
@@ -110,7 +113,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       formData["isCompany"] = true;
     } else formData["isPerson"] = true;
 
-    UpdateClient(id, formData);
+    UpdateClient(id, { ...formData, agentId });
     handleSubDialogClose();
   };
 

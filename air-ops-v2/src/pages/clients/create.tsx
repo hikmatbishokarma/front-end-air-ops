@@ -3,8 +3,13 @@ import { useForm } from "react-hook-form";
 import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import ClientChildren from "./children";
+import { useSession } from "../../SessionContext";
 
 export const CreateClient = ({ handleSubDialogClose }) => {
+  const { session, setSession, loading } = useSession();
+
+  const agentId = session?.user.agent?.id || null;
+
   const createFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
     { name: "name", label: "Name", xs: 6, required: true },
@@ -62,7 +67,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       formData["isCompany"] = true;
     } else formData["isPerson"] = true;
     try {
-      await createClient(formData); // Wait for API call to complete
+      await createClient({ ...formData, agentId }); // Wait for API call to complete
       reset(); // Reset form after successful submission
       handleSubDialogClose(); // <-- Close dialog after creating
     } catch (error) {
