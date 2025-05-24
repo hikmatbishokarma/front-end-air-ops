@@ -242,8 +242,8 @@ export default function DashboardPage() {
           Welcome to Airops
         </Typography>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Hello, <strong>{name}</strong>! You've successfully logged in to B2B
-          Airops platform.
+          Hello, <strong>{name}</strong>! You've successfully logged in to
+          Airops - Aviation Operations Made Easy.
         </Typography>
       </Box>
     </Box>
