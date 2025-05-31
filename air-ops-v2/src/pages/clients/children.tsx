@@ -64,26 +64,7 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
               render={({ field: controllerField, fieldState: { error } }) => {
                 if (field.options) {
                   return (
-                    // <FormControl component="fieldset" margin="normal">
-                    //   <FormLabel component="legend">Select Type</FormLabel>
-                    //   <RadioGroup
-                    //     {...field}
-                    //     row // Makes the radio buttons appear in a row
-                    //   >
-                    //     <FormControlLabel
-                    //       value="COMPANY"
-                    //       control={<Radio />}
-                    //       label="Company"
-                    //     />
-                    //     <FormControlLabel
-                    //       value="PERSON"
-                    //       control={<Radio />}
-                    //       label="Person"
-                    //     />
-                    //   </RadioGroup>
-                    // </FormControl>
                     <FormControl component="fieldset" margin="normal">
-                      {/* <FormLabel component="legend">Select Type</FormLabel> */}
                       <RadioGroup
                         row
                         value={controllerField.value}
@@ -120,10 +101,10 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                       type={field.type || "text"}
                       error={!!error}
                       helperText={error?.message}
-                      required={field.required} // ✅ this adds the asterisk
+                      // required={field.required} // ✅ this adds the asterisk
                       InputLabelProps={{
                         shrink: !!controllerField.value,
-                        required: field.required, // ✅ optional: forces asterisk even with custom labels
+                        // required: field.required, // ✅ optional: forces asterisk even with custom labels
                       }}
                     />
                   );

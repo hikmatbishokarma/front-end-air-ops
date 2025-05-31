@@ -14,6 +14,7 @@ import {
   Step,
   StepLabel,
   Container,
+  MenuItem,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -45,7 +46,14 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import ClientDialog from "../clients/dialog";
 import RepresentativeDialog from "../representative/dialog";
-import { parseUnitToDecimal } from "./create";
+import {
+  categoryOptions,
+  getMinDepartureTime,
+  parseUnitToDecimal,
+  validateArrivalAfterDeparture,
+  validateArrivalTime,
+  validateDepartureTime,
+} from "./create";
 
 const QuoteEdit = () => {
   const { id } = useParams();
@@ -53,7 +61,7 @@ const QuoteEdit = () => {
   const { control, handleSubmit, setValue, watch, register, getValues } =
     useForm();
   const {
-    aircraftCategories,
+    // aircraftCategories,
     aircrafts,
     representatives,
     clients,
@@ -61,8 +69,8 @@ const QuoteEdit = () => {
     fetchRepresentatives,
     fetchClients,
   } = useQuoteData();
-  const [selectedAircraftCategory, setSelectedAircraftCategory] =
-    useState<IaircraftCategory | null>(null);
+  // const [selectedAircraftCategory, setSelectedAircraftCategory] =
+  //   useState<IaircraftCategory | null>(null);
 
   const [selectedClient, setSelectedClient] = useState<Iclient | null>();
   const [selectedRepresentative, setSelectedRepresentative] =
@@ -111,9 +119,9 @@ const QuoteEdit = () => {
       //setValue("referenceNo", response.referenceNo);
       // setValue("status", response.status);
       setValue("requestedBy", response.requestedBy.id);
-      setValue("representative", response.representative.id);
-      setSelectedAircraftCategory(response.category);
-      setValue("category", response.category.id);
+      setValue("representative", response?.representative?.id);
+      // setSelectedAircraftCategory(response.category);
+      setValue("category", response.category);
       setValue("aircraft", response.aircraft.id);
       setValue("itinerary", response.itinerary);
       setValue(
@@ -130,7 +138,8 @@ const QuoteEdit = () => {
   };
 
   useEffect(() => {
-    fetchAircrafts(selectedAircraftCategory || null);
+    // fetchAircrafts(selectedAircraftCategory || null);
+    fetchAircrafts();
     fetchRepresentatives(null);
     fetchQuote();
   }, [id, setValue]);
@@ -391,33 +400,21 @@ const QuoteEdit = () => {
                       control={control}
                       rules={{ required: "Category is required" }}
                       render={({ field, fieldState: { error } }) => (
-                        <Autocomplete
+                        <TextField
+                          select
+                          fullWidth
+                          label="Category"
                           {...field}
-                          options={aircraftCategories}
-                          getOptionLabel={(option) => option.name}
-                          value={selectedAircraftCategory}
-                          onChange={(_, newValue) => {
-                            setSelectedAircraftCategory(newValue);
-                            field.onChange(newValue?.id || "");
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Category"
-                              placeholder="Select Category"
-                              slotProps={{
-                                inputLabel: {
-                                  shrink: true,
-                                },
-                              }}
-                              required
-                              fullWidth
-                              size="small"
-                              error={!!error}
-                              helperText={error?.message}
-                            />
-                          )}
-                        />
+                          error={!!error}
+                          helperText={error?.message}
+                          size="small"
+                        >
+                          {categoryOptions.map((option) => (
+                            <MenuItem key={option.id} value={option.id}>
+                              {option.name}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       )}
                     />
                   </Grid>
@@ -469,47 +466,47 @@ const QuoteEdit = () => {
               {activeStep === 1 && (
                 <Box sx={{ display: "flex", mt: 5 }}>
                   <Box sx={{ flex: 0.4, pr: 2 }}>
-                    {itineraryFields.map((item, index) => (
-                      <Grid
-                        container
-                        spacing={2}
-                        key={item.id}
-                        alignItems="center"
-                        sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
-                      >
-                        <Grid item xs={6}>
-                          <Controller
-                            name={`itinerary.${index}.source`}
-                            control={control}
-                            rules={{ required: "From is required" }}
-                            render={({ field, fieldState: { error } }) => (
-                              <AirportsAutocomplete
-                                {...field}
-                                label="From"
-                                isRequired={true}
-                                error={error}
-                              />
-                            )}
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Controller
-                            name={`itinerary.${index}.destination`}
-                            control={control}
-                            rules={{ required: "To is required" }}
-                            render={({ field, fieldState: { error } }) => (
-                              <AirportsAutocomplete
-                                {...field}
-                                label="To"
-                                isRequired={true}
-                                error={error}
-                              />
-                            )}
-                          />
-                        </Grid>
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                      {itineraryFields.map((item, index) => (
+                        <Grid
+                          container
+                          spacing={2}
+                          key={item.id}
+                          alignItems="center"
+                          sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
+                        >
+                          <Grid item xs={6}>
+                            <Controller
+                              name={`itinerary.${index}.source`}
+                              control={control}
+                              rules={{ required: "From is required" }}
+                              render={({ field, fieldState: { error } }) => (
+                                <AirportsAutocomplete
+                                  {...field}
+                                  label="From"
+                                  isRequired={true}
+                                  error={error}
+                                />
+                              )}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Controller
+                              name={`itinerary.${index}.destination`}
+                              control={control}
+                              rules={{ required: "To is required" }}
+                              render={({ field, fieldState: { error } }) => (
+                                <AirportsAutocomplete
+                                  {...field}
+                                  label="To"
+                                  isRequired={true}
+                                  error={error}
+                                />
+                              )}
+                            />
+                          </Grid>
 
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                          <Grid item xs={6}>
                             <Controller
                               name={`itinerary.${index}.depatureDate`}
                               control={control}
@@ -540,87 +537,111 @@ const QuoteEdit = () => {
                                 />
                               )}
                             />
-                          </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                          </Grid>
+                          <Grid item xs={6}>
                             <Controller
                               name={`itinerary.${index}.depatureTime`}
                               control={control}
-                              rules={{ required: "DepatureTime is required" }}
-                              render={({ field, fieldState: { error } }) => (
-                                <TimeField
-                                  {...field}
-                                  value={
-                                    field.value
-                                      ? moment(field.value, "HH:mm")
-                                      : null
-                                  }
-                                  onChange={(newValue) =>
-                                    field.onChange(
-                                      newValue
-                                        ? moment(newValue).format("HH:mm")
-                                        : ""
-                                    )
-                                  }
-                                  label="Departure Time"
-                                  size="small"
-                                  format="HH:mm"
-                                  slotProps={{
-                                    textField: {
-                                      required: true,
-                                      fullWidth: true,
-                                      size: "small",
-                                      error: !!error,
-                                      helperText: error?.message,
-                                    },
-                                  }}
-                                />
-                              )}
-                            />
-                          </LocalizationProvider>
-                        </Grid>
+                              rules={{
+                                required: "Departure time is required",
+                                validate: (value) =>
+                                  validateDepartureTime(
+                                    watch(`itinerary.${index}.depatureDate`),
+                                    value
+                                  ),
+                              }}
+                              render={({ field, fieldState: { error } }) => {
+                                const depDate = watch(
+                                  `itinerary.${index}.depatureDate`
+                                );
+                                const minTime = getMinDepartureTime(depDate);
 
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                                return (
+                                  <TimeField
+                                    {...field}
+                                    value={
+                                      field.value
+                                        ? moment(field.value, "HH:mm")
+                                        : null
+                                    }
+                                    onChange={(newValue) =>
+                                      field.onChange(
+                                        newValue
+                                          ? moment(newValue).format("HH:mm")
+                                          : ""
+                                      )
+                                    }
+                                    label="Departure Time"
+                                    size="small"
+                                    format="HH:mm"
+                                    minTime={minTime}
+                                    slotProps={{
+                                      textField: {
+                                        required: true,
+                                        fullWidth: true,
+                                        size: "small",
+                                        error: !!error,
+                                        helperText: error?.message,
+                                      },
+                                    }}
+                                  />
+                                );
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid item xs={6}>
                             <Controller
                               name={`itinerary.${index}.arrivalDate`}
                               control={control}
-                              rules={{ required: "ArrivalDate is required" }}
-                              render={({ field, fieldState: { error } }) => (
-                                <DatePicker
-                                  {...field}
-                                  format="DD-MM-YYYY"
-                                  value={
-                                    field.value ? moment(field.value) : null
-                                  }
-                                  // value={
-                                  //   field.value ? moment(field.value) : moment()
-                                  // } // fallback
-                                  onChange={(newValue) =>
-                                    field.onChange(newValue)
-                                  }
-                                  minDate={moment()} // Disable past dates
-                                  slotProps={{
-                                    textField: {
-                                      fullWidth: true,
-                                      size: "small",
-                                      error: !!error,
-                                      helperText: error?.message,
-                                      required: true,
-                                    },
-                                  }}
-                                />
-                              )}
+                              rules={{
+                                required: "Arrival Date is required",
+                                validate: validateArrivalAfterDeparture(
+                                  getValues,
+                                  index
+                                ),
+                              }}
+                              render={({ field, fieldState: { error } }) => {
+                                const departureDate = watch(
+                                  `itinerary.${index}.depatureDate`
+                                );
+                                return (
+                                  <DatePicker
+                                    {...field}
+                                    format="DD-MM-YYYY"
+                                    value={
+                                      field.value ? moment(field.value) : null
+                                    }
+                                    onChange={(newValue) =>
+                                      field.onChange(newValue)
+                                    }
+                                    minDate={
+                                      departureDate
+                                        ? moment(departureDate)
+                                        : moment()
+                                    } // Dynamically disable earlier dates
+                                    slotProps={{
+                                      textField: {
+                                        fullWidth: true,
+                                        size: "small",
+                                        error: !!error,
+                                        helperText: error?.message,
+                                        required: true,
+                                      },
+                                    }}
+                                  />
+                                );
+                              }}
                             />
-                          </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <LocalizationProvider dateAdapter={AdapterMoment}>
+                          </Grid>
+                          <Grid item xs={6}>
                             <Controller
                               name={`itinerary.${index}.arrivalTime`}
                               control={control}
-                              rules={{ required: "ArrivalTime is required" }}
+                              rules={{
+                                required: "Arrival Time is required",
+                                validate: validateArrivalTime(getValues, index),
+                              }}
                               render={({ field, fieldState: { error } }) => (
                                 <TimeField
                                   {...field}
@@ -651,42 +672,41 @@ const QuoteEdit = () => {
                                 />
                               )}
                             />
-                          </LocalizationProvider>
-                        </Grid>
+                          </Grid>
 
-                        <Grid item xs={6}>
-                          <Controller
-                            name={`itinerary.${index}.paxNumber`}
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                type="number"
-                                fullWidth
-                                size="small"
-                                label="PAX"
-                              />
-                            )}
-                          />
-                        </Grid>
+                          <Grid item xs={6}>
+                            <Controller
+                              name={`itinerary.${index}.paxNumber`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  type="number"
+                                  fullWidth
+                                  size="small"
+                                  label="PAX"
+                                />
+                              )}
+                            />
+                          </Grid>
 
-                        <Grid
-                          item
-                          xs={6}
-                          sx={{ display: "flex", justifyContent: "flex-end" }}
-                        >
-                          <Button
-                            variant="outlined"
-                            startIcon={<Delete />}
-                            onClick={() => removeItinerary(index)}
-                            color="error"
+                          <Grid
+                            item
+                            xs={6}
+                            sx={{ display: "flex", justifyContent: "flex-end" }}
                           >
-                            Remove
-                          </Button>
+                            <Button
+                              variant="outlined"
+                              startIcon={<Delete />}
+                              onClick={() => removeItinerary(index)}
+                              color="error"
+                            >
+                              Remove
+                            </Button>
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    ))}
-
+                      ))}
+                    </LocalizationProvider>
                     <Button
                       variant="outlined"
                       startIcon={<AddIcon />}
@@ -781,68 +801,6 @@ const QuoteEdit = () => {
                         </Grid>
 
                         <Grid item xs={1.5}>
-                          {/* <Controller
-                            name={`prices.${index}.unit`}
-                            control={control}
-                            rules={{ required: "Unit is required" }}
-                            render={({ field, fieldState: { error } }) => (
-                              <TextField
-                                {...field}
-                                label="Unit"
-                                fullWidth
-                                size="small"
-                                onChange={(e) => {
-                                  let value = e.target.value;
-
-                                  // Allow only digits and colon
-                                  value = value.replace(/[^0-9:]/g, "");
-
-                                  // Allow only one colon
-                                  const parts = value.split(":");
-                                  if (parts.length > 2) {
-                                    value = parts[0] + ":" + parts[1]; // Remove extra colons
-                                  }
-
-                                  // Validate minutes if colon exists
-                                  if (parts.length === 2) {
-                                    const minutes = parts[1];
-                                    if (
-                                      minutes.length > 2 ||
-                                      Number(minutes) >= 60
-                                    ) {
-                                      // Block invalid minutes (>59)
-                                      return; // Simply do not update field
-                                    }
-                                  }
-
-                                  field.onChange(value);
-
-                                  // Calculate total
-                                  const priceValue = getValues(
-                                    `prices.${index}.price`
-                                  );
-                                  if (priceValue && value) {
-                                    const unitDecimal =
-                                      parseUnitToDecimal(value);
-                                    const total = unitDecimal * priceValue;
-
-                                    // Round to 2 decimals
-                                    const roundedTotal =
-                                      Math.round(total * 100) / 100;
-
-                                    setValue(
-                                      `prices.${index}.total`,
-                                      roundedTotal
-                                    );
-                                  }
-                                }}
-                                required
-                                error={!!error}
-                                helperText={error?.message}
-                              />
-                            )}
-                          /> */}
-
                           <Controller
                             name={`prices.${index}.unit`}
                             control={control}
@@ -867,15 +825,13 @@ const QuoteEdit = () => {
                                 inputProps={{
                                   inputMode: "numeric",
                                   pattern: "[0-9]*",
-                                }} // numeric keyboard on mobile
+                                }}
                                 onChange={(e) => {
                                   const value = e.target.value;
 
-                                  // Allow only digits or empty
                                   if (/^\d*$/.test(value)) {
-                                    field.onChange(value); // send string to form (and backend)
+                                    field.onChange(value);
 
-                                    // parse for calculation
                                     const intValue =
                                       value === "" ? 0 : parseInt(value, 10);
 
@@ -904,33 +860,6 @@ const QuoteEdit = () => {
                             )}
                           />
                         </Grid>
-
-                        {/* <Grid item xs={1.5}>
-                      <Controller
-                        name={`prices.${index}.price`}
-                        control={control}
-                        rules={{
-                          required: "Price is required",
-                          min: { value: 1, message: "Must be > 0" },
-                        }}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            label="Price"
-                            type="number"
-                            fullWidth
-                            size="small"
-                            onChange={(e) => {
-                              const value = e.target.value
-                                ? Number(e.target.value)
-                                : "";
-                              field.onChange(value);
-                              handlePriceChange(index, "price", value);
-                            }}
-                          />
-                        )}
-                      />
-                    </Grid> */}
 
                         <Grid item xs={1.5}>
                           <Controller
@@ -995,26 +924,6 @@ const QuoteEdit = () => {
                               <TextField
                                 {...field}
                                 label="Currency"
-                                fullWidth
-                                size="small"
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                        <Grid item xs={1.5}>
-                          <Controller
-                            name={`prices.${index}.margin`}
-                            control={control}
-                            // rules={{
-                            //   required: "Margin is required",
-                            //   min: { value: 0, message: "Cannot be negative" },
-                            // }}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Margin (%)"
-                                type="number"
                                 fullWidth
                                 size="small"
                               />
@@ -1095,9 +1004,10 @@ const QuoteEdit = () => {
                       </p>
                       <p>
                         <strong>Category:</strong>{" "}
-                        {aircraftCategories?.find(
+                        {/* {aircraftCategories?.find(
                           (category) => category.id === getValues("category")
-                        )?.name || "N/A"}
+                        )?.name || "N/A"} */}
+                        {getValues("category") || "N/A"}
                       </p>
                       <p>
                         <strong>Aircraft:</strong>{" "}

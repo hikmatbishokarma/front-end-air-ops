@@ -31,7 +31,7 @@ interface User {
 const UserList: React.FC = () => {
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
@@ -45,7 +45,7 @@ const UserList: React.FC = () => {
         query: GET_USERS,
         queryName: "users",
         queryType: "query",
-        variables: { filter: { agentId: { eq: agentId } } },
+        variables: { filter: { operatorId: { eq: operatorId } } },
       });
       setRows(data);
     } catch (error) {

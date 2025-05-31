@@ -22,7 +22,7 @@ export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -62,7 +62,7 @@ export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
       ...data,
     };
 
-    CreateCategory({ ...formattedData, agentId });
+    CreateCategory({ ...formattedData, operatorId });
     refreshList();
     onClose();
   };

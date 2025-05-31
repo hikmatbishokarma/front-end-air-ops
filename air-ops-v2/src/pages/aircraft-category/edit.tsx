@@ -27,7 +27,7 @@ export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
 
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -87,7 +87,7 @@ export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
-      agentId,
+      operatorId,
     };
 
     UpdateCategory(id, formattedData);

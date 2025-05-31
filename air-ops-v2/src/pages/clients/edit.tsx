@@ -10,6 +10,7 @@ import ClientChildren from "./children";
 import { Iclient } from "../../interfaces/quote.interface";
 import { useSnackbar } from "../../SnackbarContext";
 import { useSession } from "../../SessionContext";
+import { Pattern } from "@mui/icons-material";
 
 type FormData = {
   name: string;
@@ -24,7 +25,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
 
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const editFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
@@ -50,6 +51,29 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       },
     },
     { name: "address", label: "Address", xs: 6, required: true },
+    {
+      name: "panNo",
+      label: "PAN No",
+      xs: 6,
+      Pattern: { value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, message: "Invalid PAN" },
+      required: false,
+    },
+    {
+      name: "gstNo",
+      label: "GST No",
+      xs: 6,
+      Pattern: {
+        value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+        message: "Invalid PAN",
+      },
+      required: false,
+    },
+    {
+      name: "billingAddress",
+      label: "Billing Address",
+      xs: 6,
+      required: false,
+    },
   ];
 
   const { control, handleSubmit, reset, setValue, setError } =
@@ -113,7 +137,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       formData["isCompany"] = true;
     } else formData["isPerson"] = true;
 
-    UpdateClient(id, { ...formData, agentId });
+    UpdateClient(id, { ...formData, operatorId });
     handleSubDialogClose();
   };
 

@@ -23,14 +23,15 @@ import moment from "moment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { GET_AGENTS } from "../../lib/graphql/queries/agent";
-import { AgentEdit } from "./edit";
-import AgentCreate from "./create";
+import { OperatorEdit } from "./edit";
+import OperatorCreate from "./create";
+import { GET_OPERATORS } from "../../lib/graphql/queries/operator";
+import CloseIcon from "@mui/icons-material/Close";
 
-export const AgentList = () => {
+export const OperatorList = () => {
   const showSnackbar = useSnackbar();
 
-  const [agents, setAgents] = useState<any[]>([]);
+  const [operators, setoperators] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [currentRecordId, setCurrentRecordId] = useState("");
@@ -40,24 +41,24 @@ export const AgentList = () => {
     setIsEdit(false);
   };
 
-  const getAgents = async () => {
+  const getoperators = async () => {
     try {
       const data = await useGql({
-        query: GET_AGENTS,
-        queryName: "agents",
+        query: GET_OPERATORS,
+        queryName: "operators",
         queryType: "query",
         variables: {},
       });
 
       if (!data) showSnackbar("Failed to fetch categories!", "error");
-      setAgents(data);
+      setoperators(data);
     } catch (error) {
       showSnackbar(error.message || "Failed to fetch categories!", "error");
     }
   };
 
   useEffect(() => {
-    getAgents();
+    getoperators();
   }, []);
 
   const handleEdit = (id) => {
@@ -75,7 +76,7 @@ export const AgentList = () => {
   // Function to refresh category list
   const refreshList = async () => {
     // Fetch updated categories from API
-    await getAgents();
+    await getoperators();
   };
 
   return (
@@ -102,7 +103,7 @@ export const AgentList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {agents?.map((item, index) => (
+            {operators?.map((item, index) => (
               <TableRow key={item.id}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.email}</TableCell>
@@ -132,23 +133,37 @@ export const AgentList = () => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>{isEdit ? "Edit Agent" : "Create Agent"}</DialogTitle>
+        <DialogTitle>
+          {isEdit ? "Edit operator" : "Create operator"}
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           {isEdit ? (
-            <AgentEdit
+            <OperatorEdit
               id={currentRecordId}
               onClose={handleClose}
               refreshList={refreshList}
             />
           ) : (
-            <AgentCreate onClose={handleClose} refreshList={refreshList} />
+            <OperatorCreate onClose={handleClose} refreshList={refreshList} />
           )}
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );

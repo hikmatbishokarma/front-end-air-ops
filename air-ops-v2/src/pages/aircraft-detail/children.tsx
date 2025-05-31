@@ -32,7 +32,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
 
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const getAircraftCategories = async () => {
     try {
@@ -42,7 +42,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
         queryType: "query",
         variables: {
           filter: {
-            ...(agentId && { agentId: { eq: agentId } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
       });
@@ -103,86 +103,12 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           )}
         />
       </Grid>
-      <Grid item xs={4}>
-        <Controller
-          name="category"
-          control={control}
-          rules={{ required: "Category is required" }}
-          render={({ field, fieldState: { error } }) => (
-            <Autocomplete
-              {...field}
-              options={aircraftCategories}
-              getOptionLabel={(option) => option.name}
-              value={
-                aircraftCategories.find(
-                  (aircraft: any) => aircraft.id === field.value
-                ) || null
-              }
-              onChange={(_, newValue) =>
-                field.onChange(newValue ? newValue.id : "")
-              }
-              renderInput={(params) => (
-                <TextField
-                  // required={true}
-                  {...params}
-                  size="small"
-                  label="Category"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-          )}
-        />
 
-        {/* <Controller
-          name="category"
-          control={control}
-          rules={{ required: "Category is required" }}
-          render={({
-            field: { onChange, value, ref },
-            fieldState: { error },
-          }) => {
-            // Find the option object from id stored in form
-            const selectedOption =
-              aircraftCategories.find((cat) => cat.id === value) || null;
-
-            return (
-              <Autocomplete
-                options={aircraftCategories}
-                getOptionLabel={(option) => option.name || ""}
-                value={selectedOption}
-                onChange={(_, newValue) =>
-                  onChange(newValue ? newValue.id : "")
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    inputRef={ref}
-                    label="Category"
-                    size="small"
-                    error={!!error}
-                    helperText={error?.message}
-                  />
-                )}
-              />
-            );
-          }}
-        /> */}
-      </Grid>
       <Grid item xs={12}>
         <Controller
           name="noteText"
           control={control}
           render={({ field }) => (
-            // <TextField
-            //   {...field}
-            //   multiline
-            //   size="small"
-            //   label="Note Text"
-            //   fullWidth
-            //   InputLabelProps={{ shrink: !!field.value }}
-            // />
             <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
@@ -209,14 +135,6 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           name="description"
           control={control}
           render={({ field }) => (
-            // <TextField
-            //   {...field}
-            //   size="small"
-            //   label="Description"
-            //   fullWidth
-            //   multiline
-            //   InputLabelProps={{ shrink: !!field.value }}
-            // />
             <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />

@@ -4,13 +4,14 @@ import { useForm } from "react-hook-form";
 import { Pattern } from "@mui/icons-material";
 import { FormControl, FormLabel, RadioGroup, Select } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
-import { CREATE_AGENT } from "../../lib/graphql/queries/agent";
-import { useSnackbar } from "../../SnackbarContext";
-import { AgentFormValues } from "./type";
-import { agentFormFields } from "./formfields";
-import AgentChildren from "./children";
 
-const AgentCreate = ({ onClose, refreshList }) => {
+import { useSnackbar } from "../../SnackbarContext";
+import { OperatorFormValues } from "./type";
+import { operatorFormFields } from "./formfields";
+import OperatorChildren from "./children";
+import { CREATE_OPERATOR } from "../../lib/graphql/queries/operator";
+
+const OperatorCreate = ({ onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
 
   const {
@@ -20,15 +21,15 @@ const AgentCreate = ({ onClose, refreshList }) => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<AgentFormValues>();
+  } = useForm<OperatorFormValues>();
 
-  const CreateAgent = async (formData) => {
+  const CreateOperator = async (formData) => {
     try {
       const data = await useGql({
-        query: CREATE_AGENT,
+        query: CREATE_OPERATOR,
         queryName: "",
         queryType: "mutation",
-        variables: { agent: formData },
+        variables: { operator: formData },
       });
 
       if (!data || data.errors) {
@@ -39,24 +40,31 @@ const AgentCreate = ({ onClose, refreshList }) => {
     }
   };
 
-  const onSubmit = async (data: AgentFormValues) => {
+  const onSubmit = async (data: OperatorFormValues) => {
+    console.log("Calling mutation with:", data); // Add this
     const formattedData = {
       ...data,
     };
-    await CreateAgent(formattedData); // ✅ Wait for completion
+    await CreateOperator(formattedData); // ✅ Wait for completion
     await refreshList(); // ✅ Now refresh data
     onClose(); // ✅ Then close dialog
   };
 
+  console.log("handleSubmit is:", handleSubmit);
+
+  const onInvalid = (errors: any) => {
+    console.log("Validation errors:", errors);
+  };
+
   return (
     <div>
-      <AgentChildren
+      <OperatorChildren
         control={control}
-        onSubmit={handleSubmit(onSubmit)}
-        fields={agentFormFields}
+        onSubmit={handleSubmit(onSubmit, onInvalid)}
+        fields={operatorFormFields}
       />
     </div>
   );
 };
 
-export default AgentCreate;
+export default OperatorCreate;

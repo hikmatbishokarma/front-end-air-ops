@@ -6,6 +6,7 @@ import {
   TextField,
   Switch,
   FormControlLabel,
+  Typography,
 } from "@mui/material";
 import { Controller, Control, SubmitHandler } from "react-hook-form";
 import ReactQuill from "react-quill";
@@ -33,15 +34,21 @@ interface ReusableFormProps {
   defaultValues?: any;
 }
 
-const AgentChildren: React.FC<ReusableFormProps> = ({
+const OperatorChildren: React.FC<ReusableFormProps> = ({
   control,
   onSubmit,
   fields,
 }) => {
+  const wrappedSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("OperatorChildren form submit event");
+    onSubmit(e);
+  };
+
   return (
     <Box
       component="form"
-      onSubmit={onSubmit}
+      // onSubmit={onSubmit}
+      onSubmit={wrappedSubmit}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
     >
       <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
@@ -64,12 +71,23 @@ const AgentChildren: React.FC<ReusableFormProps> = ({
                   );
                 } else if (field.type == "file") {
                   return (
-                    <FileUpload
-                      value={controllerField.value}
-                      onUpload={(url) => controllerField.onChange(url)} // Update form value with uploaded URL
-                      label={field.label}
-                      category="profile"
-                    />
+                    <>
+                      <FileUpload
+                        value={controllerField.value}
+                        onUpload={(url) => controllerField.onChange(url)} // Update form value with uploaded URL
+                        label={field.label}
+                        category="profile"
+                      />
+                      {error && (
+                        <Typography
+                          variant="caption"
+                          color="error"
+                          sx={{ mt: 1, display: "block" }}
+                        >
+                          {error.message}
+                        </Typography>
+                      )}
+                    </>
                   );
                 } else
                   return (
@@ -99,4 +117,4 @@ const AgentChildren: React.FC<ReusableFormProps> = ({
   );
 };
 
-export default AgentChildren;
+export default OperatorChildren;

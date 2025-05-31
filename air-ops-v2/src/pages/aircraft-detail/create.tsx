@@ -55,7 +55,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
 
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   // const methods = useForm<FormValues>({
   //   mode: "onTouched", // or "onSubmit"
@@ -118,7 +118,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       description: "",
       noteText: "",
       warningText: "",
-      category: null,
+      // category: null,
       specifications: [],
       termsAndConditions: "",
       isActive: true,
@@ -163,7 +163,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       // termsAndConditions: data.termsAndConditions.replace(/<p><br><\/p>/g, ""),
     };
 
-    await CreateAircraftDetail({ ...formattedData, agentId });
+    await CreateAircraftDetail({ ...formattedData, operatorId });
     await refreshList();
     onClose();
   };

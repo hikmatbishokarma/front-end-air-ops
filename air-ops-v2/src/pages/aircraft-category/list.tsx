@@ -33,7 +33,7 @@ export const AircraftCategoryList = () => {
 
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const [categories, setCategories] = useState<any>([]);
   const [open, setOpen] = useState(false);
@@ -53,7 +53,7 @@ export const AircraftCategoryList = () => {
         queryType: "query",
         variables: {
           filter: {
-            ...(agentId && { agentId: { eq: agentId } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
       });

@@ -4,7 +4,7 @@ import { Box, Paper, IconButton } from "@mui/material";
 import ActionButton from "./ActionButton"; // Assuming ActionButton is already a reusable component
 import PrintIcon from "@mui/icons-material/Print";
 
-const InvoicePreview = ({ htmlContent, currentQuotation }) => {
+const TripConfirmationPreview = ({ htmlContent, currentQuotation }) => {
   useEffect(() => {
     // Extract styles and apply them to the document head
     const tempDiv = document.createElement("div");
@@ -43,7 +43,7 @@ const InvoicePreview = ({ htmlContent, currentQuotation }) => {
           currentId={""}
           currentQuotation={currentQuotation}
           htmlRef={componentRef}
-          documentType="INVOICE"
+          documentType="TRIP_CONFIRMATION"
           editPath=""
           showEdit={false}
           showPrint={true}
@@ -73,4 +73,4 @@ const InvoicePreview = ({ htmlContent, currentQuotation }) => {
   );
 };
 
-export default InvoicePreview;
+export default TripConfirmationPreview;

@@ -32,7 +32,7 @@ export const AircraftDetailList = () => {
   const showSnackbar = useSnackbar();
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const [aircraftDetail, setAircraftDetail] = useState<any>([]);
   const [open, setOpen] = useState(false);
@@ -52,7 +52,7 @@ export const AircraftDetailList = () => {
         queryType: "query",
         variables: {
           filter: {
-            ...(agentId && { agentId: { eq: agentId } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
       });

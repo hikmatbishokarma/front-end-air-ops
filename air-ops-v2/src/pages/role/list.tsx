@@ -72,7 +72,7 @@ const checkPermission = (actions, permission) =>
 const RoleList = () => {
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
@@ -87,7 +87,7 @@ const RoleList = () => {
         queryType: "query",
         variables: {
           filter: {
-            ...(agentId && { agentId: { eq: agentId } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
       });
