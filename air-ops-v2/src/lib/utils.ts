@@ -17,6 +17,7 @@ export enum QuotationStatus {
   PROFOMA_INVOICE = "Proforma Invoice",
   TAX_INVOICE = "Tax Invoice",
   CANCELLED = "Cancelled",
+  CONFIRMED = "Confirmed",
 }
 
 export const removeTypename = (obj: any): any => {
@@ -39,4 +40,10 @@ export const getEnumKeyByValue = (obj, value) => {
 export enum SalesDocumentType {
   QUOTATION = "quotation",
   INVOICE = "invoice",
+  TRIP_CONFIRMATION = "trip confirmation",
+}
+
+export enum InvoiceType {
+  PROFORMA_INVOICE = "Proforma Invoice",
+  TAX_INVOICE = "Tax Invoice",
 }

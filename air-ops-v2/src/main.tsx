@@ -38,8 +38,8 @@ import ManualsDashboard from "./pages/dashboard/Manuals";
 import AccountsDashboard from "./pages/dashboard/Accounts";
 import AuditDashboard from "./pages/dashboard/Audit";
 import UserCreate from "./pages/user/create";
-import AgentCreate from "./pages/agent/create";
-import { AgentList } from "./pages/agent/list";
+import AgentCreate from "./pages/operator/create";
+import { OperatorList } from "./pages/operator/list";
 import SalesDashboard from "./pages/dashboard/SalesDashboard";
 import "../src/Airops.css";
 
@@ -100,10 +100,10 @@ const router = createBrowserRouter(
               path: "audit",
               Component: AuditDashboard,
             },
-            {
-              path: "admin/category",
-              Component: AircraftCategoryList,
-            },
+            // {
+            //   path: "admin/category",
+            //   Component: AircraftCategoryList,
+            // },
             {
               path: "admin/aircraft",
               Component: AircraftDetailList,
@@ -157,8 +157,8 @@ const router = createBrowserRouter(
             //   Component: UserCreate,
             // },
             {
-              path: "admin/agents",
-              Component: AgentList,
+              path: "admin/operators",
+              Component: OperatorList,
             },
             {
               path: "settings/profile",

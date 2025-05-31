@@ -66,7 +66,7 @@ console.log("resources", resources);
 const RoleEdit = () => {
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -137,7 +137,7 @@ const RoleEdit = () => {
   const onSubmit = (data) => {
     const formattedData = {
       ...data,
-      agentId,
+      operatorId,
     };
     updateRole(id, formattedData);
     navigate("/admin/roles");

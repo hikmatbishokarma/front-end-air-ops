@@ -7,7 +7,7 @@ export interface Iaircraft {
   id: string;
   name: string;
   code: string;
-  category: IaircraftCategory;
+  // category: IaircraftCategory;
 }
 
 export interface Iclient {

@@ -193,13 +193,13 @@ const stats = [
   { title: "Total Bookings", value: 124 },
   { title: "Pending Quotes", value: 17 },
   { title: "Confirmed Flights", value: 56 },
-  { title: "Agents Onboarded", value: 12 },
+  { title: "Operators Onboarded", value: 12 },
 ];
 
 export default function DashboardPage() {
   const { session, setSession, loading } = useSession();
 
-  const { id: agentId, name: agentName } = session?.user?.agent || {};
+  const { id: operatorId, name: agentName } = session?.user?.agent || {};
   const { name } = session?.user || {};
 
   return (

@@ -75,7 +75,7 @@ type ComponentProps = {
 const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -120,7 +120,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
   const onSubmit = async (data: FormValues) => {
     const formattedData = {
       ...data,
-      agentId,
+      operatorId,
     };
 
     await CreateRole(formattedData);

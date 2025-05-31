@@ -113,11 +113,11 @@ export const NAVIGATION: Navigation = [
         icon: <ManageAccounts />,
       },
 
-      {
-        segment: "category",
-        title: "Category",
-        icon: <ShoppingCartIcon />,
-      },
+      // {
+      //   segment: "category",
+      //   title: "Category",
+      //   icon: <ShoppingCartIcon />,
+      // },
       {
         segment: "aircraft",
         title: "Aircraft Detail",
@@ -134,8 +134,8 @@ export const NAVIGATION: Navigation = [
         icon: <Person />,
       },
       {
-        segment: "agents",
-        title: "Agents",
+        segment: "operators",
+        title: "Operators",
         icon: <Person />,
       },
     ],

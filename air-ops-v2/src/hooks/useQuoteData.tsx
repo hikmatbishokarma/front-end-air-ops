@@ -19,7 +19,7 @@ export const useQuoteData = () => {
 
   const { session, setSession, loading } = useSession();
 
-  const agentId = session?.user.agent?.id || null;
+  const operatorId = session?.user.agent?.id || null;
 
   const [aircrafts, setAircrafts] = useState<Iaircraft[]>([]);
   const [representatives, setRepresentatives] = useState<Irepresentative[]>([]);
@@ -34,7 +34,7 @@ export const useQuoteData = () => {
         queryType: "query",
         variables: {
           filter: {
-            ...(agentId && { agentId: { eq: agentId } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
       });
@@ -45,25 +45,17 @@ export const useQuoteData = () => {
   };
 
   // Fetch aircrafts based on category
-  const fetchAircrafts = async (categoryId) => {
+  const fetchAircrafts = async () => {
     try {
       const data = await useGql({
         query: GET_AIRCRAFT,
         queryName: "aircraftDetails",
         queryType: "query",
-        // variables: categoryId
-        //   ? {
-        //       sorting: [{ field: "category", direction: "ASC" }],
 
-        //     }
-        //   : {},
         variables: {
           filter: {
-            ...(agentId && { agentId: { eq: agentId } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
           },
-          ...(categoryId && {
-            sorting: [{ field: "category", direction: "ASC" }],
-          }),
         },
       });
       setAircrafts(data);
@@ -96,7 +88,7 @@ export const useQuoteData = () => {
         queryType: "query",
         variables: {
           filter: {
-            ...(agentId && { agentId: { eq: agentId } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
       });
@@ -108,8 +100,9 @@ export const useQuoteData = () => {
 
   // Fetch initial data
   useEffect(() => {
-    fetchAircraftCategories();
+    //  fetchAircraftCategories();
     fetchClients();
+    fetchAircrafts();
   }, []);
 
   return {
