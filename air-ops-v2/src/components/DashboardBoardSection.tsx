@@ -3,6 +3,7 @@ import { Grid, Typography, Button, Card, CardContent } from "@mui/material";
 
 interface Category {
   name: string;
+  countLabel: string;
 }
 
 interface DashboardBoardSectionProps {
@@ -68,8 +69,7 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
                     {item.name.toUpperCase()}
                   </Typography>
                   <Typography variant="body1">
-                    {salesDashboardData?.summary?.[item.name.toLowerCase()] ??
-                      0}
+                    {salesDashboardData?.summary?.[item.countLabel] ?? 0}
                   </Typography>
                 </CardContent>
               </Card>
