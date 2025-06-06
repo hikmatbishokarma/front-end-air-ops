@@ -113,10 +113,18 @@ const SalesDashboard = () => {
   // const categories = ["Quote", "Invoice", "Cancelled", "Revenue"];
 
   const categories = [
-    { status: [""], name: "Quotes" },
-    { status: ["Proforma Invoice", "Tax Invoice"], name: "Invoices" },
-    { status: ["Confirmed"], name: "Trip Confirmation" },
-    { status: [""], name: "Reports" },
+    { status: [""], name: "Quotes", countLabel: "totalQuotations" },
+    {
+      status: ["Proforma Invoice", "Tax Invoice"],
+      name: "Invoices",
+      countLabel: "invoices",
+    },
+    {
+      status: ["Confirmed"],
+      name: "Trip Confirmation",
+      countLabel: "tripConfirmations",
+    },
+    { status: [""], name: "Reports", countLabel: "reports" },
   ];
 
   const handelCreate = (selectedTab) => {
