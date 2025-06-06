@@ -647,11 +647,14 @@ const SalesDashboard = () => {
             onClose={handleMenuClose}
             MenuListProps={{
               "aria-labelledby": "date-filter-button",
+              sx: {
+                p: 1, // Adds padding around the menu items
+              },
             }}
           >
-            <MenuItem onClick={() => handleDateFilterSelect("anyDate")}>
+            {/* <MenuItem onClick={() => handleDateFilterSelect("anyDate")}>
               Any Date
-            </MenuItem>
+            </MenuItem> */}
             {/* Custom Date Range Inputs - rendered directly in the menu or conditionally */}
             <MenuItem>
               {" "}
@@ -702,28 +705,84 @@ const SalesDashboard = () => {
             <Divider /> {/* Separator */}
             <MenuItem
               onClick={() => handleDateFilterSelect("today")}
-              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+                border: "1px solid #ddd",
+                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
+                my: 1, // Adds margin between items
+                backgroundColor:
+                  dateFilterType === "today" ? "#e3f2fd" : "#fff", // Light blue on select
+                color: dateFilterType === "today" ? "#1976d2" : "inherit", // Blue text if selected
+                fontWeight: dateFilterType === "today" ? 600 : "normal", // Slight emphasis
+                "&:hover": {
+                  backgroundColor: "#f0f0f0", // Light gray on hover
+                },
+              }}
               selected={dateFilterType === "today"}
             >
               Today
             </MenuItem>
             <MenuItem
               onClick={() => handleDateFilterSelect("yesterday")}
-              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+                border: "1px solid #ddd",
+                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
+                my: 1, // Adds margin between items
+                backgroundColor:
+                  dateFilterType === "yesterday" ? "#e3f2fd" : "#fff", // Light blue on select
+                color: dateFilterType === "yesterday" ? "#1976d2" : "inherit", // Blue text if selected
+                fontWeight: dateFilterType === "yesterday" ? 600 : "normal", // Slight emphasis
+                "&:hover": {
+                  backgroundColor: "#f0f0f0", // Light gray on hover
+                },
+              }}
               selected={dateFilterType === "yesterday"}
             >
               Yesterday
             </MenuItem>
             <MenuItem
               onClick={() => handleDateFilterSelect("lastWeek")}
-              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+                border: "1px solid #ddd",
+                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
+                my: 1, // Adds margin between items
+                backgroundColor:
+                  dateFilterType === "lastWeek" ? "#e3f2fd" : "#fff", // Light blue on select
+                color: dateFilterType === "lastWeek" ? "#1976d2" : "inherit", // Blue text if selected
+                fontWeight: dateFilterType === "lastWeek" ? 600 : "normal", // Slight emphasis
+                "&:hover": {
+                  backgroundColor: "#f0f0f0", // Light gray on hover
+                },
+              }}
               selected={dateFilterType === "lastWeek"}
             >
               Last Week
             </MenuItem>
             <MenuItem
               onClick={() => handleDateFilterSelect("lastMonth")}
-              sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
+                border: "1px solid #ddd",
+                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
+                my: 1, // Adds margin between items
+                backgroundColor:
+                  dateFilterType === "lastMonth" ? "#e3f2fd" : "#fff", // Light blue on select
+                color: dateFilterType === "lastMonth" ? "#1976d2" : "inherit", // Blue text if selected
+                fontWeight: dateFilterType === "lastMonth" ? 600 : "normal", // Slight emphasis
+                "&:hover": {
+                  backgroundColor: "#f0f0f0", // Light gray on hover
+                },
+              }}
               selected={dateFilterType === "lastMonth"}
             >
               Last Month
