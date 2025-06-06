@@ -57,7 +57,7 @@ import moment from "moment";
 import InvoicePreview from "../../components/invoice-preview";
 import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 
-export const InvoiceList = ({ isGenerated }) => {
+export const InvoiceList = ({ filter, isGenerated }) => {
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
@@ -85,6 +85,7 @@ export const InvoiceList = ({ isGenerated }) => {
         queryType: "query-with-count",
         variables: {
           filter: {
+            ...filter,
             ...(operatorId && { operatorId: { eq: operatorId } }),
           },
           "paging": {
@@ -115,7 +116,7 @@ export const InvoiceList = ({ isGenerated }) => {
 
   useEffect(() => {
     getInvoices();
-  }, [page, rowsPerPage, isGenerated]);
+  }, [filter, page, rowsPerPage, isGenerated]);
 
   const handelPreview = (row) => {
     setSelectedRowData(row);
