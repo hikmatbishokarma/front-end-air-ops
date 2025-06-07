@@ -11,6 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import { CREATE_AIRCRAFT_CATEGORY } from "../../lib/graphql/queries/aircraft-categories";
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
 
 type FormValues = {
   name: string;
@@ -19,6 +20,9 @@ type FormValues = {
 
 export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -58,25 +62,32 @@ export const AircraftCategoryCreate = ({ onClose, refreshList }) => {
       ...data,
     };
 
-    CreateCategory(formattedData);
+    CreateCategory({ ...formattedData, operatorId });
     refreshList();
     onClose();
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
-    >
+    <Box component="form" onSubmit={handleSubmit(onSubmit)}>
       {/* Role Type & Name Fields */}
-      <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
+      <Grid container spacing={1} alignItems="center">
         <Grid item xs={6}>
           <Controller
             name="name"
             control={control}
             render={({ field }) => (
-              <TextField {...field} size="small" label="Name" fullWidth />
+              <TextField
+                {...field}
+                size="small"
+                label="Name"
+                fullWidth
+                required={true} // ✅ this adds the asterisk
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
+              />
             )}
           />
         </Grid>

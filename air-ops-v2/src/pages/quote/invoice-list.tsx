@@ -42,7 +42,11 @@ import { useSnackbar } from "../../SnackbarContext";
 import PreviewIcon from "@mui/icons-material/Preview";
 import QuotePreview from "../../components/quote-preview";
 
-import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
+import {
+  getEnumKeyByValue,
+  InvoiceType,
+  QuotationStatus,
+} from "../../lib/utils";
 
 import QuotationCancellationConfirmation from "./quotation-cancellation";
 import SearchIcon from "@mui/icons-material/Search";
@@ -50,9 +54,10 @@ import { useQuoteData } from "../../hooks/useQuoteData";
 import { useSession } from "../../SessionContext";
 import { Iclient } from "../../interfaces/quote.interface";
 import moment from "moment";
-import TripConfirmationPreview from "../../components/trip-confirmation-preview";
+import InvoicePreview from "../../components/invoice-preview";
+import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 
-export const QuoteList = ({ filter, isGenerated = true }) => {
+export const InvoiceList = ({ filter, isGenerated }) => {
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
@@ -65,8 +70,6 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
 
-  const [selectedRequester, setSelectedRequester] = useState<Iclient | null>();
-
   const [searchTerm, setSearchTerm] = useState("");
 
   const [page, setPage] = useState(0); // page number starting at 0
@@ -74,23 +77,15 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
 
   const [totalCount, setTotalCount] = useState(0); // total count from backend
 
-  const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
-    useState(false);
-  const [tripConfirmationPreviewTemplate, setTripConfirmationPreviewTemplate] =
-    useState(null);
-
-  const getQuotes = async () => {
+  const getInvoices = async () => {
     try {
       const data = await useGql({
-        query: GET_QUOTES,
-        queryName: "quotes",
+        query: GET_INVOICES,
+        queryName: "invoices",
         queryType: "query-with-count",
         variables: {
           filter: {
             ...filter,
-            ...(selectedRequester?.id && {
-              requestedBy: { eq: selectedRequester.id },
-            }),
             ...(operatorId && { operatorId: { eq: operatorId } }),
           },
           "paging": {
@@ -101,103 +96,36 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
         },
       });
 
-      const result = data?.data?.map((quote: any) => {
+      const result = data?.data?.map((invoice: any) => {
         return {
-          ...quote,
-          id: quote.id,
-          quotationNo: quote?.quotationNo,
-          status: QuotationStatus[quote.status],
-          requester: quote.requestedBy.name,
-          requesterId: quote.requestedBy.id,
-          version: quote.version,
-          revision: quote.revision,
-          itinerary: quote.itinerary
-            ?.map((itinerary: any) => {
-              return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
-            })
-            .join(", "),
-          createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
-          updatedAt: quote.updatedAt,
-          code: quote.code,
+          ...invoice,
+          id: invoice.id,
+          quotationNo: invoice?.quotationNo,
+          requester: invoice?.quotation?.requestedBy?.name,
+          createdAt: moment(invoice.createdAt).format("DD-MM-YYYY HH:mm"),
+          updatedAt: moment(invoice.updatedAt).format("DD-MM-YYYY HH:mm"),
         };
       });
-      console.log("result:::", result);
+
       setTotalCount(data?.totalCount || 0);
       setRows(result);
-      // Extract unique requesters for dropdown
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
   useEffect(() => {
-    getQuotes();
-  }, [filter, selectedRequester, page, rowsPerPage, isGenerated]);
+    getInvoices();
+  }, [filter, page, rowsPerPage, isGenerated]);
 
-  const handelPreview = async (row) => {
+  const handelPreview = (row) => {
     setSelectedRowData(row);
-
-    if (row.status == QuotationStatus.CONFIRMED) {
-      setTripConfirmationPreviewTemplate(row.confirmationTemplate);
-      setShowTripConfirmationPreview(true);
-    } else {
-      const result = await useGql({
-        query: SHOW_PREVIEW,
-        queryName: "showPreview",
-        queryType: "query-without-edge",
-        variables: { quotationNo: row.quotationNo },
-      });
-
-      if (!result) {
-        showSnackbar("Internal server error!", "error");
-      }
-      setPreviewData(result);
-      setShowPreview(true);
-    }
-  };
-
-  const refreshList = async () => {
-    await getQuotes();
-  };
-
-  const updateQuoteStatus = async (id, toStatus) => {
-    try {
-      const data = await useGql({
-        query: UPDATE_QUOTE_STATUS,
-        queryName: "",
-        queryType: "mutation",
-        variables: {
-          input: {
-            id: id,
-            status: getEnumKeyByValue(QuotationStatus, toStatus),
-          },
-        },
-      });
-
-      if (data?.errors?.length > 0) {
-        showSnackbar("Failed To Update status!", "error");
-      } else showSnackbar("Update status!", "success");
-    } catch (error) {
-      showSnackbar(error?.message || "Failed To Update Status!", "error");
-    } finally {
-      refreshList();
-    }
-  };
-
-  const handelCancellation = async (id) => {
-    try {
-      await updateQuoteStatus(id, QuotationStatus.CANCELLED);
-    } catch (error) {
-      console.error("Error transitioning state:", error);
-    } finally {
-    }
+    setShowPreview(true);
   };
 
   const filteredRows = rows?.filter((row) =>
     row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
-
-  const { clients } = useQuoteData();
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -241,29 +169,14 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
               ),
             }}
           />
-
-          <Box display="flex" alignItems="center" gap={1} ml="auto">
-            <Autocomplete
-              size="small"
-              options={clients}
-              getOptionLabel={(option) => option.name || ""}
-              value={selectedRequester}
-              onChange={(_, newValue) => setSelectedRequester(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Requester" />
-              )}
-              sx={{ minWidth: 200 }}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-            />
-          </Box>
         </Box>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell sx={headerStyle}>Quotation No</TableCell>
-
+              <TableCell sx={headerStyle}>Proforma Invoice No</TableCell>
+              <TableCell sx={headerStyle}>Tax Invoice No</TableCell>
               <TableCell sx={headerStyle}>Requester</TableCell>
-              <TableCell sx={headerStyle}>Sectors</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
               <TableCell sx={headerStyle}>Action</TableCell>
             </TableRow>
@@ -272,19 +185,17 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
             {filteredRows?.map((row) => (
               <TableRow
                 key={row.id}
-                sx={{
-                  "&:last-child td, &:last-child th": { border: 0 },
-                  backgroundColor: !row.isLatest ? "#f9f9f9" : "inherit",
-                  opacity: !row.isLatest ? 0.6 : 1,
-                  cursor: "pointer",
-                }}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
                   {row.quotationNo}
                 </TableCell>
 
+                <TableCell align="right">{row.proformaInvoiceNo}</TableCell>
+                <TableCell align="right">
+                  {row.taxInvoiceNo ? row.taxInvoiceNo : "NA"}
+                </TableCell>
                 <TableCell align="right">{row.requester}</TableCell>
-                <TableCell align="right">{row.itinerary}</TableCell>
                 <TableCell align="right">{row.createdAt}</TableCell>
                 <TableCell>
                   <IconButton
@@ -315,14 +226,12 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle> Quote Preview</DialogTitle>
+        <DialogTitle> Invoice Preview</DialogTitle>
 
         <DialogContent>
-          <QuotePreview
-            htmlContent={previewData}
-            currentId={selectedRowData?.id}
+          <InvoicePreview
+            htmlContent={selectedRowData?.template}
             currentQuotation={selectedRowData?.quotationNo}
-            showEdit={selectedRowData?.isLatest}
           />
         </DialogContent>
         <DialogActions>
@@ -331,32 +240,8 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Dialog
-        open={showTripConfirmationPreview}
-        onClose={() => setShowTripConfirmationPreview(false)}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle> Trip Confirmation Preview</DialogTitle>
-
-        <DialogContent>
-          <TripConfirmationPreview
-            htmlContent={tripConfirmationPreviewTemplate}
-            currentQuotation={selectedRowData?.quotationNo}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setShowTripConfirmationPreview(false)}
-            color="secondary"
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };
 
-export default QuoteList;
+export default InvoiceList;

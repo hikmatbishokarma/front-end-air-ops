@@ -15,6 +15,7 @@ export const GET_QUOTES = gql`
     $sorting: [QuoteSort!]! = []
   ) {
     quotes(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
       nodes {
         id
         code
@@ -23,17 +24,21 @@ export const GET_QUOTES = gql`
           name
         }
         status
+        isLatest
         itinerary
         providerType
         updatedAt
+        createdAt
         quotationNo
         version
         revision
         aircraft {
           id
           name
+          code
         }
         grandTotal
+        confirmationTemplate
       }
     }
   }
@@ -48,13 +53,11 @@ export const GET_QUOTE_BY_ID = gql`
         id
         name
       }
-      category {
-        id
-        name
-      }
+      category
       aircraft {
         id
         name
+        code
       }
       status
       itinerary
@@ -110,6 +113,16 @@ export const UPGRAD_QUOTE = gql`
   mutation upgradQuote($code: String!) {
     upgradeQuote(code: $code) {
       id
+    }
+  }
+`;
+
+export const TRIP_CONFIRMATION = gql`
+  mutation tripConfirmation($args: TripConfirmationInput!) {
+    tripConfirmation(args: $args) {
+      id
+      quotationNo
+      confirmationTemplate
     }
   }
 `;

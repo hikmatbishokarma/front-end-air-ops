@@ -1,4 +1,4 @@
-export type AgentFormValues = {
+export type OperatorFormValues = {
   name: string;
   email: string;
   phone: string;

@@ -25,9 +25,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft-detail";
 import { AircraftDetailCreate } from "./create";
 import { AircraftDetailEdit } from "./edit";
+import CloseIcon from "@mui/icons-material/Close";
+import { useSession } from "../../SessionContext";
 
 export const AircraftDetailList = () => {
   const showSnackbar = useSnackbar();
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
 
   const [aircraftDetail, setAircraftDetail] = useState<any>([]);
   const [open, setOpen] = useState(false);
@@ -45,7 +50,11 @@ export const AircraftDetailList = () => {
         query: GET_AIRCRAFT,
         queryName: "aircraftDetails",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
       });
 
       console.log("data:hghg", data);
@@ -140,7 +149,19 @@ export const AircraftDetailList = () => {
         maxWidth="md"
       >
         <DialogTitle>
-          {isEdit ? "Edit Aircraft Category" : "Edit Aircraft Category"}
+          {isEdit ? "Edit Aircraft Category" : "Create Aircraft Category"}
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {isEdit ? (
@@ -156,11 +177,11 @@ export const AircraftDetailList = () => {
             />
           )}
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );

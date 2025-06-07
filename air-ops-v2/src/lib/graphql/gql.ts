@@ -5,7 +5,7 @@ interface gqlParams {
   query: DocumentNode;
   variables: object;
   queryName: string;
-  queryType?: "query" | "mutation" | "query-without-edge";
+  queryType?: "query" | "mutation" | "query-without-edge" | "query-with-count";
 }
 
 const gqlDefaults: gqlParams = {
@@ -32,24 +32,20 @@ const useGql = async (gqlParams: gqlParams) => {
       variables,
     });
 
-    console.log(
-      "result111:::",
-      queryType,
-      result,
-      queryName,
-      result.data[queryName]
-    );
-
     if (queryType == "query-without-edge") {
       return result.data[queryName];
     }
 
-    console.log("result:::", queryType, result);
-
     if (queryType == "query") {
       return result.data[queryName].nodes;
     }
-    console.log("result:::", result);
+    if (queryType == "query-with-count") {
+      return {
+        totalCount: result.data[queryName].totalCount,
+        data: result.data[queryName].nodes,
+      };
+    }
+
     return result;
   } catch (error) {
     console.error(error);

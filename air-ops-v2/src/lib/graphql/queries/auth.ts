@@ -12,7 +12,7 @@ export const SIGN_IN = gql`
         roles
         type
         permissions
-        agent {
+        operator {
           id
           name
           companyLogo

@@ -9,6 +9,8 @@ import {
 import ClientChildren from "./children";
 import { Iclient } from "../../interfaces/quote.interface";
 import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
+import { Pattern } from "@mui/icons-material";
 
 type FormData = {
   name: string;
@@ -21,10 +23,12 @@ type FormData = {
 export const EditClient = ({ id, handleSubDialogClose }) => {
   const showSnackbar = useSnackbar();
 
-  console.log("EditClient:::", id);
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
 
   const editFields = [
-    { name: "type", label: "Type", options: [] },
+    { name: "type", label: "Type", options: [], xs: 12, required: true },
     { name: "name", label: "Name", xs: 6, required: true },
     {
       name: "phone",
@@ -47,10 +51,37 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       },
     },
     { name: "address", label: "Address", xs: 6, required: true },
+    {
+      name: "panNo",
+      label: "PAN No",
+      xs: 6,
+      Pattern: { value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, message: "Invalid PAN" },
+      required: false,
+    },
+    {
+      name: "gstNo",
+      label: "GST No",
+      xs: 6,
+      Pattern: {
+        value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+        message: "Invalid PAN",
+      },
+      required: false,
+    },
+    {
+      name: "billingAddress",
+      label: "Billing Address",
+      xs: 6,
+      required: false,
+    },
   ];
 
   const { control, handleSubmit, reset, setValue, setError } =
-    useForm<FormData>();
+    useForm<FormData>({
+      defaultValues: {
+        type: "PERSON", // <- make sure this exists
+      },
+    });
 
   const [client, setClient] = useState<Iclient>();
 
@@ -106,7 +137,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       formData["isCompany"] = true;
     } else formData["isPerson"] = true;
 
-    UpdateClient(id, formData);
+    UpdateClient(id, { ...formData, operatorId });
     handleSubDialogClose();
   };
 

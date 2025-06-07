@@ -193,18 +193,13 @@ const stats = [
   { title: "Total Bookings", value: 124 },
   { title: "Pending Quotes", value: 17 },
   { title: "Confirmed Flights", value: 56 },
-  { title: "Agents Onboarded", value: 12 },
+  { title: "Operators Onboarded", value: 12 },
 ];
 
 export default function DashboardPage() {
-  console.log("ENV DUMP:", import.meta.env);
-  console.log(import.meta.env); // This will log all available environment variables
-
-  console.log("VITE_BASE_URL:", import.meta.env.VITE_BASE_URL); // Check a specific variable
-
   const { session, setSession, loading } = useSession();
 
-  const { id: agentId, name: agentName } = session?.user?.agent || {};
+  const { id: operatorId, name: agentName } = session?.user?.agent || {};
   const { name } = session?.user || {};
 
   return (
@@ -244,11 +239,11 @@ export default function DashboardPage() {
             letterSpacing: 1,
           }}
         >
-          Welcome to B2B Airops Dashboard
+          Welcome to Airops
         </Typography>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Hello, <strong>{name}</strong>! You've successfully logged in to B2B
-          Airops platform.
+          Hello, <strong>{name}</strong>! You've successfully logged in to
+          Airops - Aviation Operations Made Easy.
         </Typography>
       </Box>
     </Box>

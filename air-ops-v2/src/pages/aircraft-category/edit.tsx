@@ -15,6 +15,7 @@ import {
 } from "../../lib/graphql/queries/aircraft-categories";
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
 
 type FormData = {
   name: string;
@@ -23,6 +24,10 @@ type FormData = {
 
 export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
+
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
 
   const {
     control,
@@ -82,25 +87,33 @@ export const AircraftCategoryEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
+      operatorId,
     };
 
     UpdateCategory(id, formattedData);
   };
 
   return (
-    <Box className="edit-role-category"
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
-    >
+    <Box component="form" onSubmit={handleSubmit(onSubmit)}>
       {/* Role Type & Name Fields */}
-      <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
+      <Grid container spacing={1} alignItems="center">
         <Grid item xs={6}>
           <Controller
             name="name"
             control={control}
             render={({ field }) => (
-              <TextField {...field} size="small" label="Name" fullWidth />
+              <TextField
+                {...field}
+                size="small"
+                label="Name"
+                fullWidth
+                required={true}
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
+              />
             )}
           />
         </Grid>

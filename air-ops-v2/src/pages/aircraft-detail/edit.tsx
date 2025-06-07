@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
@@ -21,6 +26,7 @@ import {
   SpecificationStep,
   TermsStep,
 } from "./children";
+import { useSession } from "../../SessionContext";
 
 type FormData = {
   name: string;
@@ -29,7 +35,7 @@ type FormData = {
   image: string;
   noteText: string;
   warningText: string;
-  category: any;
+  // category: any;
   specifications: Isepcification[];
   termsAndConditions: string;
   isActive: boolean;
@@ -41,6 +47,11 @@ type FormData = {
 
 export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
+
+  const methods = useForm<FormData>({});
 
   const {
     control,
@@ -49,12 +60,12 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<FormData>();
+  } = methods;
 
   const [aircraftDetailData, setAircraftDetailData] = useState<FormData>();
-  const [aircraftCategories, setAircraftCategories] = useState<
-    IaircraftCategory[]
-  >([]);
+  // const [aircraftCategories, setAircraftCategories] = useState<
+  //   IaircraftCategory[]
+  // >([]);
 
   const {
     fields: specificationsField,
@@ -88,7 +99,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("name", aircraftDetailData.name || "");
       setValue("code", aircraftDetailData.code || "");
       setValue("description", aircraftDetailData.description || "");
-      setValue("category", aircraftDetailData.category.id || "");
+      // setValue("category", aircraftDetailData.category.id || "");
       setValue("specifications", aircraftDetailData.specifications || []);
       setValue(
         "termsAndConditions",
@@ -98,7 +109,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("noteText", aircraftDetailData.noteText || "");
       setValue("warningText", aircraftDetailData.warningText || "");
       setValue("warningImage", aircraftDetailData.warningImage || "");
-      setValue("flightImages", aircraftDetailData.flightImages || []);
+      setValue("flightImages", aircraftDetailData.flightImages || null);
       setValue("seatLayoutImage", aircraftDetailData.seatLayoutImage || "");
       setValue("rangeMapImage", aircraftDetailData.rangeMapImage || "");
     }
@@ -127,140 +138,13 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
+      operatorId,
     };
 
     UpdateAircraftDetail(id, formattedData);
     refreshList();
     onClose();
   };
-
-  const getAircraftCategories = async () => {
-    try {
-      const data = await useGql({
-        query: GET_AIRCRAFT_CATEGORIES,
-        queryName: "aircraftCategories",
-        queryType: "query",
-        variables: {},
-      });
-      setAircraftCategories(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  useEffect(() => {
-    getAircraftCategories();
-  }, []);
-
-  // return (
-  //   <Box
-  //     component="form"
-  //     onSubmit={handleSubmit(onSubmit)}
-  //     sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
-  //   >
-  //     {/* Role Type & Name Fields */}
-  //     <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-  //       <Grid item xs={6}>
-  //         <Controller
-  //           name="name"
-  //           control={control}
-  //           render={({ field }) => (
-  //             <TextField {...field} size="small" label="Name" fullWidth  InputLabelProps={{ shrink: !!field.value }}  />
-  //           )}
-  //         />
-  //       </Grid>
-  //       <Grid item xs={6}>
-  //         <Controller
-  //           name="code"
-  //           control={control}
-  //           render={({ field }) => (
-  //             <TextField {...field} size="small" label="Code" fullWidth  InputLabelProps={{ shrink: !!field.value }} />
-  //           )}
-  //         />
-  //       </Grid>
-  //       <Grid item xs={12}>
-  //         <Controller
-  //           name="image"
-  //           control={control}
-  //           render={({ field }) => (
-  //             <TextField {...field} size="small" label="Image url" fullWidth  InputLabelProps={{ shrink: !!field.value }} />
-  //           )}
-  //         />
-  //       </Grid>
-  //       <Grid item xs={12}>
-  //         <Controller
-  //           name="description"
-  //           control={control}
-  //           render={({ field }) => (
-  //             <TextField
-  //               {...field}
-  //               size="small"
-  //               label="Description"
-  //               fullWidth
-  //               multiline
-  //               InputLabelProps={{ shrink: !!field.value }}
-  //             />
-  //           )}
-  //         />
-  //       </Grid>
-  //       <Grid item xs={8}>
-  //         <Controller
-  //           name="category"
-  //           control={control}
-  //           render={({ field }) => (
-  //             <Autocomplete
-  //               {...field}
-  //               options={aircraftCategories}
-  //               getOptionLabel={(option) => option.name}
-  //               value={
-  //                 aircraftCategories.find(
-  //                   (aircraft: any) => aircraft.id === field.value,
-  //                 ) || null
-  //               }
-  //               onChange={(_, newValue) =>
-  //                 field.onChange(newValue ? newValue.id : "")
-  //               }
-  //               renderInput={(params) => <TextField {...params} size="small" />}
-  //             />
-  //           )}
-  //         />
-  //       </Grid>
-  //       <Grid item xs={4}>
-  //         <Controller
-  //           name="isActive"
-  //           control={control}
-  //           render={({ field }) => (
-  //             <FormControlLabel
-  //               control={<Switch {...field} defaultChecked size="small" />}
-  //               label="isActive"
-  //             />
-  //           )}
-  //         />
-  //       </Grid>
-  //       <Grid item xs={12}>
-  //         <Controller
-  //           name="termsAndConditions"
-  //           control={control}
-  //           render={({ field }) => (
-  //             <ReactQuill
-  //               {...field}
-  //               theme="snow"
-  //               value={field.value || ""}
-  //               onChange={field.onChange}
-  //             />
-  //           )}
-  //         />
-  //       </Grid>
-  //     </Grid>
-
-  //     {/* Submit Button */}
-  //     <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
-  //       <Button type="submit" variant="contained" color="primary">
-  //         Submit
-  //       </Button>
-  //     </Box>
-  //   </Box>
-  // );
 
   const steps = ["Basic", "Specification", "Terms And Condition", "media"];
 
@@ -270,24 +154,26 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
   return (
-    <StepperFormLayout
-      steps={steps}
-      activeStep={activeStep}
-      handleNext={handleNext}
-      handleBack={handleBack}
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      {activeStep === 0 && <BasicInfoStep control={control} />}
-      {activeStep === 1 && (
-        <SpecificationStep
-          control={control}
-          specificationsField={specificationsField}
-          removeSpecification={removeSpecification}
-          appendSpecification={appendSpecification}
-        />
-      )}
-      {activeStep === 2 && <TermsStep control={control} />}
-      {activeStep === 3 && <MediaStep control={control} />}
-    </StepperFormLayout>
+    <FormProvider {...methods}>
+      <StepperFormLayout
+        steps={steps}
+        activeStep={activeStep}
+        handleNext={handleNext}
+        handleBack={handleBack}
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        {activeStep === 0 && <BasicInfoStep control={control} />}
+        {activeStep === 1 && (
+          <SpecificationStep
+            control={control}
+            specificationsField={specificationsField}
+            removeSpecification={removeSpecification}
+            appendSpecification={appendSpecification}
+          />
+        )}
+        {activeStep === 2 && <TermsStep control={control} />}
+        {activeStep === 3 && <MediaStep control={control} />}
+      </StepperFormLayout>
+    </FormProvider>
   );
 };
