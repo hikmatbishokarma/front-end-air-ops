@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
@@ -23,8 +24,26 @@ import useGql from "../lib/graphql/gql";
 import { SEND_ACKNOWLEDGEMENT } from "../lib/graphql/queries/quote";
 import { useSnackbar } from "../SnackbarContext";
 import { getEnumKeyByValue, SalesDocumentType } from "../lib/utils";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-const ActionButton = ({
+interface ActionButtonProps {
+  currentId: string;
+  currentQuotation: any;
+  htmlRef: React.MutableRefObject<any>;
+  documentType?: string;
+  editPath?: string;
+  showEdit?: boolean;
+  showEmail?: boolean;
+  showPrint?: boolean;
+  showDownload?: boolean;
+  showGeneratePI?: boolean;
+  onGenerateInvoice?: ({ type, quotationNo }) => void; // ✅ make optional
+  showGenerateTripConfirmation?: boolean;
+  handelTripConfirmation?: ({ quotationNo }) => void; // ✅ make optional
+  showGenerateTI?: boolean;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({
   currentId,
   currentQuotation,
   htmlRef,
@@ -34,6 +53,11 @@ const ActionButton = ({
   showEmail = true,
   showPrint = true,
   showDownload = true,
+  showGeneratePI = false,
+  showGenerateTripConfirmation = false,
+  showGenerateTI = false,
+  onGenerateInvoice,
+  handelTripConfirmation,
 }) => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -191,6 +215,57 @@ const ActionButton = ({
         <IconButton color="secondary" onClick={handleDownloadPDF}>
           <DownloadIcon fontSize="small" />
         </IconButton>
+      )}
+      {showGeneratePI && (
+        <Tooltip
+          title={`Generate Proforma Invoice for QuotationNo: ${currentQuotation}`}
+          arrow
+        >
+          <IconButton
+            color="info"
+            onClick={() =>
+              onGenerateInvoice?.({
+                type: "PROFORMA_INVOICE",
+                quotationNo: currentQuotation,
+              })
+            }
+          >
+            <AddCircleOutlineIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+      {showGenerateTI && (
+        <Tooltip
+          title={`Generate Tax Invoice for QuotationNo: ${currentQuotation}`}
+          arrow
+        >
+          <IconButton
+            color="info"
+            onClick={() =>
+              onGenerateInvoice?.({
+                type: "TAX_INVOICE",
+                quotationNo: currentQuotation,
+              })
+            }
+          >
+            <AddCircleOutlineIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+      {showGenerateTripConfirmation && (
+        <Tooltip
+          title={`Generate Trip Confirmation for QuotationNo: ${currentQuotation}`}
+          arrow
+        >
+          <IconButton
+            color="info"
+            onClick={() =>
+              handelTripConfirmation?.({ quotationNo: currentQuotation })
+            }
+          >
+            <AddCircleOutlineIcon />
+          </IconButton>
+        </Tooltip>
       )}
     </Box>
   );

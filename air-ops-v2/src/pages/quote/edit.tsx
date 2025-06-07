@@ -867,7 +867,7 @@ const QuoteEdit = () => {
                             control={control}
                             rules={{
                               required: "Price is required",
-                              min: { value: 1, message: "Must be > 0" },
+                              min: { value: 0, message: "Must be >= 0" },
                             }}
                             render={({ field, fieldState: { error } }) => (
                               <TextField

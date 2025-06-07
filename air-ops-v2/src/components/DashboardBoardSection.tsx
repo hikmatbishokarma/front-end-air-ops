@@ -14,6 +14,11 @@ interface DashboardBoardSectionProps {
   onFilter: (item: Category) => void;
   createEnabledTabs?: string[];
 }
+export const singularMap = {
+  Quotes: "Quote",
+  Invoices: "Invoice",
+  tripconfirmation: "Trip Confirmation",
+};
 
 const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
   selectedTab,
@@ -45,7 +50,7 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
               color="primary"
               onClick={() => onCreate(selectedTab)}
             >
-              Create {selectedTab.slice(0, -1)}
+              Create {singularMap[selectedTab] || selectedTab}
             </Button>
           )}
         </Grid>

@@ -1,17 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Card,
-  CardContent,
   Typography,
-  Grid,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -46,21 +36,19 @@ import TripConfirmationPreview from "../../components/trip-confirmation-preview"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import moment from "moment";
+
 const SalesDashboard = () => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
 
   const [selectedTab, setSelectedTab] = useState("Quotes");
+  const [refreshKey, setRefreshKey] = useState(Date.now());
 
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
 
-  const [filter, setFilter] = useState({
-    ...(operatorId && {
-      operatorId: { eq: operatorId },
-    }),
-  });
+  const [filter, setFilter] = useState({});
   const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
   const [isInvoiceGenerated, setIsInvoiceGenerated] = useState(false);
 
@@ -100,8 +88,25 @@ const SalesDashboard = () => {
       status: { eq: getEnumKeyByValue(QuotationStatus, s) },
     }));
 
-    console.log("statusFilter:::", statusFilter);
-
+    if (data.name === "Invoices") {
+      setFilter({
+        ...(statusFilter && statusFilter.length > 0
+          ? { or: statusFilter }
+          : {}),
+      });
+    } else if (data.name === "Trip Confirmation") {
+      setFilter({
+        ...(statusFilter && statusFilter.length > 0
+          ? { or: statusFilter }
+          : {}),
+      });
+    } else if (data.name === "Reports") {
+      setFilter({
+        ...(statusFilter && statusFilter.length > 0
+          ? { or: statusFilter }
+          : {}),
+      });
+    }
     const _filter = {
       ...filter,
       ...(statusFilter && statusFilter.length > 0 ? { or: statusFilter } : {}),
@@ -109,8 +114,6 @@ const SalesDashboard = () => {
 
     setFilter(_filter);
   };
-
-  // const categories = ["Quote", "Invoice", "Cancelled", "Revenue"];
 
   const categories = [
     { status: [""], name: "Quotes", countLabel: "totalQuotations" },
@@ -128,10 +131,6 @@ const SalesDashboard = () => {
   ];
 
   const handelCreate = (selectedTab) => {
-    // const redirectTo = selectedTab == "Quotes" ? "/quotes/create" : "";
-
-    // navigate(redirectTo);
-
     if (selectedTab === "Quotes") {
       navigate("/quotes/create");
     } else if (selectedTab === "Invoices") {
@@ -140,14 +139,6 @@ const SalesDashboard = () => {
       setTripConfirmationOpen(true); // Open modal
     }
   };
-
-  // const { control, handleSubmit, reset } = useForm({
-  //   defaultValues: {
-  //     type: "PROFORMA_INVOICE",
-  //     quotationNo: "",
-  //     proformaInvoiceNo: "",
-  //   },
-  // });
 
   // For Trip Confirmation Dialog
   const {
@@ -180,16 +171,6 @@ const SalesDashboard = () => {
   const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
     useState(false);
   const [isTripConfirmed, setIsTripConfirmed] = useState(false);
-
-  // const onGenerateInvoice = ({ type, quotationNo, proformaInvoiceNo }) => {
-  //   setOpenInvoiceDialog(false);
-  //   if (type === "Proforma Invoice") {
-  //     navigate(`/invoices/preview?quotationNo=${quotationNo}`);
-  //   } else if (invoiceType === "Tax Invoice") {
-  //     navigate(`/invoices/preview?piNo=${proformaInvoiceNo}`);
-  //   }
-  //   reset(); // reset form after submission
-  // };
 
   const onGenerateInvoice = async ({
     type,
@@ -252,17 +233,16 @@ const SalesDashboard = () => {
   };
 
   // --- DATE FILTER STATES ---
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // For the dropdown menu anchor
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openDateMenu = Boolean(anchorEl);
 
-  const [dateFilterType, setDateFilterType] = useState("anyDate"); // 'anyDate', 'today', 'yesterday', 'lastMonth', 'custom'
-  const [customFromDate, setCustomFromDate] = useState(""); // Stores the input from custom date picker
-  const [customToDate, setCustomToDate] = useState(""); // Stores the input from custom date picker
+  const [dateFilterType, setDateFilterType] = useState("anyDate");
+  const [customFromDate, setCustomFromDate] = useState("");
+  const [customToDate, setCustomToDate] = useState("");
 
-  const [activeFromDate, setActiveFromDate] = useState<string | null>(null); // Initialize with null
-  const [activeToDate, setActiveToDate] = useState<string | null>(null); // Initialize with null
+  const [activeFromDate, setActiveFromDate] = useState<string | null>(null);
+  const [activeToDate, setActiveToDate] = useState<string | null>(null);
 
-  // Helper functions for formatting dates to ISO string with start/end of day
   const formatStartOfDayISO = useCallback((date: Date): string => {
     const d = new Date(date);
     d.setUTCHours(0, 0, 0, 0); // Set to start of UTC day
@@ -275,8 +255,6 @@ const SalesDashboard = () => {
     return d.toISOString();
   }, []);
 
-  // Effect to calculate activeFromDate and activeToDate based on selectedDateFilterType or custom dates
-  // This runs whenever `dateFilterType` or the `customFromDate`/`customToDate` inputs change.
   useEffect(() => {
     const today = new Date();
     // Helper to format Date objects to YYYY-MM-DD strings
@@ -287,45 +265,22 @@ const SalesDashboard = () => {
 
     switch (dateFilterType) {
       case "today":
-        // from = formatDate(today);
-        // to = formatDate(today);
         from = formatStartOfDayISO(today);
         to = formatEndOfDayISO(today);
         break;
       case "yesterday":
-        // const yesterday = new Date(today);
-        // yesterday.setDate(today.getDate() - 1);
-        // from = formatDate(yesterday);
-        // to = formatDate(yesterday);
         const yesterday = new Date(today);
         yesterday.setDate(today.getDate() - 1);
         from = formatStartOfDayISO(yesterday);
         to = formatEndOfDayISO(yesterday);
         break;
       case "lastWeek": // NEW CASE FOR LAST WEEK
-        // const lastWeekStart = new Date(today);
-        // lastWeekStart.setDate(today.getDate() - 7);
-        // from = formatDate(lastWeekStart);
-        // to = formatDate(today); // End date is today
         const lastWeekStart = new Date(today);
         lastWeekStart.setDate(today.getDate() - 7); // Start of day 7 days ago
         from = formatStartOfDayISO(lastWeekStart);
         to = formatEndOfDayISO(today); // End of today
         break;
       case "lastMonth":
-        // const firstDayOfLastMonth = new Date(
-        //   today.getFullYear(),
-        //   today.getMonth() - 1,
-        //   1
-        // );
-        // const lastDayOfLastMonth = new Date(
-        //   today.getFullYear(),
-        //   today.getMonth(),
-        //   0
-        // );
-        // from = formatDate(firstDayOfLastMonth);
-        // to = formatDate(lastDayOfLastMonth);
-
         const firstDayOfLastMonth = new Date(
           today.getFullYear(),
           today.getMonth() - 1,
@@ -340,14 +295,7 @@ const SalesDashboard = () => {
         to = formatEndOfDayISO(lastDayOfLastMonth);
         break;
       case "custom":
-        // // Use the dates from the custom picker inputs. If empty, default to today.
-        // from = customFromDate || formatDate(today);
-        // to = customToDate || formatDate(today);
-        // When customFromDate/customToDate are YYYY-MM-DD from TextField
         if (customFromDate) {
-          // Create date from YYYY-MM-DD string directly.
-          // This creates a Date object in local timezone at 00:00.
-          // setUTCHours converts it to UTC 00:00 or 23:59.
           from = formatStartOfDayISO(new Date(customFromDate));
         }
         if (customToDate) {
@@ -356,12 +304,11 @@ const SalesDashboard = () => {
         break;
       case "anyDate":
       default:
-        from = ""; // No date filter applied
-        to = ""; // No date filter applied
+        from = "";
+        to = "";
         break;
     }
 
-    console.log("from", from, "to", to);
     setActiveFromDate(from);
     setActiveToDate(to);
     setFilter({
@@ -402,16 +349,12 @@ const SalesDashboard = () => {
       setCustomToDate("");
     }
 
-    handleMenuClose(); // Close menu after selection
-    // If 'custom' is selected, the custom date inputs will become relevant,
-    // and the useEffect will pick up their values to set activeFrom/ToDate.
+    handleMenuClose();
   };
 
   const handleCustomDateChange = (type: "from" | "to", value: string) => {
     setCustomFromDate((prev) => (type === "from" ? value : prev));
     setCustomToDate((prev) => (type === "to" ? value : prev));
-    // Important: Do NOT set dateFilterType here. It will be set when the user clicks 'Apply Custom'
-    // This allows them to type in dates without immediately triggering a filter.
   };
 
   // Determines the text to display on the date filter button
@@ -808,10 +751,28 @@ const SalesDashboard = () => {
         createEnabledTabs={["Quotes", "Invoices", "Trip Confirmation"]}
       />
       {(selectedTab == "Quotes" || selectedTab == "Trip Confirmation") && (
-        <QuoteList filter={filter} isGenerated={isTripConfirmed} />
+        <QuoteList
+          filter={filter}
+          isGenerated={isTripConfirmed}
+          setSelectedTab={setSelectedTab}
+          refreshKey={refreshKey}
+          setRefreshKey={() => setRefreshKey(Date.now())}
+          setFilter={setFilter}
+          setShowInvoicePreview={setShowInvoicePreview}
+          setInvoicedata={setInvoicedata}
+        />
       )}
       {selectedTab == "Invoices" && (
-        <InvoiceList filter={filter} isGenerated={isInvoiceGenerated} />
+        <InvoiceList
+          filter={filter}
+          isGenerated={isInvoiceGenerated}
+          setSelectedTab={setSelectedTab}
+          refreshKey={refreshKey}
+          setRefreshKey={() => setRefreshKey(Date.now())}
+          setFilter={setFilter}
+          setShowTripConfirmationPreview={setShowTripConfirmationPreview}
+          setTripConfirmationData={setTripConfirmationData}
+        />
       )}
 
       <Dialog
@@ -820,7 +781,22 @@ const SalesDashboard = () => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle> Invoice Preview</DialogTitle>
+        <DialogTitle>
+          {" "}
+          Invoice Preview
+          <IconButton
+            aria-label="close"
+            onClick={() => setShowInvoicePreview(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
         <DialogContent>
           <InvoicePreview
@@ -828,14 +804,14 @@ const SalesDashboard = () => {
             currentQuotation={invoiceData?.quotationNo}
           />
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button
             onClick={() => setShowInvoicePreview(false)}
             color="secondary"
           >
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
 
       <Dialog
@@ -844,7 +820,22 @@ const SalesDashboard = () => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle> Trip Confirmation Preview</DialogTitle>
+        <DialogTitle>
+          {" "}
+          Trip Confirmation Preview
+          <IconButton
+            aria-label="close"
+            onClick={() => setShowTripConfirmationPreview(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
         <DialogContent>
           <TripConfirmationPreview
@@ -852,14 +843,14 @@ const SalesDashboard = () => {
             currentQuotation={tripConfirmationData?.quotationNo}
           />
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button
             onClick={() => setShowTripConfirmationPreview(false)}
             color="secondary"
           >
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );
