@@ -18,6 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import FileUpload from "../../components/fileupload";
 import Editor from "../../components/Editor";
 import MultiFileUpload from "../../components/MultiFileUploader";
+import { useSession } from "../../SessionContext";
 
 interface AircraftCategory {
   id: string;
@@ -29,13 +30,21 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
     AircraftCategory[]
   >([]);
 
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
+
   const getAircraftCategories = async () => {
     try {
       const data = await useGql({
         query: GET_AIRCRAFT_CATEGORIES,
         queryName: "aircraftCategories",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
       });
       setAircraftCategories(data);
     } catch (error) {
@@ -49,29 +58,24 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
 
   return (
     <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-      {/* <Grid item xs={4}>
-        <Controller
-          name="isActive"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={<Switch {...field} defaultChecked size="small" />}
-              label="isActive"
-            />
-          )}
-        />
-      </Grid> */}
       <Grid item xs={6}>
         <Controller
           name="name"
           control={control}
-          render={({ field }) => (
+          rules={{ required: "Name is required" }}
+          render={({ field, fieldState: { error } }) => (
             <TextField
               {...field}
               size="small"
               label="Name"
               fullWidth
-              InputLabelProps={{ shrink: !!field.value }}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              error={!!error}
+              helperText={error?.message}
             />
           )}
         />
@@ -80,52 +84,31 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
         <Controller
           name="code"
           control={control}
-          render={({ field }) => (
+          rules={{ required: "Code is required" }}
+          render={({ field, fieldState: { error } }) => (
             <TextField
               {...field}
               size="small"
               label="Code"
               fullWidth
-              InputLabelProps={{ shrink: !!field.value }}
+              // required={true}
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
+              error={!!error}
+              helperText={error?.message}
             />
           )}
         />
       </Grid>
-      <Grid item xs={4}>
-        <Controller
-          name="category"
-          control={control}
-          render={({ field }) => (
-            <Autocomplete
-              {...field}
-              options={aircraftCategories}
-              getOptionLabel={(option) => option.name}
-              value={
-                aircraftCategories.find(
-                  (aircraft: any) => aircraft.id === field.value
-                ) || null
-              }
-              onChange={(_, newValue) =>
-                field.onChange(newValue ? newValue.id : "")
-              }
-              renderInput={(params) => <TextField {...params} size="small" />}
-            />
-          )}
-        />
-      </Grid>
+
       <Grid item xs={12}>
         <Controller
           name="noteText"
           control={control}
           render={({ field }) => (
-            // <TextField
-            //   {...field}
-            //   multiline
-            //   size="small"
-            //   label="Note Text"
-            //   fullWidth
-            //   InputLabelProps={{ shrink: !!field.value }}
-            // />
             <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
@@ -152,14 +135,6 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           name="description"
           control={control}
           render={({ field }) => (
-            // <TextField
-            //   {...field}
-            //   size="small"
-            //   label="Description"
-            //   fullWidth
-            //   multiline
-            //   InputLabelProps={{ shrink: !!field.value }}
-            // />
             <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
@@ -189,7 +164,13 @@ export const SpecificationStep = ({
               name={`specifications.${index}.title`}
               control={control}
               render={({ field }) => (
-                <TextField {...field} size="small" label="Title" fullWidth />
+                <TextField
+                  {...field}
+                  size="small"
+                  label="Title"
+                  fullWidth
+                  required={true}
+                />
               )}
             />
           </Grid>
@@ -198,7 +179,13 @@ export const SpecificationStep = ({
               name={`specifications.${index}.value`}
               control={control}
               render={({ field }) => (
-                <TextField {...field} size="small" label="Value" fullWidth />
+                <TextField
+                  {...field}
+                  size="small"
+                  label="Value"
+                  fullWidth
+                  required={true}
+                />
               )}
             />
           </Grid>

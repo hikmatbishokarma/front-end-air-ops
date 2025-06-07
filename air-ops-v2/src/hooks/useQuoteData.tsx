@@ -10,11 +10,17 @@ import {
   Iclient,
   Irepresentative,
 } from "../interfaces/quote.interface";
+import { useSession } from "../SessionContext";
 
 export const useQuoteData = () => {
   const [aircraftCategories, setAircraftCategories] = useState<
     IaircraftCategory[]
   >([]);
+
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
+
   const [aircrafts, setAircrafts] = useState<Iaircraft[]>([]);
   const [representatives, setRepresentatives] = useState<Irepresentative[]>([]);
   const [clients, setClients] = useState<Iclient[]>([]);
@@ -26,7 +32,11 @@ export const useQuoteData = () => {
         query: GET_AIRCRAFT_CATEGORIES,
         queryName: "aircraftCategories",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
       });
       setAircraftCategories(data);
     } catch (error) {
@@ -35,17 +45,18 @@ export const useQuoteData = () => {
   };
 
   // Fetch aircrafts based on category
-  const fetchAircrafts = async (categoryId) => {
+  const fetchAircrafts = async () => {
     try {
       const data = await useGql({
         query: GET_AIRCRAFT,
         queryName: "aircraftDetails",
         queryType: "query",
-        variables: categoryId
-          ? {
-              sorting: [{ field: "category", direction: "ASC" }],
-            }
-          : {},
+
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
       });
       setAircrafts(data);
     } catch (error) {
@@ -75,7 +86,11 @@ export const useQuoteData = () => {
         query: GET_CLIENTS,
         queryName: "clients",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
       });
       setClients(data);
     } catch (error) {
@@ -85,8 +100,9 @@ export const useQuoteData = () => {
 
   // Fetch initial data
   useEffect(() => {
-    fetchAircraftCategories();
+    //  fetchAircraftCategories();
     fetchClients();
+    fetchAircrafts();
   }, []);
 
   return {

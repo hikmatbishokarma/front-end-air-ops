@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import { EditRepresentative } from "./edit";
 import { CreateRepresentative } from "./create";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 
 const RepresentativeDialog = ({
   dialogOpen,
@@ -21,6 +23,18 @@ const RepresentativeDialog = ({
     <Dialog open={dialogOpen} onClose={handleDialogClose}>
       <DialogTitle>
         {isEdit ? "Edit" : "Add"} representative for {client?.name}
+        <IconButton
+          aria-label="close"
+          onClick={handleDialogClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
 
       <DialogContent>
@@ -37,11 +51,11 @@ const RepresentativeDialog = ({
           />
         )}
       </DialogContent>
-      <DialogActions>
+      {/* <DialogActions>
         <Button onClick={handleDialogClose} color="primary">
           Cancel
         </Button>
-      </DialogActions>
+      </DialogActions> */}
     </Dialog>
   );
 };

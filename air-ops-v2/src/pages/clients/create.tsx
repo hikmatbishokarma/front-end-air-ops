@@ -3,10 +3,15 @@ import { useForm } from "react-hook-form";
 import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import ClientChildren from "./children";
+import { useSession } from "../../SessionContext";
 
 export const CreateClient = ({ handleSubDialogClose }) => {
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
+
   const createFields = [
-    { name: "type", label: "Type", options: [] },
+    { name: "type", label: "Type", options: [], xs: 12, required: true },
     { name: "name", label: "Name", xs: 6, required: true },
     {
       name: "phone",
@@ -29,6 +34,32 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       },
     },
     { name: "address", label: "Address", xs: 6, required: true },
+    {
+      name: "panNo",
+      label: "PAN No",
+      xs: 6,
+      pattern: {
+        value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+        message: "Invalid PAN No",
+      },
+      required: false,
+    },
+    {
+      name: "gstNo",
+      label: "GST No",
+      xs: 6,
+      pattern: {
+        value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+        message: "Invalid GST No",
+      },
+      required: false,
+    },
+    {
+      name: "billingAddress",
+      label: "Billing Address",
+      xs: 6,
+      required: false,
+    },
   ];
 
   const { control, handleSubmit, reset } = useForm({
@@ -37,7 +68,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       phone: "",
       email: "",
       address: "",
-      type: "",
+      type: "PERSON",
     },
   });
 
@@ -62,7 +93,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       formData["isCompany"] = true;
     } else formData["isPerson"] = true;
     try {
-      await createClient(formData); // Wait for API call to complete
+      await createClient({ ...formData, operatorId }); // Wait for API call to complete
       reset(); // Reset form after successful submission
       handleSubDialogClose(); // <-- Close dialog after creating
     } catch (error) {

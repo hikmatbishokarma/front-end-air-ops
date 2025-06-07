@@ -1,4 +1,4 @@
-export const agentFormFields = [
+export const operatorFormFields = [
   { name: "name", label: "Name", xs: 6, required: true },
   {
     name: "email",
@@ -28,7 +28,7 @@ export const agentFormFields = [
     name: "pinCode",
     label: "Pin Code",
     xs: 6,
-    Pattern: {
+    pattern: {
       value: /^[0-9]{6}$/, // Simple 10-digit number validation
       message: "Zip Code must be 6 digits",
     },

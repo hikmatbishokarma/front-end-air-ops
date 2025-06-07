@@ -25,8 +25,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { AircraftCategoryCreate } from "./create";
 import { AircraftCategoryEdit } from "./edit";
 
+import CloseIcon from "@mui/icons-material/Close";
+import { useSession } from "../../SessionContext";
+
 export const AircraftCategoryList = () => {
   const showSnackbar = useSnackbar();
+
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
 
   const [categories, setCategories] = useState<any>([]);
   const [open, setOpen] = useState(false);
@@ -44,7 +51,11 @@ export const AircraftCategoryList = () => {
         query: GET_AIRCRAFT_CATEGORIES,
         queryName: "aircraftCategories",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
       });
 
       console.log("data:hghg", data);
@@ -86,7 +97,7 @@ export const AircraftCategoryList = () => {
           onClick={handleOpen}
           sx={{ marginBottom: 2 }}
         >
-          Create Role
+          Create Category
         </Button>
       </Box>
       <TableContainer component={Paper}>
@@ -135,10 +146,23 @@ export const AircraftCategoryList = () => {
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
-        maxWidth="md"
+        maxWidth="sm"
       >
         <DialogTitle>
-          {isEdit ? "Edit Aircraft Category" : "Edit Aircraft Category"}
+          {isEdit ? "Edit Aircraft Category" : "Create Aircraft Category"}
+
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {isEdit ? (
@@ -154,11 +178,11 @@ export const AircraftCategoryList = () => {
             />
           )}
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );

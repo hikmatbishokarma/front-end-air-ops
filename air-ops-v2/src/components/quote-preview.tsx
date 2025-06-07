@@ -27,7 +27,15 @@ import html2canvas from "html2canvas";
 import { getEnumKeyByValue, SalesDocumentType } from "../lib/utils";
 import ActionButton from "./ActionButton";
 
-const QuotePreview = ({ htmlContent, currentId, currentQuotation }) => {
+const QuotePreview = ({
+  htmlContent,
+  currentId,
+  currentQuotation,
+  showEdit = true,
+  showEmail = true,
+  showPrint = true,
+  showDownload = true,
+}) => {
   const [showEmailDialog, setShowEmailDialog] = useState(false);
 
   const navigate = useNavigate();
@@ -161,10 +169,10 @@ const QuotePreview = ({ htmlContent, currentId, currentQuotation }) => {
         htmlRef={componentRef}
         documentType="QUOTATION"
         editPath="/quotes/edit"
-        showEdit={true}
-        showEmail={true}
-        showPrint={true}
-        showDownload={true}
+        showEdit={showEdit}
+        showEmail={showEmail}
+        showPrint={showPrint}
+        showDownload={showDownload}
       />
 
       <Paper elevation={3} sx={{ padding: 2, overflow: "auto" }}>

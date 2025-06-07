@@ -35,7 +35,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import bgtwo from "../Asset/Images/backimg.jpeg";
 import pfIMG from "../Asset/Images/profile_view.png";
 import leftLogo from "../Asset/Images/Left-side-logo.png";
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+const apiBaseUrl = import.meta.env.VITE_BASE_URL;
 export default function Login() {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -229,7 +230,7 @@ export default function Login() {
                 <Grid item xs={12} md={12}>
                   <img
                     className="pfimg-icon"
-                    src={pfIMG}
+                    src={leftLogo}
                     alt="Company Logo"
                     width={65}
                   />
@@ -240,7 +241,7 @@ export default function Login() {
                   variant="fullWidth"
                 >
                   <Tab label="Sign In" />
-                  <Tab label="Sign Up" />
+                  {/* <Tab label="Sign Up" /> */}
                 </Tabs>
 
                 <Box sx={{ mt: 2 }}>
@@ -335,13 +336,11 @@ export default function Login() {
                         width: "100%",
                       }}
                     >
-                      <FormControlLabel
+                      {/* <FormControlLabel
                         control={<Checkbox {...register("rememberMe")} />}
                         label="Remember me"
-                      />
-                      {/* <Link href="#" variant="body2">
-                                        Forgot email?
-                                      </Link> */}
+                      /> */}
+
                       <Button
                         variant="text"
                         onClick={() => {

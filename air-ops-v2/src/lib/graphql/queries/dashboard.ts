@@ -5,13 +5,13 @@ export const GET_SALES_DASHBOARD = gql`
     $range: DateRange! = today
     $endDate: String
     $startDate: String
-    $agentId: String
+    $operatorId: String
   ) {
     getSalesDashboardData(
       endDate: $endDate
       range: $range
       startDate: $startDate
-      agentId: $agentId
+      operatorId: $operatorId
     )
   }
 `;

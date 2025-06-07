@@ -142,7 +142,13 @@ type Airport = {
 //   );
 // };
 
-const AirportsAutocomplete = ({ value, onChange, label }: any) => {
+const AirportsAutocomplete = ({
+  value,
+  onChange,
+  label,
+  isRequired = false,
+  error = null,
+}: any) => {
   const [inputValue, setInputValue] = useState(""); // Stores user input
   const [options, setOptions] = useState<Airport[]>([]); // Stores fetched airport options
   const [loading, setLoading] = useState(false); // Indicates loading state
@@ -164,6 +170,7 @@ const AirportsAutocomplete = ({ value, onChange, label }: any) => {
               or: [
                 { name: { iLike: inputValue } },
                 { city: { iLike: inputValue } },
+                { iata_code: { iLike: inputValue } },
               ],
             },
           },
@@ -248,12 +255,21 @@ const AirportsAutocomplete = ({ value, onChange, label }: any) => {
           {...params}
           label={label}
           fullWidth
+          placeholder={label}
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+            },
+          }}
+          required={isRequired}
           size="small"
           variant="outlined"
           sx={{
             minHeight: "50px",
             "& .MuiInputBase-root": { minHeight: "50px" },
           }}
+          error={!!error}
+          helperText={error?.message}
         />
       )}
     />

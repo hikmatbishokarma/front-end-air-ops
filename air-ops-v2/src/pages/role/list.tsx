@@ -32,6 +32,7 @@ import {
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import ChatIcon from "@mui/icons-material/Chat";
 import { Outlet, useNavigate } from "react-router";
+import { useSession } from "../../SessionContext";
 // const roles = [
 //   {
 //     id: "67b0b5455366fdf6aee04554",
@@ -69,6 +70,10 @@ const checkPermission = (actions, permission) =>
   actions.includes(permission) ? "✅" : "❌";
 
 const RoleList = () => {
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
+
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -80,7 +85,11 @@ const RoleList = () => {
         query: GET_ROLES,
         queryName: "roles",
         queryType: "query",
-        variables: {},
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
       });
       setRows(data);
     } catch (error) {

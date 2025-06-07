@@ -10,6 +10,8 @@ export const GET_CLIENTS = gql`
       nodes {
         id
         name
+        isCompany
+        isPerson
       }
     }
   }
@@ -41,6 +43,9 @@ export const GET_CLIENT_BY_ID = gql`
       phone
       email
       address
+      panNo
+      gstNo
+      billingAddress
     }
   }
 `;

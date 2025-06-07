@@ -27,6 +27,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { removeTypename } from "../../lib/utils";
 import { useSnackbar } from "../../SnackbarContext";
 import { NAVIGATION } from "../../AppWithSession";
+import { useSession } from "../../SessionContext";
 
 interface accessPermission {
   action;
@@ -63,6 +64,10 @@ const resources = NAVIGATION.reduce((acc: any[], item: any) => {
 console.log("resources", resources);
 
 const RoleEdit = () => {
+  const { session, setSession, loading } = useSession();
+
+  const operatorId = session?.user.agent?.id || null;
+
   const { id } = useParams();
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -132,6 +137,7 @@ const RoleEdit = () => {
   const onSubmit = (data) => {
     const formattedData = {
       ...data,
+      operatorId,
     };
     updateRole(id, formattedData);
     navigate("/admin/roles");

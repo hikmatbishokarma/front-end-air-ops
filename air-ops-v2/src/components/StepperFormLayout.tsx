@@ -17,7 +17,7 @@
 //   children: React.ReactNode;
 //   onSubmit: (e: React.FormEvent) => void;
 // }) => (
-    
+
 //   <>
 //     <Stepper activeStep={activeStep} alternativeLabel>
 //       {steps.map((label) => (
@@ -52,10 +52,9 @@
 //   </>
 // );
 
-
-
 import React from "react";
 import { Box, Button, Step, StepLabel, Stepper } from "@mui/material";
+import { useFormContext } from "react-hook-form";
 
 export const StepperFormLayout = ({
   steps,
@@ -73,6 +72,19 @@ export const StepperFormLayout = ({
   onSubmit: (e: React.FormEvent) => void;
 }) => {
   const isLastStep = activeStep === steps.length - 1;
+  const { trigger } = useFormContext();
+
+  const handleStepSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const valid = await trigger(); // ✅ validate only visible (registered) fields
+    if (!valid) return;
+
+    if (isLastStep) {
+      onSubmit(e); // ✅ final submission
+    } else {
+      handleNext(); // ✅ next step
+    }
+  };
 
   return (
     <>
@@ -86,14 +98,7 @@ export const StepperFormLayout = ({
 
       <Box
         component="form"
-        onSubmit={(e) => {
-          if (isLastStep) {
-            onSubmit(e); // only submit if it's the last step
-          } else {
-            e.preventDefault(); // prevent submission on intermediate steps
-            handleNext(); // go to next step
-          }
-        }}
+        onSubmit={handleStepSubmit}
         sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
       >
         {children}
