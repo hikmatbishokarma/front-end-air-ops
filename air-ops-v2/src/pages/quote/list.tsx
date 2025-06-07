@@ -51,8 +51,19 @@ import { useSession } from "../../SessionContext";
 import { Iclient } from "../../interfaces/quote.interface";
 import moment from "moment";
 import TripConfirmationPreview from "../../components/trip-confirmation-preview";
+import CloseIcon from "@mui/icons-material/Close";
+import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
 
-export const QuoteList = ({ filter, isGenerated = true }) => {
+export const QuoteList = ({
+  filter,
+  isGenerated = true,
+  setSelectedTab,
+  refreshKey,
+  setRefreshKey,
+  setFilter,
+  setShowInvoicePreview,
+  setInvoicedata,
+}) => {
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
@@ -132,7 +143,7 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
 
   useEffect(() => {
     getQuotes();
-  }, [filter, selectedRequester, page, rowsPerPage, isGenerated]);
+  }, [filter, selectedRequester, page, rowsPerPage, isGenerated, refreshKey]);
 
   const handelPreview = async (row) => {
     setSelectedRowData(row);
@@ -216,6 +227,57 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
     borderBottom: "2px solid #ccc",
   };
 
+  /** INVOICE */
+
+  const onGenerateInvoice = async ({
+    type,
+    quotationNo,
+    proformaInvoiceNo = "",
+  }) => {
+    const result = await useGql({
+      query: GENERATE_INVOICE,
+      queryName: "generateInvoice",
+      queryType: "mutation",
+      variables: {
+        args: {
+          type,
+          quotationNo,
+          ...(proformaInvoiceNo && { proformaInvoiceNo }),
+          ...(operatorId && { operatorId }),
+        },
+      },
+    });
+
+    if (!result.data) {
+      showSnackbar(
+        result?.errors?.[0]?.message || "Internal server error!",
+        "error"
+      );
+    } else {
+      showSnackbar("Invoice Generated Successfully!", "success");
+      setInvoicedata(result?.data?.generateInvoice);
+      setShowPreview(false);
+      setShowInvoicePreview(true);
+      setSelectedTab("Invoices");
+      setRefreshKey();
+
+      setFilter({
+        "or": [
+          {
+            "status": {
+              "eq": "PROFOMA_INVOICE",
+            },
+          },
+          {
+            "status": {
+              "eq": "TAX_INVOICE",
+            },
+          },
+        ],
+      });
+    }
+  };
+
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
@@ -265,7 +327,7 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
               <TableCell sx={headerStyle}>Requester</TableCell>
               <TableCell sx={headerStyle}>Sectors</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
-              <TableCell sx={headerStyle}>Action</TableCell>
+              {/* <TableCell sx={headerStyle}>Action</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -278,6 +340,7 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
                   opacity: !row.isLatest ? 0.6 : 1,
                   cursor: "pointer",
                 }}
+                onClick={() => handelPreview(row)}
               >
                 <TableCell component="th" scope="row">
                   {row.quotationNo}
@@ -286,14 +349,14 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell align="right">{row.itinerary}</TableCell>
                 <TableCell align="right">{row.createdAt}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <IconButton
                     color="primary"
                     onClick={() => handelPreview(row)}
                   >
                     <PreviewIcon fontSize="small" />
                   </IconButton>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
@@ -315,7 +378,22 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle> Quote Preview</DialogTitle>
+        <DialogTitle>
+          {" "}
+          Quote Preview
+          <IconButton
+            aria-label="close"
+            onClick={() => setShowPreview(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
         <DialogContent>
           <QuotePreview
@@ -323,13 +401,15 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
             currentId={selectedRowData?.id}
             currentQuotation={selectedRowData?.quotationNo}
             showEdit={selectedRowData?.isLatest}
+            showGeneratePI={selectedRowData?.isLatest}
+            onGenerateInvoice={onGenerateInvoice}
           />
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setShowPreview(false)} color="secondary">
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
 
       <Dialog
@@ -338,22 +418,39 @@ export const QuoteList = ({ filter, isGenerated = true }) => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle> Trip Confirmation Preview</DialogTitle>
+        <DialogTitle>
+          {" "}
+          Trip Confirmation Preview
+          <IconButton
+            aria-label="close"
+            onClick={() => setShowTripConfirmationPreview(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
         <DialogContent>
           <TripConfirmationPreview
             htmlContent={tripConfirmationPreviewTemplate}
             currentQuotation={selectedRowData?.quotationNo}
+            showGenerateTI={selectedRowData?.isLatest}
+            onGenerateInvoice={onGenerateInvoice}
           />
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button
             onClick={() => setShowTripConfirmationPreview(false)}
             color="secondary"
           >
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );

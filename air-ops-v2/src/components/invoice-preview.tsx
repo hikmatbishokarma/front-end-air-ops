@@ -2,9 +2,20 @@ import React, { useEffect, useRef } from "react";
 import DOMPurify from "dompurify";
 import { Box, Paper, IconButton } from "@mui/material";
 import ActionButton from "./ActionButton"; // Assuming ActionButton is already a reusable component
-import PrintIcon from "@mui/icons-material/Print";
 
-const InvoicePreview = ({ htmlContent, currentQuotation }) => {
+interface InvoicePreviewProps {
+  htmlContent: string;
+  currentQuotation: any;
+  type?: string;
+  handelTripConfirmation?: ({ quotationNo }) => void;
+}
+
+const InvoicePreview: React.FC<InvoicePreviewProps> = ({
+  htmlContent,
+  currentQuotation,
+  type,
+  handelTripConfirmation,
+}) => {
   useEffect(() => {
     // Extract styles and apply them to the document head
     const tempDiv = document.createElement("div");
@@ -35,23 +46,27 @@ const InvoicePreview = ({ htmlContent, currentQuotation }) => {
 
   const componentRef = React.useRef(null);
 
-  return (
-    <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
-      {/* ActionButton positioned on the right */}
-      <Box sx={{ position: "absolute", top: 20, right: 20 }}>
-        <ActionButton
-          currentId={""}
-          currentQuotation={currentQuotation}
-          htmlRef={componentRef}
-          documentType="INVOICE"
-          editPath=""
-          showEdit={false}
-          showPrint={true}
-          showDownload={true}
-          showEmail={true}
-        />
-      </Box>
+  console.log(
+    "showGenerateTripConfirmation::",
+    type,
+    type == "PROFOMA_INVOICE" ? true : false
+  );
 
+  return (
+    <Box>
+      <ActionButton
+        currentId={""}
+        currentQuotation={currentQuotation}
+        htmlRef={componentRef}
+        documentType={type}
+        editPath=""
+        showEdit={false}
+        showPrint={true}
+        showDownload={true}
+        showEmail={true}
+        showGenerateTripConfirmation={type == "PROFORMA_INVOICE" ? true : false}
+        handelTripConfirmation={handelTripConfirmation}
+      />
       {/* A4 size container */}
       <Paper
         elevation={3}

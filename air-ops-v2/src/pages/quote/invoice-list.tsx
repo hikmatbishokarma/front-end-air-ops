@@ -5,15 +5,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControl,
-  Grid,
-  IconButton,
   InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -21,43 +14,37 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Tooltip,
   TablePagination,
-  Typography,
-  Autocomplete,
+  IconButton,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
 import useGql from "../../lib/graphql/gql";
-import {
-  GET_QUOTES,
-  SHOW_PREVIEW,
-  UPDATE_QUOTE_STATUS,
-} from "../../lib/graphql/queries/quote";
 
-import { Outlet, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 import { useSnackbar } from "../../SnackbarContext";
 
-import PreviewIcon from "@mui/icons-material/Preview";
-import QuotePreview from "../../components/quote-preview";
-
-import {
-  getEnumKeyByValue,
-  InvoiceType,
-  QuotationStatus,
-} from "../../lib/utils";
-
-import QuotationCancellationConfirmation from "./quotation-cancellation";
 import SearchIcon from "@mui/icons-material/Search";
-import { useQuoteData } from "../../hooks/useQuoteData";
+
 import { useSession } from "../../SessionContext";
-import { Iclient } from "../../interfaces/quote.interface";
+
 import moment from "moment";
 import InvoicePreview from "../../components/invoice-preview";
 import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
+import CloseIcon from "@mui/icons-material/Close";
+import { TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
 
-export const InvoiceList = ({ filter, isGenerated }) => {
+export const InvoiceList = ({
+  filter,
+  isGenerated,
+  setSelectedTab,
+  refreshKey,
+  setRefreshKey,
+  setFilter,
+  setShowTripConfirmationPreview,
+  setTripConfirmationData,
+}) => {
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
@@ -116,7 +103,7 @@ export const InvoiceList = ({ filter, isGenerated }) => {
 
   useEffect(() => {
     getInvoices();
-  }, [filter, page, rowsPerPage, isGenerated]);
+  }, [filter, page, rowsPerPage, isGenerated, refreshKey]);
 
   const handelPreview = (row) => {
     setSelectedRowData(row);
@@ -142,6 +129,45 @@ export const InvoiceList = ({ filter, isGenerated }) => {
     backgroundColor: "#f5f5f5",
     fontWeight: 700,
     borderBottom: "2px solid #ccc",
+  };
+
+  /** TRIP CONFIRMATION */
+
+  const handelTripConfirmation = async ({ quotationNo }) => {
+    const result = await useGql({
+      query: TRIP_CONFIRMATION,
+      queryName: "tripConfirmation",
+      queryType: "mutation",
+      variables: {
+        args: {
+          quotationNo,
+          ...(operatorId && { operatorId }),
+        },
+      },
+    });
+
+    if (!result.data) {
+      showSnackbar(
+        result?.errors?.[0]?.message || "Internal server error!",
+        "error"
+      );
+    } else {
+      // setTripConfirmationData(result?.data?.tripConfirmation);
+      // setShowTripConfirmationPreview(true);
+      // setIsTripConfirmed(true);
+      showSnackbar("Trip confirmed successfully!", "success");
+      setTripConfirmationData(result?.data?.tripConfirmation);
+      setShowPreview(false);
+      setShowTripConfirmationPreview(true);
+      setFilter({
+        status: {
+          eq: "CONFIRMED",
+        },
+      });
+
+      setSelectedTab("Trip Confirmation");
+      setRefreshKey();
+    }
   };
 
   return (
@@ -178,7 +204,7 @@ export const InvoiceList = ({ filter, isGenerated }) => {
               <TableCell sx={headerStyle}>Tax Invoice No</TableCell>
               <TableCell sx={headerStyle}>Requester</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
-              <TableCell sx={headerStyle}>Action</TableCell>
+              {/* <TableCell sx={headerStyle}>Action</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -186,6 +212,7 @@ export const InvoiceList = ({ filter, isGenerated }) => {
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                onClick={() => handelPreview(row)}
               >
                 <TableCell component="th" scope="row">
                   {row.quotationNo}
@@ -197,14 +224,14 @@ export const InvoiceList = ({ filter, isGenerated }) => {
                 </TableCell>
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell align="right">{row.createdAt}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <IconButton
                     color="primary"
                     onClick={() => handelPreview(row)}
                   >
                     <PreviewIcon fontSize="small" />
                   </IconButton>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
@@ -226,19 +253,36 @@ export const InvoiceList = ({ filter, isGenerated }) => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle> Invoice Preview</DialogTitle>
+        <DialogTitle>
+          {" "}
+          Invoice Preview
+          <IconButton
+            aria-label="close"
+            onClick={() => setShowPreview(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
 
         <DialogContent>
           <InvoicePreview
             htmlContent={selectedRowData?.template}
             currentQuotation={selectedRowData?.quotationNo}
+            type={selectedRowData?.type}
+            handelTripConfirmation={handelTripConfirmation}
           />
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setShowPreview(false)} color="secondary">
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );
