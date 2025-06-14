@@ -227,11 +227,13 @@
     background-color: #001551 !important;
 }
 .ban_img{
-    background-image: url(../Asset/Images/dashbanner.png) !important;
+    /* background-image: url(../Asset/Images/Banner-vi-demo.gif) !important; */
+    background-image: url(../Images/Banner-vi-demo.gif) !important;
     background-repeat: no-repeat;
     background-size: cover;
     height: 204px;
     border-radius: 15px;
+    background-position: center;
 }
 .v1_board{
  
@@ -276,12 +278,12 @@
 .dash-table .css-1xp5r68-MuiFormControl-root-MuiTextField-root{
     margin-top: 20px;
 }
-.dash-table .css-1e9c3nx-MuiTableCell-root{
-    text-align: left;
+.dash-table .MuiTableCell-sizeMedium{
+    text-align: left !important;
 }
-.dash-table .css-3wds0e-MuiTableCell-root{
+/* .dash-table .css-3wds0e-MuiTableCell-root{
 text-align: left;
-}
+} */
 .dash-table .css-qfdd9t{
     align-items: flex-start;
     margin-top: 46px;
@@ -293,4 +295,63 @@ text-align: left;
 
 .edit-role-category .css-1tu6adf-MuiInputBase-input-MuiOutlinedInput-input{
     margin-top: 19px;
+}
+.css-5y2zdi {
+   
+background-color: #001551 !important;
+}
+.css-1pv2xcc{
+        margin-top: 21px;
+}
+.css-loca4d {
+    text-align: left;
+}
+/*side navigation styles*/
+.MuiDrawer-anchorLeft nav{
+  background-color: #001551 !important;
+      border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    overflow-y: scroll;
+    height: 100vh;
+}
+.MuiDrawer-anchorLeft nav ul li a{
+    color: #fff;
+}
+.MuiDrawer-anchorLeft nav svg{
+    color: #fff !important;
+}
+.MuiListItemText-primary{
+    color: #fff !important;
+}
+.MuiListSubheader-root{
+    display: none;
+}
+.MuiDrawer-anchorLeft nav .Mui-selected{
+background-color: #ff0202 !important;
+}
+.MuiDrawer-paper{
+    width: 240px !important;
+}
+.MuiDrawer-docked{
+    width: 240px !important;
+}
+/*top header bar*/
+.css-t3xolk{
+       
+    width: 100% !important; 
+    border-radius: 20px;
+    height: 100% !important;
+}
+
+/*Quotions details pop-up*/
+.MuiBox-root .fc-button-active{
+    background-color: #ff0202 !important;
+    border:#ff0202 !important;
+}
+.MuiBox-root .fc .fc-toolbar-title{
+    font-size: 15px;
+}
+/*card styles*/
+.MuiCard-root{
+    border-radius: 25px !important;
 }
