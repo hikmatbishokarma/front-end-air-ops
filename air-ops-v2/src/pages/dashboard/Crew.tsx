@@ -6,11 +6,12 @@ import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
+import { CrewDetailList } from "../crew-detail/List";
 
 const CrewDashboard = () => {
   const navigate = useNavigate();
 
-  const [selectedTab, setSelectedTab] = useState("Quotes");
+  const [selectedTab, setSelectedTab] = useState("Staff");
 
   const [salesDashboardData, setSalesDashboardData] = useState<any>();
 
@@ -28,10 +29,14 @@ const CrewDashboard = () => {
   };
 
   const categories = [
-    { status: ["Ops"], name: "Ops" },
-    { status: ["Tax Invoice", "Proforma Invoice"], name: "Invoices" },
-    { status: ["Cancelled"], name: "Cancellations" },
-    { status: [], name: "Revenue" },
+    { status: [], name: "Staff", countLabel: "Staff" },
+    {
+      status: [],
+      name: "Leaves",
+      countLabel: "Leaves",
+    },
+    { status: [], name: "Renewals", countLabel: "Renewals" },
+    { status: [], name: "Reports", countLabel: "Reports" },
   ];
 
   const handelCreate = (selectedTab) => {
@@ -55,7 +60,7 @@ const CrewDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Ops", "Invoices"]}
       />
-      <p className="coming-soon">Comming soon</p>
+      <CrewDetailList />
     </>
   );
 };
