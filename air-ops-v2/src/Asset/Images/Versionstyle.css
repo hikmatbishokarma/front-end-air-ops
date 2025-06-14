@@ -329,6 +329,12 @@ background-color: #001551 !important;
 .MuiDrawer-anchorLeft nav .Mui-selected{
 background-color: #ff0202 !important;
 }
+.MuiDrawer-paper{
+    width: 240px !important;
+}
+.MuiDrawer-docked{
+    width: 240px !important;
+}
 /*top header bar*/
 .css-t3xolk{
        
@@ -337,11 +343,15 @@ background-color: #ff0202 !important;
     height: 100% !important;
 }
 
-/*Quotions details*/
+/*Quotions details pop-up*/
 .MuiBox-root .fc-button-active{
     background-color: #ff0202 !important;
     border:#ff0202 !important;
 }
 .MuiBox-root .fc .fc-toolbar-title{
     font-size: 15px;
+}
+/*card styles*/
+.MuiCard-root{
+    border-radius: 25px !important;
 }
