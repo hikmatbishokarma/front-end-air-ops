@@ -6,11 +6,14 @@ import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
+import AccountList from "../accounts/List";
 
 const AccountsDashboard = () => {
   const navigate = useNavigate();
 
-  const [selectedTab, setSelectedTab] = useState("Quotes");
+  const [filter, setFilter] = useState<any>();
+
+  const [selectedTab, setSelectedTab] = useState("Invoices");
 
   const [salesDashboardData, setSalesDashboardData] = useState<any>();
 
@@ -25,13 +28,17 @@ const AccountsDashboard = () => {
       // isLatest: { is: true },
       or: statusFilter,
     };
+    setFilter(_filter);
   };
 
   const categories = [
-    { status: ["Ops"], name: "Ops" },
-    { status: ["Tax Invoice", "Proforma Invoice"], name: "Invoices" },
-    { status: ["Cancelled"], name: "Cancellations" },
-    { status: [], name: "Revenue" },
+    {
+      status: ["Tax Invoice", "Proforma Invoice"],
+      name: "Invoices",
+      countLabel: "Invoices",
+    },
+
+    { status: [], name: "Reports", countLabel: "Reports" },
   ];
 
   const handelCreate = (selectedTab) => {
@@ -53,9 +60,9 @@ const AccountsDashboard = () => {
         salesDashboardData={salesDashboardData}
         onCreate={handelCreate}
         onFilter={handelFilter}
-        createEnabledTabs={["Ops", "Invoices"]}
+        createEnabledTabs={["Invoices"]}
       />
-      <p className="coming-soon">Comming soon</p>
+      <AccountList filter={filter} />
     </>
   );
 };

@@ -142,7 +142,7 @@ export const NAVIGATION: Navigation = [
   },
   {
     segment: "settings",
-    title: "Setting",
+    title: "Settings",
     icon: <Settings />,
     children: [
       {

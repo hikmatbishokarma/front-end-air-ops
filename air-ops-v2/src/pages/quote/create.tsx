@@ -38,7 +38,10 @@ import {
 import moment from "moment";
 import { Delete } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
-import { CREATE_QUOTE } from "../../lib/graphql/queries/quote";
+import {
+  CREATE_QUOTE,
+  FLIGHT_SEGMENTS_FOR_CALENDER,
+} from "../../lib/graphql/queries/quote";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import { useSnackbar } from "../../SnackbarContext";
@@ -440,6 +443,30 @@ export const QuoteCreate = () => {
       total: 0, // Calculate total
     });
   };
+
+  const getFlightSegementsForCalender = async () => {
+    const response = await useGql({
+      query: FLIGHT_SEGMENTS_FOR_CALENDER,
+      queryName: "flightSegmentsForCalendar",
+      queryType: "query-without-edge",
+      variables: {
+        "startDate": "2025-06-01T18:30:00.000Z",
+        "endDate": "2025-06-30T18:30:00.000Z",
+      },
+    });
+
+    if (response.length) {
+      setEvents(response.map(({ __typename, ...rest }) => rest));
+    }
+  };
+
+  console.log("eventss:", events);
+
+  useEffect(() => {
+    if (activeStep === 1) {
+      getFlightSegementsForCalender();
+    }
+  }, [activeStep]);
 
   return (
     <>
