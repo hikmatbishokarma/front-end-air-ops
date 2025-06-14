@@ -43,6 +43,7 @@ import { OperatorList } from "./pages/operator/list";
 import SalesDashboard from "./pages/dashboard/SalesDashboard";
 //import "../src/index.css";
 import "../dist/assets/styleview.css";
+import "../src/Asset/Images/Versionstyle.css";
 
 const router = createBrowserRouter(
   [
