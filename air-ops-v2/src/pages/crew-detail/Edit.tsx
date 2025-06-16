@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
@@ -10,32 +10,92 @@ import {
   nomineeFormFields,
   certificationFormFields,
 } from "./FormFields";
+import {
+  GET_CREW_DETAIL_BY_ID,
+  UPDATE_CREW_DETAIL,
+} from "../../lib/graphql/queries/crew-detail";
+import { useSnackbar } from "../../SnackbarContext";
 
 export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
+  const showSnackbar = useSnackbar();
 
   const operatorId = session?.user.agent?.id || null;
 
-  const createClient = async (formData) => {
-    const data = await useGql({
-      query: CREATE_CLIENT,
-      queryName: "clients",
-      variables: {
-        input: {
-          client: formData,
-        },
+  const { control, handleSubmit, reset, setValue } =
+    useForm<CrewDetailFormValues>({
+      defaultValues: {
+        type: "",
+        gender: "",
+        certifications: [],
+        nominees: [],
       },
     });
 
-    console.log("submitted data:", data);
+  const [crewDetail, setCrewDetail] = useState<CrewDetailFormValues>();
+
+  const fetchCreDetailById = async (Id) => {
+    const response = await useGql({
+      query: GET_CREW_DETAIL_BY_ID,
+      queryName: "crewDetail",
+      queryType: "query-without-edge",
+      variables: { id: Id },
+    });
+
+    if (response) {
+      setCrewDetail(response);
+    } else {
+      showSnackbar("Failed to Edit Crew Detail!", "error");
+    }
   };
 
-  const { control, handleSubmit, reset } = useForm<CrewDetailFormValues>({
-    defaultValues: {
-      certifications: [],
-      nominees: [],
-    },
-  });
+  useEffect(() => {
+    fetchCreDetailById(id);
+  }, [id]);
+
+  useEffect(() => {
+    if (crewDetail) {
+      setValue("firstName", crewDetail.firstName || "");
+      setValue("lastName", crewDetail.lastName || "");
+      setValue("middleName", crewDetail.middleName || "");
+      setValue("type", crewDetail.type || "");
+      setValue("location", crewDetail.location || "");
+      setValue("email", crewDetail.email);
+      setValue("mobileNumber", crewDetail?.mobileNumber);
+      setValue("aadhar", crewDetail.aadhar || "");
+      setValue("pan", crewDetail.pan || "");
+      setValue("passportNo", crewDetail.passportNo || "");
+      setValue("gender", crewDetail.gender);
+      setValue("dateOfBirth", crewDetail.dateOfBirth || "");
+      setValue("designation", crewDetail.designation || "");
+      setValue("education", crewDetail.education || "");
+      setValue("experience", crewDetail.experience || "");
+      setValue("alternateContact", crewDetail.alternateContact || "");
+      setValue("temporaryAddress", crewDetail.temporaryAddress || "");
+      setValue("permanentAddress", crewDetail.permanentAddress || "");
+      setValue("bloodGroup", crewDetail.bloodGroup || "");
+      setValue("pinCode", crewDetail.pinCode || "");
+      setValue("certifications", crewDetail.certifications || []);
+      setValue("nominees", crewDetail.nominees || []);
+    }
+  }, [crewDetail, setValue]);
+
+  const updateCrewDetail = async (Id, formData) => {
+    try {
+      const data = await useGql({
+        query: UPDATE_CREW_DETAIL,
+        queryName: "",
+        queryType: "mutation",
+        variables: { input: { id: Id, update: formData } },
+      });
+
+      if (!data || data.data?.errors) {
+        showSnackbar("Something went wrong", "error");
+      } else showSnackbar("Updated successfully", "success");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to edit Crew Detail!", "error");
+    }
+  };
 
   const {
     fields: certificationFields,
@@ -56,13 +116,8 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
   });
 
   const onSubmit = async (data) => {
-    const { type, ...rest } = data;
-    const formData = { ...rest };
-    if (type == "COMPANY") {
-      formData["isCompany"] = true;
-    } else formData["isPerson"] = true;
     try {
-      await createClient({ ...formData, operatorId }); // Wait for API call to complete
+      await updateCrewDetail(id, { ...data, operatorId });
       reset(); // Reset form after successful submission
       onClose(); // <-- Close dialog after creating
     } catch (error) {

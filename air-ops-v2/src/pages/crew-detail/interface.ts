@@ -14,6 +14,9 @@ export interface Certification {
 }
 
 export interface CrewDetailFormValues {
+  profile: string;
+  location: string;
+  type: string;
   firstName: string;
   middleName: string;
   lastName: string;
@@ -26,7 +29,7 @@ export interface CrewDetailFormValues {
   mobileNumber: string;
   alternateContact: string;
   email: string;
-  aadharCard: string;
+  aadhar: string;
   pan: string;
   passportNo: string;
   pinCode: string;

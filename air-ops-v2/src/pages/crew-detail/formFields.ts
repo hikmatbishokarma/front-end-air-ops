@@ -1,3 +1,5 @@
+import { Pattern } from "@mui/icons-material";
+
 export const crewDetailFormFields = [
   { name: "firstName", label: "First Name", required: true },
   { name: "middleName", label: "Middle Name" },
@@ -9,7 +11,12 @@ export const crewDetailFormFields = [
     options: ["MALE", "FEMALE", "OTHER"],
     required: true,
   },
-  { name: "dateOfBirth", label: "Date of Birth", type: "date", required: true },
+  {
+    name: "dateOfBirth",
+    label: "Date of Birth",
+    type: "date",
+    required: false,
+  },
   { name: "bloodGroup", label: "Blood Group", required: true },
   { name: "designation", label: "Designation", required: true },
   { name: "education", label: "Education", required: true },
@@ -33,21 +40,42 @@ export const crewDetailFormFields = [
       message: "Invalid email address",
     },
   },
-  { name: "aadharCard", label: "Aadhar Card" },
-  { name: "pan", label: "PAN" },
-  { name: "passportNo", label: "Passport No" },
+  {
+    name: "aadhar",
+    label: "Aadhar",
+    pattern: {
+      value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+      message: "Invalid GST No",
+    },
+  },
+  {
+    name: "pan",
+    label: "PAN",
+    pattern: {
+      value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+      message: "Invalid PAN No",
+    },
+  },
+  {
+    name: "passportNo",
+    label: "Passport No",
+    pattern: {
+      value: /^[A-PR-WYa-pr-wy][0-9]{7}$/,
+      message: "Invalid passport number",
+    },
+  },
   { name: "pinCode", label: "PIN Code" },
   { name: "temporaryAddress", label: "Temporary Address" },
   { name: "permanentAddress", label: "Permanent Address" },
 
   // Security
-  { name: "userName", label: "Username", required: true },
-  { name: "password", label: "Password", type: "password", required: true },
+  { name: "userName", label: "Username", required: false },
+  { name: "password", label: "Password", type: "password", required: false },
   {
     name: "repeatPassword",
     label: "Repeat Password",
     type: "password",
-    required: true,
+    required: false,
   },
   {
     name: "enableTwoFactorAuth",
