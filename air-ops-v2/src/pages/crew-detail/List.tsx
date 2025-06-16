@@ -28,15 +28,20 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useSession } from "../../SessionContext";
 import { CrewDetailEdit } from "./Edit";
 import { CrewDetailCreate } from "./Creat";
+import {
+  DELETE_CREW_DETAIL,
+  GET_CREW_DETAILS,
+} from "../../lib/graphql/queries/crew-detail";
+import { get } from "react-hook-form";
 
-export const CrewDetailList = () => {
+export const CrewDetailList = ({ open, setOpen }) => {
   const showSnackbar = useSnackbar();
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
 
-  const [aircraftDetail, setAircraftDetail] = useState<any>([]);
-  const [open, setOpen] = useState(false);
+  const [crewDetails, setCrewDetails] = useState<any>([]);
+  //   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [currentRecordId, setCurrentRecordId] = useState("");
 
@@ -45,12 +50,12 @@ export const CrewDetailList = () => {
     setIsEdit(false);
   };
 
-  const getAircraftDetails = async () => {
+  const getCrewDetails = async () => {
     try {
-      const data = await useGql({
-        query: GET_AIRCRAFT,
-        queryName: "aircraftDetails",
-        queryType: "query",
+      const result = await useGql({
+        query: GET_CREW_DETAILS,
+        queryName: "crewDetails",
+        queryType: "query-with-count",
         variables: {
           filter: {
             ...(operatorId && { operatorId: { eq: operatorId } }),
@@ -58,16 +63,15 @@ export const CrewDetailList = () => {
         },
       });
 
-      console.log("data:hghg", data);
-      if (!data) showSnackbar("Failed to fetch categories!", "error");
-      setAircraftDetail(data);
+      if (!result.data) showSnackbar("Failed to fetch Crew Details!", "error");
+      setCrewDetails(result.data);
     } catch (error) {
-      showSnackbar(error.message || "Failed to fetch categories!", "error");
+      showSnackbar(error.message || "Failed to fetch Crew Details!", "error");
     }
   };
 
   useEffect(() => {
-    getAircraftDetails();
+    getCrewDetails();
   }, []);
 
   const handleEdit = (id) => {
@@ -76,8 +80,21 @@ export const CrewDetailList = () => {
     setCurrentRecordId(id);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     //TODO
+
+    try {
+      const result = await useGql({
+        query: DELETE_CREW_DETAIL,
+        queryName: "",
+        queryType: "mutation",
+        variables: { input: { id: id } },
+      });
+
+      if (!result.data) showSnackbar("Failed to Delete Crew Details!", "error");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to Delete Crew Details!", "error");
+    }
   };
 
   const handleClose = () => setOpen(false);
@@ -85,40 +102,35 @@ export const CrewDetailList = () => {
   // Function to refresh category list
   const refreshList = async () => {
     // Fetch updated categories from API
-    await getAircraftDetails();
+    await getCrewDetails();
   };
 
   return (
     <>
-      {/* <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpen}
-          sx={{ marginBottom: 2 }}
-        >
-          Create
-        </Button>
-      </Box> */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className="dash-table">
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Code</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>isActive</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>MobileNo</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Created On</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {aircraftDetail?.map((item, index) => (
+            {crewDetails?.map((item, index) => (
               <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.code}</TableCell>
-                <TableCell>{item?.category?.name}</TableCell>
                 <TableCell>
-                  <Switch checked={item.isActive} size="small" />
+                  {`${item.firstName} ${item.middleName ?? ""} ${item.lastName}`.trim()}
+                </TableCell>
+
+                <TableCell>{item.email}</TableCell>
+                <TableCell>{item?.mobileNumber}</TableCell>
+                <TableCell>{item?.type}</TableCell>
+                <TableCell>
+                  <Switch checked={item.createdAt} size="small" />
                 </TableCell>
 
                 <TableCell>

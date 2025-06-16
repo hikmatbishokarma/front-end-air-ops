@@ -39,15 +39,10 @@ const CrewDashboard = () => {
     { status: [], name: "Reports", countLabel: "Reports" },
   ];
 
+  const [open, setOpen] = useState(false);
+
   const handelCreate = (selectedTab) => {
-    // const redirectTo = selectedTab == "Quotes" ? "/quotes/create" : "";
-
-    // navigate(redirectTo);
-
-    if (selectedTab === "Quotes") {
-      navigate("/quotes/create");
-    } else if (selectedTab === "Invoices") {
-    }
+    setOpen(true);
   };
 
   return (
@@ -58,9 +53,9 @@ const CrewDashboard = () => {
         salesDashboardData={salesDashboardData}
         onCreate={handelCreate}
         onFilter={handelFilter}
-        createEnabledTabs={["Ops", "Invoices"]}
+        createEnabledTabs={["Staff"]}
       />
-      <CrewDetailList />
+      <CrewDetailList open={open} setOpen={setOpen} />
     </>
   );
 };
