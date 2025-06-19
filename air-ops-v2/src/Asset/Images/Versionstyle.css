@@ -254,7 +254,8 @@
     ;
 }
 .v1_board .v1-card-h6{
-    font-size: 14px;
+    font-size: 12px;
+    font-weight: 600;
 }
 .css-r75yrr-MuiButtonBase-root-MuiButton-root{
     margin-right: 24px !important;
@@ -276,10 +277,12 @@
     padding-top: 20px;
 }
 .dash-table .css-1xp5r68-MuiFormControl-root-MuiTextField-root{
-    margin-top: 20px;
+    margin-top: 2px;
 }
 .dash-table .MuiTableCell-sizeMedium{
     text-align: left !important;
+    color: #12277a;
+        padding: 3px 9px 0 10px;
 }
 /* .dash-table .css-3wds0e-MuiTableCell-root{
 text-align: left;
@@ -311,8 +314,8 @@ background-color: #001551 !important;
   background-color: #001551 !important;
       border-top-left-radius: 25px;
     border-bottom-left-radius: 25px;
-    overflow-y: scroll;
-    height: 100vh;
+    /* overflow-y: scroll; */
+    /* height: 100vh; */
 }
 .MuiDrawer-anchorLeft nav ul li a{
     color: #fff;
@@ -329,12 +332,12 @@ background-color: #001551 !important;
 .MuiDrawer-anchorLeft nav .Mui-selected{
 background-color: #ff0202 !important;
 }
-.MuiDrawer-paper{
+/* .MuiDrawer-paper{
     width: 240px !important;
 }
 .MuiDrawer-docked{
     width: 240px !important;
-}
+} */
 /*top header bar*/
 .css-t3xolk{
        
@@ -354,4 +357,50 @@ background-color: #ff0202 !important;
 /*card styles*/
 .MuiCard-root{
     border-radius: 25px !important;
+    text-align: left !important;
+}
+.card-fligh-label{
+    position: relative;
+}
+.img-flight-label{
+    position: absolute;
+        right: 0;
+    top: 14px;
+}
+
+.section-title {
+    background-color: #001551 !important
+   
+}
+.MuiButton-outlinedPrimary{
+        color: #001551 !important;
+        border: 1px solid #001551 !important;
+    border-color: #001551 !important;
+}
+.MuiListItemButton-root:hover{
+        background-color: #ffffff2e !important;
+}
+.MuiTableHead-root th{
+    background-color: #001551 !important;
+    color: #fff !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;;
+}
+.MuiTableRow-root:hover {
+    background: #edd1d1;
+}
+.css-1ji9znz{
+    padding: 0px !important;
+}
+.MuiSvgIcon-fontSizeMedium .Mui-completed{
+    background-color: #001551 !important;
+}
+.MuiBox-root.css-1f266ni svg {
+    
+    
+    color: #fff !important;
+}
+.MuiBox-root.css-1f266ni .MuiButtonBase-root{
+
+    background: #001551 !important;
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, Typography, Button, Card, CardContent } from "@mui/material";
+import cardflightview from "../Asset/Images/ATS-F-1.png";
 
 interface Category {
   name: string;
@@ -59,18 +60,24 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
                 style={{
                   cursor: "pointer",
                   backgroundColor:
-                    selectedTab === item.name ? "#1976d2" : "#fff",
+                    selectedTab === item.name ? "#001551" : "#fff",
                   color: selectedTab === item.name ? "#fff" : "#000",
                   textAlign: "center",
                 }}
               >
                 <CardContent>
+                    <div className="card-fligh-label">
                   <Typography className="v1-card-h6" variant="h6">
                     {item.name.toUpperCase()}
                   </Typography>
                   <Typography variant="body1">
                     {salesDashboardData?.summary?.[item.countLabel] ?? 0}
                   </Typography>
+                  <div className="img-flight-label">
+                    <img src={cardflightview} alt="Company Logo" width={75} />
+                  </div>
+                  </div>
+
                 </CardContent>
               </Card>
             </Grid>
