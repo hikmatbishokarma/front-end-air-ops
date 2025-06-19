@@ -39,7 +39,7 @@ export default function Layout() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#f5f5f5", // Light gray background
+        backgroundColor: "#ddd", // Light gray background
         padding: 2, // Optional
       }}
     >

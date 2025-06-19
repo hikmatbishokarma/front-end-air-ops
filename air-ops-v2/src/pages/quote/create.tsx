@@ -1242,7 +1242,7 @@ export const QuoteCreate = () => {
                         }}
                       >
                         <thead>
-                          <tr style={{ backgroundColor: "#f5f5f5" }}>
+                          <tr style={{ backgroundColor: "#DDD" }}>
                             <th
                               style={{
                                 border: "1px solid #ccc",
@@ -1405,7 +1405,7 @@ export const QuoteCreate = () => {
                         }}
                       >
                         <thead>
-                          <tr style={{ backgroundColor: "#f5f5f5" }}>
+                          <tr style={{ backgroundColor: "#DDD" }}>
                             <th
                               style={{
                                 border: "1px solid #ccc",
