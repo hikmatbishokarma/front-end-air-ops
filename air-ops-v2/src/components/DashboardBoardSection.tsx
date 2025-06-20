@@ -29,6 +29,12 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
   onFilter,
   createEnabledTabs = ["Quotes", "Invoices"],
 }) => {
+  console.log(
+    "salesDashboardData::",
+    salesDashboardData,
+    categories,
+    salesDashboardData?.summary?.["Staff"]
+  );
   return (
     <div className="dashboard_main_d">
       <div className="ban_img"></div>
@@ -71,18 +77,17 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
                 }}
               >
                 <CardContent>
-                    <div className="card-fligh-label">
-                  <Typography className="v1-card-h6" variant="h6">
-                    {item.name.toUpperCase()}
-                  </Typography>
-                  <Typography variant="body1">
-                    {salesDashboardData?.summary?.[item.countLabel] ?? 0}
-                  </Typography>
-                  <div className="img-flight-label">
-                    <img src={cardflightview} alt="Company Logo" width={75} />
+                  <div className="card-fligh-label">
+                    <Typography className="v1-card-h6" variant="h6">
+                      {item.name.toUpperCase()}
+                    </Typography>
+                    <Typography variant="body1">
+                      {salesDashboardData?.summary?.[item.countLabel] ?? 0}
+                    </Typography>
+                    <div className="img-flight-label">
+                      <img src={cardflightview} alt="Company Logo" width={75} />
+                    </div>
                   </div>
-                  </div>
-
                 </CardContent>
               </Card>
             </Grid>

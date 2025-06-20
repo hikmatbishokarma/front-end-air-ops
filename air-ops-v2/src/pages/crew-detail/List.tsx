@@ -34,45 +34,53 @@ import {
 } from "../../lib/graphql/queries/crew-detail";
 import { get } from "react-hook-form";
 
-export const CrewDetailList = ({ open, setOpen }) => {
+export const CrewDetailList = ({
+  open,
+  setOpen,
+  list,
+  loading,
+  onSearch,
+  onFilterChange,
+  refreshList,
+}) => {
   const showSnackbar = useSnackbar();
-  const { session, setSession, loading } = useSession();
+  const { session, setSession } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
 
-  const [crewDetails, setCrewDetails] = useState<any>([]);
+  // const [crewDetails, setCrewDetails] = useState<any>([]);
   //   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [currentRecordId, setCurrentRecordId] = useState("");
 
-  const handleOpen = () => {
-    setOpen(true);
-    setIsEdit(false);
-  };
+  // const handleOpen = () => {
+  //   setOpen(true);
+  //   setIsEdit(false);
+  // };
 
-  const getCrewDetails = async () => {
-    try {
-      const result = await useGql({
-        query: GET_CREW_DETAILS,
-        queryName: "crewDetails",
-        queryType: "query-with-count",
-        variables: {
-          filter: {
-            ...(operatorId && { operatorId: { eq: operatorId } }),
-          },
-        },
-      });
+  // const getCrewDetails = async () => {
+  //   try {
+  //     const result = await useGql({
+  //       query: GET_CREW_DETAILS,
+  //       queryName: "crewDetails",
+  //       queryType: "query-with-count",
+  //       variables: {
+  //         filter: {
+  //           ...(operatorId && { operatorId: { eq: operatorId } }),
+  //         },
+  //       },
+  //     });
 
-      if (!result.data) showSnackbar("Failed to fetch Crew Details!", "error");
-      setCrewDetails(result.data);
-    } catch (error) {
-      showSnackbar(error.message || "Failed to fetch Crew Details!", "error");
-    }
-  };
+  //     if (!result.data) showSnackbar("Failed to fetch Crew Details!", "error");
+  //     setCrewDetails(result.data);
+  //   } catch (error) {
+  //     showSnackbar(error.message || "Failed to fetch Crew Details!", "error");
+  //   }
+  // };
 
-  useEffect(() => {
-    getCrewDetails();
-  }, []);
+  // useEffect(() => {
+  //   getCrewDetails();
+  // }, []);
 
   const handleEdit = (id) => {
     setIsEdit(true);
@@ -99,11 +107,11 @@ export const CrewDetailList = ({ open, setOpen }) => {
 
   const handleClose = () => setOpen(false);
 
-  // Function to refresh category list
-  const refreshList = async () => {
-    // Fetch updated categories from API
-    await getCrewDetails();
-  };
+  // // // Function to refresh category list
+  // const refreshList = async () => {
+  //   // Fetch updated categories from API
+  //   // await getCrewDetails();
+  // };
 
   return (
     <>
@@ -120,38 +128,39 @@ export const CrewDetailList = ({ open, setOpen }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {crewDetails?.map((item, index) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {`${item.firstName} ${item.middleName ?? ""} ${item.lastName}`.trim()}
-                </TableCell>
+            {list &&
+              list?.map((item, index) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {`${item.firstName} ${item.middleName ?? ""} ${item.lastName}`.trim()}
+                  </TableCell>
 
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item?.mobileNumber}</TableCell>
-                <TableCell>{item?.type}</TableCell>
-                <TableCell>
-                  <Switch checked={item.createdAt} size="small" />
-                </TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{item?.mobileNumber}</TableCell>
+                  <TableCell>{item?.type}</TableCell>
+                  <TableCell>
+                    <Switch checked={item.createdAt} size="small" />
+                  </TableCell>
 
-                <TableCell>
-                  {/* Edit Button */}
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleEdit(item.id)}
-                  >
-                    <EditIcon />
-                  </IconButton>
+                  <TableCell>
+                    {/* Edit Button */}
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEdit(item.id)}
+                    >
+                      <EditIcon />
+                    </IconButton>
 
-                  {/* Delete Button */}
-                  <IconButton
-                    color="secondary"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+                    {/* Delete Button */}
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -162,7 +171,7 @@ export const CrewDetailList = ({ open, setOpen }) => {
         maxWidth="md"
       >
         <DialogTitle>
-          {isEdit ? "Edit Crew Detail" : "Create Crew Detail"}
+          {isEdit ? "Edit Staff Details" : "Create Staff Details"}
           <IconButton
             aria-label="close"
             onClick={() => setOpen(false)}
