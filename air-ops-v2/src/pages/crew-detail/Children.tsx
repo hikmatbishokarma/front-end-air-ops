@@ -24,6 +24,11 @@ import FileUpload from "../../components/fileupload";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import moment from "moment";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { useGenderOptions } from "../../hooks/useGenderOptions";
+import { useMaritalStatusOptions } from "../../hooks/useMaritalStatusOptions";
+import { useReligionOptions } from "../../hooks/useReligionOptions";
+import { useCountryOptions } from "../../hooks/useCountryOptions";
+import { useFormFieldOptions } from "../../hooks/useFormFieldOptions";
 
 interface FormField {
   name: string;
@@ -36,6 +41,7 @@ interface FormField {
     value: RegExp;
     message: string;
   };
+  optionsKey?: string;
 }
 
 interface ReusableFormProps {
@@ -61,6 +67,9 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
   addNominee,
   removeNominee,
 }) => {
+  const fieldOptions = useFormFieldOptions();
+  const genderOptions = useGenderOptions();
+
   return (
     <Box
       component="form"
@@ -89,7 +98,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
               name="location"
               control={control}
               render={({ field }) => (
-                <CityAutocomplete {...field} label="Location" />
+                <CityAutocomplete {...field} label="Work Location" />
               )}
             />
           </Grid>
@@ -97,6 +106,9 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
             <Controller
               name="type"
               control={control}
+              rules={{
+                required: true,
+              }}
               render={({ field, fieldState: { error } }) => (
                 <FormControl
                   fullWidth
@@ -120,62 +132,138 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
 
         <h3>User Details</h3>
         <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-          {fields.map((field) => (
-            <Grid item xs={field.xs || 6} key={field.name}>
-              <Controller
-                name={field.name}
-                control={control}
-                rules={{
-                  required: field.required
-                    ? `${field.label} is required`
-                    : false,
-                  pattern: field.pattern,
-                }}
-                render={({ field: controllerField, fieldState: { error } }) => {
-                  if (field.options) {
-                    return (
-                      <FormControl component="fieldset" margin="normal">
-                        <RadioGroup
-                          row
-                          value={controllerField.value}
-                          onChange={controllerField.onChange}
-                          onBlur={controllerField.onBlur}
+          {fields.map((field) => {
+            const { name, label, type, required, pattern, optionsKey } = field;
+
+            const options = optionsKey ? fieldOptions[optionsKey] : undefined;
+
+            return (
+              <Grid item xs={field.xs || 6} key={field.name}>
+                <Controller
+                  name={field.name}
+                  control={control}
+                  rules={{
+                    required: field.required
+                      ? `${field.label} is required`
+                      : false,
+                    pattern: field.pattern,
+                  }}
+                  render={({
+                    field: controllerField,
+                    fieldState: { error },
+                  }) => {
+                    if (type === "select") {
+                      return (
+                        <FormControl
+                          fullWidth
+                          component="fieldset"
+                          error={!!error}
+                          size="small"
+                          variant="outlined"
                         >
-                          <FormControlLabel
-                            value="MALE"
-                            control={<Radio />}
-                            label="Male"
-                          />
-                          <FormControlLabel
-                            value="FEMALE"
-                            control={<Radio />}
-                            label="Female"
-                          />
-                          <FormControlLabel
-                            value="OTHER"
-                            control={<Radio />}
-                            label="Other"
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    );
-                  } else if (field?.type == "date") {
-                    return (
+                          <InputLabel id={name}>{label}</InputLabel>
+                          <Select
+                            labelId={name}
+                            label={label}
+                            {...controllerField}
+                          >
+                            {options.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {error && (
+                            <FormHelperText>{error.message}</FormHelperText>
+                          )}
+                        </FormControl>
+                      );
+                    } else if (field?.type == "date") {
+                      return (
+                        <DatePicker
+                          {...controllerField}
+                          label="DOB"
+                          format="DD-MM-YYYY"
+                          value={
+                            controllerField.value
+                              ? moment(controllerField.value)
+                              : null
+                          }
+                          onChange={(newValue) =>
+                            controllerField.onChange(newValue)
+                          }
+                          maxDate={moment()}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              size: "small",
+                              error: !!error,
+                              helperText: error?.message,
+                            },
+                          }}
+                        />
+                      );
+                    } else
+                      return (
+                        <TextField
+                          {...controllerField}
+                          size="small"
+                          // label={field.label}
+                          label={field.label}
+                          fullWidth
+                          type={field.type || "text"}
+                          error={!!error}
+                          helperText={error?.message}
+                          InputLabelProps={{
+                            shrink: !!controllerField.value,
+                          }}
+                        />
+                      );
+                  }}
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
+
+        {/* Certifications */}
+        <Grid item xs={12}>
+          <h3>Certifications</h3>
+          {certFields &&
+            certFields.map((item, index) => (
+              <Grid container spacing={2} key={item.id}>
+                <Grid item xs={4}>
+                  <Controller
+                    name={`certifications.${index}.certification`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Certification"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Controller
+                    name={`certifications.${index}.validTill`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field, fieldState: { error } }) => (
                       <DatePicker
-                        {...controllerField}
+                        {...field}
+                        label="DOB"
                         format="DD-MM-YYYY"
-                        value={
-                          controllerField.value
-                            ? moment(controllerField.value)
-                            : null
-                        }
-                        onChange={(newValue) =>
-                          controllerField.onChange(newValue)
-                        }
-                        maxDate={moment()}
+                        value={field.value ? moment(field.value) : null}
+                        onChange={(newValue) => field.onChange(newValue)}
+                        minDate={moment()}
                         slotProps={{
                           textField: {
-                            required: true,
                             fullWidth: true,
                             size: "small",
                             error: !!error,
@@ -183,71 +271,38 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                           },
                         }}
                       />
-                    );
-                  } else
-                    return (
-                      <TextField
-                        {...controllerField}
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Controller
+                    name={`certifications.${index}.uploadCertificate`}
+                    control={control}
+                    render={({ field }) => (
+                      // <FileUpload
+                      //   value={field.value}
+                      //   size="medium"
+                      //   onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+                      //   label="upload certification"
+                      //   category="certification"
+                      // />
+                      <FileUpload
                         size="small"
-                        // label={field.label}
-                        label={field.label}
-                        fullWidth
-                        type={field.type || "text"}
-                        error={!!error}
-                        helperText={error?.message}
-                        InputLabelProps={{
-                          shrink: !!controllerField.value,
-                        }}
+                        category="certifications"
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        value={field.value}
+                        onUpload={(url) => field.onChange(url)}
                       />
-                    );
-                }}
-              />
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Certifications */}
-        <Grid item xs={12}>
-          <h3>Certifications</h3>
-          {certFields.map((item, index) => (
-            <Grid container spacing={2} key={item.id}>
-              <Grid item xs={4}>
-                <Controller
-                  name={`certifications.${index}.certification`}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Certification"
-                      fullWidth
-                      size="small"
-                    />
-                  )}
-                />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Button color="error" onClick={() => removeCert(index)}>
+                    Remove
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={4}>
-                <Controller
-                  name={`certifications.${index}.validTill`}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Valid Till"
-                      type="date"
-                      fullWidth
-                      size="small"
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Button color="error" onClick={() => removeCert(index)}>
-                  Remove
-                </Button>
-              </Grid>
-            </Grid>
-          ))}
+            ))}
           <Button
             onClick={() => addCert({ certification: "", validTill: "" })}
             variant="outlined"
@@ -280,10 +335,79 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                 <Controller
                   name={`nominees.${index}.gender`}
                   control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <FormControl
+                      fullWidth
+                      component="fieldset"
+                      error={!!error}
+                      size="small"
+                      variant="outlined" // ✅ this is needed
+                    >
+                      <InputLabel id="gender-label">Gender</InputLabel>
+                      <Select labelId="gender-label" label="Gender" {...field}>
+                        {genderOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {error && (
+                        <FormHelperText>{error.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  name={`nominees.${index}.relation`}
+                  control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Gender"
+                      label="Relation"
+                      fullWidth
+                      size="small"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  name={`nominees.${index}.idProof`}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="ID Proof"
+                      fullWidth
+                      size="small"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  name={`nominees.${index}.mobileNumber`}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Mobile Number"
+                      fullWidth
+                      size="small"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  name={`nominees.${index}.alternateContact`}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Alternate Contact No"
                       fullWidth
                       size="small"
                     />

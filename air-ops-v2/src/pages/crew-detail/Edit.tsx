@@ -117,8 +117,18 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
 
   const onSubmit = async (data) => {
     try {
-      await updateCrewDetail(id, { ...data, operatorId });
+      let { certifications, nominees, ...rest } = data;
+      certifications = certifications.map(({ __typename, ...rest }) => rest);
+      nominees = nominees.map(({ __typename, ...rest }) => rest);
+
+      await updateCrewDetail(id, {
+        ...data,
+        certifications,
+        nominees,
+        operatorId,
+      });
       reset(); // Reset form after successful submission
+      refreshList();
       onClose(); // <-- Close dialog after creating
     } catch (error) {
       console.error("Error during API call:", error);

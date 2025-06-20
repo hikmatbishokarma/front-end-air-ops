@@ -8,16 +8,17 @@ export const crewDetailFormFields = [
     name: "gender",
     label: "Gender",
     type: "select",
-    options: ["MALE", "FEMALE", "OTHER"],
+    optionsKey: "gender",
     required: true,
   },
   {
     name: "dateOfBirth",
     label: "Date of Birth",
     type: "date",
-    required: false,
+    required: true,
   },
-  { name: "bloodGroup", label: "Blood Group", required: true },
+
+  { name: "bloodGroup", label: "Blood Group", required: false },
   { name: "designation", label: "Designation", required: true },
   { name: "education", label: "Education", required: true },
   { name: "experience", label: "Experience", required: true },
@@ -40,6 +41,34 @@ export const crewDetailFormFields = [
       message: "Invalid email address",
     },
   },
+  {
+    name: "martialStatus",
+    label: "Marital Status",
+    type: "select",
+    optionsKey: "maritalStatus",
+  },
+  {
+    name: "anniversaryDate",
+    label: "Anniversary Date",
+    type: "date",
+    required: false,
+  },
+  {
+    name: "religion",
+    label: "Religion",
+    type: "select",
+    required: false,
+    optionsKey: "religion",
+  },
+
+  {
+    name: "nationality",
+    label: "Nationality",
+    type: "select",
+    required: false,
+    optionsKey: "country",
+  },
+
   {
     name: "aadhar",
     label: "Aadhar",
@@ -64,9 +93,10 @@ export const crewDetailFormFields = [
       message: "Invalid passport number",
     },
   },
-  { name: "pinCode", label: "PIN Code" },
+
   { name: "temporaryAddress", label: "Temporary Address" },
   { name: "permanentAddress", label: "Permanent Address" },
+  { name: "pinCode", label: "PIN Code" },
 
   // Security
   { name: "userName", label: "Username", required: false },
@@ -77,11 +107,11 @@ export const crewDetailFormFields = [
     type: "password",
     required: false,
   },
-  {
-    name: "enableTwoFactorAuth",
-    label: "Enable Two-Factor Auth",
-    type: "switch",
-  },
+  // {
+  //   name: "enableTwoFactorAuth",
+  //   label: "Enable Two-Factor Auth",
+  //   type: "switch",
+  // },
 ];
 
 export const certificationFormFields = [

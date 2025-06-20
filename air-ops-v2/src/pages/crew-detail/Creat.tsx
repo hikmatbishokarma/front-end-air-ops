@@ -61,6 +61,7 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
     try {
       await createCrewDetail({ ...data, operatorId }); // Wait for API call to complete
       reset(); // Reset form after successful submission
+      refreshList();
       onClose(); // <-- Close dialog after creating
     } catch (error) {
       console.error("Error during API call:", error);
