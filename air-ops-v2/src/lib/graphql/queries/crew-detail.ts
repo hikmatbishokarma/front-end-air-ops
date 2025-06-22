@@ -48,6 +48,10 @@ export const GET_CREW_DETAIL_BY_ID = gql`
       type
       profile
       email
+      anniversaryDate
+      martialStatus
+      religion
+      nationality
       mobileNumber
       aadhar
       pan

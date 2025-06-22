@@ -29,6 +29,10 @@ export interface CrewDetailFormValues {
   mobileNumber: string;
   alternateContact: string;
   email: string;
+  nationality: string;
+  religion: string;
+  anniversaryDate: string;
+  martialStatus: string;
   aadhar: string;
   pan: string;
   passportNo: string;
