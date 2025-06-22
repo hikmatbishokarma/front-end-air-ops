@@ -17,6 +17,8 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Autocomplete,
+  InputAdornment,
 } from "@mui/material";
 import QuoteList from "../quote/list";
 import useGql from "../../lib/graphql/gql";
@@ -31,15 +33,21 @@ import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
 import { useSnackbar } from "../../SnackbarContext";
 import InvoicePreview from "../../components/invoice-preview";
 import InvoiceList from "../quote/invoice-list";
-import { TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
+import { GET_QUOTES, TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
 import TripConfirmationPreview from "../../components/trip-confirmation-preview";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import moment from "moment";
+import { useQuoteData } from "../../hooks/useQuoteData";
+import FilterPanel from "../quote/FilterPanel";
+import { Iclient } from "../../interfaces/quote.interface";
+import SearchIcon from "@mui/icons-material/Search";
 
 const SalesDashboard = () => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
+
+  const { clients } = useQuoteData();
 
   const [selectedTab, setSelectedTab] = useState("Quotes");
   const [refreshKey, setRefreshKey] = useState(Date.now());
@@ -383,6 +391,96 @@ const SalesDashboard = () => {
     fethSalesDashboardData({ activeFromDate, activeToDate });
   }, [activeFromDate, activeToDate]);
 
+  const handelOnFilterApply = () => {
+    if (activeFromDate && activeToDate) {
+      fethSalesDashboardData({ activeFromDate, activeToDate });
+    }
+  };
+
+  /** new filter */
+  const [openFilter, setOpenFilter] = useState(false);
+  const [selectedRequester, setSelectedRequester] = useState<Iclient | null>();
+  //const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleFilterOpen = (e) => {
+    setAnchorEl(e.currentTarget);
+    setOpenFilter(true);
+  };
+
+  const handleFilterClose = () => {
+    setOpenFilter(false);
+  };
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  /** API CALL */
+
+  const [quoteList, setQuoteList] = useState<any[]>([]);
+
+  const [page, setPage] = useState(0); // page number starting at 0
+  const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
+
+  const [totalCount, setTotalCount] = useState(0); // total count from backend
+
+  const getQuotes = async () => {
+    try {
+      const data = await useGql({
+        query: GET_QUOTES,
+        queryName: "quotes",
+        queryType: "query-with-count",
+        variables: {
+          filter: {
+            ...filter,
+            ...(selectedRequester?.id && {
+              requestedBy: { eq: selectedRequester.id },
+            }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+          "paging": {
+            "offset": page * rowsPerPage,
+            "limit": rowsPerPage,
+          },
+          "sorting": [{ "field": "createdAt", "direction": "DESC" }],
+        },
+      });
+
+      const result = data?.data?.map((quote: any) => {
+        return {
+          ...quote,
+          id: quote.id,
+          quotationNo: quote?.quotationNo,
+          status: QuotationStatus[quote.status],
+          requester: quote.requestedBy.name,
+          requesterId: quote.requestedBy.id,
+          version: quote.version,
+          revision: quote.revision,
+          itinerary: quote.itinerary
+            ?.map((itinerary: any) => {
+              return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
+            })
+            .join(", "),
+          createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
+          updatedAt: quote.updatedAt,
+          code: quote.code,
+        };
+      });
+
+      setTotalCount(data?.totalCount || 0);
+      setQuoteList(result);
+      // Extract unique requesters for dropdown
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getQuotes();
+  }, [filter, selectedRequester, page, rowsPerPage, refreshKey]);
+
+  const filteredRows = quoteList?.filter((row) =>
+    row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  );
+
   return (
     <>
       <Dialog
@@ -554,8 +652,8 @@ const SalesDashboard = () => {
         </DialogContent>
       </Dialog>
 
-      <Box sx={{ p: 2 }}>
-        {/* Date Filter Dropdown */}
+      {/* <Box sx={{ p: 2 }}>
+    
         <Box
           sx={{
             mb: 2,
@@ -599,23 +697,20 @@ const SalesDashboard = () => {
             MenuListProps={{
               "aria-labelledby": "date-filter-button",
               sx: {
-                p: 1, // Adds padding around the menu items
+                p: 1, 
               },
             }}
           >
-            {/* <MenuItem onClick={() => handleDateFilterSelect("anyDate")}>
-              Any Date
-            </MenuItem> */}
-            {/* Custom Date Range Inputs - rendered directly in the menu or conditionally */}
+          
             <MenuItem>
               {" "}
-              {/* This MenuItem acts as a container for inputs */}
+              
               <Box
                 sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}
               >
                 <Box sx={{ display: "flex", gap: 1 }}>
                   {" "}
-                  {/* <<< This Box is the flex container */}
+                  
                   <TextField
                     type="date"
                     label="From"
@@ -626,7 +721,7 @@ const SalesDashboard = () => {
                     }
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ max: moment().format("YYYY-MM-DD") }}
-                    sx={{ flex: 1 }} // Each TextField takes equal width horizontally
+                    sx={{ flex: 1 }} 
                   />
                   <TextField
                     type="date"
@@ -638,10 +733,10 @@ const SalesDashboard = () => {
                     }
                     InputLabelProps={{ shrink: true }}
                     inputProps={{ max: moment().format("YYYY-MM-DD") }}
-                    sx={{ flex: 1 }} // Each TextField takes equal width horizontally
+                    sx={{ flex: 1 }} 
                   />
                 </Box>
-                {/* Apply Button is below the horizontal date inputs */}
+                
                 <Button
                   variant="contained"
                   size="small"
@@ -653,7 +748,7 @@ const SalesDashboard = () => {
                 </Button>
               </Box>
             </MenuItem>
-            <Divider /> {/* Separator */}
+            <Divider /> 
             <MenuItem
               onClick={() => handleDateFilterSelect("today")}
               sx={{
@@ -661,14 +756,14 @@ const SalesDashboard = () => {
                 justifyContent: "center",
                 width: "100%",
                 border: "1px solid #ddd",
-                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
-                my: 1, // Adds margin between items
+                borderRadius: 1.5, 
+                my: 1, 
                 backgroundColor:
-                  dateFilterType === "today" ? "#e3f2fd" : "#fff", // Light blue on select
-                color: dateFilterType === "today" ? "#1976d2" : "inherit", // Blue text if selected
-                fontWeight: dateFilterType === "today" ? 600 : "normal", // Slight emphasis
+                  dateFilterType === "today" ? "#e3f2fd" : "#fff",
+                color: dateFilterType === "today" ? "#1976d2" : "inherit", 
+                fontWeight: dateFilterType === "today" ? 600 : "normal",
                 "&:hover": {
-                  backgroundColor: "#f0f0f0", // Light gray on hover
+                  backgroundColor: "#f0f0f0", 
                 },
               }}
               selected={dateFilterType === "today"}
@@ -682,14 +777,14 @@ const SalesDashboard = () => {
                 justifyContent: "center",
                 width: "100%",
                 border: "1px solid #ddd",
-                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
-                my: 1, // Adds margin between items
+                borderRadius: 1.5, 
+                my: 1, 
                 backgroundColor:
-                  dateFilterType === "yesterday" ? "#e3f2fd" : "#fff", // Light blue on select
-                color: dateFilterType === "yesterday" ? "#1976d2" : "inherit", // Blue text if selected
-                fontWeight: dateFilterType === "yesterday" ? 600 : "normal", // Slight emphasis
+                  dateFilterType === "yesterday" ? "#e3f2fd" : "#fff", 
+                color: dateFilterType === "yesterday" ? "#1976d2" : "inherit", 
+                fontWeight: dateFilterType === "yesterday" ? 600 : "normal",
                 "&:hover": {
-                  backgroundColor: "#f0f0f0", // Light gray on hover
+                  backgroundColor: "#f0f0f0", 
                 },
               }}
               selected={dateFilterType === "yesterday"}
@@ -703,14 +798,14 @@ const SalesDashboard = () => {
                 justifyContent: "center",
                 width: "100%",
                 border: "1px solid #ddd",
-                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
-                my: 1, // Adds margin between items
+                borderRadius: 1.5, 
+                my: 1, 
                 backgroundColor:
-                  dateFilterType === "lastWeek" ? "#e3f2fd" : "#fff", // Light blue on select
-                color: dateFilterType === "lastWeek" ? "#1976d2" : "inherit", // Blue text if selected
-                fontWeight: dateFilterType === "lastWeek" ? 600 : "normal", // Slight emphasis
+                  dateFilterType === "lastWeek" ? "#e3f2fd" : "#fff", 
+                color: dateFilterType === "lastWeek" ? "#1976d2" : "inherit", 
+                fontWeight: dateFilterType === "lastWeek" ? 600 : "normal",
                 "&:hover": {
-                  backgroundColor: "#f0f0f0", // Light gray on hover
+                  backgroundColor: "#f0f0f0",
                 },
               }}
               selected={dateFilterType === "lastWeek"}
@@ -724,14 +819,14 @@ const SalesDashboard = () => {
                 justifyContent: "center",
                 width: "100%",
                 border: "1px solid #ddd",
-                borderRadius: 1.5, // Adds rounded corners (equivalent to 4px)
-                my: 1, // Adds margin between items
+                borderRadius: 1.5, 
+                my: 1, 
                 backgroundColor:
-                  dateFilterType === "lastMonth" ? "#e3f2fd" : "#fff", // Light blue on select
-                color: dateFilterType === "lastMonth" ? "#1976d2" : "inherit", // Blue text if selected
-                fontWeight: dateFilterType === "lastMonth" ? 600 : "normal", // Slight emphasis
+                  dateFilterType === "lastMonth" ? "#e3f2fd" : "#fff", 
+                color: dateFilterType === "lastMonth" ? "#1976d2" : "inherit", 
+                fontWeight: dateFilterType === "lastMonth" ? 600 : "normal",
                 "&:hover": {
-                  backgroundColor: "#f0f0f0", // Light gray on hover
+                  backgroundColor: "#f0f0f0", 
                 },
               }}
               selected={dateFilterType === "lastMonth"}
@@ -740,7 +835,7 @@ const SalesDashboard = () => {
             </MenuItem>
           </Menu>
         </Box>
-      </Box>
+      </Box> */}
 
       <DashboardBoardSection
         selectedTab={selectedTab}
@@ -750,6 +845,43 @@ const SalesDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Quotes", "Invoices", "Trip Confirmation"]}
       />
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
+          mt: 6, // add this for spacing
+          mb: 2,
+          px: 2,
+          py: 1,
+          backgroundColor: "#f9f9f9",
+          borderRadius: 2,
+          boxShadow: 1,
+          justifyContent: "space-between",
+        }}
+      >
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Search Quotation"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Button variant="outlined" onClick={handleFilterOpen}>
+          Filter
+        </Button>
+      </Box>
+
       {(selectedTab == "Quotes" || selectedTab == "Trip Confirmation") && (
         <QuoteList
           filter={filter}
@@ -760,6 +892,12 @@ const SalesDashboard = () => {
           setFilter={setFilter}
           setShowInvoicePreview={setShowInvoicePreview}
           setInvoicedata={setInvoicedata}
+          quoteList={filteredRows}
+          totalCount={totalCount}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          setPage={setPage}
+          setRowsPerPage={setRowsPerPage}
         />
       )}
       {selectedTab == "Invoices" && (
@@ -852,6 +990,35 @@ const SalesDashboard = () => {
           </Button>
         </DialogActions> */}
       </Dialog>
+
+      <FilterPanel
+        open={openFilter}
+        anchorEl={anchorEl}
+        onClose={handleFilterClose}
+        dateFilterType={dateFilterType}
+        onDateFilterChange={setDateFilterType}
+        fromDate={customFromDate ? moment(customFromDate) : null}
+        toDate={customToDate ? moment(customToDate) : null}
+        onFromDateChange={(date) =>
+          setCustomFromDate(date ? date.format("YYYY-MM-DD") : "")
+        }
+        onToDateChange={(date) =>
+          setCustomToDate(date ? date.format("YYYY-MM-DD") : "")
+        }
+        requester={selectedRequester}
+        onRequesterChange={setSelectedRequester}
+        clients={clients}
+        onApply={() => {
+          // your apply logic
+          handleFilterClose();
+        }}
+        onReset={() => {
+          setDateFilterType("anyDate");
+          setCustomFromDate("");
+          setCustomToDate("");
+          setSelectedRequester(null);
+        }}
+      />
     </>
   );
 };

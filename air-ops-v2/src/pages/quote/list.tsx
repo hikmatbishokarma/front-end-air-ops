@@ -63,6 +63,12 @@ export const QuoteList = ({
   setFilter,
   setShowInvoicePreview,
   setInvoicedata,
+  quoteList,
+  totalCount,
+  rowsPerPage,
+  page,
+  setPage,
+  setRowsPerPage,
 }) => {
   const { session, setSession, loading } = useSession();
 
@@ -71,79 +77,79 @@ export const QuoteList = ({
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
 
-  const [rows, setRows] = useState<any[]>([]);
+  // const [rows, setRows] = useState<any[]>([]);
   const [previewData, setPreviewData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
 
   const [selectedRequester, setSelectedRequester] = useState<Iclient | null>();
 
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
 
-  const [page, setPage] = useState(0); // page number starting at 0
-  const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
+  // const [page, setPage] = useState(0); // page number starting at 0
+  // const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
 
-  const [totalCount, setTotalCount] = useState(0); // total count from backend
+  // const [totalCount, setTotalCount] = useState(0); // total count from backend
 
   const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
     useState(false);
   const [tripConfirmationPreviewTemplate, setTripConfirmationPreviewTemplate] =
     useState(null);
 
-  const getQuotes = async () => {
-    try {
-      const data = await useGql({
-        query: GET_QUOTES,
-        queryName: "quotes",
-        queryType: "query-with-count",
-        variables: {
-          filter: {
-            ...filter,
-            ...(selectedRequester?.id && {
-              requestedBy: { eq: selectedRequester.id },
-            }),
-            ...(operatorId && { operatorId: { eq: operatorId } }),
-          },
-          "paging": {
-            "offset": page * rowsPerPage,
-            "limit": rowsPerPage,
-          },
-          "sorting": [{ "field": "createdAt", "direction": "DESC" }],
-        },
-      });
+  // const getQuotes = async () => {
+  //   try {
+  //     const data = await useGql({
+  //       query: GET_QUOTES,
+  //       queryName: "quotes",
+  //       queryType: "query-with-count",
+  //       variables: {
+  //         filter: {
+  //           ...filter,
+  //           ...(selectedRequester?.id && {
+  //             requestedBy: { eq: selectedRequester.id },
+  //           }),
+  //           ...(operatorId && { operatorId: { eq: operatorId } }),
+  //         },
+  //         "paging": {
+  //           "offset": page * rowsPerPage,
+  //           "limit": rowsPerPage,
+  //         },
+  //         "sorting": [{ "field": "createdAt", "direction": "DESC" }],
+  //       },
+  //     });
 
-      const result = data?.data?.map((quote: any) => {
-        return {
-          ...quote,
-          id: quote.id,
-          quotationNo: quote?.quotationNo,
-          status: QuotationStatus[quote.status],
-          requester: quote.requestedBy.name,
-          requesterId: quote.requestedBy.id,
-          version: quote.version,
-          revision: quote.revision,
-          itinerary: quote.itinerary
-            ?.map((itinerary: any) => {
-              return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
-            })
-            .join(", "),
-          createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
-          updatedAt: quote.updatedAt,
-          code: quote.code,
-        };
-      });
-      console.log("result:::", result);
-      setTotalCount(data?.totalCount || 0);
-      setRows(result);
-      // Extract unique requesters for dropdown
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //     const result = data?.data?.map((quote: any) => {
+  //       return {
+  //         ...quote,
+  //         id: quote.id,
+  //         quotationNo: quote?.quotationNo,
+  //         status: QuotationStatus[quote.status],
+  //         requester: quote.requestedBy.name,
+  //         requesterId: quote.requestedBy.id,
+  //         version: quote.version,
+  //         revision: quote.revision,
+  //         itinerary: quote.itinerary
+  //           ?.map((itinerary: any) => {
+  //             return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
+  //           })
+  //           .join(", "),
+  //         createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
+  //         updatedAt: quote.updatedAt,
+  //         code: quote.code,
+  //       };
+  //     });
+  //     console.log("result:::", result);
+  //     setTotalCount(data?.totalCount || 0);
+  //     setRows(result);
+  //     // Extract unique requesters for dropdown
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getQuotes();
-  }, [filter, selectedRequester, page, rowsPerPage, isGenerated, refreshKey]);
+  // useEffect(() => {
+  //   getQuotes();
+  // }, [filter, selectedRequester, page, rowsPerPage, isGenerated, refreshKey]);
 
   const handelPreview = async (row) => {
     setSelectedRowData(row);
@@ -167,9 +173,9 @@ export const QuoteList = ({
     }
   };
 
-  const refreshList = async () => {
-    await getQuotes();
-  };
+  // const refreshList = async () => {
+  //   await getQuotes();
+  // };
 
   const updateQuoteStatus = async (id, toStatus) => {
     try {
@@ -191,7 +197,7 @@ export const QuoteList = ({
     } catch (error) {
       showSnackbar(error?.message || "Failed To Update Status!", "error");
     } finally {
-      refreshList();
+      // refreshList();
     }
   };
 
@@ -204,9 +210,9 @@ export const QuoteList = ({
     }
   };
 
-  const filteredRows = rows?.filter((row) =>
-    row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  );
+  // const filteredRows = rows?.filter((row) =>
+  //   row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  // );
 
   const { clients } = useQuoteData();
 
@@ -281,44 +287,6 @@ export const QuoteList = ({
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          p={2}
-          flexWrap="wrap"
-          gap={2}
-        >
-          <TextField
-            variant="outlined"
-            size="small"
-            label="Search Quotation"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          <Box display="flex" alignItems="center" gap={1} ml="auto">
-            <Autocomplete
-              size="small"
-              options={clients}
-              getOptionLabel={(option) => option.name || ""}
-              value={selectedRequester}
-              onChange={(_, newValue) => setSelectedRequester(newValue)}
-              renderInput={(params) => (
-                <TextField {...params} label="Requester" />
-              )}
-              sx={{ minWidth: 200 }}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-            />
-          </Box>
-        </Box>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -331,7 +299,7 @@ export const QuoteList = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRows?.map((row) => (
+            {quoteList?.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{
