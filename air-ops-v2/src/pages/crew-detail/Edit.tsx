@@ -27,7 +27,11 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       defaultValues: {
         type: "",
         gender: "",
+        martialStatus: "",
+        religion: "",
+        anniversaryDate: "",
         certifications: [],
+        nationality: "",
         nominees: [],
       },
     });
@@ -61,6 +65,10 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("type", crewDetail.type || "");
       setValue("location", crewDetail.location || "");
       setValue("email", crewDetail.email);
+      setValue("martialStatus", crewDetail.martialStatus);
+      setValue("anniversaryDate", crewDetail.anniversaryDate);
+      setValue("religion", crewDetail.religion);
+      setValue("nationality", crewDetail.nationality);
       setValue("mobileNumber", crewDetail?.mobileNumber);
       setValue("aadhar", crewDetail.aadhar || "");
       setValue("pan", crewDetail.pan || "");

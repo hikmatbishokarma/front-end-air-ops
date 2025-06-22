@@ -182,7 +182,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                       return (
                         <DatePicker
                           {...controllerField}
-                          label="DOB"
+                          label={field.label}
                           format="DD-MM-YYYY"
                           value={
                             controllerField.value
@@ -257,7 +257,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                     render={({ field, fieldState: { error } }) => (
                       <DatePicker
                         {...field}
-                        label="DOB"
+                        label="ValidTill"
                         format="DD-MM-YYYY"
                         value={field.value ? moment(field.value) : null}
                         onChange={(newValue) => field.onChange(newValue)}
