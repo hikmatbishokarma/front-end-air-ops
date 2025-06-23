@@ -29,7 +29,11 @@ import { useMaritalStatusOptions } from "../../hooks/useMaritalStatusOptions";
 import { useReligionOptions } from "../../hooks/useReligionOptions";
 import { useCountryOptions } from "../../hooks/useCountryOptions";
 import { useFormFieldOptions } from "../../hooks/useFormFieldOptions";
-
+import { useDesignationOptions } from "../../hooks/useDesignationOptions";
+import useGql from "../../lib/graphql/gql";
+import { GET_ROLES } from "../../lib/graphql/queries/role";
+import { RoleType } from "../role/create";
+import MultiSelectAutoComplete from "../../components/MultiSelectAutoComplete";
 interface FormField {
   name: string;
   label: string;
@@ -69,6 +73,28 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
 }) => {
   const fieldOptions = useFormFieldOptions();
   const genderOptions = useGenderOptions();
+  const designation = useDesignationOptions();
+  const [roles, setRoles] = useState<any[]>([]);
+
+  const getRoles = async () => {
+    try {
+      const data = await useGql({
+        query: GET_ROLES,
+        queryName: "roles",
+        queryType: "query",
+        variables: { filter: { type: { neq: RoleType.SUPER_ADMIN } } },
+      });
+      // setRoleOptions(data);
+
+      setRoles(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getRoles();
+  }, []);
 
   return (
     <Box
@@ -77,7 +103,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
     >
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
+        {/* <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
           <Grid item xs={4}>
             <Controller
               name="profile"
@@ -104,7 +130,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
           </Grid>
           <Grid item xs={4}>
             <Controller
-              name="type"
+              name="designation"
               control={control}
               rules={{
                 required: true,
@@ -116,17 +142,103 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                   size="small"
                   error={!!error}
                 >
-                  <InputLabel id="type-label">Crew Type</InputLabel>
+                  <InputLabel id="type-label">Designation</InputLabel>
                   <Select labelId="type-label" label="Crew Type" {...field}>
-                    <MenuItem value="DOCTOR">Doctor</MenuItem>
-                    <MenuItem value="ENGINEER">Engineer</MenuItem>
-                    <MenuItem value="PILOT">Pilot</MenuItem>
-                    <MenuItem value="CABIN_CREW">Cabin Crew</MenuItem>
+                    {designation.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
                   </Select>
                   {error && <FormHelperText>{error.message}</FormHelperText>}
                 </FormControl>
               )}
             />
+          </Grid>
+        </Grid> */}
+
+        <Grid container spacing={1} alignItems="flex-start" sx={{ mb: 3 }}>
+          {/* Profile Upload on the left */}
+          <Grid item xs={4}>
+            <Controller
+              name="profile"
+              control={control}
+              render={({ field }) => (
+                <FileUpload
+                  value={field.value}
+                  onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+                  // label="Profile"
+                  category="profile"
+                />
+              )}
+            />
+          </Grid>
+
+          {/* Work Location and Designation stacked on the right */}
+          <Grid item xs={8}>
+            <Grid container spacing={1} direction="column">
+              <Grid item>
+                <Controller
+                  name="location"
+                  control={control}
+                  render={({ field }) => (
+                    <CityAutocomplete {...field} label="Work Location" />
+                  )}
+                />
+              </Grid>
+
+              <Grid item>
+                <Controller
+                  name="designation"
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <FormControl
+                      fullWidth
+                      margin="normal"
+                      size="small"
+                      error={!!error}
+                    >
+                      <InputLabel id="type-label">Designation</InputLabel>
+                      <Select labelId="type-label" label="Crew Type" {...field}>
+                        {designation.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {error && (
+                        <FormHelperText>{error.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+
+              <Grid>
+                <Controller
+                  name="role"
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <MultiSelectAutoComplete
+                      value={field.value || []}
+                      onChange={field.onChange}
+                      label="Role"
+                      options={roles}
+                      getOptionLabel={(option) => option.name}
+                      isOptionEqualToValue={(a, b) => a.id === b.id}
+                      error={!!error}
+                      helperText={error?.message}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
 
@@ -232,19 +344,61 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
           {certFields &&
             certFields.map((item, index) => (
               <Grid container spacing={2} key={item.id}>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                   <Controller
-                    name={`certifications.${index}.certification`}
+                    name={`certifications.${index}.name`}
                     control={control}
                     rules={{ required: true }}
                     render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
-                        label="Certification"
+                        label="Name"
                         fullWidth
                         size="small"
                         error={!!error}
                         helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`certifications.${index}.licenceNo`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Licence No"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`certifications.${index}.dateOfIssue`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field, fieldState: { error } }) => (
+                      <DatePicker
+                        {...field}
+                        label="Date of Issue"
+                        format="DD-MM-YYYY"
+                        value={field.value ? moment(field.value) : null}
+                        onChange={(newValue) => field.onChange(newValue)}
+                        minDate={moment()}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            size: "small",
+                            error: !!error,
+                            helperText: error?.message,
+                          },
+                        }}
                       />
                     )}
                   />
@@ -276,19 +430,12 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                 </Grid>
                 <Grid item xs={4}>
                   <Controller
-                    name={`certifications.${index}.uploadCertificate`}
+                    name={`certifications.${index}.issuedBy`}
                     control={control}
                     render={({ field }) => (
-                      // <FileUpload
-                      //   value={field.value}
-                      //   size="medium"
-                      //   onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
-                      //   label="upload certification"
-                      //   category="certification"
-                      // />
                       <FileUpload
                         size="small"
-                        category="certifications"
+                        category="Issued By"
                         accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
                         value={field.value}
                         onUpload={(url) => field.onChange(url)}
@@ -304,7 +451,15 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
               </Grid>
             ))}
           <Button
-            onClick={() => addCert({ certification: "", validTill: "" })}
+            onClick={() =>
+              addCert({
+                name: "",
+                licenceNo: "",
+                dateOfIssue: "",
+                issuedBy: "",
+                validTill: "",
+              })
+            }
             variant="outlined"
             sx={{ mt: 1 }}
           >
@@ -317,10 +472,11 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
           <h3>Nominees</h3>
           {nomineeFields.map((item, index) => (
             <Grid container spacing={2} key={item.id}>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Controller
                   name={`nominees.${index}.fullName`}
                   control={control}
+                  rules={{ required: true }}
                   render={({ field }) => (
                     <TextField
                       {...field}
@@ -331,10 +487,11 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Controller
                   name={`nominees.${index}.gender`}
                   control={control}
+                  rules={{ required: true }}
                   render={({ field, fieldState: { error } }) => (
                     <FormControl
                       fullWidth
@@ -358,10 +515,11 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Controller
                   name={`nominees.${index}.relation`}
                   control={control}
+                  rules={{ required: true }}
                   render={({ field }) => (
                     <TextField
                       {...field}
@@ -372,24 +530,33 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Controller
                   name={`nominees.${index}.idProof`}
                   control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="ID Proof"
-                      fullWidth
+                    // <TextField
+                    //   {...field}
+                    //   label="ID Proof"
+                    //   fullWidth
+                    //   size="small"
+                    // />
+                    <FileUpload
+                      label="Id Proof"
                       size="small"
+                      category="idProof"
+                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                      value={field.value}
+                      onUpload={(url) => field.onChange(url)}
                     />
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Controller
                   name={`nominees.${index}.mobileNumber`}
                   control={control}
+                  rules={{ required: true }}
                   render={({ field }) => (
                     <TextField
                       {...field}
@@ -400,7 +567,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <Controller
                   name={`nominees.${index}.alternateContact`}
                   control={control}
@@ -410,6 +577,36 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                       label="Alternate Contact No"
                       fullWidth
                       size="small"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name={`nominees.${index}.address`}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Address"
+                      fullWidth
+                      size="small"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Controller
+                  name={`nominees.${index}.insurance`}
+                  control={control}
+                  render={({ field }) => (
+                    <FileUpload
+                      label="Insurance Doc"
+                      size="small"
+                      category="idProof"
+                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                      value={field.value}
+                      onUpload={(url) => field.onChange(url)}
                     />
                   )}
                 />
@@ -430,6 +627,8 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                 idProof: "",
                 mobileNumber: "",
                 alternateContact: "",
+                address: "",
+                insurance: "",
               })
             }
             variant="outlined"

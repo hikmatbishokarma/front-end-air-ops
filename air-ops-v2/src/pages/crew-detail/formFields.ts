@@ -1,27 +1,27 @@
 import { Pattern } from "@mui/icons-material";
 
 export const crewDetailFormFields = [
-  { name: "firstName", label: "First Name", required: true },
-  { name: "middleName", label: "Middle Name" },
-  { name: "lastName", label: "Last Name", required: true },
+  // { name: "firstName", label: "First Name", required: true },
+  // { name: "middleName", label: "Middle Name" },
+  // { name: "lastName", label: "Last Name", required: true },
+  { name: "fullName", label: "Full Name", required: true },
+  { name: "displayName", label: "Display Name", required: true },
+
   {
     name: "gender",
     label: "Gender",
     type: "select",
     optionsKey: "gender",
+
     required: true,
   },
   {
     name: "dateOfBirth",
     label: "Date of Birth",
     type: "date",
+
     required: true,
   },
-
-  { name: "bloodGroup", label: "Blood Group", required: false },
-  { name: "designation", label: "Designation", required: true },
-  { name: "education", label: "Education", required: true },
-  { name: "experience", label: "Experience", required: true },
   {
     name: "mobileNumber",
     label: "Mobile Number",
@@ -40,12 +40,17 @@ export const crewDetailFormFields = [
       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
       message: "Invalid email address",
     },
+    xs: 12,
   },
+  { name: "education", label: "Education", required: true },
+  { name: "experience", label: "Experience", required: true },
+
   {
     name: "martialStatus",
     label: "Marital Status",
     type: "select",
     optionsKey: "maritalStatus",
+    required: false,
   },
   {
     name: "anniversaryDate",
@@ -53,6 +58,7 @@ export const crewDetailFormFields = [
     type: "date",
     required: false,
   },
+
   {
     name: "religion",
     label: "Religion",
@@ -85,6 +91,7 @@ export const crewDetailFormFields = [
       message: "Invalid PAN No",
     },
   },
+
   {
     name: "passportNo",
     label: "Passport No",
@@ -92,21 +99,31 @@ export const crewDetailFormFields = [
       value: /^[A-PR-WYa-pr-wy][0-9]{7}$/,
       message: "Invalid passport number",
     },
+    xs: 12,
   },
 
-  { name: "temporaryAddress", label: "Temporary Address" },
-  { name: "permanentAddress", label: "Permanent Address" },
-  { name: "pinCode", label: "PIN Code" },
+  { name: "currentAddress", label: "Current Address", xs: 12, required: true },
+  {
+    name: "permanentAddress",
+    label: "Permanent Address",
+    xs: 12,
+    required: true,
+  },
+
+  { name: "bloodGroup", label: "Blood Group", required: false },
+  // { name: "designation", label: "Designation", required: true },
+
+  // { name: "pinCode", label: "PIN Code" },
 
   // Security
-  { name: "userName", label: "Username", required: false },
-  { name: "password", label: "Password", type: "password", required: false },
-  {
-    name: "repeatPassword",
-    label: "Repeat Password",
-    type: "password",
-    required: false,
-  },
+  // { name: "userName", label: "Username", required: false },
+  // { name: "password", label: "Password", type: "password", required: false },
+  // {
+  //   name: "repeatPassword",
+  //   label: "Repeat Password",
+  //   type: "password",
+  //   required: false,
+  // },
   // {
   //   name: "enableTwoFactorAuth",
   //   label: "Enable Two-Factor Auth",

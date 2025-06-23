@@ -75,7 +75,15 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
       onSubmit={handleSubmit(onSubmit)}
       fields={crewDetailFormFields}
       certFields={certificationFields}
-      addCert={() => addCert({ certification: "", validTill: "" })}
+      addCert={() =>
+        addCert({
+          name: "",
+          licenceNo: "",
+          dateOfIssue: "",
+          issuedBy: "",
+          validTill: "",
+        })
+      }
       removeCert={removeCert}
       nomineeFields={nomineeFields}
       addNominee={() =>
@@ -86,6 +94,8 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
           idProof: "",
           mobileNumber: "",
           alternateContact: "",
+          address: "",
+          insurance: "",
         })
       }
       removeNominee={removeNominee}
