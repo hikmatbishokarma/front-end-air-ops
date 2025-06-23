@@ -5,12 +5,16 @@ export interface Nominee {
   idProof: string;
   mobileNumber: string;
   alternateContact: string;
+  address: string;
+  insurance: string;
 }
 
 export interface Certification {
-  certification: string;
+  name: string;
+  licenceNo: string;
+  dateOfIssue: string;
+  issuedBy: string;
   validTill: string;
-  uploadCertificate?: string;
 }
 
 export interface CrewDetailFormValues {
