@@ -420,3 +420,11 @@ background-color: #ff0202 !important;
 .MuiOutlinedInput-input{
    font-size: 14px !important; 
 }
+.MuiButton-sizeMedium:hover {
+    background: #ff0202 !important;
+    border: #ff0202 !important;
+}
+.MuiButton-text{
+    background: #ff0202 !important;
+    border: #ff0202 !important; 
+}
