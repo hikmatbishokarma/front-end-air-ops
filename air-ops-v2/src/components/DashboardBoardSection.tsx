@@ -29,12 +29,6 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
   onFilter,
   createEnabledTabs = ["Quotes", "Invoices"],
 }) => {
-  console.log(
-    "salesDashboardData::",
-    salesDashboardData,
-    categories,
-    salesDashboardData?.summary?.["Staff"]
-  );
   return (
     <div className="dashboard_main_d">
       <div className="ban_img"></div>
