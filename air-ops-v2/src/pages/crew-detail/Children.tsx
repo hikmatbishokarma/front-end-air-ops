@@ -219,7 +219,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
 
               <Grid>
                 <Controller
-                  name="role"
+                  name="roles"
                   control={control}
                   rules={{
                     required: true,
@@ -390,7 +390,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                         format="DD-MM-YYYY"
                         value={field.value ? moment(field.value) : null}
                         onChange={(newValue) => field.onChange(newValue)}
-                        minDate={moment()}
+                        maxDate={moment()}
                         slotProps={{
                           textField: {
                             fullWidth: true,
@@ -415,7 +415,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                         format="DD-MM-YYYY"
                         value={field.value ? moment(field.value) : null}
                         onChange={(newValue) => field.onChange(newValue)}
-                        minDate={moment()}
+                        // minDate={moment()}
                         slotProps={{
                           textField: {
                             fullWidth: true,
