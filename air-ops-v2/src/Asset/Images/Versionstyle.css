@@ -186,13 +186,10 @@
 .css-a8dfo2-MuiButtonBase-root-MuiButton-root{
     background-color: #001551 !important;
 }
-.css-da42ny-MuiButtonBase-root-MuiButton-root{
+.MuiButton-sizeMedium{
     background-color: #001551 !important;
 }
-.css-x64w7o-MuiButtonBase-root-MuiButton-root{
-    background-color: red !important;
-    color: #ffffff !important;
-}
+
 .css-41x60c-MuiButtonBase-root-MuiButton-root{
     background-color: #001551 !important;
 }
@@ -257,12 +254,12 @@
     font-size: 12px;
     font-weight: 600;
 }
-.css-r75yrr-MuiButtonBase-root-MuiButton-root{
+.MuiButton-sizeMedium{
     margin-right: 24px !important;
 }
-.css-r75yrr-MuiButtonBase-root-MuiButton-root{
+.MuiButton-sizeMedium{
     margin-right: 24px !important;
-    background-color: red !important;
+    background-color: #001551 !important;
     color: #ffffff !important;
 }
 .table-top-status{
@@ -343,7 +340,7 @@ background-color: #ff0202 !important;
        
     width: 100% !important; 
     border-radius: 20px;
-    height: 100% !important;
+    height: 100vh !important;
 }
 
 /*Quotions details pop-up*/
@@ -373,7 +370,7 @@ background-color: #ff0202 !important;
    
 }
 .MuiButton-outlinedPrimary{
-        color: #001551 !important;
+        color: #fff !important;
         border: 1px solid #001551 !important;
     border-color: #001551 !important;
 }
@@ -387,7 +384,8 @@ background-color: #ff0202 !important;
     padding-bottom: 10px !important;;
 }
 .MuiTableRow-root:hover {
-    background: #edd1d1;
+    background: #00155126;
+    color: #fff;
 }
 .css-1ji9znz{
     padding: 0px !important;
@@ -403,4 +401,30 @@ background-color: #ff0202 !important;
 .MuiBox-root.css-1f266ni .MuiButtonBase-root{
 
     background: #001551 !important;
+}
+.Mui-active{
+    color: #001551 !important;
+}
+.Mui-completed{
+    color: #001551 !important;
+}
+.popup-person-one .MuiGrid-item{
+    height: 69px;
+}
+.MuiOutlinedInput-root {
+    border-radius: 18px !important;
+}
+.MuiInputLabel-formControl {
+    font-size: 14px !important;
+}
+.MuiOutlinedInput-input{
+   font-size: 14px !important; 
+}
+.MuiButton-sizeMedium:hover {
+    background: #ff0202 !important;
+    border: #ff0202 !important;
+}
+.MuiButton-text{
+    background: #ff0202 !important;
+    border: #ff0202 !important; 
 }

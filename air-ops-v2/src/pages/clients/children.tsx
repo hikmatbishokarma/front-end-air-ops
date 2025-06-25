@@ -46,7 +46,7 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
   console.log("selectedType:::", selectedType);
 
   return (
-    <Box
+    <Box className="popup-person-one"
       component="form"
       onSubmit={onSubmit}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
