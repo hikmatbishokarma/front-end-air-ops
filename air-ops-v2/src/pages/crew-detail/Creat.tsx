@@ -59,7 +59,16 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
 
   const onSubmit = async (data) => {
     try {
-      await createCrewDetail({ ...data, operatorId }); // Wait for API call to complete
+      const formattedData = {
+        ...data,
+        operatorId,
+      };
+
+      if (formattedData.roles) {
+        formattedData.roles = formattedData.roles.map((role: any) => role.id); // Assuming each role has an `id`
+      }
+
+      await createCrewDetail(formattedData); // Wait for API call to complete
       reset(); // Reset form after successful submission
       refreshList();
       onClose(); // <-- Close dialog after creating

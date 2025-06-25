@@ -18,35 +18,37 @@ export interface Certification {
 }
 
 export interface CrewDetailFormValues {
+  roles: any;
   profile: string;
   location: string;
-  type: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
+  designation: string;
+
+  fullName: string;
+  displayName: string;
   gender: string;
   dateOfBirth: string;
-  bloodGroup: string;
-  designation: string;
-  education: string;
-  experience: string;
+
   mobileNumber: string;
   alternateContact: string;
+
   email: string;
+  education: string;
+  experience: string;
+
+  martialStatus: string;
+  anniversaryDate: string;
+
   nationality: string;
   religion: string;
-  anniversaryDate: string;
-  martialStatus: string;
+
   aadhar: string;
   pan: string;
   passportNo: string;
-  pinCode: string;
-  temporaryAddress: string;
+
+  currentAddress: string;
   permanentAddress: string;
   certifications: Certification[];
   nominees: Nominee[];
-  userName: string;
-  password: string;
-  repeatPassword: string;
-  enableTwoFactorAuth: boolean;
+
+  bloodGroup: string;
 }

@@ -25,7 +25,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
   const { control, handleSubmit, reset, setValue } =
     useForm<CrewDetailFormValues>({
       defaultValues: {
-        type: "",
+        designation: "",
         gender: "",
         martialStatus: "",
         religion: "",
@@ -59,10 +59,10 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
 
   useEffect(() => {
     if (crewDetail) {
-      setValue("firstName", crewDetail.firstName || "");
-      setValue("lastName", crewDetail.lastName || "");
-      setValue("middleName", crewDetail.middleName || "");
-      setValue("type", crewDetail.type || "");
+      setValue("roles", crewDetail.roles);
+      setValue("profile", crewDetail.profile);
+      setValue("fullName", crewDetail.fullName || "");
+      setValue("displayName", crewDetail.displayName || "");
       setValue("location", crewDetail.location || "");
       setValue("email", crewDetail.email);
       setValue("martialStatus", crewDetail.martialStatus);
@@ -79,10 +79,9 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("education", crewDetail.education || "");
       setValue("experience", crewDetail.experience || "");
       setValue("alternateContact", crewDetail.alternateContact || "");
-      setValue("temporaryAddress", crewDetail.temporaryAddress || "");
+      setValue("currentAddress", crewDetail.currentAddress || "");
       setValue("permanentAddress", crewDetail.permanentAddress || "");
       setValue("bloodGroup", crewDetail.bloodGroup || "");
-      setValue("pinCode", crewDetail.pinCode || "");
       setValue("certifications", crewDetail.certifications || []);
       setValue("nominees", crewDetail.nominees || []);
     }
@@ -126,15 +125,22 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = async (data) => {
     try {
       let { certifications, nominees, ...rest } = data;
+
       certifications = certifications.map(({ __typename, ...rest }) => rest);
       nominees = nominees.map(({ __typename, ...rest }) => rest);
 
-      await updateCrewDetail(id, {
-        ...data,
+      const formattedData = {
+        ...rest,
         certifications,
         nominees,
         operatorId,
-      });
+      };
+
+      if (formattedData.roles) {
+        formattedData.roles = formattedData.roles.map((role: any) => role.id); // Assuming each role has an `id`
+      }
+
+      await updateCrewDetail(id, formattedData);
       reset(); // Reset form after successful submission
       refreshList();
       onClose(); // <-- Close dialog after creating
