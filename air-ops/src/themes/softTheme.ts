@@ -107,7 +107,7 @@ export const softLightTheme = {
     MuiLinearProgress: {
       styleOverrides: {
         colorPrimary: {
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#ddd',
         },
         barColorPrimary: {
           backgroundColor: '#d7d7d7',
