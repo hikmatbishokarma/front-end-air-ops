@@ -82,7 +82,7 @@ export const QuoteList = ({
   const [showPreview, setShowPreview] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
 
-  const [selectedRequester, setSelectedRequester] = useState<Iclient | null>();
+  // const [selectedRequester, setSelectedRequester] = useState<Iclient | null>();
 
   // const [searchTerm, setSearchTerm] = useState("");
 
@@ -201,14 +201,14 @@ export const QuoteList = ({
     }
   };
 
-  const handelCancellation = async (id) => {
-    try {
-      await updateQuoteStatus(id, QuotationStatus.CANCELLED);
-    } catch (error) {
-      console.error("Error transitioning state:", error);
-    } finally {
-    }
-  };
+  // const handelCancellation = async (id) => {
+  //   try {
+  //     await updateQuoteStatus(id, QuotationStatus.CANCELLED);
+  //   } catch (error) {
+  //     console.error("Error transitioning state:", error);
+  //   } finally {
+  //   }
+  // };
 
   // const filteredRows = rows?.filter((row) =>
   //   row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())

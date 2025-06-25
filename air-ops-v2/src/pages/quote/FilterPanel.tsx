@@ -172,6 +172,7 @@ export default function FilterPanel({
   onReset,
 }) {
   const handleQuickDateSelect = (type) => {
+    console.log("type::::", type);
     onDateFilterChange(type);
 
     if (type !== "custom") {
@@ -181,111 +182,6 @@ export default function FilterPanel({
   };
 
   return (
-    // <Popover
-    //   open={open}
-    //   anchorEl={anchorEl}
-    //   onClose={onClose}
-    //   anchorOrigin={{
-    //     vertical: "bottom",
-    //     horizontal: "left",
-    //   }}
-    // >
-    //   <LocalizationProvider dateAdapter={AdapterMoment}>
-    //     <Paper sx={{ p: 2, width: 320 }}>
-    //       <Typography variant="h6" gutterBottom>
-    //         Filter
-    //       </Typography>
-
-    //       {/* Date Range */}
-    //       <Typography variant="subtitle2" gutterBottom>
-    //         Date Range
-    //       </Typography>
-
-    //       <ToggleButtonGroup
-    //         value={dateFilterType}
-    //         exclusive
-    //         onChange={(e, newValue) => {
-    //           if (newValue !== null) {
-    //             handleQuickDateSelect(newValue);
-    //           }
-    //         }}
-    //         size="small"
-    //         fullWidth
-    //         sx={{
-    //           mb: 2,
-    //           display: "flex",
-    //           flexWrap: "wrap",
-    //           "& .MuiToggleButton-root": {
-    //             flex: "1 1 48%",
-    //             m: "4px",
-    //           },
-    //         }}
-    //       >
-    //         <ToggleButton value="today">Today</ToggleButton>
-    //         <ToggleButton value="yesterday">Yesterday</ToggleButton>
-    //         <ToggleButton value="lastWeek">Last Week</ToggleButton>
-    //         <ToggleButton value="lastMonth">Last Month</ToggleButton>
-    //       </ToggleButtonGroup>
-
-    //       <Typography variant="subtitle2" gutterBottom>
-    //         Select Range
-    //       </Typography>
-
-    //       <Stack direction="row" spacing={1} mb={2}>
-    //         <DatePicker
-    //           label="From"
-    //           value={fromDate}
-    //           onChange={onFromDateChange}
-    //           slotProps={{
-    //             textField: { fullWidth: true, size: "small" },
-    //           }}
-    //         />
-    //         <DatePicker
-    //           label="To"
-    //           value={toDate}
-    //           onChange={onToDateChange}
-    //           slotProps={{
-    //             textField: { fullWidth: true, size: "small" },
-    //           }}
-    //         />
-    //       </Stack>
-
-    //       {/* Requester */}
-    //       <Typography variant="subtitle2" gutterBottom>
-    //         Requester
-    //       </Typography>
-    //       <Select
-    //         fullWidth
-    //         size="small"
-    //         value={requester?.id || ""}
-    //         onChange={(e) => {
-    //           const selected =
-    //             clients.find((c) => c.id === e.target.value) || null;
-    //           onRequesterChange(selected);
-    //         }}
-    //         sx={{ mb: 3 }}
-    //       >
-    //         <MenuItem value="">All</MenuItem>
-    //         {clients.map((client) => (
-    //           <MenuItem key={client.id} value={client.id}>
-    //             {client.name}
-    //           </MenuItem>
-    //         ))}
-    //       </Select>
-
-    //       {/* Action Buttons */}
-    //       <Stack direction="row" spacing={2} justifyContent="flex-end">
-    //         <Button onClick={onReset} variant="outlined" size="small">
-    //           Reset
-    //         </Button>
-    //         <Button onClick={onApply} variant="contained" size="small">
-    //           Apply
-    //         </Button>
-    //       </Stack>
-    //     </Paper>
-    //   </LocalizationProvider>
-    // </Popover>
-
     <Popover
       open={open}
       anchorEl={anchorEl}
