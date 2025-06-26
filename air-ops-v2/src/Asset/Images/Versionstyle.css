@@ -268,7 +268,7 @@
 
 /*Dashboard table css*/
 .dash-table{
-    margin-top: 80px;
+    margin-top: 0px;
 }
 .coming-soon{
     padding-top: 20px;
@@ -279,7 +279,7 @@
 .dash-table .MuiTableCell-sizeMedium{
     text-align: left !important;
     color: #12277a;
-        padding: 3px 9px 0 10px;
+        /* padding: 3px 9px 0 10px; */
 }
 /* .dash-table .css-3wds0e-MuiTableCell-root{
 text-align: left;
@@ -427,4 +427,50 @@ background-color: #ff0202 !important;
 .MuiButton-text{
     background: #ff0202 !important;
     border: #ff0202 !important; 
+}
+.MuiBreadcrumbs-ol{
+    display: none !important;
+}
+.search_quo1{
+    margin-top: 60px !important;
+}
+.rest-fiter-btn{
+     background: #ff0202 !important;
+    border: #ff0202 !important; 
+    color: #fff !important;
+}
+.crew-type-v1{
+    margin-top: 0px !important;
+}
+.MuiAutocomplete-inputRoot{
+    min-height: 40px !important;
+}
+.crew-table-v1{
+    margin-top: 70px;
+}
+.choose-profile-v1 .MuiPaper-elevation1{
+    height: 40px !important;
+}
+.manuals-quo-v1{
+    margin-top: 70px;
+}
+
+.choose-profile-v1 p{
+    font-size: 12px !important;
+}
+.upload-profile-crew h6{
+    margin-top: -40px;
+    font-size: 14px;
+    
+}
+.view-icon-quote .MuiTypography-h6{
+    background-color: #ddd;
+    margin-bottom: 10px;
+}
+.view-icon-quote .MuiIconButton-root{
+    background: #ff0202 !important;
+    border: #ff0202 !important;
+}
+.view-icon-quote .MuiIconButton-root svg{
+    color: #fff !important;
 }

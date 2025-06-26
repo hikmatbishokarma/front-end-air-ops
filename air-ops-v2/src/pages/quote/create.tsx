@@ -38,7 +38,10 @@ import {
 import moment from "moment";
 import { Delete } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
-import { CREATE_QUOTE } from "../../lib/graphql/queries/quote";
+import {
+  CREATE_QUOTE,
+  FLIGHT_SEGMENTS_FOR_CALENDER,
+} from "../../lib/graphql/queries/quote";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import { useSnackbar } from "../../SnackbarContext";
@@ -327,33 +330,97 @@ export const QuoteCreate = () => {
       lastItinerary?.depatureTime &&
       lastItinerary?.arrivalTime
     ) {
-      console.log("✅ All Fields Filled - Updating Event", lastItinerary);
+      // console.log("✅ All Fields Filled - Updating Event", lastItinerary);
 
-      setEvents((prevEvents: any) => {
-        // Check if an event with the same source-destination already exists
-        const updatedEvents = prevEvents.map((event: any) =>
+      // setEvents((prevEvents: any) => {
+      //   // Check if an event with the same source-destination already exists
+      //   const updatedEvents = prevEvents.map((event: any) =>
+      //     event.title === `${lastItinerary.source}-${lastItinerary.destination}`
+      //       ? {
+      //           ...event,
+      //           start: moment
+      //             .utc(
+      //               `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
+      //               "YYYY-MM-DD HH:mm"
+      //             )
+      //             .format("YYYY-MM-DD HH:mm"),
+      //           end: moment
+      //             .utc(
+      //               `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
+      //               "YYYY-MM-DD HH:mm"
+      //             )
+      //             .format("YYYY-MM-DD HH:mm"),
+      //         }
+      //       : event
+      //   );
+
+      //   // If event does not exist, add it
+      //   const eventExists = prevEvents.some(
+      //     (event: any) =>
+      //       event.title ===
+      //       `${lastItinerary.source}-${lastItinerary.destination}`
+      //   );
+
+      //   if (!eventExists) {
+      //     updatedEvents.push({
+      //       title: `${lastItinerary.source}-${lastItinerary.destination}`,
+      //       start: moment
+      //         .utc(
+      //           `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
+      //           "YYYY-MM-DD HH:mm"
+      //         )
+      //         .format("YYYY-MM-DD HH:mm"),
+      //       end: moment
+      //         .utc(
+      //           `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
+      //           "YYYY-MM-DD HH:mm"
+      //         )
+      //         .format("YYYY-MM-DD HH:mm"),
+      //     });
+      //   }
+
+      //   console.log("updatedEvents:::", updatedEvents);
+
+      //   return updatedEvents;
+      // });
+
+      // Build start datetime in UTC
+      const depTimeParts = lastItinerary.depatureTime.split(":");
+      const startDateTime = moment
+        .utc(lastItinerary.depatureDate)
+        .set({
+          hour: Number(depTimeParts[0]),
+          minute: Number(depTimeParts[1]),
+          second: 0,
+          millisecond: 0,
+        })
+        .toISOString();
+
+      // Build end datetime in UTC
+      const arrTimeParts = lastItinerary.arrivalTime.split(":");
+      const endDateTime = moment
+        .utc(lastItinerary.arrivalDate)
+        .set({
+          hour: Number(arrTimeParts[0]),
+          minute: Number(arrTimeParts[1]),
+          second: 0,
+          millisecond: 0,
+        })
+        .toISOString();
+
+      setEvents((prevEvents) => {
+        const updatedEvents = prevEvents.map((event) =>
           event.title === `${lastItinerary.source}-${lastItinerary.destination}`
             ? {
                 ...event,
-                start: moment
-                  .utc(
-                    `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
-                    "YYYY-MM-DD HH:mm"
-                  )
-                  .format("YYYY-MM-DD HH:mm"),
-                end: moment
-                  .utc(
-                    `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
-                    "YYYY-MM-DD HH:mm"
-                  )
-                  .format("YYYY-MM-DD HH:mm"),
+                start: startDateTime,
+                end: endDateTime,
               }
             : event
         );
 
-        // If event does not exist, add it
         const eventExists = prevEvents.some(
-          (event: any) =>
+          (event) =>
             event.title ===
             `${lastItinerary.source}-${lastItinerary.destination}`
         );
@@ -361,21 +428,12 @@ export const QuoteCreate = () => {
         if (!eventExists) {
           updatedEvents.push({
             title: `${lastItinerary.source}-${lastItinerary.destination}`,
-            start: moment
-              .utc(
-                `${moment(lastItinerary.depatureDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.depatureTime}`,
-                "YYYY-MM-DD HH:mm"
-              )
-              .format("YYYY-MM-DD HH:mm"),
-            end: moment
-              .utc(
-                `${moment(lastItinerary.arrivalDate, "DD-MM-YYYY").format("YYYY-MM-DD")} ${lastItinerary.arrivalTime}`,
-                "YYYY-MM-DD HH:mm"
-              )
-              .format("YYYY-MM-DD HH:mm"),
+            start: startDateTime,
+            end: endDateTime,
           });
         }
 
+        console.log("✅ updatedEvents:::", updatedEvents);
         return updatedEvents;
       });
     }
@@ -439,6 +497,40 @@ export const QuoteCreate = () => {
       currency: "INR",
       total: 0, // Calculate total
     });
+  };
+
+  const getFlightSegementsForCalender = async (startDate, endDate) => {
+    const response = await useGql({
+      query: FLIGHT_SEGMENTS_FOR_CALENDER,
+      queryName: "flightSegmentsForCalendar",
+      queryType: "query-without-edge",
+      variables: {
+        "startDate": startDate,
+        "endDate": endDate,
+      },
+    });
+
+    if (response.length) {
+      setEvents(response.map(({ __typename, ...rest }) => rest));
+    }
+  };
+
+  console.log("eventss:", events);
+
+  useEffect(() => {
+    if (activeStep === 1) {
+      const startDate = moment.utc().startOf("month").toISOString();
+      const endDate = moment.utc().endOf("month").toISOString();
+
+      getFlightSegementsForCalender(startDate, endDate);
+    }
+  }, [activeStep]);
+
+  const handleDatesSet = (arg) => {
+    const startDate = moment.utc(arg.start).startOf("day").toISOString();
+    const endDate = moment.utc(arg.end).endOf("day").toISOString();
+
+    getFlightSegementsForCalender(startDate, endDate);
   };
 
   return (
@@ -718,8 +810,17 @@ export const QuoteCreate = () => {
                                     value={
                                       field.value ? moment(field.value) : null
                                     }
+                                    // onChange={(newValue) =>
+                                    //   field.onChange(newValue)
+                                    // }
                                     onChange={(newValue) =>
-                                      field.onChange(newValue)
+                                      field.onChange(
+                                        newValue
+                                          ? moment(newValue).format(
+                                              "YYYY-MM-DD"
+                                            )
+                                          : ""
+                                      )
                                     }
                                     minDate={moment()}
                                     slotProps={{
@@ -809,8 +910,17 @@ export const QuoteCreate = () => {
                                       value={
                                         field.value ? moment(field.value) : null
                                       }
+                                      // onChange={(newValue) =>
+                                      //   field.onChange(newValue)
+                                      // }
                                       onChange={(newValue) =>
-                                        field.onChange(newValue)
+                                        field.onChange(
+                                          newValue
+                                            ? moment(newValue).format(
+                                                "YYYY-MM-DD"
+                                              )
+                                            : ""
+                                        )
                                       }
                                       minDate={
                                         departureDate
@@ -935,12 +1045,14 @@ export const QuoteCreate = () => {
                     <FullCalendar
                       plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
                       initialView="dayGridMonth"
+                      timeZone="UTC"
                       headerToolbar={{
                         left: "prev,next today",
                         center: "title",
                         right: "dayGridMonth,timeGridWeek,timeGridDay",
                       }}
                       events={events}
+                      datesSet={handleDatesSet}
                     />
                   </Box>
                 </Box>

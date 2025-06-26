@@ -6,13 +6,62 @@ import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
+import { CrewDetailList } from "../crew-detail/List";
+import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
+import { GET_CREW_DETAILS } from "../../lib/graphql/queries/crew-detail";
+import { ManualList } from "../manual/List";
+import { GET_MANUALS } from "../../lib/graphql/queries/manual";
 
-const ManualsDashboard = () => {
+const ManualDashboard = () => {
+  const showSnackbar = useSnackbar();
+  const { session, setSession } = useSession();
+
   const navigate = useNavigate();
 
-  const [selectedTab, setSelectedTab] = useState("Quotes");
+  const operatorId = session?.user.agent?.id || null;
 
-  const [salesDashboardData, setSalesDashboardData] = useState<any>();
+  const [selectedTab, setSelectedTab] = useState("Manuals");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({});
+  const [manualData, setManualData] = useState({ totalCount: {}, data: [] });
+  const [loading, setLoading] = useState(false);
+  const [crewSummary, setCrewSummary] = useState<any>({
+    summary: {
+      manuals: 0,
+    },
+  });
+
+  const getManual = async () => {
+    try {
+      const result = await useGql({
+        query: GET_MANUALS,
+        queryName: "manuals",
+        queryType: "query-with-count",
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
+      });
+
+      if (!result.data) showSnackbar("Failed to fetch Manual!", "error");
+      setManualData(result);
+      setCrewSummary((prev) => ({
+        ...prev,
+        summary: {
+          ...prev.summary,
+          manuals: result.totalCount,
+        },
+      }));
+    } catch (error) {
+      showSnackbar(error.message || "Failed to fetch Manual!", "error");
+    }
+  };
+
+  useEffect(() => {
+    getManual();
+  }, [selectedTab, searchTerm, filters]);
 
   const handelFilter = (data) => {
     setSelectedTab(data.name);
@@ -27,22 +76,29 @@ const ManualsDashboard = () => {
     };
   };
 
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  const refreshList = async () => {
+    // Fetch updated categories from API
+    await getManual();
+  };
+
   const categories = [
-    { status: ["Ops"], name: "Ops" },
-    { status: ["Tax Invoice", "Proforma Invoice"], name: "Invoices" },
-    { status: ["Cancelled"], name: "Cancellations" },
-    { status: [], name: "Revenue" },
+    { status: [], name: "Manuals", countLabel: "manuals" },
+
+    { status: [], name: "Reports", countLabel: "Reports" },
   ];
 
+  const [open, setOpen] = useState(false);
+
   const handelCreate = (selectedTab) => {
-    // const redirectTo = selectedTab == "Quotes" ? "/quotes/create" : "";
-
-    // navigate(redirectTo);
-
-    if (selectedTab === "Quotes") {
-      navigate("/quotes/create");
-    } else if (selectedTab === "Invoices") {
-    }
+    setOpen(true);
   };
 
   return (
@@ -50,14 +106,22 @@ const ManualsDashboard = () => {
       <DashboardBoardSection
         selectedTab={selectedTab}
         categories={categories}
-        salesDashboardData={salesDashboardData}
+        salesDashboardData={crewSummary}
         onCreate={handelCreate}
         onFilter={handelFilter}
-        createEnabledTabs={["Ops", "Invoices"]}
+        createEnabledTabs={["Manuals"]}
       />
-      <p className="coming-soon">Comming soon</p>
+      <ManualList
+        open={open}
+        setOpen={setOpen}
+        list={manualData.data}
+        loading={loading}
+        onSearch={handleSearch}
+        onFilterChange={handleFilterChange}
+        refreshList={refreshList}
+      />
     </>
   );
 };
 
-export default ManualsDashboard;
+export default ManualDashboard;

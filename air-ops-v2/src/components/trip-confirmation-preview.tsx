@@ -4,11 +4,23 @@ import { Box, Paper, IconButton } from "@mui/material";
 import ActionButton from "./ActionButton"; // Assuming ActionButton is already a reusable component
 import PrintIcon from "@mui/icons-material/Print";
 
-const TripConfirmationPreview = ({ htmlContent, currentQuotation }) => {
+interface TripConfirmationPreviewProps {
+  htmlContent: string | null;
+  currentQuotation: any;
+  showGenerateTI?: boolean;
+  onGenerateInvoice?: ({ type, quotationNo }) => void;
+}
+
+const TripConfirmationPreview: React.FC<TripConfirmationPreviewProps> = ({
+  htmlContent,
+  currentQuotation,
+  showGenerateTI,
+  onGenerateInvoice,
+}) => {
   useEffect(() => {
     // Extract styles and apply them to the document head
     const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = htmlContent;
+    tempDiv.innerHTML = htmlContent || "";
     const styleTags = tempDiv.getElementsByTagName("style");
 
     const styleElements: HTMLStyleElement[] = [];
@@ -29,29 +41,28 @@ const TripConfirmationPreview = ({ htmlContent, currentQuotation }) => {
     };
   }, [htmlContent]);
 
-  const sanitizedHTML = DOMPurify.sanitize(htmlContent, {
+  const sanitizedHTML = DOMPurify.sanitize(htmlContent || "", {
     ADD_TAGS: ["style"],
   });
 
   const componentRef = React.useRef(null);
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
+    <Box>
       {/* ActionButton positioned on the right */}
-      <Box sx={{ position: "absolute", top: 20, right: 20 }}>
-        <ActionButton
-          currentId={""}
-          currentQuotation={currentQuotation}
-          htmlRef={componentRef}
-          documentType="TRIP_CONFIRMATION"
-          editPath=""
-          showEdit={false}
-          showPrint={true}
-          showDownload={true}
-          showEmail={true}
-        />
-      </Box>
-
+      <ActionButton
+        currentId={""}
+        currentQuotation={currentQuotation}
+        htmlRef={componentRef}
+        documentType="TRIP_CONFIRMATION"
+        editPath=""
+        showEdit={false}
+        showPrint={true}
+        showDownload={true}
+        showEmail={true}
+        showGenerateTI={showGenerateTI}
+        onGenerateInvoice={onGenerateInvoice}
+      />
       {/* A4 size container */}
       <Paper
         elevation={3}

@@ -35,16 +35,7 @@ import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
 import { TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
 
-export const InvoiceList = ({
-  filter,
-  isGenerated,
-  setSelectedTab,
-  refreshKey,
-  setRefreshKey,
-  setFilter,
-  setShowTripConfirmationPreview,
-  setTripConfirmationData,
-}) => {
+export const AccountList = ({ filter }) => {
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.agent?.id || null;
@@ -103,7 +94,7 @@ export const InvoiceList = ({
 
   useEffect(() => {
     getInvoices();
-  }, [filter, page, rowsPerPage, isGenerated, refreshKey]);
+  }, [filter, page, rowsPerPage]);
 
   const handelPreview = (row) => {
     setSelectedRowData(row);
@@ -133,46 +124,46 @@ export const InvoiceList = ({
 
   /** TRIP CONFIRMATION */
 
-  const handelTripConfirmation = async ({ quotationNo }) => {
-    const result = await useGql({
-      query: TRIP_CONFIRMATION,
-      queryName: "tripConfirmation",
-      queryType: "mutation",
-      variables: {
-        args: {
-          quotationNo,
-          ...(operatorId && { operatorId }),
-        },
-      },
-    });
+  //   const handelTripConfirmation = async ({ quotationNo }) => {
+  //     const result = await useGql({
+  //       query: TRIP_CONFIRMATION,
+  //       queryName: "tripConfirmation",
+  //       queryType: "mutation",
+  //       variables: {
+  //         args: {
+  //           quotationNo,
+  //           ...(operatorId && { operatorId }),
+  //         },
+  //       },
+  //     });
 
-    if (!result.data) {
-      showSnackbar(
-        result?.errors?.[0]?.message || "Internal server error!",
-        "error"
-      );
-    } else {
-      // setTripConfirmationData(result?.data?.tripConfirmation);
-      // setShowTripConfirmationPreview(true);
-      // setIsTripConfirmed(true);
-      showSnackbar("Trip confirmed successfully!", "success");
-      setTripConfirmationData(result?.data?.tripConfirmation);
-      setShowPreview(false);
-      setShowTripConfirmationPreview(true);
-      setFilter({
-        status: {
-          eq: "CONFIRMED",
-        },
-      });
+  //     if (!result.data) {
+  //       showSnackbar(
+  //         result?.errors?.[0]?.message || "Internal server error!",
+  //         "error"
+  //       );
+  //     } else {
+  //       // setTripConfirmationData(result?.data?.tripConfirmation);
+  //       // setShowTripConfirmationPreview(true);
+  //       // setIsTripConfirmed(true);
+  //       showSnackbar("Trip confirmed successfully!", "success");
+  //       setTripConfirmationData(result?.data?.tripConfirmation);
+  //       setShowPreview(false);
+  //       setShowTripConfirmationPreview(true);
+  //       setFilter({
+  //         status: {
+  //           eq: "CONFIRMED",
+  //         },
+  //       });
 
-      setSelectedTab("Trip Confirmation");
-      setRefreshKey();
-    }
-  };
+  //       setSelectedTab("Trip Confirmation");
+  //       setRefreshKey();
+  //     }
+  //   };
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table">
+      <TableContainer component={Paper} className="dash-table search">
         <Box
           display="flex"
           justifyContent="space-between"
@@ -204,7 +195,6 @@ export const InvoiceList = ({
               <TableCell sx={headerStyle}>Tax Invoice No</TableCell>
               <TableCell sx={headerStyle}>Requester</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
-              {/* <TableCell sx={headerStyle}>Action</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -247,7 +237,7 @@ export const InvoiceList = ({
         />
       </TableContainer>
 
-      <Dialog className="view-icon-quote"
+      {/* <Dialog
         open={showPreview}
         onClose={() => setShowPreview(false)}
         fullWidth
@@ -278,14 +268,9 @@ export const InvoiceList = ({
             handelTripConfirmation={handelTripConfirmation}
           />
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={() => setShowPreview(false)} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions> */}
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };
 
-export default InvoiceList;
+export default AccountList;
