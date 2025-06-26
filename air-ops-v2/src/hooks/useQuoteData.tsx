@@ -71,7 +71,12 @@ export const useQuoteData = () => {
         query: GET_REPRESENTATIVES,
         queryName: "representatives",
         queryType: "query",
-        variables: clientId ? { filter: { client: { eq: clientId } } } : {},
+        variables: clientId
+          ? {
+              filter: { client: { eq: clientId } },
+              sorting: [{ "field": "createdAt", "direction": "DESC" }],
+            }
+          : {},
       });
       setRepresentatives(data);
     } catch (error) {
@@ -90,6 +95,7 @@ export const useQuoteData = () => {
           filter: {
             ...(operatorId && { operatorId: { eq: operatorId } }),
           },
+          sorting: [{ "field": "createdAt", "direction": "DESC" }],
         },
       });
       setClients(data);
