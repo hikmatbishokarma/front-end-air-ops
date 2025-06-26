@@ -39,7 +39,8 @@ export const getEnumKeyByValue = (obj, value) => {
 
 export enum SalesDocumentType {
   QUOTATION = "quotation",
-  INVOICE = "invoice",
+  PROFORMA_INVOICE = "Proforma Invoice",
+  TAX_INVOICE = "Tax Invoice",
   TRIP_CONFIRMATION = "trip confirmation",
 }
 

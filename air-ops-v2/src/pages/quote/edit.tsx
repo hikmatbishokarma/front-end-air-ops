@@ -27,7 +27,11 @@ import {
 
 import moment from "moment";
 import useGql from "../../lib/graphql/gql";
-import { GET_QUOTE_BY_ID, UPDATE_QUOTE } from "../../lib/graphql/queries/quote";
+import {
+  FLIGHT_SEGMENTS_FOR_CALENDER,
+  GET_QUOTE_BY_ID,
+  UPDATE_QUOTE,
+} from "../../lib/graphql/queries/quote";
 
 import AddIcon from "@mui/icons-material/Add";
 
@@ -241,6 +245,38 @@ const QuoteEdit = () => {
   const handleRepresentativeDialogClose = async () => {
     setRepresentativeDialogOpen(false);
     await fetchClients();
+  };
+
+  const getFlightSegementsForCalender = async (startDate, endDate) => {
+    const response = await useGql({
+      query: FLIGHT_SEGMENTS_FOR_CALENDER,
+      queryName: "flightSegmentsForCalendar",
+      queryType: "query-without-edge",
+      variables: {
+        "startDate": startDate,
+        "endDate": endDate,
+      },
+    });
+
+    if (response.length) {
+      setEvents(response.map(({ __typename, ...rest }) => rest));
+    }
+  };
+
+  useEffect(() => {
+    if (activeStep === 1) {
+      const startDate = moment.utc().startOf("month").toISOString();
+      const endDate = moment.utc().endOf("month").toISOString();
+
+      getFlightSegementsForCalender(startDate, endDate);
+    }
+  }, [activeStep]);
+
+  const handleDatesSet = (arg) => {
+    const startDate = moment.utc(arg.start).startOf("day").toISOString();
+    const endDate = moment.utc(arg.end).endOf("day").toISOString();
+
+    getFlightSegementsForCalender(startDate, endDate);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -521,8 +557,15 @@ const QuoteEdit = () => {
                                   // value={
                                   //   field.value ? moment(field.value) : moment()
                                   // } // fallback
+                                  // onChange={(newValue) =>
+                                  //   field.onChange(newValue)
+                                  // }
                                   onChange={(newValue) =>
-                                    field.onChange(newValue)
+                                    field.onChange(
+                                      newValue
+                                        ? moment(newValue).format("YYYY-MM-DD")
+                                        : ""
+                                    )
                                   }
                                   minDate={moment()} // Disable past dates
                                   slotProps={{
@@ -612,8 +655,17 @@ const QuoteEdit = () => {
                                     value={
                                       field.value ? moment(field.value) : null
                                     }
+                                    // onChange={(newValue) =>
+                                    //   field.onChange(newValue)
+                                    // }
                                     onChange={(newValue) =>
-                                      field.onChange(newValue)
+                                      field.onChange(
+                                        newValue
+                                          ? moment(newValue).format(
+                                              "YYYY-MM-DD"
+                                            )
+                                          : ""
+                                      )
                                     }
                                     minDate={
                                       departureDate
@@ -731,12 +783,15 @@ const QuoteEdit = () => {
                     <FullCalendar
                       plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
                       initialView="dayGridMonth"
+                      timeZone="UTC"
+                      // timeZone="local"
                       headerToolbar={{
                         left: "prev,next today",
                         center: "title",
                         right: "dayGridMonth,timeGridWeek,timeGridDay",
                       }}
                       events={events}
+                      datesSet={handleDatesSet}
                     />
                   </Box>
                 </Box>
@@ -867,7 +922,7 @@ const QuoteEdit = () => {
                             control={control}
                             rules={{
                               required: "Price is required",
-                              min: { value: 1, message: "Must be > 0" },
+                              min: { value: 0, message: "Must be >= 0" },
                             }}
                             render={({ field, fieldState: { error } }) => (
                               <TextField

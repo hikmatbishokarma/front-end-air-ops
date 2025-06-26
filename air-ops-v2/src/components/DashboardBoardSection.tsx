@@ -15,6 +15,11 @@ interface DashboardBoardSectionProps {
   onFilter: (item: Category) => void;
   createEnabledTabs?: string[];
 }
+export const singularMap = {
+  Quotes: "Quote",
+  Invoices: "Invoice",
+  tripconfirmation: "Trip Confirmation",
+};
 
 const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
   selectedTab,
@@ -46,7 +51,7 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
               color="primary"
               onClick={() => onCreate(selectedTab)}
             >
-              Create {selectedTab.slice(0, -1)}
+              Create {singularMap[selectedTab] || selectedTab}
             </Button>
           )}
         </Grid>
@@ -66,18 +71,17 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
                 }}
               >
                 <CardContent>
-                    <div className="card-fligh-label">
-                  <Typography className="v1-card-h6" variant="h6">
-                    {item.name.toUpperCase()}
-                  </Typography>
-                  <Typography variant="body1">
-                    {salesDashboardData?.summary?.[item.countLabel] ?? 0}
-                  </Typography>
-                  <div className="img-flight-label">
-                    <img src={cardflightview} alt="Company Logo" width={75} />
+                  <div className="card-fligh-label">
+                    <Typography className="v1-card-h6" variant="h6">
+                      {item.name.toUpperCase()}
+                    </Typography>
+                    <Typography variant="body1">
+                      {salesDashboardData?.summary?.[item.countLabel] ?? 0}
+                    </Typography>
+                    <div className="img-flight-label">
+                      <img src={cardflightview} alt="Company Logo" width={75} />
+                    </div>
                   </div>
-                  </div>
-
                 </CardContent>
               </Card>
             </Grid>

@@ -35,6 +35,8 @@ const QuotePreview = ({
   showEmail = true,
   showPrint = true,
   showDownload = true,
+  showGeneratePI = false,
+  onGenerateInvoice,
 }) => {
   const [showEmailDialog, setShowEmailDialog] = useState(false);
 
@@ -74,95 +76,8 @@ const QuotePreview = ({
 
   const componentRef = React.useRef(null);
 
-  // const handleAfterPrint = React.useCallback(() => {
-  //   console.log("`onAfterPrint` called");
-  // }, []);
-
-  // const handleBeforePrint = React.useCallback(() => {
-  //   console.log("`onBeforePrint` called");
-  //   return Promise.resolve();
-  // }, []);
-
-  // const printFn = useReactToPrint({
-  //   contentRef: componentRef,
-  //   documentTitle: "AwesomeFileName",
-  //   onAfterPrint: handleAfterPrint,
-  //   onBeforePrint: handleBeforePrint,
-  // });
-
-  const handelSendQuoteThroughEmail = async () => {
-    const result = await useGql({
-      query: SEND_ACKNOWLEDGEMENT,
-      queryName: "",
-      queryType: "mutation",
-      variables: {
-        input: {
-          quotationNo: currentQuotation,
-          email: clientEmail,
-          documentType: getEnumKeyByValue(
-            SalesDocumentType,
-            SalesDocumentType?.QUOTATION
-          ),
-        },
-      },
-    });
-    setShowEmailDialog(false);
-    if (!result) {
-      showSnackbar("Internal server error!", "error");
-    } else showSnackbar("Quote sent successfully!", "success");
-  };
-
-  const validateEmail = (value: string) => {
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!value) {
-      setError(true);
-      setHelperText("Email is required");
-    } else if (!emailRegex.test(value)) {
-      setError(true);
-      setHelperText("Invalid email format");
-    } else {
-      setError(false);
-      setHelperText("");
-    }
-  };
-
-  // const handleDownloadPDF = async () => {
-  //   if (!componentRef.current) return;
-
-  //   const canvas = await html2canvas(componentRef.current, { scale: 2 });
-  //   const imgData = canvas.toDataURL("image/png");
-
-  //   const pdf = new jsPDF("p", "mm", "a4");
-  //   const pdfWidth = pdf.internal.pageSize.getWidth();
-  //   const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-  //   pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-  //   pdf.save("Flight_Quote.pdf");
-  // };
-
   return (
     <Box>
-      {/* <Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-        <IconButton
-          color="secondary"
-          onClick={() => navigate(`/quotes/edit/${currentId}`)}
-        >
-          <EditIcon fontSize="small" />
-        </IconButton>
-
-        <IconButton color="primary" onClick={() => setShowEmailDialog(true)}>
-          <EmailIcon fontSize="small" />
-        </IconButton>
-
-        <IconButton color="primary" onClick={printFn}>
-          <PrintIcon fontSize="small" />
-        </IconButton>
-
-        <IconButton color="secondary" onClick={handleDownloadPDF}>
-          <DownloadIcon fontSize="small" />
-        </IconButton>
-      </Box> */}
-
       <ActionButton
         currentId={currentId}
         currentQuotation={currentQuotation}
@@ -173,6 +88,8 @@ const QuotePreview = ({
         showEmail={showEmail}
         showPrint={showPrint}
         showDownload={showDownload}
+        showGeneratePI={showGeneratePI}
+        onGenerateInvoice={onGenerateInvoice}
       />
 
       <Paper elevation={3} sx={{ padding: 2, overflow: "auto" }}>
@@ -181,49 +98,6 @@ const QuotePreview = ({
           dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
         />
       </Paper>
-
-      {/* <Dialog
-        open={showEmailDialog}
-        onClose={() => setShowEmailDialog(false)}
-        fullWidth
-        maxWidth="xs" // Smaller size
-        sx={{ "& .MuiDialog-paper": { width: "auto", padding: 2 } }} // Adjust width
-      >
-        <DialogTitle>Send Quote via email</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            <TextField
-              fullWidth
-              label="Email"
-              variant="outlined"
-              size="small"
-              margin="normal"
-              value={clientEmail}
-              onChange={(e) => {
-                setClientEmail(e.target.value);
-                validateEmail(e.target.value);
-              }}
-              error={error}
-              helperText={helperText}
-            />
-
-            <Button
-              size="small"
-              variant="contained"
-              color="primary"
-              onClick={handelSendQuoteThroughEmail}
-              endIcon={<SendIcon />}
-            >
-              Send
-            </Button>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowEmailDialog(false)} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog> */}
     </Box>
   );
 };
