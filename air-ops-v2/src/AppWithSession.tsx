@@ -23,8 +23,8 @@ import logoPhn from "./Asset/images/logo_phn.png";
 import { useSession } from "./SessionContext"; // import your hook
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
-import FactCheckIcon from "@mui/icons-material/FactCheck";
+import AirplaneTicketOutlineIcon from "@mui/icons-material/AirplaneTicketOutlined";
+import FactCheckOutlineIcon from "@mui/icons-material/FactCheckOutlined";
 import PrivacyTipOutlinedIcon from "@mui/icons-material/PrivacyTipOutlined";
 import AirlinesOutlinedIcon from "@mui/icons-material/AirlinesOutlined";
 import EngineeringOutlinedIcon from "@mui/icons-material/EngineeringOutlined";
@@ -37,6 +37,8 @@ import SensorOccupiedOutlinedIcon from "@mui/icons-material/SensorOccupiedOutlin
 import LocalAirportIcon from "@mui/icons-material/LocalAirport";
 import RocketLaunchRoundedIcon from "@mui/icons-material/RocketLaunchRounded";
 import LaptopMacOutlinedIcon from "@mui/icons-material/LaptopMacOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 export const NAVIGATION: Navigation = [
   {
@@ -51,7 +53,7 @@ export const NAVIGATION: Navigation = [
   {
     title: "Quotations",
     segment: "quotes",
-    icon: <AirplaneTicketIcon />,
+    icon: <AirplaneTicketOutlineIcon />,
   },
   // {
   //   segment: "quotes",
@@ -62,7 +64,7 @@ export const NAVIGATION: Navigation = [
   {
     segment: "operations",
     title: "Ops",
-    icon: <FactCheckIcon />,
+    icon: <FactCheckOutlineIcon />,
   },
   {
     segment: "security",
@@ -158,12 +160,12 @@ export const NAVIGATION: Navigation = [
   {
     segment: "settings",
     title: "Settings",
-    icon: <Settings />,
+    icon: <AdminPanelSettingsIcon />,
     children: [
       {
         segment: "profile",
         title: "Profile",
-        icon: <Person />,
+        icon: <AccountCircleIcon />,
       },
       {
         segment: "change-password",

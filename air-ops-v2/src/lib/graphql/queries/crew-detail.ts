@@ -95,3 +95,12 @@ export const DELETE_CREW_DETAIL = gql`
     }
   }
 `;
+
+export const GET_STAFF_CERTIFICATION = gql`
+  query getStaffCertifications($args: StaffCertificationInput) {
+    staffCertificates(args: $args) {
+      data
+      totalCount
+    }
+  }
+`;
