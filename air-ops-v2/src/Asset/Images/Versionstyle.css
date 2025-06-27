@@ -328,6 +328,8 @@ background-color: #001551 !important;
 }
 .MuiDrawer-anchorLeft nav .Mui-selected{
 background-color: #ff0202 !important;
+border-top-left-radius: 50% 200px;
+    border-bottom-right-radius: 50% 200px;
 }
 /* .MuiDrawer-paper{
     width: 240px !important;
@@ -464,7 +466,7 @@ background-color: #ff0202 !important;
     
 }
 .view-icon-quote .MuiTypography-h6{
-    background-color: #ddd;
+    background-color: #a0a7bc;
     margin-bottom: 10px;
 }
 .view-icon-quote .MuiIconButton-root{
@@ -475,6 +477,9 @@ background-color: #ff0202 !important;
     color: #fff !important;
 }
 .v1_board .MuiCardContent-root:hover{
-    background-color: #ff0202;
-     border: #ff0202 !important;
+    background-color: #2e3f70 !important;
+     border: #2e3f70 !important;
+}
+.MuiTablePagination-toolbar{
+    background-color: #a0a7bc;
 }
