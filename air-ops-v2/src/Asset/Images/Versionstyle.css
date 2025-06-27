@@ -474,3 +474,7 @@ background-color: #ff0202 !important;
 .view-icon-quote .MuiIconButton-root svg{
     color: #fff !important;
 }
+.v1_board .MuiCardContent-root:hover{
+    background-color: #ff0202;
+     border: #ff0202 !important;
+}
