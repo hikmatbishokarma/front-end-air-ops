@@ -163,7 +163,7 @@ export const AccountList = ({ filter }) => {
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table">
+      <TableContainer component={Paper} className="dash-table search">
         <Box
           display="flex"
           justifyContent="space-between"

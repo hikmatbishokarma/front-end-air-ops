@@ -115,7 +115,7 @@ export const CrewDetailList = ({
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table">
+      <TableContainer component={Paper} className="dash-table crew-table-v1">
         <Table>
           <TableHead>
             <TableRow>
@@ -162,7 +162,7 @@ export const CrewDetailList = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
+      <Dialog className="choose-profile-v1"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth

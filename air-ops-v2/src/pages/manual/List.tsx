@@ -120,7 +120,7 @@ export const ManualList = ({
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table">
+      <TableContainer component={Paper} className="dash-table manuals-quo-v1">
         <Table>
           <TableHead>
             <TableRow>
@@ -208,7 +208,7 @@ export const ManualList = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
+      <Dialog className="choose-profile-v1"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
