@@ -98,6 +98,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
 
   return (
     <Box
+      className="upload-profile-crew"
       component="form"
       onSubmit={onSubmit}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
@@ -136,13 +137,13 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                 required: true,
               }}
               render={({ field, fieldState: { error } }) => (
-                <FormControl
+                <FormControl className="crew-type-v1"
                   fullWidth
                   margin="normal"
                   size="small"
                   error={!!error}
                 >
-                  <InputLabel id="type-label">Designation</InputLabel>
+                  <InputLabel  id="type-label">Crew Type</InputLabel>
                   <Select labelId="type-label" label="Crew Type" {...field}>
                     {designation.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
