@@ -55,3 +55,19 @@ export const SalesCategoryLabels = {
   SALE_CONFIRMATION: "Sale Confirmation",
   REPORTS: "Reports",
 } as const;
+
+export enum LeaveType {
+  CASUAL_LEAVE = "Casual Leave",
+  SICK_LEAVE = "Sick Leave",
+  PRIVILEGE_LEAVE = "Privilege Leave",
+  PITERNITY_LEAVE = "Piternity Leave",
+  MARRIAGE_LEAVE = "Marriage Leave",
+  BEREAVEMENT_LEAVE = "Bereavement Leave",
+}
+
+export enum LeaveStatus {
+  PENDING = "Pending",
+  APPROVED = "Approved",
+  DECLINED = "Declined",
+  CANCELLED = "Cancelled",
+}

@@ -42,6 +42,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import AdminPanelSettingsOutlined from "@mui/icons-material/AdminPanelSettingsOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import BeachAccessOutlinedIcon from "@mui/icons-material/BeachAccessOutlined";
 
 export const NAVIGATION: Navigation = [
   {
@@ -169,6 +170,11 @@ export const NAVIGATION: Navigation = [
         segment: "profile",
         title: "Profile",
         icon: <AccountCircleOutlinedIcon />,
+      },
+      {
+        segment: "leave",
+        title: "Leave",
+        icon: <BeachAccessOutlinedIcon />,
       },
       {
         segment: "change-password",
