@@ -44,6 +44,7 @@ import SalesDashboard from "./pages/dashboard/SalesDashboard";
 //import "../src/index.css";
 // import "../dist/assets/styleview.css";
 import "../src/Asset/Images/Versionstyle.css";
+import { LeaveRequest } from "./pages/leave/LeaveRequestPage";
 
 const router = createBrowserRouter(
   [
@@ -165,6 +166,10 @@ const router = createBrowserRouter(
             {
               path: "settings/profile",
               Component: UserProfile,
+            },
+            {
+              path: "settings/leave",
+              Component: LeaveRequest,
             },
             {
               path: "settings/change-password",
