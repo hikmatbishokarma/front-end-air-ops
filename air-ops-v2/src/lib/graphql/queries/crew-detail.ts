@@ -25,12 +25,9 @@ export const GET_CREW_DETAILS = gql`
       totalCount
       nodes {
         id
-        firstName
-        lastName
-        middleName
+        fullName
         email
         mobileNumber
-        type
         createdAt
         updatedAt
       }
@@ -41,34 +38,41 @@ export const GET_CREW_DETAIL_BY_ID = gql`
   query getCrewDetailById($id: ID!) {
     crewDetail(id: $id) {
       id
-      firstName
-      middleName
-      lastName
-      location
-      type
+      roles {
+        id
+        name
+      }
       profile
-      email
-      anniversaryDate
-      martialStatus
-      religion
-      nationality
-      mobileNumber
-      aadhar
-      pan
+      location
+      designation
+      fullName
+      displayName
       gender
       dateOfBirth
-      bloodGroup
-      designation
+      mobileNumber
+      alternateContact
+      email
       education
       experience
-      alternateContact
-      pinCode
-      temporaryAddress
+
+      martialStatus
+      anniversaryDate
+      religion
+      nationality
+
+      aadhar
+      pan
+      passportNo
+      currentAddress
       permanentAddress
+      bloodGroup
+
       certifications {
-        certification
+        name
+        licenceNo
+        dateOfIssue
         validTill
-        uploadCertificate
+        issuedBy
       }
       nominees {
         fullName
@@ -76,6 +80,9 @@ export const GET_CREW_DETAIL_BY_ID = gql`
         gender
         mobileNumber
         alternateContact
+        relation
+        address
+        insurance
       }
     }
   }
@@ -85,6 +92,15 @@ export const DELETE_CREW_DETAIL = gql`
   mutation deleteCrewDetail($input: DeleteOneCrewDetailInput!) {
     deleteOneCrewDetail(input: $input) {
       id
+    }
+  }
+`;
+
+export const GET_STAFF_CERTIFICATION = gql`
+  query getStaffCertifications($args: StaffCertificationInput) {
+    staffCertificates(args: $args) {
+      data
+      totalCount
     }
   }
 `;

@@ -38,6 +38,7 @@ import TripConfirmationPreview from "../../components/trip-confirmation-preview"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import moment from "moment";
+import { CustomDialog } from "../../components/CustomeDialog";
 import { useQuoteData } from "../../hooks/useQuoteData";
 import FilterPanel from "../quote/FilterPanel";
 import { Iclient } from "../../interfaces/quote.interface";
@@ -564,174 +565,104 @@ const SalesDashboard = () => {
 
   return (
     <>
-      <Dialog 
+      <CustomDialog
         open={openInvoiceDialog}
         onClose={() => setOpenInvoiceDialog(false)}
+        title="Generate Invoice"
       >
-        <DialogTitle>
-          Generate Invoice
-          <IconButton
-            aria-label="close"
-            onClick={() => setOpenInvoiceDialog(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <form onSubmit={handleProformaSubmit(onGenerateInvoice)}>
-            <FormControl component="fieldset" fullWidth sx={{ mb: 2 }}>
-              <FormLabel>Select Invoice Type</FormLabel>
-              <Controller
-                control={proformaControl}
-                name="type"
-                render={({ field }) => (
-                  <RadioGroup row {...field}>
-                    <FormControlLabel
-                      value="PROFORMA_INVOICE"
-                      control={<Radio />}
-                      label="Proforma Invoice"
-                    />
-                    <FormControlLabel
-                      value="TAX_INVOICE"
-                      control={<Radio />}
-                      label="Tax Invoice"
-                    />
-                  </RadioGroup>
-                )}
-              />
-            </FormControl>
-
-            {invoiceType === "PROFORMA_INVOICE" && (
-              <Controller
-                name="quotationNo"
-                control={proformaControl}
-                rules={{ required: "Quotation No is required" }}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    fullWidth
-                    label="Quotation No"
-                    {...field}
-                    error={!!error}
-                    helperText={error?.message}
-                    sx={{ mb: 2 }}
+        <form onSubmit={handleProformaSubmit(onGenerateInvoice)}>
+          <FormControl component="fieldset" fullWidth sx={{ mb: 2 }}>
+            <FormLabel>Select Invoice Type</FormLabel>
+            <Controller
+              control={proformaControl}
+              name="type"
+              render={({ field }) => (
+                <RadioGroup row {...field}>
+                  <FormControlLabel
+                    value="PROFORMA_INVOICE"
+                    control={<Radio />}
+                    label="Proforma Invoice"
                   />
-                )}
-              />
-            )}
-
-            {invoiceType === "TAX_INVOICE" && (
-              <Controller
-                name="proformaInvoiceNo"
-                control={proformaControl}
-                rules={{ required: "Proforma Invoice No is required" }}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    fullWidth
-                    label="Proforma Invoice No"
-                    {...field}
-                    error={!!error}
-                    helperText={error?.message}
-                    sx={{ mb: 2 }}
+                  <FormControlLabel
+                    value="TAX_INVOICE"
+                    control={<Radio />}
+                    label="Tax Invoice"
                   />
-                )}
-              />
-            )}
+                </RadioGroup>
+              )}
+            />
+          </FormControl>
 
-            <DialogActions>
-              <Button type="submit" color="primary" variant="contained">
-                Generate
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
+          {invoiceType === "PROFORMA_INVOICE" && (
+            <Controller
+              name="quotationNo"
+              control={proformaControl}
+              rules={{ required: "Quotation No is required" }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  fullWidth
+                  label="Quotation No"
+                  {...field}
+                  error={!!error}
+                  helperText={error?.message}
+                  sx={{ mb: 2 }}
+                />
+              )}
+            />
+          )}
 
-      <Dialog
+          {invoiceType === "TAX_INVOICE" && (
+            <Controller
+              name="proformaInvoiceNo"
+              control={proformaControl}
+              rules={{ required: "Proforma Invoice No is required" }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  fullWidth
+                  label="Proforma Invoice No"
+                  {...field}
+                  error={!!error}
+                  helperText={error?.message}
+                  sx={{ mb: 2 }}
+                />
+              )}
+            />
+          )}
+        </form>
+      </CustomDialog>
+
+      <CustomDialog
         open={tripConfirmationOpen}
         onClose={() => setTripConfirmationOpen(false)}
-        maxWidth={false}
-        PaperProps={{
-          sx: {
-            width: "600px", // or 768px, 800px – adjust as you like
-            maxWidth: "80%", // responsive fallback
-          },
-        }}
+        title="Trip Confirmation"
       >
-        <DialogTitle>
-          Trip Confirmation
-          <IconButton
-            aria-label="close"
-            onClick={() => setTripConfirmationOpen(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        {/* <DialogContent>
-          <form onSubmit={handleTripSubmit(handelTripConfirmation)}>
-            <Controller
-              name="quotationNo"
-              control={tripControl}
-              rules={{ required: "Quotation No is required" }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  fullWidth
-                  label="Quotation No"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                  sx={{ mb: 2 }}
-                />
-              )}
-            />
-
-            <DialogActions>
-              <Button type="submit" color="primary" variant="contained">
-                Generate
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent> */}
-        <DialogContent>
-          <Box
-            component="form"
-            onSubmit={handleTripSubmit(handelTripConfirmation)}
-            sx={{ width: "80%" }}
-          >
-            <Controller
-              name="quotationNo"
-              control={tripControl}
-              rules={{ required: "Quotation No is required" }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  fullWidth
-                  label="Quotation No"
-                  {...field}
-                  error={!!error}
-                  helperText={error?.message}
-                  sx={{ mb: 2 }}
-                />
-              )}
-            />
-            <DialogActions sx={{ px: 0 }}>
-              <Button type="submit" color="primary" variant="contained">
-                Generate
-              </Button>
-            </DialogActions>
-          </Box>
-        </DialogContent>
-      </Dialog>
+        <Box
+          component="form"
+          onSubmit={handleTripSubmit(handelTripConfirmation)}
+          sx={{ width: "80%" }}
+        >
+          <Controller
+            name="quotationNo"
+            control={tripControl}
+            rules={{ required: "Quotation No is required" }}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                fullWidth
+                label="Quotation No"
+                {...field}
+                error={!!error}
+                helperText={error?.message}
+                sx={{ mb: 2 }}
+              />
+            )}
+          />
+          <DialogActions sx={{ px: 0 }}>
+            <Button type="submit" color="primary" variant="contained">
+              Generate
+            </Button>
+          </DialogActions>
+        </Box>
+      </CustomDialog>
 
       <DashboardBoardSection
         selectedTab={selectedTab}
@@ -742,7 +673,8 @@ const SalesDashboard = () => {
         createEnabledTabs={["Quotes", "Invoices", "Trip Confirmation"]}
       />
 
-      <Box className="search_quo1"
+      <Box
+        className="search_quo1"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -755,7 +687,7 @@ const SalesDashboard = () => {
           backgroundColor: "#f9f9f9",
           borderRadius: 2,
           boxShadow: 1,
-        }} 
+        }}
       >
         <Box sx={{ flex: "1 1 auto", maxWidth: 300 }}>
           <TextField
@@ -812,83 +744,31 @@ const SalesDashboard = () => {
         />
       )}
 
-      <Dialog className="view-icon-quote"
+      <CustomDialog
         open={showInvoicePreview}
         onClose={() => setShowInvoicePreview(false)}
-        fullWidth
+        title="Invoice Preview"
+        width="900px"
         maxWidth="md"
       >
-        <DialogTitle>
-          {" "}
-          Invoice Preview
-          <IconButton
-            aria-label="close"
-            onClick={() => setShowInvoicePreview(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+        <InvoicePreview
+          htmlContent={invoiceData?.template}
+          currentQuotation={invoiceData?.quotationNo}
+        />
+      </CustomDialog>
 
-        <DialogContent>
-          <InvoicePreview
-            htmlContent={invoiceData?.template}
-            currentQuotation={invoiceData?.quotationNo}
-          />
-        </DialogContent>
-        {/* <DialogActions>
-          <Button
-            onClick={() => setShowInvoicePreview(false)}
-            color="secondary"
-          >
-            Cancel
-          </Button>
-        </DialogActions> */}
-      </Dialog>
-
-      <Dialog className="view-icon-quote"
+      <CustomDialog
         open={showTripConfirmationPreview}
         onClose={() => setShowTripConfirmationPreview(false)}
-        fullWidth
+        title="Trip Confirmation Preview"
+        width="900px"
         maxWidth="md"
       >
-        <DialogTitle>
-          {" "}
-          Trip Confirmation Preview
-          <IconButton
-            aria-label="close"
-            onClick={() => setShowTripConfirmationPreview(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-
-        <DialogContent>
-          <TripConfirmationPreview
-            htmlContent={tripConfirmationData?.confirmationTemplate}
-            currentQuotation={tripConfirmationData?.quotationNo}
-          />
-        </DialogContent>
-        {/* <DialogActions>
-          <Button
-            onClick={() => setShowTripConfirmationPreview(false)}
-            color="secondary"
-          >
-            Cancel
-          </Button>
-        </DialogActions> */}
-      </Dialog>
+        <TripConfirmationPreview
+          htmlContent={tripConfirmationData?.confirmationTemplate}
+          currentQuotation={tripConfirmationData?.quotationNo}
+        />
+      </CustomDialog>
 
       <FilterPanel
         open={openFilter}
@@ -912,10 +792,6 @@ const SalesDashboard = () => {
             setCustomFromDate("");
           }
         }}
-        // onToDateChange={(date) =>
-        //   setCustomToDate(date ? date.format("YYYY-MM-DD") : "")
-        // }
-
         onToDateChange={(date) => {
           if (date) {
             if (dateFilterType !== "custom") {

@@ -9,7 +9,11 @@ import DashboardBoardSection from "../../components/DashboardBoardSection";
 import { CrewDetailList } from "../crew-detail/List";
 import { useSnackbar } from "../../SnackbarContext";
 import { useSession } from "../../SessionContext";
-import { GET_CREW_DETAILS } from "../../lib/graphql/queries/crew-detail";
+import {
+  GET_CREW_DETAILS,
+  GET_STAFF_CERTIFICATION,
+} from "../../lib/graphql/queries/crew-detail";
+import { StaffCertificationList } from "../crew-detail/CertificationList";
 
 const CrewDashboard = () => {
   const showSnackbar = useSnackbar();
@@ -24,6 +28,7 @@ const CrewDashboard = () => {
   const [filters, setFilters] = useState({});
   const [crewData, setCrewData] = useState({ totalCount: {}, data: [] });
   const [loading, setLoading] = useState(false);
+  const [staffCertificates, setStaffCertification] = useState<any>();
   const [crewSummary, setCrewSummary] = useState<any>({
     summary: {
       staff: 0,
@@ -44,8 +49,6 @@ const CrewDashboard = () => {
           },
         },
       });
-
-      console.log("crewww::", result);
 
       if (!result.data) showSnackbar("Failed to fetch Crew Details!", "error");
       setCrewData(result);
@@ -108,7 +111,41 @@ const CrewDashboard = () => {
     setOpen(true);
   };
 
-  console.log("crewSummary:::", crewSummary);
+  const getStaffCertifications = async () => {
+    try {
+      const result = await useGql({
+        query: GET_STAFF_CERTIFICATION,
+        queryName: "staffCertificates",
+        queryType: "query-without-edge",
+        variables: {
+          args: {
+            where: {
+              ...(operatorId && { operatorId: { eq: operatorId } }),
+            },
+          },
+        },
+      });
+
+      if (!result.data) showSnackbar("Failed to fetch Certification!", "error");
+      setCrewSummary((prev) => ({
+        ...prev,
+        summary: {
+          ...prev.summary,
+          renewals: result.totalCount,
+        },
+      }));
+      setStaffCertification(result.data);
+    } catch (error) {
+      showSnackbar(
+        error.message || "Failed to fetch fetch Certification!",
+        "error"
+      );
+    }
+  };
+
+  useEffect(() => {
+    getStaffCertifications();
+  }, [selectedTab]);
 
   return (
     <>
@@ -120,15 +157,20 @@ const CrewDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Staff"]}
       />
-      <CrewDetailList
-        open={open}
-        setOpen={setOpen}
-        list={crewData.data}
-        loading={loading}
-        onSearch={handleSearch}
-        onFilterChange={handleFilterChange}
-        refreshList={refreshList}
-      />
+      {selectedTab == "Staff" && (
+        <CrewDetailList
+          open={open}
+          setOpen={setOpen}
+          list={crewData.data}
+          loading={loading}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          refreshList={refreshList}
+        />
+      )}
+      {selectedTab == "Renewals" && (
+        <StaffCertificationList list={staffCertificates} />
+      )}
     </>
   );
 };

@@ -11,6 +11,7 @@ interface MultiSelectFieldProps<T> {
   isOptionEqualToValue?: (option: T, value: T) => boolean;
   error?: boolean;
   helperText?: string;
+  size?: "small" | "medium";
 }
 
 export default function MultiSelectAutoComplete<T>({
@@ -22,8 +23,8 @@ export default function MultiSelectAutoComplete<T>({
   isOptionEqualToValue = (a, b) => a === b,
   error,
   helperText,
+  size = "small",
 }: MultiSelectFieldProps<T>) {
-  console.log("options:::", options);
   return (
     <Autocomplete
       multiple
@@ -45,6 +46,7 @@ export default function MultiSelectAutoComplete<T>({
           label={label}
           error={error}
           helperText={helperText}
+          size={size}
         />
       )}
     />

@@ -34,6 +34,7 @@ import InvoicePreview from "../../components/invoice-preview";
 import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
 import { TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
+import { CustomDialog } from "../../components/CustomeDialog";
 
 export const InvoiceList = ({
   filter,
@@ -173,7 +174,7 @@ export const InvoiceList = ({
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
-        <Box
+        {/* <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
@@ -195,7 +196,7 @@ export const InvoiceList = ({
               ),
             }}
           />
-        </Box>
+        </Box> */}
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -247,43 +248,20 @@ export const InvoiceList = ({
         />
       </TableContainer>
 
-      <Dialog className="view-icon-quote"
+      <CustomDialog
         open={showPreview}
         onClose={() => setShowPreview(false)}
-        fullWidth
+        title="Invoice Preview"
+        width="900px"
         maxWidth="md"
       >
-        <DialogTitle>
-          {" "}
-          Invoice Preview
-          <IconButton
-            aria-label="close"
-            onClick={() => setShowPreview(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-
-        <DialogContent>
-          <InvoicePreview
-            htmlContent={selectedRowData?.template}
-            currentQuotation={selectedRowData?.quotationNo}
-            type={selectedRowData?.type}
-            handelTripConfirmation={handelTripConfirmation}
-          />
-        </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={() => setShowPreview(false)} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions> */}
-      </Dialog>
+        <InvoicePreview
+          htmlContent={selectedRowData?.template}
+          currentQuotation={selectedRowData?.quotationNo}
+          type={selectedRowData?.type}
+          handelTripConfirmation={handelTripConfirmation}
+        />
+      </CustomDialog>
     </>
   );
 };

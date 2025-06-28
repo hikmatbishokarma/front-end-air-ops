@@ -52,6 +52,7 @@ import ClientDialog from "../clients/dialog";
 import RepresentativeDialog from "../representative/dialog";
 import { useNavigate } from "react-router";
 import { useSession } from "../../SessionContext";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const defaultValues = {
   requestedBy: "",
@@ -236,7 +237,7 @@ export const QuoteCreate = () => {
   const { control, handleSubmit, setValue, watch, reset, getValues } = useForm({
     defaultValues,
   });
-  const steps = ["General Information", "Itinerary Details", "Price", "Review"];
+  const steps = ["Enquiry", "Sectors", "Price", "Review"];
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -319,8 +320,6 @@ export const QuoteCreate = () => {
   useEffect(() => {
     const lastIndex = itinerary.length - 1;
     const lastItinerary = itinerary[lastIndex];
-
-    console.log("lastItinerary:::", lastItinerary);
 
     if (
       lastItinerary?.source &&
@@ -515,8 +514,6 @@ export const QuoteCreate = () => {
     }
   };
 
-  console.log("eventss:", events);
-
   useEffect(() => {
     if (activeStep === 1) {
       const startDate = moment.utc().startOf("month").toISOString();
@@ -573,7 +570,7 @@ export const QuoteCreate = () => {
                     <Controller
                       name="requestedBy"
                       control={control}
-                      rules={{ required: "Requested By is required" }}
+                      rules={{ required: "Enquiry From is required" }}
                       render={({ field, fieldState: { error } }) => (
                         <Autocomplete
                           {...field}
@@ -591,7 +588,7 @@ export const QuoteCreate = () => {
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label="Requested By"
+                              label="Enquiry From"
                               size="small"
                               placeholder="Select Client"
                               slotProps={{
@@ -797,7 +794,6 @@ export const QuoteCreate = () => {
                                 )}
                               />
                             </Grid>
-
                             <Grid item xs={6}>
                               <Controller
                                 name={`itinerary.${index}.depatureDate`}
@@ -887,7 +883,6 @@ export const QuoteCreate = () => {
                                 }}
                               />
                             </Grid>
-
                             <Grid item xs={6}>
                               <Controller
                                 name={`itinerary.${index}.arrivalDate`}
@@ -983,18 +978,26 @@ export const QuoteCreate = () => {
                                 )}
                               />
                             </Grid>
-
                             <Grid item xs={6}>
                               <Controller
                                 name={`itinerary.${index}.paxNumber`}
                                 control={control}
-                                render={({ field }) => (
+                                rules={{
+                                  min: {
+                                    value: 0,
+                                    message: "PAX must be at least 0",
+                                  },
+                                }}
+                                render={({ field, fieldState: { error } }) => (
                                   <TextField
                                     {...field}
                                     type="number"
                                     fullWidth
                                     size="small"
                                     label="PAX"
+                                    error={!!error}
+                                    helperText={error?.message}
+                                    inputProps={{ min: 0 }}
                                   />
                                 )}
                               />
@@ -1008,26 +1011,31 @@ export const QuoteCreate = () => {
                                 justifyContent: "flex-end",
                               }}
                             >
-                              <Button
-                                variant="outlined"
-                                startIcon={<Delete />}
-                                onClick={() => removeItinerary(index)}
-                                color="error"
-                              >
-                                Remove
-                              </Button>
+                              {index < 5 && (
+                                <IconButton aria-label="add">
+                                  <AddIcon onClick={addItinerary} />
+                                </IconButton>
+                              )}
+
+                              {index > 0 && (
+                                <IconButton aria-label="delete">
+                                  <DeleteIcon
+                                    onClick={() => removeItinerary(index)}
+                                  />
+                                </IconButton>
+                              )}
                             </Grid>
                           </Grid>
                         );
                       })}
                     </LocalizationProvider>
-                    <Button
+                    {/* <Button
                       variant="outlined"
                       startIcon={<AddIcon />}
                       onClick={addItinerary}
                     >
                       Add Itinerary
-                    </Button>
+                    </Button> */}
                   </Box>
 
                   <Box
@@ -1303,11 +1311,19 @@ export const QuoteCreate = () => {
               {activeStep === 3 && (
                 <>
                   <div className="space-y-4">
-                    <h2 className="text-xl font-semibold">Basic Info</h2>
+                    <h2
+                      style={{
+                        fontSize: "20px",
+                        fontWeight: "600",
+                        marginTop: "24px",
+                      }}
+                    >
+                      Enquiry:
+                    </h2>
 
                     <div className="space-y-2">
                       <p>
-                        <strong>Requested By:</strong>{" "}
+                        <strong>Enquiry From:</strong>{" "}
                         {clients?.find(
                           (client) => client.id === getValues("requestedBy")
                         )?.name || "N/A"}
@@ -1342,7 +1358,7 @@ export const QuoteCreate = () => {
                         marginTop: "24px",
                       }}
                     >
-                      Itinerary
+                      Sectors:
                     </h2>
                     <div style={{ overflowX: "auto" }}>
                       <table
@@ -1505,7 +1521,7 @@ export const QuoteCreate = () => {
                         marginTop: "24px",
                       }}
                     >
-                      Price
+                      Price:
                     </h2>
                     <div style={{ overflowX: "auto" }}>
                       <table
@@ -1626,7 +1642,7 @@ export const QuoteCreate = () => {
                       </table>
                     </div>
                     <p>
-                      <strong>Total:</strong> {getValues("grandTotal") || "N/A"}
+                      <strong>Total:</strong> {getValues("grandTotal") || 0}
                     </p>
                   </div>
                 </>

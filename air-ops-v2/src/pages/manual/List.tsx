@@ -33,6 +33,7 @@ import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ImageIcon from "@mui/icons-material/Image";
+import DocumentPreviewDialog from "../../components/DocumentPreviewDialog";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ManualList = ({
   open,
@@ -90,25 +91,30 @@ export const ManualList = ({
 
   const handleClose = () => setOpen(false);
 
-  const handlePreview = (url) => {
-    url = `${apiBaseUrl}${url}`;
+  // const handlePreview = (url) => {
+  //   url = `${apiBaseUrl}${url}`;
+  //   setPreviewUrl(url);
+
+  //   // detect file type
+  //   if (url.endsWith(".pdf")) {
+  //     setPreviewType("pdf");
+  //   } else if (url.endsWith(".doc") || url.endsWith(".docx")) {
+  //     setPreviewType("doc");
+  //   } else if (
+  //     url.endsWith(".png") ||
+  //     url.endsWith(".jpg") ||
+  //     url.endsWith(".jpeg")
+  //   ) {
+  //     setPreviewType("image");
+  //   } else {
+  //     setPreviewType("other");
+  //   }
+
+  //   setPreviewOpen(true);
+  // };
+
+  const handlePreview = (url: string) => {
     setPreviewUrl(url);
-
-    // detect file type
-    if (url.endsWith(".pdf")) {
-      setPreviewType("pdf");
-    } else if (url.endsWith(".doc") || url.endsWith(".docx")) {
-      setPreviewType("doc");
-    } else if (
-      url.endsWith(".png") ||
-      url.endsWith(".jpg") ||
-      url.endsWith(".jpeg")
-    ) {
-      setPreviewType("image");
-    } else {
-      setPreviewType("other");
-    }
-
     setPreviewOpen(true);
   };
 
@@ -235,7 +241,8 @@ export const ManualList = ({
           )}
         </DialogContent>
       </Dialog>
-      <Dialog
+
+      {/* <Dialog
         open={previewOpen}
         onClose={() => setPreviewOpen(false)}
         fullWidth
@@ -287,7 +294,14 @@ export const ManualList = ({
 
           {previewType === "other" && <p>Cannot preview this file type.</p>}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+      <DocumentPreviewDialog
+        open={previewOpen}
+        url={previewUrl}
+        apiBaseUrl={apiBaseUrl}
+        onClose={() => setPreviewOpen(false)}
+      />
+
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
