@@ -53,6 +53,7 @@ import moment from "moment";
 import TripConfirmationPreview from "../../components/trip-confirmation-preview";
 import CloseIcon from "@mui/icons-material/Close";
 import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
+import { CustomDialog } from "../../components/CustomeDialog";
 
 export const QuoteList = ({
   filter,
@@ -340,86 +341,37 @@ export const QuoteList = ({
         />
       </TableContainer>
 
-      <Dialog className="view-icon-quote"
+      <CustomDialog
         open={showPreview}
         onClose={() => setShowPreview(false)}
-        fullWidth
+        title="Quote Preview"
+        width="900px"
         maxWidth="md"
       >
-        <DialogTitle>
-          {" "}
-          Quote Preview
-          <IconButton
-            aria-label="close"
-            onClick={() => setShowPreview(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+        <QuotePreview
+          htmlContent={previewData}
+          currentId={selectedRowData?.id}
+          currentQuotation={selectedRowData?.quotationNo}
+          showEdit={selectedRowData?.isLatest}
+          showGeneratePI={selectedRowData?.isLatest}
+          onGenerateInvoice={onGenerateInvoice}
+        />
+      </CustomDialog>
 
-        <DialogContent>
-          <QuotePreview
-            htmlContent={previewData}
-            currentId={selectedRowData?.id}
-            currentQuotation={selectedRowData?.quotationNo}
-            showEdit={selectedRowData?.isLatest}
-            showGeneratePI={selectedRowData?.isLatest}
-            onGenerateInvoice={onGenerateInvoice}
-          />
-        </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={() => setShowPreview(false)} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions> */}
-      </Dialog>
-
-      <Dialog className="view-icon-quote"
+      <CustomDialog
         open={showTripConfirmationPreview}
         onClose={() => setShowTripConfirmationPreview(false)}
-        fullWidth
+        title="Trip Confirmation Preview"
+        width="900px"
         maxWidth="md"
       >
-        <DialogTitle>
-          {" "}
-          Trip Confirmation Preview
-          <IconButton
-            aria-label="close"
-            onClick={() => setShowTripConfirmationPreview(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-
-        <DialogContent>
-          <TripConfirmationPreview
-            htmlContent={tripConfirmationPreviewTemplate}
-            currentQuotation={selectedRowData?.quotationNo}
-            showGenerateTI={selectedRowData?.isLatest}
-            onGenerateInvoice={onGenerateInvoice}
-          />
-        </DialogContent>
-        {/* <DialogActions>
-          <Button
-            onClick={() => setShowTripConfirmationPreview(false)}
-            color="secondary"
-          >
-            Cancel
-          </Button>
-        </DialogActions> */}
-      </Dialog>
+        <TripConfirmationPreview
+          htmlContent={tripConfirmationPreviewTemplate}
+          currentQuotation={selectedRowData?.quotationNo}
+          showGenerateTI={selectedRowData?.isLatest}
+          onGenerateInvoice={onGenerateInvoice}
+        />
+      </CustomDialog>
     </>
   );
 };

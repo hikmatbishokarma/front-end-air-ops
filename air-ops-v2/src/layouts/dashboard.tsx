@@ -43,7 +43,21 @@ export default function Layout() {
         padding: 2, // Optional
       }}
     >
-      <DashboardLayout slots={{ toolbarAccount: CustomAccount }}>
+      {/* <DashboardLayout slots={{ toolbarAccount: CustomAccount }}>
+        <PageContainer>
+          <Outlet />
+        </PageContainer>
+      </DashboardLayout> */}
+      {/* <DashboardLayout slots={{ toolbarAccount: CustomAccount }}>
+        <Outlet />
+      </DashboardLayout> */}
+      <DashboardLayout
+        slots={{ toolbarAccount: CustomAccount }}
+        sx={{
+          "& .MuiBreadcrumbs-root": { display: "none" },
+          "& h4.MuiTypography-root": { display: "none" },
+        }}
+      >
         <PageContainer>
           <Outlet />
         </PageContainer>

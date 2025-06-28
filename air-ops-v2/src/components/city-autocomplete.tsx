@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { TextField, CircularProgress, Autocomplete } from "@mui/material";
-import { GET_AIRPORTS } from "../lib/graphql/queries/airports";
+
 import useGql from "../lib/graphql/gql";
 import { GET_CITIES } from "../lib/graphql/queries/city";
 

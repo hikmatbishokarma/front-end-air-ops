@@ -43,10 +43,9 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
 }) => {
   const selectedType = useWatch({ control, name: "type" });
 
-  console.log("selectedType:::", selectedType);
-
   return (
-    <Box className="popup-person-one"
+    <Box
+      className="popup-person-one"
       component="form"
       onSubmit={onSubmit}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}

@@ -131,9 +131,7 @@ export const CrewDetailList = ({
             {list &&
               list?.map((item, index) => (
                 <TableRow key={item.id}>
-                  <TableCell>
-                    {`${item.firstName} ${item.middleName ?? ""} ${item.lastName}`.trim()}
-                  </TableCell>
+                  <TableCell>{`${item.fullName}`.trim()}</TableCell>
 
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item?.mobileNumber}</TableCell>

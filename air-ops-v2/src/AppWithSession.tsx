@@ -23,6 +23,23 @@ import logoPhn from "./Asset/images/logo_phn.png";
 import { useSession } from "./SessionContext"; // import your hook
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
+import AirplaneTicketOutlineIcon from "@mui/icons-material/AirplaneTicketOutlined";
+import FactCheckOutlineIcon from "@mui/icons-material/FactCheckOutlined";
+import PrivacyTipOutlinedIcon from "@mui/icons-material/PrivacyTipOutlined";
+import AirlinesOutlinedIcon from "@mui/icons-material/AirlinesOutlined";
+import EngineeringOutlinedIcon from "@mui/icons-material/EngineeringOutlined";
+import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
+import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
+import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
+import ExposureOutlinedIcon from "@mui/icons-material/ExposureOutlined";
+import QueryStatsOutlinedIcon from "@mui/icons-material/QueryStatsOutlined";
+import SensorOccupiedOutlinedIcon from "@mui/icons-material/SensorOccupiedOutlined";
+import LocalAirportIcon from "@mui/icons-material/LocalAirport";
+import RocketLaunchRoundedIcon from "@mui/icons-material/RocketLaunchRounded";
+import LaptopMacOutlinedIcon from "@mui/icons-material/LaptopMacOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+
 export const NAVIGATION: Navigation = [
   {
     kind: "header",
@@ -31,12 +48,12 @@ export const NAVIGATION: Navigation = [
   {
     title: "Dashboard",
     segment: "",
-    icon: <DashboardIcon />,
+    icon: <LaptopMacOutlinedIcon />,
   },
   {
     title: "Quotations",
     segment: "quotes",
-    icon: <RequestQuote />,
+    icon: <AirplaneTicketOutlineIcon />,
   },
   // {
   //   segment: "quotes",
@@ -47,53 +64,53 @@ export const NAVIGATION: Navigation = [
   {
     segment: "operations",
     title: "Ops",
-    icon: <Handyman />,
+    icon: <FactCheckOutlineIcon />,
   },
   {
     segment: "security",
     title: "Security",
-    icon: <Handyman />,
+    icon: <PrivacyTipOutlinedIcon />,
   },
 
   {
     segment: "camo",
     title: "CAMO",
-    icon: <Person />,
+    icon: <AirlinesOutlinedIcon />,
   },
 
   {
     segment: "engineering",
     title: "Engineering",
-    icon: <Person />,
+    icon: <EngineeringOutlinedIcon />,
   },
 
   {
     segment: "crew",
     title: "CREW",
-    icon: <Person />,
+    icon: <BadgeOutlinedIcon />,
   },
 
   {
     segment: "training-sales",
     title: "Training & Sales",
-    icon: <Person />,
+    icon: <AutoStoriesOutlinedIcon />,
   },
   {
     segment: "manuals",
     title: "Manuals",
-    icon: <Person />,
+    icon: <SourceOutlinedIcon />,
   },
 
   {
     segment: "accounts",
     title: "Accounts",
-    icon: <AccountBalance />,
+    icon: <ExposureOutlinedIcon />,
   },
 
   {
     segment: "audit",
     title: "Audit",
-    icon: <Person />,
+    icon: <QueryStatsOutlinedIcon />,
   },
 
   // {
@@ -121,12 +138,12 @@ export const NAVIGATION: Navigation = [
       {
         segment: "aircraft",
         title: "Aircraft Detail",
-        icon: <ShoppingCartIcon />,
+        icon: <RocketLaunchRoundedIcon />,
       },
       {
         segment: "airports",
         title: "Airports",
-        icon: <ShoppingCartIcon />,
+        icon: <LocalAirportIcon />,
       },
       {
         segment: "users",
@@ -136,19 +153,19 @@ export const NAVIGATION: Navigation = [
       {
         segment: "operators",
         title: "Operators",
-        icon: <Person />,
+        icon: <SensorOccupiedOutlinedIcon />,
       },
     ],
   },
   {
     segment: "settings",
     title: "Settings",
-    icon: <Settings />,
+    icon: <AdminPanelSettingsIcon />,
     children: [
       {
         segment: "profile",
         title: "Profile",
-        icon: <Person />,
+        icon: <AccountCircleIcon />,
       },
       {
         segment: "change-password",
@@ -163,7 +180,7 @@ const defaultNavigation: Navigation = [
   {
     title: "Dashboard",
     segment: "",
-    icon: <DashboardIcon />,
+    icon: <LaptopMacOutlinedIcon />,
   },
 ];
 
@@ -234,8 +251,6 @@ export default function AppWithSession() {
     }
   }, [session, loading]);
 
-  console.log("validNavigation", validNavigation);
-
   const signIn = React.useCallback(() => {
     // navigate("/sign-in");
     navigate("/login");
@@ -246,8 +261,6 @@ export default function AppWithSession() {
     // navigate("/sign-in");
     navigate("/login");
   }, [navigate]);
-
-  console.log("branding", branding);
 
   return (
     <ReactRouterAppProvider
