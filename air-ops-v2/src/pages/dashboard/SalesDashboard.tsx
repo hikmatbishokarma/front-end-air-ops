@@ -23,7 +23,11 @@ import {
 import QuoteList from "../quote/list";
 import useGql from "../../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
-import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
+import {
+  getEnumKeyByValue,
+  QuotationStatus,
+  SalesCategoryLabels,
+} from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
 import { useSession } from "../../SessionContext";
@@ -33,10 +37,9 @@ import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
 import { useSnackbar } from "../../SnackbarContext";
 import InvoicePreview from "../../components/invoice-preview";
 import InvoiceList from "../quote/invoice-list";
-import { GET_QUOTES, TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
-import TripConfirmationPreview from "../../components/trip-confirmation-preview";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import { GET_QUOTES, SALE_CONFIRMATION } from "../../lib/graphql/queries/quote";
+import SaleConfirmationPreview from "../../components/SaleConfirmationPreview";
+
 import moment from "moment";
 import { CustomDialog } from "../../components/CustomeDialog";
 import { useQuoteData } from "../../hooks/useQuoteData";
@@ -103,7 +106,7 @@ const SalesDashboard = () => {
           ? { or: statusFilter }
           : {}),
       });
-    } else if (data.name === "Trip Confirmation") {
+    } else if (data.name === "Sale Confirmation") {
       setFilter({
         ...(statusFilter && statusFilter.length > 0
           ? { or: statusFilter }
@@ -125,18 +128,22 @@ const SalesDashboard = () => {
   };
 
   const categories = [
-    { status: [""], name: "Quotes", countLabel: "totalQuotations" },
     {
-      status: ["Proforma Invoice", "Tax Invoice"],
-      name: "Invoices",
+      status: [""],
+      name: SalesCategoryLabels.QUOTES,
+      countLabel: "totalQuotations",
+    },
+    {
+      status: [QuotationStatus.PROFOMA_INVOICE, QuotationStatus.TAX_INVOICE],
+      name: SalesCategoryLabels.INVOICES,
       countLabel: "invoices",
     },
     {
-      status: ["Confirmed"],
-      name: "Trip Confirmation",
-      countLabel: "tripConfirmations",
+      status: [QuotationStatus.SALE_CONFIRMED],
+      name: SalesCategoryLabels.SALE_CONFIRMATION,
+      countLabel: "saleConfirmations",
     },
-    { status: [""], name: "Reports", countLabel: "reports" },
+    { status: [""], name: SalesCategoryLabels.REPORTS, countLabel: "reports" },
   ];
 
   const handelCreate = (selectedTab) => {
@@ -144,12 +151,11 @@ const SalesDashboard = () => {
       navigate("/quotes/create");
     } else if (selectedTab === "Invoices") {
       setOpenInvoiceDialog(true); // Open modal
-    } else if (selectedTab === "Trip Confirmation") {
+    } else if (selectedTab === "Sale Confirmation") {
       setTripConfirmationOpen(true); // Open modal
     }
   };
 
-  // For Trip Confirmation Dialog
   const {
     control: tripControl,
     handleSubmit: handleTripSubmit,
@@ -176,7 +182,7 @@ const SalesDashboard = () => {
   const invoiceType = useWatch({ control: proformaControl, name: "type" });
 
   const [invoiceData, setInvoicedata] = useState<any>(null);
-  const [tripConfirmationData, setTripConfirmationData] = useState<any>(null);
+  const [saleConfirmationData, setSaleConfirmationData] = useState<any>(null);
   const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
     useState(false);
   const [isTripConfirmed, setIsTripConfirmed] = useState(false);
@@ -218,8 +224,8 @@ const SalesDashboard = () => {
     setTripConfirmationOpen(false);
 
     const result = await useGql({
-      query: TRIP_CONFIRMATION,
-      queryName: "tripConfirmation",
+      query: SALE_CONFIRMATION,
+      queryName: "saleConfirmation",
       queryType: "mutation",
       variables: {
         args: {
@@ -235,7 +241,7 @@ const SalesDashboard = () => {
         "error"
       );
     } else {
-      setTripConfirmationData(result?.data?.tripConfirmation);
+      setSaleConfirmationData(result?.data?.saleConfirmation);
       setShowTripConfirmationPreview(true);
       setIsTripConfirmed(true);
     }
@@ -264,139 +270,9 @@ const SalesDashboard = () => {
     return d.toISOString();
   }, []);
 
-  // useEffect(() => {
-  //   const today = new Date();
-  //   // Helper to format Date objects to YYYY-MM-DD strings
-  //   const formatDate = (date) => date.toISOString().split("T")[0];
-
-  //   let from: string | null = null;
-  //   let to: string | null = null;
-
-  //   switch (dateFilterType) {
-  //     case "today":
-  //       from = formatStartOfDayISO(today);
-  //       to = formatEndOfDayISO(today);
-  //       break;
-  //     case "yesterday":
-  //       const yesterday = new Date(today);
-  //       yesterday.setDate(today.getDate() - 1);
-  //       from = formatStartOfDayISO(yesterday);
-  //       to = formatEndOfDayISO(yesterday);
-  //       break;
-  //     case "lastWeek": // NEW CASE FOR LAST WEEK
-  //       const lastWeekStart = new Date(today);
-  //       lastWeekStart.setDate(today.getDate() - 7); // Start of day 7 days ago
-  //       from = formatStartOfDayISO(lastWeekStart);
-  //       to = formatEndOfDayISO(today); // End of today
-  //       break;
-  //     case "lastMonth":
-  //       const firstDayOfLastMonth = new Date(
-  //         today.getFullYear(),
-  //         today.getMonth() - 1,
-  //         1
-  //       );
-  //       const lastDayOfLastMonth = new Date(
-  //         today.getFullYear(),
-  //         today.getMonth(),
-  //         0
-  //       ); // Day 0 of current month is last day of previous
-  //       from = formatStartOfDayISO(firstDayOfLastMonth);
-  //       to = formatEndOfDayISO(lastDayOfLastMonth);
-  //       break;
-  //     case "custom":
-  //       if (customFromDate) {
-  //         from = formatStartOfDayISO(new Date(customFromDate));
-  //       }
-  //       if (customToDate) {
-  //         to = formatEndOfDayISO(new Date(customToDate));
-  //       }
-  //       break;
-  //     case "anyDate":
-  //     default:
-  //       from = "";
-  //       to = "";
-  //       break;
-  //   }
-
-  //   setActiveFromDate(from);
-  //   setActiveToDate(to);
-  //   setFilter({
-  //     ...filter,
-  //     ...(from &&
-  //       to && {
-  //         createdAt: {
-  //           between: {
-  //             lower: from,
-  //             upper: to,
-  //           },
-  //         },
-  //       }),
-  //   });
-  // }, [
-  //   dateFilterType,
-  //   customFromDate,
-  //   customToDate,
-  //   formatStartOfDayISO,
-  //   formatEndOfDayISO,
-  // ]);
-
-  // --- Date Filter Dropdown Handlers ---
-  // const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // const handleMenuClose = () => {
-  //   setAnchorEl(null);
-  // };
-
-  // const handleDateFilterSelect = (type: string) => {
-  //   setDateFilterType(type);
-
-  //   // Reset custom dates if not using custom range
-  //   if (type !== "custom") {
-  //     setCustomFromDate("");
-  //     setCustomToDate("");
-  //   }
-
-  //   handleMenuClose();
-  // };
-
-  // const handleCustomDateChange = (type: "from" | "to", value: string) => {
-  //   setCustomFromDate((prev) => (type === "from" ? value : prev));
-  //   setCustomToDate((prev) => (type === "to" ? value : prev));
-  // };
-
-  // // Determines the text to display on the date filter button
-  // const currentFilterText = (() => {
-  //   switch (dateFilterType) {
-  //     case "today":
-  //       return "Today";
-  //     case "yesterday":
-  //       return "Yesterday";
-  //     case "lastWeek":
-  //       return "Last Week"; // NEW TEXT FOR BUTTON
-  //     case "lastMonth":
-  //       return "Last Month";
-  //     case "custom":
-  //       if (customFromDate && customToDate) {
-  //         return `${customFromDate} - ${customToDate}`;
-  //       }
-  //       return "Custom Date"; // Default text if custom is selected but dates aren't picked
-  //     case "anyDate":
-  //     default:
-  //       return "Any Date";
-  //   }
-  // })();
-
   useEffect(() => {
     fethSalesDashboardData({ activeFromDate, activeToDate });
   }, [activeFromDate, activeToDate]);
-
-  // const handelOnFilterApply = () => {
-  //   if (activeFromDate && activeToDate) {
-  //     fethSalesDashboardData({ activeFromDate, activeToDate });
-  //   }
-  // };
 
   /** new filter */
   const [openFilter, setOpenFilter] = useState(false);
@@ -634,7 +510,7 @@ const SalesDashboard = () => {
       <CustomDialog
         open={tripConfirmationOpen}
         onClose={() => setTripConfirmationOpen(false)}
-        title="Trip Confirmation"
+        title="Sale Confirmation"
       >
         <Box
           component="form"
@@ -670,7 +546,7 @@ const SalesDashboard = () => {
         salesDashboardData={salesDashboardData}
         onCreate={handelCreate}
         onFilter={handelFilter}
-        createEnabledTabs={["Quotes", "Invoices", "Trip Confirmation"]}
+        createEnabledTabs={["Quotes", "Invoices", "Sale Confirmation"]}
       />
 
       <Box
@@ -711,7 +587,8 @@ const SalesDashboard = () => {
         </Button>
       </Box>
 
-      {(selectedTab == "Quotes" || selectedTab == "Trip Confirmation") && (
+      {(selectedTab == SalesCategoryLabels.QUOTES ||
+        selectedTab == SalesCategoryLabels.SALE_CONFIRMATION) && (
         <Box mt={1}>
           <QuoteList
             filter={filter}
@@ -728,10 +605,11 @@ const SalesDashboard = () => {
             page={page}
             setPage={setPage}
             setRowsPerPage={setRowsPerPage}
+            selectedTab={selectedTab}
           />
         </Box>
       )}
-      {selectedTab == "Invoices" && (
+      {selectedTab == SalesCategoryLabels.INVOICES && (
         <InvoiceList
           filter={filter}
           isGenerated={isInvoiceGenerated}
@@ -740,7 +618,7 @@ const SalesDashboard = () => {
           setRefreshKey={() => setRefreshKey(Date.now())}
           setFilter={setFilter}
           setShowTripConfirmationPreview={setShowTripConfirmationPreview}
-          setTripConfirmationData={setTripConfirmationData}
+          setSaleConfirmationData={setSaleConfirmationData}
         />
       )}
 
@@ -760,13 +638,13 @@ const SalesDashboard = () => {
       <CustomDialog
         open={showTripConfirmationPreview}
         onClose={() => setShowTripConfirmationPreview(false)}
-        title="Trip Confirmation Preview"
+        title="Sale Confirmation Preview"
         width="900px"
         maxWidth="md"
       >
-        <TripConfirmationPreview
-          htmlContent={tripConfirmationData?.confirmationTemplate}
-          currentQuotation={tripConfirmationData?.quotationNo}
+        <SaleConfirmationPreview
+          htmlContent={saleConfirmationData?.confirmationTemplate}
+          currentQuotation={saleConfirmationData?.quotationNo}
         />
       </CustomDialog>
 

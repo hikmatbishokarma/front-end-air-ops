@@ -17,7 +17,7 @@ export enum QuotationStatus {
   PROFOMA_INVOICE = "Proforma Invoice",
   TAX_INVOICE = "Tax Invoice",
   CANCELLED = "Cancelled",
-  CONFIRMED = "Confirmed",
+  SALE_CONFIRMED = "Sale Confirmed",
 }
 
 export const removeTypename = (obj: any): any => {
@@ -41,10 +41,17 @@ export enum SalesDocumentType {
   QUOTATION = "quotation",
   PROFORMA_INVOICE = "Proforma Invoice",
   TAX_INVOICE = "Tax Invoice",
-  TRIP_CONFIRMATION = "trip confirmation",
+  SALE_CONFIRMATION = "Sale Confirmation",
 }
 
 export enum InvoiceType {
   PROFORMA_INVOICE = "Proforma Invoice",
   TAX_INVOICE = "Tax Invoice",
 }
+
+export const SalesCategoryLabels = {
+  QUOTES: "Quotes",
+  INVOICES: "Invoices",
+  SALE_CONFIRMATION: "Sale Confirmation",
+  REPORTS: "Reports",
+} as const;

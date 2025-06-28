@@ -254,7 +254,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       )}
       {showGenerateTripConfirmation && (
         <Tooltip
-          title={`Generate Trip Confirmation for QuotationNo: ${currentQuotation}`}
+          title={`Generate Sale Confirmation for QuotationNo: ${currentQuotation}`}
           arrow
         >
           <IconButton

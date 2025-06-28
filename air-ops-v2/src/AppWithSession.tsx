@@ -38,7 +38,10 @@ import LocalAirportIcon from "@mui/icons-material/LocalAirport";
 import RocketLaunchRoundedIcon from "@mui/icons-material/RocketLaunchRounded";
 import LaptopMacOutlinedIcon from "@mui/icons-material/LaptopMacOutlined";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
+import AdminPanelSettingsOutlined from "@mui/icons-material/AdminPanelSettingsOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 export const NAVIGATION: Navigation = [
   {
@@ -122,7 +125,7 @@ export const NAVIGATION: Navigation = [
   {
     segment: "admin",
     title: "Admin",
-    icon: <Settings />,
+    icon: <AdminPanelSettingsOutlined />,
     children: [
       {
         segment: "roles",
@@ -160,17 +163,17 @@ export const NAVIGATION: Navigation = [
   {
     segment: "settings",
     title: "Settings",
-    icon: <AdminPanelSettingsIcon />,
+    icon: <SettingsOutlinedIcon />,
     children: [
       {
         segment: "profile",
         title: "Profile",
-        icon: <AccountCircleIcon />,
+        icon: <AccountCircleOutlinedIcon />,
       },
       {
         segment: "change-password",
         title: "Change Password",
-        icon: <Person />,
+        icon: <PasswordOutlinedIcon />,
       },
     ],
   },

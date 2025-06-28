@@ -4,14 +4,14 @@ import { Box, Paper, IconButton } from "@mui/material";
 import ActionButton from "./ActionButton"; // Assuming ActionButton is already a reusable component
 import PrintIcon from "@mui/icons-material/Print";
 
-interface TripConfirmationPreviewProps {
+interface SaleConfirmationPreviewProps {
   htmlContent: string | null;
   currentQuotation: any;
   showGenerateTI?: boolean;
   onGenerateInvoice?: ({ type, quotationNo }) => void;
 }
 
-const TripConfirmationPreview: React.FC<TripConfirmationPreviewProps> = ({
+const SaleConfirmationPreview: React.FC<SaleConfirmationPreviewProps> = ({
   htmlContent,
   currentQuotation,
   showGenerateTI,
@@ -84,4 +84,4 @@ const TripConfirmationPreview: React.FC<TripConfirmationPreviewProps> = ({
   );
 };
 
-export default TripConfirmationPreview;
+export default SaleConfirmationPreview;
