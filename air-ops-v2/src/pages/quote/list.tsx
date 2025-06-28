@@ -42,7 +42,11 @@ import { useSnackbar } from "../../SnackbarContext";
 import PreviewIcon from "@mui/icons-material/Preview";
 import QuotePreview from "../../components/quote-preview";
 
-import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
+import {
+  getEnumKeyByValue,
+  QuotationStatus,
+  SalesCategoryLabels,
+} from "../../lib/utils";
 
 import QuotationCancellationConfirmation from "./quotation-cancellation";
 import SearchIcon from "@mui/icons-material/Search";
@@ -50,7 +54,7 @@ import { useQuoteData } from "../../hooks/useQuoteData";
 import { useSession } from "../../SessionContext";
 import { Iclient } from "../../interfaces/quote.interface";
 import moment from "moment";
-import TripConfirmationPreview from "../../components/trip-confirmation-preview";
+import SaleConfirmationPreview from "../../components/SaleConfirmationPreview";
 import CloseIcon from "@mui/icons-material/Close";
 import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
 import { CustomDialog } from "../../components/CustomeDialog";
@@ -70,6 +74,7 @@ export const QuoteList = ({
   page,
   setPage,
   setRowsPerPage,
+  selectedTab,
 }) => {
   const { session, setSession, loading } = useSession();
 
@@ -83,80 +88,19 @@ export const QuoteList = ({
   const [showPreview, setShowPreview] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
 
-  // const [selectedRequester, setSelectedRequester] = useState<Iclient | null>();
-
-  // const [searchTerm, setSearchTerm] = useState("");
-
-  // const [page, setPage] = useState(0); // page number starting at 0
-  // const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
-
-  // const [totalCount, setTotalCount] = useState(0); // total count from backend
-
   const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
     useState(false);
-  const [tripConfirmationPreviewTemplate, setTripConfirmationPreviewTemplate] =
+  const [saleConfirmationPreviewTemplate, setSaleConfirmationPreviewTemplate] =
     useState(null);
-
-  // const getQuotes = async () => {
-  //   try {
-  //     const data = await useGql({
-  //       query: GET_QUOTES,
-  //       queryName: "quotes",
-  //       queryType: "query-with-count",
-  //       variables: {
-  //         filter: {
-  //           ...filter,
-  //           ...(selectedRequester?.id && {
-  //             requestedBy: { eq: selectedRequester.id },
-  //           }),
-  //           ...(operatorId && { operatorId: { eq: operatorId } }),
-  //         },
-  //         "paging": {
-  //           "offset": page * rowsPerPage,
-  //           "limit": rowsPerPage,
-  //         },
-  //         "sorting": [{ "field": "createdAt", "direction": "DESC" }],
-  //       },
-  //     });
-
-  //     const result = data?.data?.map((quote: any) => {
-  //       return {
-  //         ...quote,
-  //         id: quote.id,
-  //         quotationNo: quote?.quotationNo,
-  //         status: QuotationStatus[quote.status],
-  //         requester: quote.requestedBy.name,
-  //         requesterId: quote.requestedBy.id,
-  //         version: quote.version,
-  //         revision: quote.revision,
-  //         itinerary: quote.itinerary
-  //           ?.map((itinerary: any) => {
-  //             return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
-  //           })
-  //           .join(", "),
-  //         createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
-  //         updatedAt: quote.updatedAt,
-  //         code: quote.code,
-  //       };
-  //     });
-  //     console.log("result:::", result);
-  //     setTotalCount(data?.totalCount || 0);
-  //     setRows(result);
-  //     // Extract unique requesters for dropdown
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getQuotes();
-  // }, [filter, selectedRequester, page, rowsPerPage, isGenerated, refreshKey]);
 
   const handelPreview = async (row) => {
     setSelectedRowData(row);
 
-    if (row.status == QuotationStatus.CONFIRMED) {
-      setTripConfirmationPreviewTemplate(row.confirmationTemplate);
+    if (
+      row.status == QuotationStatus.SALE_CONFIRMED &&
+      selectedTab == SalesCategoryLabels.SALE_CONFIRMATION
+    ) {
+      setSaleConfirmationPreviewTemplate(row.confirmationTemplate);
       setShowTripConfirmationPreview(true);
     } else {
       const result = await useGql({
@@ -173,47 +117,6 @@ export const QuoteList = ({
       setShowPreview(true);
     }
   };
-
-  // const refreshList = async () => {
-  //   await getQuotes();
-  // };
-
-  const updateQuoteStatus = async (id, toStatus) => {
-    try {
-      const data = await useGql({
-        query: UPDATE_QUOTE_STATUS,
-        queryName: "",
-        queryType: "mutation",
-        variables: {
-          input: {
-            id: id,
-            status: getEnumKeyByValue(QuotationStatus, toStatus),
-          },
-        },
-      });
-
-      if (data?.errors?.length > 0) {
-        showSnackbar("Failed To Update status!", "error");
-      } else showSnackbar("Update status!", "success");
-    } catch (error) {
-      showSnackbar(error?.message || "Failed To Update Status!", "error");
-    } finally {
-      // refreshList();
-    }
-  };
-
-  // const handelCancellation = async (id) => {
-  //   try {
-  //     await updateQuoteStatus(id, QuotationStatus.CANCELLED);
-  //   } catch (error) {
-  //     console.error("Error transitioning state:", error);
-  //   } finally {
-  //   }
-  // };
-
-  // const filteredRows = rows?.filter((row) =>
-  //   row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  // );
 
   const { clients } = useQuoteData();
 
@@ -361,12 +264,12 @@ export const QuoteList = ({
       <CustomDialog
         open={showTripConfirmationPreview}
         onClose={() => setShowTripConfirmationPreview(false)}
-        title="Trip Confirmation Preview"
+        title="Sale Confirmation Preview"
         width="900px"
         maxWidth="md"
       >
-        <TripConfirmationPreview
-          htmlContent={tripConfirmationPreviewTemplate}
+        <SaleConfirmationPreview
+          htmlContent={saleConfirmationPreviewTemplate}
           currentQuotation={selectedRowData?.quotationNo}
           showGenerateTI={selectedRowData?.isLatest}
           onGenerateInvoice={onGenerateInvoice}

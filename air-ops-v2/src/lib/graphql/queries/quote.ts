@@ -117,9 +117,9 @@ export const UPGRAD_QUOTE = gql`
   }
 `;
 
-export const TRIP_CONFIRMATION = gql`
-  mutation tripConfirmation($args: TripConfirmationInput!) {
-    tripConfirmation(args: $args) {
+export const SALE_CONFIRMATION = gql`
+  mutation saleConfirmation($args: SaleConfirmationInput!) {
+    saleConfirmation(args: $args) {
       id
       quotationNo
       confirmationTemplate

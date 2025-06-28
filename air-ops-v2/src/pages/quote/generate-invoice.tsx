@@ -10,12 +10,9 @@ const GenerateInvoice = () => {
   const quotationNo = searchParams.get("quotationNo");
 
   const showSnackbar = useSnackbar();
-  const [previewData, setPreviewData] = useState(null);
-
-  console.log("quotationNo", quotationNo);
+  const [previewData, setPreviewData] = useState<any>(null);
 
   const generateInvoice = async (quotationNo) => {
-    console.log("quotationNo", quotationNo);
     const result = await useGql({
       query: GENERATE_INVOICE,
       queryName: "generateInvoice",

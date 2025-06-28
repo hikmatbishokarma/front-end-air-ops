@@ -122,45 +122,6 @@ export const AccountList = ({ filter }) => {
     borderBottom: "2px solid #ccc",
   };
 
-  /** TRIP CONFIRMATION */
-
-  //   const handelTripConfirmation = async ({ quotationNo }) => {
-  //     const result = await useGql({
-  //       query: TRIP_CONFIRMATION,
-  //       queryName: "tripConfirmation",
-  //       queryType: "mutation",
-  //       variables: {
-  //         args: {
-  //           quotationNo,
-  //           ...(operatorId && { operatorId }),
-  //         },
-  //       },
-  //     });
-
-  //     if (!result.data) {
-  //       showSnackbar(
-  //         result?.errors?.[0]?.message || "Internal server error!",
-  //         "error"
-  //       );
-  //     } else {
-  //       // setTripConfirmationData(result?.data?.tripConfirmation);
-  //       // setShowTripConfirmationPreview(true);
-  //       // setIsTripConfirmed(true);
-  //       showSnackbar("Trip confirmed successfully!", "success");
-  //       setTripConfirmationData(result?.data?.tripConfirmation);
-  //       setShowPreview(false);
-  //       setShowTripConfirmationPreview(true);
-  //       setFilter({
-  //         status: {
-  //           eq: "CONFIRMED",
-  //         },
-  //       });
-
-  //       setSelectedTab("Trip Confirmation");
-  //       setRefreshKey();
-  //     }
-  //   };
-
   return (
     <>
       <TableContainer component={Paper} className="dash-table search">
