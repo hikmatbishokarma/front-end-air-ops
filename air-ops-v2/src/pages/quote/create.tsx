@@ -532,7 +532,7 @@ export const QuoteCreate = () => {
 
   return (
     <>
-      <Box
+      <Box className="enquirey-data-1"
         sx={{
           backgroundColor: "#fff",
           padding: 3,
@@ -608,7 +608,7 @@ export const QuoteCreate = () => {
                   </Grid>
 
                   <Grid item xs={12} md={6} display="flex" alignItems="center">
-                    <IconButton
+                    <IconButton 
                       aria-label="add"
                       color="primary"
                       onClick={() => setSubDialogOpen(true)}
@@ -1012,13 +1012,13 @@ export const QuoteCreate = () => {
                               }}
                             >
                               {index < 5 && (
-                                <IconButton aria-label="add">
+                                <IconButton aria-label="add" className="add-icon-v1">
                                   <AddIcon onClick={addItinerary} />
                                 </IconButton>
                               )}
 
                               {index > 0 && (
-                                <IconButton aria-label="delete">
+                                <IconButton aria-label="delete" className="add-icon-v1">
                                   <DeleteIcon
                                     onClick={() => removeItinerary(index)}
                                   />

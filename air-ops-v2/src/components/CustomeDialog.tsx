@@ -34,7 +34,7 @@ export const CustomDialog: React.FC<CustomDialogProps> = ({
   submitLabel = "Generate",
 }) => {
   return (
-    <Dialog
+    <Dialog className="panel-one"
       open={open}
       onClose={onClose}
       maxWidth={maxWidth}
@@ -48,7 +48,7 @@ export const CustomDialog: React.FC<CustomDialogProps> = ({
     >
       <DialogTitle>
         {title}
-        <IconButton
+        <IconButton className="popup-quote-model"
           aria-label="close"
           onClick={onClose}
           sx={{
@@ -58,7 +58,7 @@ export const CustomDialog: React.FC<CustomDialogProps> = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon />
+          <CloseIcon className="popup-close-panel"/>
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>{children}</DialogContent>
