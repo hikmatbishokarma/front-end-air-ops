@@ -244,12 +244,13 @@ export const QuoteList = ({
         />
       </TableContainer>
 
-      <CustomDialog
+      <CustomDialog 
         open={showPreview}
         onClose={() => setShowPreview(false)}
         title="Quote Preview"
         width="900px"
         maxWidth="md"
+      
       >
         <QuotePreview
           htmlContent={previewData}
@@ -261,7 +262,7 @@ export const QuoteList = ({
         />
       </CustomDialog>
 
-      <CustomDialog
+      <CustomDialog 
         open={showTripConfirmationPreview}
         onClose={() => setShowTripConfirmationPreview(false)}
         title="Sale Confirmation Preview"

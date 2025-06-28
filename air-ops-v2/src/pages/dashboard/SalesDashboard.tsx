@@ -641,6 +641,7 @@ const SalesDashboard = () => {
         title="Sale Confirmation Preview"
         width="900px"
         maxWidth="md"
+        
       >
         <SaleConfirmationPreview
           htmlContent={saleConfirmationData?.confirmationTemplate}

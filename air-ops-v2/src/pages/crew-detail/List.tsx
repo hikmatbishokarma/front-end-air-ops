@@ -162,7 +162,7 @@ export const CrewDetailList = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog className="choose-profile-v1"
+      <Dialog className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -170,7 +170,7 @@ export const CrewDetailList = ({
       >
         <DialogTitle>
           {isEdit ? "Edit Staff Details" : "Create Staff Details"}
-          <IconButton
+          <IconButton className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -180,7 +180,7 @@ export const CrewDetailList = ({
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon />
+            <CloseIcon className="popup-close-panel"/>
           </IconButton>
         </DialogTitle>
         <DialogContent>

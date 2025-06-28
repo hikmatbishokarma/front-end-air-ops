@@ -208,15 +208,15 @@ export const ManualList = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog className="choose-profile-v1"
+      <Dialog className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>
+        <DialogTitle >
           {isEdit ? "Edit Manual" : "Create Manual"}
-          <IconButton
+          <IconButton className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -226,7 +226,7 @@ export const ManualList = ({
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon />
+            <CloseIcon className="popup-close-panel" />
           </IconButton>
         </DialogTitle>
         <DialogContent>

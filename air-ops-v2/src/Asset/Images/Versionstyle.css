@@ -328,6 +328,8 @@ background-color: #001551 !important;
 }
 .MuiDrawer-anchorLeft nav .Mui-selected{
 background-color: #ff0202 !important;
+border-top-left-radius: 50% 200px;
+    border-bottom-right-radius: 50% 200px;
 }
 /* .MuiDrawer-paper{
     width: 240px !important;
@@ -384,7 +386,7 @@ background-color: #ff0202 !important;
     padding-bottom: 10px !important;;
 }
 .MuiTableRow-root:hover {
-    background: #00155126;
+    background: #c3c9e0;
     color: #fff;
 }
 .css-1ji9znz{
@@ -464,7 +466,7 @@ background-color: #ff0202 !important;
     
 }
 .view-icon-quote .MuiTypography-h6{
-    background-color: #ddd;
+    background-color: #a0a7bc;
     margin-bottom: 10px;
 }
 .view-icon-quote .MuiIconButton-root{
@@ -475,6 +477,39 @@ background-color: #ff0202 !important;
     color: #fff !important;
 }
 .v1_board .MuiCardContent-root:hover{
-    background-color: #ff0202;
-     border: #ff0202 !important;
+    background-color: #c3c9e0 !important;
+     border: #c3c9e0 !important;
+     color: #000 !important;
+}
+.MuiTablePagination-toolbar{
+    background-color: #c3c9e0;
+}
+.enquirey-data-1 .add-icon-v1{
+    background-color: #001551 !important;
+    margin: 0px 5px;
+    
+}
+.enquirey-data-1 .add-icon-v1 svg{
+    color: #fff;
+}
+
+.enquirey-data-1 .add-icon-v1:hover{
+   background-color: #ff0202 !important;
+}
+.panel-one .MuiDialogTitle-root{
+    background-color: #c3c9e0;
+}
+.MuiBox-root.css-1f266ni .MuiButtonBase-root:hover{
+    background: #ff0202 !important; 
+}
+.panel-one .popup-quote-model{
+     background-color: #001551 !important;
+
+}
+.panel-one .popup-quote-model .popup-close-panel{
+    color: #fff;
+}
+.panel-one .popup-quote-model:hover{
+     background-color: #ff0202 !important;
+
 }
