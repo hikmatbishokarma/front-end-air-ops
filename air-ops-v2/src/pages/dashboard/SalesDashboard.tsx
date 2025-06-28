@@ -763,6 +763,7 @@ const SalesDashboard = () => {
         title="Trip Confirmation Preview"
         width="900px"
         maxWidth="md"
+        
       >
         <TripConfirmationPreview
           htmlContent={tripConfirmationData?.confirmationTemplate}
