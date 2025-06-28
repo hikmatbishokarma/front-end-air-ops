@@ -174,7 +174,7 @@ export const InvoiceList = ({
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
-        <Box
+        {/* <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
@@ -196,7 +196,7 @@ export const InvoiceList = ({
               ),
             }}
           />
-        </Box>
+        </Box> */}
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
