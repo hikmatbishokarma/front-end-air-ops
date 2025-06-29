@@ -34,12 +34,15 @@ export const GET_LEAVES = gql`
     $sorting: [LeaveSort!]! = []
   ) {
     leaves(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
       nodes {
         id
         type
-        from
-        to
+        fromDate
+        toDate
         status
+        reason
+        createdAt
         crew {
           id
           displayName
@@ -55,8 +58,8 @@ export const GET_LEAVE_BY_ID = gql`
     leave(id: $id) {
       id
       type
-      from
-      to
+      fromDate
+      toDate
       status
       crew {
         id

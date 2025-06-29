@@ -19,10 +19,10 @@ import moment from "moment";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 type LeaveFormInputs = {
-  leaveType: LeaveType;
+  type: LeaveType;
   fromDate: string;
   toDate: string;
-  message: string;
+  reason: string;
   attachment?: File | null;
 };
 
@@ -39,10 +39,10 @@ const LeaveFormDrawer: React.FC<LeaveFormDrawerProps> = ({
 }) => {
   const { control, handleSubmit, reset } = useForm<LeaveFormInputs>({
     defaultValues: {
-      leaveType: undefined,
+      type: undefined,
       fromDate: "",
       toDate: "",
-      message: "",
+      reason: "",
       attachment: null,
     },
   });
@@ -120,7 +120,7 @@ const LeaveFormDrawer: React.FC<LeaveFormDrawerProps> = ({
           >
             {/* Form fields */}
             <Controller
-              name="leaveType"
+              name="type"
               control={control}
               rules={{ required: "Leave type is required" }}
               render={({ field, fieldState }) => (
@@ -200,7 +200,7 @@ const LeaveFormDrawer: React.FC<LeaveFormDrawerProps> = ({
             </Box>
 
             <Controller
-              name="message"
+              name="reason"
               control={control}
               render={({ field }) => (
                 <TextField

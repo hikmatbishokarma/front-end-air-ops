@@ -39,7 +39,7 @@ interface ActionButtonProps {
   showGeneratePI?: boolean;
   onGenerateInvoice?: ({ type, quotationNo }) => void; // ✅ make optional
   showGenerateTripConfirmation?: boolean;
-  handelTripConfirmation?: ({ quotationNo }) => void; // ✅ make optional
+  handelSaleConfirmation?: ({ quotationNo }) => void; // ✅ make optional
   showGenerateTI?: boolean;
 }
 
@@ -57,7 +57,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   showGenerateTripConfirmation = false,
   showGenerateTI = false,
   onGenerateInvoice,
-  handelTripConfirmation,
+  handelSaleConfirmation,
 }) => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -260,7 +260,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           <IconButton
             color="info"
             onClick={() =>
-              handelTripConfirmation?.({ quotationNo: currentQuotation })
+              handelSaleConfirmation?.({ quotationNo: currentQuotation })
             }
           >
             <AddCircleOutlineIcon />

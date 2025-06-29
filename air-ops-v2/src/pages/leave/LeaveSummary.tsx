@@ -4,12 +4,14 @@ import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 
 const iconMap: Record<string, React.ReactNode> = {
   Casual: <BeachAccessIcon color="primary" />,
   Sick: <LocalHospitalIcon color="error" />,
   Privilege: <EmojiEventsIcon color="warning" />,
   Marriage: <FavoriteIcon color="secondary" />,
+  Paternity: <FamilyRestroomIcon color="secondary" />,
 };
 
 type SummaryItem = {
@@ -26,7 +28,7 @@ const LeaveSummary: React.FC<LeaveSummaryProps> = ({ data }) => {
   return (
     <Grid container spacing={2} mb={2}>
       {data.map((item) => (
-        <Grid item xs={6} md={3} key={item.type}>
+        <Grid item xs={6} md={2.3} key={item.type}>
           <Card variant="outlined">
             <CardContent>
               <Box display="flex" alignItems="center" gap={2}>

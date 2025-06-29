@@ -1,27 +1,24 @@
 // LeaveFilters.tsx
 import React from "react";
 import { Grid, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
-import { LeaveType } from "../../lib/utils";
+import { LeaveStatus, LeaveType } from "../../lib/utils";
 
 const leaveTypes = Object.entries(LeaveType).map(([key, value]) => ({
   label: value,
   value: key,
 }));
 
-const statusOptions = [
-  { label: "All", value: "" },
-  { label: "Pending", value: "Pending" },
-  { label: "Approved", value: "Approved" },
-  { label: "Declined", value: "Declined" },
-  { label: "Cancelled", value: "Cancelled" },
-];
+const leaveStatus = Object.entries(LeaveStatus).map(([key, value]) => ({
+  label: value,
+  value: key,
+}));
 
 const LeaveFilters = ({
   filters,
   onChange,
 }: {
-  filters: { leaveType: string; status: string };
-  onChange: (updated: { leaveType: string; status: string }) => void;
+  filters: { type: string; status: string };
+  onChange: (updated: { type: string; status: string }) => void;
 }) => {
   return (
     <Grid container spacing={2} mb={2}>
@@ -33,7 +30,7 @@ const LeaveFilters = ({
             value={filters.status}
             onChange={(e) => onChange({ ...filters, status: e.target.value })}
           >
-            {statusOptions.map((opt) => (
+            {leaveStatus.map((opt) => (
               <MenuItem key={opt.value} value={opt.value}>
                 {opt.label}
               </MenuItem>
@@ -47,10 +44,8 @@ const LeaveFilters = ({
           <InputLabel>Leave Type</InputLabel>
           <Select
             label="Leave Type"
-            value={filters.leaveType}
-            onChange={(e) =>
-              onChange({ ...filters, leaveType: e.target.value })
-            }
+            value={filters.type}
+            onChange={(e) => onChange({ ...filters, type: e.target.value })}
           >
             <MenuItem value="">All</MenuItem>
             {leaveTypes.map((opt) => (

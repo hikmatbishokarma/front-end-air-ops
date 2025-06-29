@@ -9,12 +9,14 @@ import {
   TablePagination,
   Chip,
 } from "@mui/material";
+import moment from "moment";
+import { LeaveType } from "../../lib/utils";
 
 const statusColorMap = {
-  Pending: "warning",
-  Approved: "success",
-  Declined: "error",
-  Cancelled: "default",
+  PENDING: "warning",
+  APPROVED: "success",
+  DECLINED: "error",
+  CANCELLED: "default",
 } as const;
 
 const LeaveRequestTable = ({
@@ -38,7 +40,8 @@ const LeaveRequestTable = ({
         <TableHead>
           <TableRow>
             <TableCell>Leave Type</TableCell>
-            <TableCell>Dates Requested</TableCell>
+            <TableCell>From Date</TableCell>
+            <TableCell>To Date</TableCell>
             <TableCell>Reason</TableCell>
             <TableCell>Submitted On</TableCell>
             <TableCell>Status</TableCell>
@@ -47,15 +50,13 @@ const LeaveRequestTable = ({
         <TableBody>
           {data.map((row, idx) => (
             <TableRow key={idx}>
-              <TableCell>{row.leaveType}</TableCell>
+              <TableCell>{LeaveType[row.type]}</TableCell>
+              <TableCell>{moment(row.fromDate).format("DD-MM-YYYY")}</TableCell>
+              <TableCell>{moment(row.toDate).format("DD-MM-YYYY")}</TableCell>
+              <TableCell>{row.reason}</TableCell>
               <TableCell>
-                {row.fromDate}{" "}
-                {row.toDate && row.toDate !== row.fromDate
-                  ? `- ${row.toDate}`
-                  : ""}
+                {moment(row.createdAt).format("DD-MM-YYYY")}
               </TableCell>
-              <TableCell>{row.message}</TableCell>
-              <TableCell>{row.submittedOn}</TableCell>
               <TableCell>
                 <Chip
                   label={row.status}

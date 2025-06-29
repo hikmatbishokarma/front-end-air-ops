@@ -32,7 +32,7 @@ export const StaffCertificationList = ({ list }) => {
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table">
+      <TableContainer component={Paper} className="dash-table crew-table-v1">
         <Table>
           <TableHead>
             <TableRow>
