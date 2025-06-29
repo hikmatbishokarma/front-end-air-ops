@@ -59,7 +59,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         showDownload={true}
         showEmail={true}
         showGenerateTripConfirmation={type == "PROFORMA_INVOICE" ? true : false}
-        handelTripConfirmation={handelTripConfirmation}
+        handelSaleConfirmation={handelSaleConfirmation}
       />
       {/* A4 size container */}
       <Paper

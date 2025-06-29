@@ -14,6 +14,8 @@ import {
   GET_STAFF_CERTIFICATION,
 } from "../../lib/graphql/queries/crew-detail";
 import { StaffCertificationList } from "../crew-detail/CertificationList";
+import { GET_LEAVES } from "../../lib/graphql/queries/leave";
+import LeaveApprovalRequestTable from "../crew-detail/leave-approval/LeaveApprovalList";
 
 const CrewDashboard = () => {
   const showSnackbar = useSnackbar();
@@ -92,6 +94,8 @@ const CrewDashboard = () => {
   const refreshList = async () => {
     // Fetch updated categories from API
     await getCrewDetails();
+    await getLeaves();
+    await getStaffCertifications();
   };
 
   const categories = [
@@ -147,6 +151,55 @@ const CrewDashboard = () => {
     getStaffCertifications();
   }, [selectedTab]);
 
+  //#region  Leaves Approval
+
+  const [leaveList, setLeaveList] = useState<any>({ data: [], totalCount: 0 });
+  const [leavePage, setLeavePage] = useState(0);
+  const [leavePageSize, setLeavePageSize] = useState(10);
+
+  const [leaveFilters, setLeaveFilters] = useState({ type: "", status: "" });
+
+  const getLeaves = async () => {
+    try {
+      const result = await useGql({
+        query: GET_LEAVES,
+        queryName: "leaves",
+        queryType: "query-with-count",
+        variables: {
+          filter: {
+            ...(leaveFilters?.type &&
+              leaveFilters?.type !== "ALL" && {
+                type: { eq: leaveFilters.type },
+              }),
+            ...(leaveFilters?.status &&
+              leaveFilters?.status !== "ALL" && {
+                status: { eq: leaveFilters.status },
+              }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
+      });
+
+      if (!result.data) showSnackbar("Failed to fetch Leaves!", "error");
+      setLeaveList(result);
+      setCrewSummary((prev) => ({
+        ...prev,
+        summary: {
+          ...prev.summary,
+          leaves: result.totalCount,
+        },
+      }));
+    } catch (error) {
+      showSnackbar(error.message || "Failed to fetch Leaves!", "error");
+    }
+  };
+
+  useEffect(() => {
+    getLeaves();
+  }, [leaveFilters, selectedTab]);
+
+  //#endregion
+
   return (
     <>
       <DashboardBoardSection
@@ -170,6 +223,19 @@ const CrewDashboard = () => {
       )}
       {selectedTab == "Renewals" && (
         <StaffCertificationList list={staffCertificates} />
+      )}
+      {selectedTab == "Leaves" && (
+        <LeaveApprovalRequestTable
+          data={leaveList.data}
+          total={leaveList.totalCount}
+          page={leavePage}
+          pageSize={leavePageSize}
+          onPageChange={setLeavePage}
+          onPageSizeChange={setLeavePageSize}
+          refreshList={refreshList}
+          filters={leaveFilters}
+          onChange={setLeaveFilters}
+        />
       )}
     </>
   );

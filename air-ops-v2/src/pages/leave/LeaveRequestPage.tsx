@@ -3,11 +3,12 @@ import LeaveFilters from "./LeaveFilter";
 import LeaveRequestTable from "./LeaveRequestTable";
 import LeaveSummary from "./LeaveSummary";
 import useGql from "../../lib/graphql/gql";
-import { GET_LEAVES } from "../../lib/graphql/queries/leave";
+import { CREATE_LEAVE, GET_LEAVES } from "../../lib/graphql/queries/leave";
 import { useSession } from "../../SessionContext";
 import { useSnackbar } from "../../SnackbarContext";
 import { Box, Button, Typography } from "@mui/material";
 import LeaveFormDrawer from "../../components/LeaveFormDrawer";
+import { LeaveStatus, LeaveType } from "../../lib/utils";
 
 export const LeaveRequest = () => {
   const showSnackbar = useSnackbar();
@@ -15,7 +16,7 @@ export const LeaveRequest = () => {
 
   const operatorId = session?.user.agent?.id || null;
 
-  const [filters, setFilters] = useState({ leaveType: "", status: "" });
+  const [filters, setFilters] = useState({ type: "", status: "" });
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [leaveList, setLeaveList] = useState<any>({ data: [], totalCount: 0 });
@@ -33,6 +34,12 @@ export const LeaveRequest = () => {
         queryType: "query-with-count",
         variables: {
           filter: {
+            ...(filters?.type &&
+              filters?.type !== "ALL" && { type: { eq: filters.type } }),
+            ...(filters?.status &&
+              filters?.status !== "ALL" && {
+                status: { eq: filters.status },
+              }),
             ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
@@ -47,10 +54,33 @@ export const LeaveRequest = () => {
 
   useEffect(() => {
     getLeaves();
-  }, []);
+  }, [filters]);
 
-  const handelLeaveRequest = (formData) => {
+  const createLeaveRequest = async (formData) => {
+    try {
+      const data = await useGql({
+        query: CREATE_LEAVE,
+        queryName: "",
+        queryType: "mutation",
+        variables: {
+          input: {
+            leave: formData,
+          },
+        },
+      });
+
+      if (data?.errors?.length > 0) {
+        showSnackbar("Failed To Create Leave!", "error");
+      } else showSnackbar("Created new Leave!", "success");
+    } catch (error) {
+      showSnackbar(error?.message || "Failed To Create Leave!", "error");
+    }
+  };
+
+  const handelLeaveRequest = async (formData) => {
+    await createLeaveRequest(formData);
     handleCloseDrawer();
+    await getLeaves();
   };
 
   return (
@@ -61,7 +91,7 @@ export const LeaveRequest = () => {
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6">Leave Management</Typography>
+        <Typography variant="h6">Leave</Typography>
         <Button variant="contained" onClick={handleOpenDrawer}>
           Apply Leave
         </Button>
@@ -72,6 +102,7 @@ export const LeaveRequest = () => {
           { type: "Sick", used: 1, total: 8 },
           { type: "Privilege", used: 5, total: 15 },
           { type: "Marriage", used: 0, total: 1 },
+          { type: "Paternity", used: 0, total: 1 },
         ]}
       />{" "}
       {/* top cards */}
