@@ -513,3 +513,9 @@ border-top-left-radius: 50% 200px;
      background-color: #ff0202 !important;
 
 }
+/*header v1 styels*/
+.css-17iyb8u{
+    width: 100% !important;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
