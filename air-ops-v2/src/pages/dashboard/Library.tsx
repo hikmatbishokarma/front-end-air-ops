@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-import QuoteList from "../quote/list";
 import useGql from "../../lib/graphql/gql";
-import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
-import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
+
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
-import { CrewDetailList } from "../crew-detail/List";
+
 import { useSnackbar } from "../../SnackbarContext";
 import { useSession } from "../../SessionContext";
-import { GET_CREW_DETAILS } from "../../lib/graphql/queries/crew-detail";
-import { ManualList } from "../manual/List";
 
-import { GET_SECURITIES } from "../../lib/graphql/queries/security";
+import { GET_LIBRARIES } from "../../lib/graphql/queries/library";
+import { LibraryList } from "../library/List";
 
-const SecurityDashboard = () => {
+const LibraryDashboard = () => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
@@ -22,25 +19,25 @@ const SecurityDashboard = () => {
 
   const operatorId = session?.user.agent?.id || null;
 
-  const [selectedTab, setSelectedTab] = useState("Securities");
+  const [selectedTab, setSelectedTab] = useState("libraries");
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({});
-  const [securityData, setSecurityData] = useState({
+  const [libraryData, setLibraryData] = useState({
     totalCount: {},
     data: [],
   });
   const [loading, setLoading] = useState(false);
-  const [securitySummary, setSecuritySummary] = useState<any>({
+  const [librarySummary, setLibrarySummary] = useState<any>({
     summary: {
-      securities: 0,
+      libraries: 0,
     },
   });
 
-  const getSecurity = async () => {
+  const getLibrary = async () => {
     try {
       const result = await useGql({
-        query: GET_SECURITIES,
-        queryName: "securities",
+        query: GET_LIBRARIES,
+        queryName: "libraries",
         queryType: "query-with-count",
         variables: {
           filter: {
@@ -49,22 +46,22 @@ const SecurityDashboard = () => {
         },
       });
 
-      if (!result.data) showSnackbar("Failed to fetch Security!", "error");
-      setSecurityData(result);
-      setSecuritySummary((prev) => ({
+      if (!result.data) showSnackbar("Failed to fetch Library!", "error");
+      setLibraryData(result);
+      setLibrarySummary((prev) => ({
         ...prev,
         summary: {
           ...prev.summary,
-          securities: result.totalCount,
+          libraries: result.totalCount,
         },
       }));
     } catch (error) {
-      showSnackbar(error.message || "Failed to fetch Security!", "error");
+      showSnackbar(error.message || "Failed to fetch Library!", "error");
     }
   };
 
   useEffect(() => {
-    getSecurity();
+    getLibrary();
   }, [selectedTab, searchTerm, filters]);
 
   const handelFilter = (data) => {
@@ -81,11 +78,11 @@ const SecurityDashboard = () => {
 
   const refreshList = async () => {
     // Fetch updated categories from API
-    await getSecurity();
+    await getLibrary();
   };
 
   const categories = [
-    { status: [], name: "Securities", countLabel: "securities" },
+    { status: [], name: "Libraries", countLabel: "libraries" },
 
     { status: [], name: "Reports", countLabel: "Reports" },
   ];
@@ -101,15 +98,15 @@ const SecurityDashboard = () => {
       <DashboardBoardSection
         selectedTab={selectedTab}
         categories={categories}
-        salesDashboardData={securitySummary}
+        salesDashboardData={librarySummary}
         onCreate={handelCreate}
         onFilter={handelFilter}
-        createEnabledTabs={["Securities"]}
+        createEnabledTabs={["Libraries"]}
       />
-      <ManualList
+      <LibraryList
         open={open}
         setOpen={setOpen}
-        list={securityData.data}
+        list={libraryData.data}
         loading={loading}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
@@ -119,4 +116,4 @@ const SecurityDashboard = () => {
   );
 };
 
-export default SecurityDashboard;
+export default LibraryDashboard;
