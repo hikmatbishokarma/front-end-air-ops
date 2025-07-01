@@ -45,6 +45,7 @@ import SalesDashboard from "./pages/dashboard/SalesDashboard";
 // import "../dist/assets/styleview.css";
 import "../src/Asset/Images/Versionstyle.css";
 import { LeaveRequest } from "./pages/leave/LeaveRequestPage";
+import LibraryDashboard from "./pages/dashboard/Library";
 
 const router = createBrowserRouter(
   [
@@ -74,6 +75,10 @@ const router = createBrowserRouter(
             {
               path: "security",
               Component: SecurityDashboard,
+            },
+            {
+              path: "library",
+              Component: LibraryDashboard,
             },
             {
               path: "camo",
