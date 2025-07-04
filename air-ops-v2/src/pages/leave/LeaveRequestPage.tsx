@@ -101,8 +101,8 @@ export const LeaveRequest = () => {
           { type: "Casual", used: 2, total: 12 },
           { type: "Sick", used: 1, total: 8 },
           { type: "Privilege", used: 5, total: 15 },
-          { type: "Marriage", used: 0, total: 1 },
           { type: "Paternity", used: 0, total: 1 },
+          { type: "Bereavement", used: 0, total: 1 },
         ]}
       />{" "}
       {/* top cards */}

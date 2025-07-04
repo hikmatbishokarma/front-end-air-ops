@@ -13,6 +13,7 @@ import { GET_CREW_DETAILS } from "../../lib/graphql/queries/crew-detail";
 import { ManualList } from "../manual/List";
 
 import { GET_SECURITIES } from "../../lib/graphql/queries/security";
+import { SecurityList } from "../security/List";
 
 const SecurityDashboard = () => {
   const showSnackbar = useSnackbar();
@@ -106,7 +107,7 @@ const SecurityDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Securities"]}
       />
-      <ManualList
+      <SecurityList
         open={open}
         setOpen={setOpen}
         list={securityData.data}
