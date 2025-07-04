@@ -19,7 +19,7 @@ const LibraryDashboard = () => {
 
   const operatorId = session?.user.agent?.id || null;
 
-  const [selectedTab, setSelectedTab] = useState("libraries");
+  const [selectedTab, setSelectedTab] = useState("Libraries");
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({});
   const [libraryData, setLibraryData] = useState({

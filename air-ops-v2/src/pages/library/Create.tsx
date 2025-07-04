@@ -30,7 +30,7 @@ export const LibraryCreate = ({ onClose, refreshList }) => {
     });
 
     if (result) {
-      showSnackbar("Failed to Create Library!", "success");
+      showSnackbar("Created Library!", "success");
     } else {
       showSnackbar("Failed to Create Library!", "error");
     }

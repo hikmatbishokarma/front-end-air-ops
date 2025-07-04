@@ -6,13 +6,30 @@ import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
+import { GET_STAFF_CERTIFICATION } from "../../lib/graphql/queries/crew-detail";
+import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
+import { StaffCertificationList } from "../crew-detail/CertificationList";
 
 const TrainingDashboard = () => {
+  const showSnackbar = useSnackbar();
+  const { session, setSession } = useSession();
+
   const navigate = useNavigate();
 
-  const [selectedTab, setSelectedTab] = useState("Quotes");
+  const operatorId = session?.user.agent?.id || null;
 
-  const [salesDashboardData, setSalesDashboardData] = useState<any>();
+  const [trainingAndSalesSummary, setTrainingAndSalesSummary] = useState<any>({
+    summary: {
+      staff: 0,
+      leaves: 0,
+      renewals: 0,
+    },
+  });
+
+  const [staffCertificates, setStaffCertification] = useState<any>();
+
+  const [selectedTab, setSelectedTab] = useState("Renewals");
 
   const handelFilter = (data) => {
     setSelectedTab(data.name);
@@ -28,34 +45,61 @@ const TrainingDashboard = () => {
   };
 
   const categories = [
-    { status: ["Ops"], name: "Ops" },
-    { status: ["Tax Invoice", "Proforma Invoice"], name: "Invoices" },
-    { status: ["Cancelled"], name: "Cancellations" },
-    { status: [], name: "Revenue" },
+    { status: [], name: "Renewals", countLabel: "renewals" },
+    { status: [], name: "Reports", countLabel: "Reports" },
   ];
 
   const handelCreate = (selectedTab) => {
-    // const redirectTo = selectedTab == "Quotes" ? "/quotes/create" : "";
+    console.log("selectedTab::", selectedTab);
+  };
 
-    // navigate(redirectTo);
+  const getStaffCertifications = async () => {
+    try {
+      const result = await useGql({
+        query: GET_STAFF_CERTIFICATION,
+        queryName: "staffCertificates",
+        queryType: "query-without-edge",
+        variables: {
+          args: {
+            where: {
+              ...(operatorId && { operatorId: { eq: operatorId } }),
+            },
+          },
+        },
+      });
 
-    if (selectedTab === "Quotes") {
-      navigate("/quotes/create");
-    } else if (selectedTab === "Invoices") {
+      if (!result.data) showSnackbar("Failed to fetch Certification!", "error");
+      setTrainingAndSalesSummary((prev) => ({
+        ...prev,
+        summary: {
+          ...prev.summary,
+          renewals: result.totalCount,
+        },
+      }));
+      setStaffCertification(result.data);
+    } catch (error) {
+      showSnackbar(
+        error.message || "Failed to fetch fetch Certification!",
+        "error"
+      );
     }
   };
+
+  useEffect(() => {
+    getStaffCertifications();
+  }, []);
 
   return (
     <>
       <DashboardBoardSection
         selectedTab={selectedTab}
         categories={categories}
-        salesDashboardData={salesDashboardData}
+        salesDashboardData={trainingAndSalesSummary}
         onCreate={handelCreate}
         onFilter={handelFilter}
-        createEnabledTabs={["Ops", "Invoices"]}
+        createEnabledTabs={["Renewals"]}
       />
-      <p className="coming-soon">Comming soon</p>
+      <StaffCertificationList list={staffCertificates} />
     </>
   );
 };
