@@ -831,38 +831,39 @@ const QuoteEdit = () => {
                   </Grid>
                   {priceFields.map((field, index) => (
                     <>
-                      <Grid
-                        container
-                        key={field.id}
-                        spacing={2}
-                        sx={{ mb: 3 }}
-                        alignItems="center"
-                      >
-                        <Grid item xs={3}>
-                          <Controller
-                            name={`prices.${index}.label`}
-                            control={control}
-                            rules={{ required: "Label is required" }}
-                            render={({ field, fieldState: { error } }) => (
-                              <TextField
-                                {...field}
-                                label="Label"
-                                fullWidth
-                                size="small"
-                                slotProps={{
-                                  inputLabel: {
-                                    shrink: true,
-                                  },
-                                }}
-                                required
-                                error={!!error}
-                                helperText={error?.message}
-                              />
-                            )}
-                          />
-                        </Grid>
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <Grid
+                          container
+                          key={field.id}
+                          spacing={2}
+                          sx={{ mb: 3 }}
+                          alignItems="center"
+                        >
+                          <Grid item xs={3}>
+                            <Controller
+                              name={`prices.${index}.label`}
+                              control={control}
+                              rules={{ required: "Label is required" }}
+                              render={({ field, fieldState: { error } }) => (
+                                <TextField
+                                  {...field}
+                                  label="Label"
+                                  fullWidth
+                                  size="small"
+                                  slotProps={{
+                                    inputLabel: {
+                                      shrink: true,
+                                    },
+                                  }}
+                                  required
+                                  error={!!error}
+                                  helperText={error?.message}
+                                />
+                              )}
+                            />
+                          </Grid>
 
-                        <Grid item xs={1.5}>
+                          {/* <Grid item xs={1.5}>
                           <Controller
                             name={`prices.${index}.unit`}
                             control={control}
@@ -921,104 +922,198 @@ const QuoteEdit = () => {
                               />
                             )}
                           />
-                        </Grid>
+                        </Grid> */}
 
-                        <Grid item xs={1.5}>
-                          <Controller
-                            name={`prices.${index}.price`}
-                            control={control}
-                            rules={{
-                              required: "Price is required",
-                              min: { value: 0, message: "Must be >= 0" },
-                            }}
-                            render={({ field, fieldState: { error } }) => (
-                              <TextField
-                                {...field}
-                                label="Price"
-                                fullWidth
-                                size="small"
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  if (
-                                    /^[0-9]*(\.[0-9]+)?$/.test(value) ||
-                                    value === ""
-                                  ) {
-                                    field.onChange(value ? Number(value) : "");
-
-                                    const unitString = getValues(
-                                      `prices.${index}.unit`
-                                    );
-                                    const decimalUnit =
-                                      parseUnitToDecimal(unitString);
-
-                                    console.log(
-                                      "decimalUnit",
-                                      decimalUnit,
-                                      unitString
-                                    );
-                                    if (unitString && decimalUnit) {
-                                      const total = decimalUnit * Number(value);
-                                      // Round to 2 decimals
-                                      const roundedTotal =
-                                        Math.round(total * 100) / 100;
-
-                                      setValue(
-                                        `prices.${index}.total`,
-                                        roundedTotal
-                                      );
-                                    }
+                          <Grid item xs={1.5}>
+                            <Controller
+                              name={`prices.${index}.unit`}
+                              control={control}
+                              rules={{
+                                required: "Unit is required",
+                              }}
+                              render={({ field, fieldState: { error } }) => (
+                                <TimeField
+                                  {...field}
+                                  value={
+                                    field.value
+                                      ? moment(field.value, "HH:mm")
+                                      : null
                                   }
-                                }}
-                                required
-                                error={!!error}
-                                helperText={error?.message}
-                              />
-                            )}
-                          />
-                        </Grid>
+                                  onChange={(newValue) => {
+                                    const formatted = newValue
+                                      ? moment(newValue).format("HH:mm")
+                                      : "";
+                                    field.onChange(formatted);
 
-                        <Grid item xs={1.5}>
-                          <Controller
-                            name={`prices.${index}.currency`}
-                            control={control}
-                            rules={{ required: "Currency is required" }}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Currency"
-                                fullWidth
-                                size="small"
-                              />
-                            )}
-                          />
-                        </Grid>
+                                    if (formatted) {
+                                      const [hh, mm] = formatted
+                                        .split(":")
+                                        .map(Number);
+                                      const decimalHours = hh + mm / 60;
 
-                        <Grid item xs={2}>
-                          <Controller
-                            name={`prices.${index}.total`}
-                            control={control}
-                            render={({ field }) => (
-                              <TextField
-                                {...field}
-                                label="Total"
-                                type="number"
-                                fullWidth
-                                size="small"
-                                disabled
-                              />
-                            )}
-                          />
-                        </Grid>
+                                      const priceValue = getValues(
+                                        `prices.${index}.price`
+                                      );
+                                      if (priceValue) {
+                                        const total = decimalHours * priceValue;
+                                        const roundedTotal =
+                                          Math.round(total * 100) / 100;
+                                        setValue(
+                                          `prices.${index}.total`,
+                                          roundedTotal
+                                        );
+                                      }
+                                    } else {
+                                      setValue(`prices.${index}.total`, 0);
+                                    }
+                                  }}
+                                  label="Unit (HH:mm)"
+                                  size="small"
+                                  format="HH:mm"
+                                  slotProps={{
+                                    textField: {
+                                      required: true,
+                                      fullWidth: true,
+                                      size: "small",
+                                      error: !!error,
+                                      helperText: error?.message,
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          </Grid>
 
-                        <Grid item xs={1}>
-                          <IconButton
-                            onClick={() => removePrice(index)}
-                            color="error"
-                          >
-                            <Delete fontSize="small" />
-                          </IconButton>
+                          <Grid item xs={1.5}>
+                            <Controller
+                              name={`prices.${index}.price`}
+                              control={control}
+                              rules={{
+                                required: "Price is required",
+                                min: { value: 0, message: "Must be >= 0" },
+                              }}
+                              render={({ field, fieldState: { error } }) => (
+                                <TextField
+                                  {...field}
+                                  label="Price"
+                                  fullWidth
+                                  size="small"
+                                  // onChange={(e) => {
+                                  //   const value = e.target.value;
+                                  //   if (
+                                  //     /^[0-9]*(\.[0-9]+)?$/.test(value) ||
+                                  //     value === ""
+                                  //   ) {
+                                  //     field.onChange(value ? Number(value) : "");
+
+                                  //     const unitString = getValues(
+                                  //       `prices.${index}.unit`
+                                  //     );
+                                  //     const decimalUnit =
+                                  //       parseUnitToDecimal(unitString);
+
+                                  //     console.log(
+                                  //       "decimalUnit",
+                                  //       decimalUnit,
+                                  //       unitString
+                                  //     );
+                                  //     if (unitString && decimalUnit) {
+                                  //       const total = decimalUnit * Number(value);
+                                  //       // Round to 2 decimals
+                                  //       const roundedTotal =
+                                  //         Math.round(total * 100) / 100;
+
+                                  //       setValue(
+                                  //         `prices.${index}.total`,
+                                  //         roundedTotal
+                                  //       );
+                                  //     }
+                                  //   }
+                                  // }}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (
+                                      /^[0-9]*(\.[0-9]+)?$/.test(value) ||
+                                      value === ""
+                                    ) {
+                                      field.onChange(
+                                        value ? Number(value) : ""
+                                      );
+
+                                      const unitString = getValues(
+                                        `prices.${index}.unit`
+                                      );
+                                      const match = unitString?.match(
+                                        /^(\d{1,2}):([0-5][0-9])$/
+                                      );
+                                      if (match) {
+                                        const hours = parseInt(match[1], 10);
+                                        const minutes = parseInt(match[2], 10);
+                                        const decimalHours =
+                                          hours + minutes / 60;
+
+                                        const total =
+                                          decimalHours * Number(value);
+                                        const roundedTotal =
+                                          Math.round(total * 100) / 100;
+                                        setValue(
+                                          `prices.${index}.total`,
+                                          roundedTotal
+                                        );
+                                      }
+                                    }
+                                  }}
+                                  required
+                                  error={!!error}
+                                  helperText={error?.message}
+                                />
+                              )}
+                            />
+                          </Grid>
+
+                          <Grid item xs={1.5}>
+                            <Controller
+                              name={`prices.${index}.currency`}
+                              control={control}
+                              rules={{ required: "Currency is required" }}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label="Currency"
+                                  fullWidth
+                                  size="small"
+                                />
+                              )}
+                            />
+                          </Grid>
+
+                          <Grid item xs={2}>
+                            <Controller
+                              name={`prices.${index}.total`}
+                              control={control}
+                              render={({ field }) => (
+                                <TextField
+                                  {...field}
+                                  label="Total"
+                                  type="number"
+                                  fullWidth
+                                  size="small"
+                                  disabled
+                                />
+                              )}
+                            />
+                          </Grid>
+
+                          <Grid item xs={1}>
+                            <IconButton
+                              onClick={() => removePrice(index)}
+                              color="error"
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
+                          </Grid>
                         </Grid>
-                      </Grid>
+                      </LocalizationProvider>
                     </>
                   ))}
                   <Grid item xs={1.5}>

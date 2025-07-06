@@ -12,7 +12,14 @@ export const CreateClient = ({ handleSubDialogClose }) => {
 
   const createFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
-    { name: "name", label: "Name", xs: 6, required: true },
+    { name: "name", label: "First Name", xs: 6, required: true },
+    {
+      name: "lastName",
+      label: "Last Name",
+      xs: 6,
+      required: true,
+      visible: (type: string) => type !== "COMPANY",
+    },
     {
       name: "phone",
       label: "Phone",
@@ -62,9 +69,10 @@ export const CreateClient = ({ handleSubDialogClose }) => {
     },
   ];
 
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       name: "",
+      lastName: "",
       phone: "",
       email: "",
       address: "",
@@ -107,6 +115,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       control={control}
       onSubmit={handleSubmit(onSubmit)}
       fields={createFields}
+      setValue={setValue} // ✅ Pass it down here
     />
   );
 };

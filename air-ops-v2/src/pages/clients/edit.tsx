@@ -14,6 +14,7 @@ import { Pattern } from "@mui/icons-material";
 
 type FormData = {
   name: string;
+  lastName: string;
   phone: string;
   email: string;
   address: string;
@@ -29,7 +30,8 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
 
   const editFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
-    { name: "name", label: "Name", xs: 6, required: true },
+    { name: "name", label: "First Name", xs: 6, required: true },
+    { name: "lastName", label: "Last Name", xs: 6, required: true },
     {
       name: "phone",
       label: "Phone",
@@ -105,6 +107,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
   useEffect(() => {
     if (client) {
       setValue("name", client.name || "");
+      setValue("lastName", client.lastName || "");
       setValue("phone", client.phone || "");
       setValue("email", client.email || "");
       setValue("address", client.address || "");
@@ -146,6 +149,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       control={control}
       onSubmit={handleSubmit(onSubmit)}
       fields={editFields}
+      setValue={setValue} // ✅ Pass it down here
     />
   );
 };
