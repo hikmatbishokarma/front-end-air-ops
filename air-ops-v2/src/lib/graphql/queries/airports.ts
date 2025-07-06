@@ -23,6 +23,7 @@ export const GET_AIRPORTS = gql`
     $sorting: [AirportSort!]! = []
   ) {
     airports(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
       nodes {
         id
         iata_code
@@ -46,6 +47,16 @@ export const GET_AIRPORT_BY_ID = gql`
       icao_code
       latitude
       longitude
+      contactNumber
+      email
+      openHrs
+      closeHrs
+      groundHandlersInfo {
+        fullName
+        companyName
+        contactNumber
+        email
+      }
     }
   }
 `;

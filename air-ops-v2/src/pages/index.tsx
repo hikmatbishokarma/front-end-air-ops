@@ -1,251 +1,340 @@
-// import React, { useEffect, useState } from "react";
-// import banner from "../Asset/Images/dash_banner.png";
-// import level from "../Asset/Images/level.png";
-// import {
-//   Modal,
-//   Box,
-//   Typography,
-//   TextField,
-//   Button,
-//   IconButton,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableContainer,
-//   TableHead,
-//   TableRow,
-// } from "@mui/material";
-// import Paper from "@mui/material/Paper";
+// import React from "react";
+// import { Grid, Typography, Box, Card, CardContent } from "@mui/material";
+// import { useSession } from "../SessionContext";
+// // import dashbanner from "../Asset/Images/dashbanner.png";
+// import ClockDisplay from "../components/Clock";
+// import FullCalendar from "@fullcalendar/react";
+// import dayGridPlugin from "@fullcalendar/daygrid";
+// import timeGridPlugin from "@fullcalendar/timegrid";
+// import listPlugin from "@fullcalendar/list";
 
-// import { BarChart } from "@mui/x-charts/BarChart";
-// import { PieChart } from "@mui/x-charts/PieChart";
-// import { LineChart } from "@mui/x-charts/LineChart";
-// import { axisClasses } from "@mui/x-charts/ChartsAxis";
-// import { dataset, valueFormatter } from "./weather";
-// import CloseIcon from "@mui/icons-material/Close";
-// import useGql from "../lib/graphql/gql";
-// import { GET_SALES_DASHBOARD } from "../lib/graphql/queries/dashboard";
-// import { useNavigate } from "react-router";
 // export default function DashboardPage() {
-//   const navigate = useNavigate();
+//   const { session, setSession, loading } = useSession();
 
-//   const [salesDashboardData, setSalesDashboardData] = useState<any>();
-//   const [rows, setRows] = useState();
+//   const { id: operatorId, name: agentName } = session?.user?.agent || {};
+//   const { name } = session?.user || {};
 
-//   // chart
-//   const chartSetting = {
-//     yAxis: [
-//       {
-//         label: "rainfall (mm)",
-//       },
-//     ],
-//     width: 500,
-//     height: 300,
-//     sx: {
-//       [`.${axisClasses.left} .${axisClasses.label}`]: {
-//         transform: "translate(-20px, 0)",
-//       },
+//   const flightEvents = [
+//     {
+//       "title": "HYD → DEL",
+//       "start": "2025-06-29T09:00:00.000Z",
+//       "end": "2025-06-29T11:00:00.000Z",
+//       "__typename": "CalenderData",
 //     },
-//   };
-
-//   const fethSalesDashboardData = async () => {
-//     try {
-//       const data = await useGql({
-//         query: GET_SALES_DASHBOARD,
-//         queryName: "getSalesDashboardData",
-//         queryType: "query-without-edge",
-//         variables: {
-//           range: "lastMonth",
-//         },
-//       });
-//       console.log("data:::", data);
-//       setSalesDashboardData(data);
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fethSalesDashboardData();
-//   }, []);
+//     {
+//       "title": "DEL → HYD",
+//       "start": "2025-06-29T13:00:00.000Z",
+//       "end": "2025-06-29T15:00:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "HYD → DEL",
+//       "start": "2025-06-30T13:00:00.000Z",
+//       "end": "2025-06-30T15:00:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "DEL → HYD",
+//       "start": "2025-06-30T16:00:00.000Z",
+//       "end": "2025-06-30T18:00:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "HYD → DEL",
+//       "start": "2025-06-29T12:03:00.000Z",
+//       "end": "2025-06-29T12:33:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "DEL → HYD",
+//       "start": "2025-06-29T14:05:00.000Z",
+//       "end": "2025-06-29T14:45:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "HYD → DEL",
+//       "start": "2025-06-30T10:00:00.000Z",
+//       "end": "2025-06-30T12:00:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "DEL → GOI",
+//       "start": "2025-06-30T17:00:00.000Z",
+//       "end": "2025-06-30T19:00:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "DEL → HYD",
+//       "start": "2025-06-30T10:00:00.000Z",
+//       "end": "2025-06-30T12:00:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//     {
+//       "title": "HYD → DEL",
+//       "start": "2025-07-06T10:00:00.000Z",
+//       "end": "2025-07-06T12:00:00.000Z",
+//       "__typename": "CalenderData",
+//     },
+//   ];
 
 //   return (
 //     <>
-//       <div className="dashboard_main_d">
-//         <div className="ban_img">
-//           <img src={banner} alt="" />
-//         </div>
-//         <div className="heading">
-//           <div className="name">
-//             <h2>Hello</h2>
-//             <p> Welcome to Airops</p>
-//           </div>
-//         </div>
+//       <ClockDisplay />
 
-//         <div className="graphTotal">
-//           <div className="boxes">
-//             <div className="level">
-//               <img src={level} alt="" />
-//             </div>
-//             <div className="text">
-//               <p>New Quotes</p>
-//               <h5>{salesDashboardData?.summary?.newQuotations}</h5>
-//             </div>
-//           </div>
-//           <div className="boxes">
-//             <div className="level">
-//               <img src={level} alt="" />
-//             </div>
-//             <div className="text">
-//               <p>Confirmed quotes</p>
-//               <h5>{salesDashboardData?.summary?.confirmedQuotations}</h5>
-//             </div>
-//           </div>
-//           <div className="boxes">
-//             <div className="level">
-//               <img src={level} alt="" />
-//             </div>
-//             <div className="text">
-//               <p>Quote Sold</p>
-//               <h5>{salesDashboardData?.summary?.sales}</h5>
-//             </div>
-//           </div>
-//           <div className="boxes">
-//             <div className="level">
-//               <img src={level} alt="" />
-//             </div>
-//             <div className="text">
-//               <p>Cancelled Quotes</p>
-//               <h5>{salesDashboardData?.summary?.cancellations}</h5>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       {/*
-//       <div className="chartsWork">
-//         <div className="innerChart_d">
-//           <BarChart
-//             dataset={salesDashboardData?.salesTrend || []}
-//             series={[
-//               { dataKey: "sales", label: "Sales" },
-//               { dataKey: "cancellations", label: "Cancellations" },
-//             ]}
-//             height={290}
-//             // width={100}
-//             xAxis={[{ scaleType: "band", dataKey: "date" }]}
-//             margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-//           />
-//         </div>
-//         <div className="innerChart_d">
-//           <PieChart
-//             series={[
-//               {
-//                 data: salesDashboardData?.quotationStatusDistribution || [],
-//               },
-//             ]}
-//             width={400}
-//             height={250}
-//           />
-//         </div>
-//       </div> */}
-//       <TableContainer component={Paper} >
-//         <Table sx={{ minWidth: 650 }} aria-label="simple table" >
-//           <TableHead>
-//             <TableRow>
-//               <TableCell>ID</TableCell>
-//               <TableCell align="right">Status</TableCell>
-//               <TableCell align="right">Requester</TableCell>
-//               <TableCell align="right">Itinenary</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {salesDashboardData?.latestQuotations?.map((row) => (
-//               <TableRow
-//                 key={row.id}
-//                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-//                 onClick={() => navigate(`/quotes/edit/${row.id}`)}
-//               >
-//                 <TableCell component="th" scope="row">
-//                   {row.revisedQuotatioNo || row.quotationNo}
-//                 </TableCell>
-//                 <TableCell align="right">{row.status}</TableCell>
-//                 <TableCell align="right">{row.representative}</TableCell>
-//                 <TableCell align="right">
-//                   {row?.itinerary?.map(
-//                     (item) => `${item.source}-${item.destination}`,
-//                   )}
-//                 </TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//       </TableContainer>
+//       <FullCalendar
+//         plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+//         initialView="dayGridMonth"
+//         timeZone="UTC"
+//         headerToolbar={{
+//           left: "prev,next today",
+//           center: "title",
+//           right: "dayGridMonth,timeGridWeek,timeGridDay",
+//         }}
+//         events={flightEvents}
+//         // datesSet={handleDatesSet}
+//       />
+
+//       {/* <Box
+//         sx={{
+//           position: "relative",
+//           height: 250,
+//           borderRadius: 2,
+//           overflow: "hidden",
+//           mt: 4,
+//           backgroundImage: `url(${dashbanner})`,
+//           backgroundSize: "cover",
+//           backgroundPosition: "center",
+//           color: "#fff",
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "center",
+//         }}
+//       >
+//         <Box
+//           sx={{
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             right: 0,
+//             bottom: 0,
+//             background: "rgba(0, 0, 0, 0.5)",
+//             zIndex: 1,
+//           }}
+//         />
+//         <Box sx={{ zIndex: 2, textAlign: "center", px: 3 }}>
+//           <Typography
+//             variant="h4"
+//             sx={{
+//               fontWeight: 600,
+//               mb: 1,
+//               letterSpacing: 1,
+//             }}
+//           >
+//             Welcome to Airops
+//           </Typography>
+//           <Typography variant="h6" sx={{ mb: 2 }}>
+//             Hello, <strong>{name}</strong>! You've successfully logged in to
+//             Airops - Aviation Operations Made Easy.
+//           </Typography>
+//         </Box>
+//       </Box> */}
 //     </>
 //   );
 // }
 
-import React from "react";
-import { Grid, Typography, Box, Card, CardContent } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Grid,
+  Typography,
+  Box,
+  Card,
+  CardContent,
+  Stack,
+  Divider,
+  Container,
+} from "@mui/material";
 import { useSession } from "../SessionContext";
-import dashbanner from "../Asset/Images/dashbanner.png";
-
-const stats = [
-  { title: "Total Bookings", value: 124 },
-  { title: "Pending Quotes", value: 17 },
-  { title: "Confirmed Flights", value: 56 },
-  { title: "Operators Onboarded", value: 12 },
-];
+import ClockDisplay from "../components/Clock";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+import { FLIGHT_SEGMENTS_FOR_CALENDER } from "../lib/graphql/queries/quote";
+import useGql from "../lib/graphql/gql";
+import moment from "moment";
+import { GET_LEAVES } from "../lib/graphql/queries/leave";
+import { useSnackbar } from "../SnackbarContext";
+import { LeaveType } from "../lib/utils";
+import FlightMap from "../components/Map";
+import WorldFlightMap from "../components/WorldMap";
+import DynamicFlightMap from "../components/DynamicFlightMap";
+import IndiaFlightMap from "../components/IndianMap";
 
 export default function DashboardPage() {
-  const { session, setSession, loading } = useSession();
-
-  const { id: operatorId, name: agentName } = session?.user?.agent || {};
+  const { session } = useSession();
+  const showSnackbar = useSnackbar();
   const { name } = session?.user || {};
 
+  const [flightEvents, setFlightEvents] = useState<any>();
+  const [leaveEvents, setLeaveEvents] = useState<any>();
+
+  const getFlightSegementsForCalender = async (startDate, endDate) => {
+    const response = await useGql({
+      query: FLIGHT_SEGMENTS_FOR_CALENDER,
+      queryName: "flightSegmentsForCalendar",
+      queryType: "query-without-edge",
+      variables: {
+        "startDate": startDate,
+        "endDate": endDate,
+      },
+    });
+
+    if (response.length) {
+      setFlightEvents(response.map(({ __typename, ...rest }) => rest));
+    }
+  };
+
+  const getLeaves = async (startDate, endDate) => {
+    try {
+      const result = await useGql({
+        query: GET_LEAVES,
+        queryName: "leaves",
+        queryType: "query-with-count",
+        variables: {
+          filter: {
+            createdAt: {
+              between: { lower: startDate, upper: endDate },
+            },
+          },
+        },
+      });
+
+      if (!result.data) showSnackbar("Failed to fetch Manual!", "error");
+
+      const events = result.data.map((item) => ({
+        title: `${item?.crew ?? ""}-${LeaveType[item.type]}`,
+        start: moment(item.fromDate).format("YYYY-MM-DD"),
+        end: moment(item.toDate).format("YYYY-MM-DD"),
+        color: "#fbc02d",
+      }));
+      setLeaveEvents(events);
+    } catch (error) {
+      showSnackbar(error.message || "Failed to fetch Manual!", "error");
+    }
+  };
+
+  useEffect(() => {
+    const startDate = moment.utc().startOf("month").toISOString();
+    const endDate = moment.utc().endOf("month").toISOString();
+
+    getFlightSegementsForCalender(startDate, endDate);
+    getLeaves(startDate, endDate);
+  }, []);
+
+  const handleFlightDatesSet = (arg) => {
+    const startDate = moment.utc(arg.start).startOf("day").toISOString();
+    const endDate = moment.utc(arg.end).endOf("day").toISOString();
+
+    getFlightSegementsForCalender(startDate, endDate);
+  };
+
+  const handleLeaveDatesSet = (arg) => {
+    const startDate = moment.utc(arg.start).startOf("day").toISOString();
+    const endDate = moment.utc(arg.end).endOf("day").toISOString();
+
+    getLeaves(startDate, endDate);
+  };
+
   return (
-    <Box
-      sx={{
-        position: "relative",
-        height: 250,
-        borderRadius: 2,
-        overflow: "hidden",
-        mt: 4,
-        backgroundImage: `url(${dashbanner})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        color: "#fff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, 0.5)",
-          zIndex: 1,
-        }}
-      />
-      <Box sx={{ zIndex: 2, textAlign: "center", px: 3 }}>
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 600,
-            mb: 1,
-            letterSpacing: 1,
-          }}
-        >
-          Welcome to Airops
-        </Typography>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Hello, <strong>{name}</strong>! You've successfully logged in to
-          Airops - Aviation Operations Made Easy.
-        </Typography>
+    <Box p={2}>
+      {/* <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={4} md={3}>
+          <Card sx={{ p: 2, backgroundColor: "#ffecb3", borderRadius: 3 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Total Quotes
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              100
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={4} md={3}>
+          <Card sx={{ p: 2, backgroundColor: "#c8e6c9", borderRadius: 3 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Trip Confirmed
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              20
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={4} md={3}>
+          <Card sx={{ p: 2, backgroundColor: "#b3e5fc", borderRadius: 3 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Total Flights
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              850
+            </Typography>
+          </Card>
+        </Grid>
+      </Grid> */}
+
+      {/* Future Filter Row (empty for now) */}
+      <Box mt={2} mb={3}>
+        {/* Add filter dropdowns or chips here */}
       </Box>
+
+      {/* Dual Calendar Layout */}
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle1" fontWeight={500} gutterBottom>
+                🛫 Flight Block Calendar
+              </Typography>
+              <Divider sx={{ mb: 1 }} />
+              <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+                initialView="dayGridMonth"
+                timeZone="UTC"
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: "dayGridMonth,timeGridWeek,timeGridDay",
+                }}
+                height="auto"
+                events={flightEvents}
+                datesSet={handleFlightDatesSet}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle1" fontWeight={500} gutterBottom>
+                👨‍✈️ Staff Leave Calendar
+              </Typography>
+              <Divider sx={{ mb: 1 }} />
+              <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+                initialView="dayGridMonth"
+                timeZone="UTC"
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: "dayGridMonth,timeGridWeek,timeGridDay",
+                }}
+                height="auto"
+                events={leaveEvents}
+                datesSet={handleLeaveDatesSet}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

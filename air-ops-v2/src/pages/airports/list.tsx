@@ -15,6 +15,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TablePagination,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -27,6 +30,8 @@ import { AirportCreate } from "./create";
 import { AirportEdit } from "./edit";
 import { GET_AIRPORTS } from "../../lib/graphql/queries/airports";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const AirpotList = () => {
   const showSnackbar = useSnackbar();
@@ -35,6 +40,9 @@ export const AirpotList = () => {
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [currentRecordId, setCurrentRecordId] = useState("");
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleOpen = () => {
     setOpen(true);
@@ -46,8 +54,21 @@ export const AirpotList = () => {
       const data = await useGql({
         query: GET_AIRPORTS,
         queryName: "airports",
-        queryType: "query",
-        variables: { paging: { limit: 20 } },
+        queryType: "query-with-count",
+        variables: {
+          filter: searchTerm
+            ? {
+                or: [
+                  { city: { iLike: searchTerm } },
+                  { country: { iLike: searchTerm } },
+                  { iata_code: { iLike: searchTerm } },
+                  { icao_code: { iLike: searchTerm } },
+                  { name: { iLike: searchTerm } },
+                ],
+              }
+            : {},
+          paging: { limit: 20 },
+        },
       });
 
       if (!data) showSnackbar("Failed to fetch categories!", "error");
@@ -59,7 +80,7 @@ export const AirpotList = () => {
 
   useEffect(() => {
     getAirports();
-  }, []);
+  }, [searchTerm]);
 
   const handleEdit = (id) => {
     setIsEdit(true);
@@ -79,47 +100,24 @@ export const AirpotList = () => {
     await getAirports();
   };
 
-  //   const paginationModel = { page: 0, pageSize: 10 };
-
-  //   const columns: GridColDef[] = [
-
-  //     { field: 'name', headerName: 'Name',  },
-  //     { field: 'iata_code', headerName: 'IATA Code',},
-  //     {
-  //       field: 'icao_code',
-  //       headerName: 'ICAO Code'
-  //     },
-  //     {
-  //         field: 'city',
-  //         headerName: 'City'
-  //       },
-  //       {
-  //         field: "actions",
-  //         headerName: "Actions",
-  //         sortable: false,
-  //         width: 150,
-  //         renderCell: (params) => (
-  //           <>
-  //             <IconButton
-  //               color="primary"
-  //               onClick={() => handleEdit(params.row.id)}
-  //             >
-  //               <EditIcon />
-  //             </IconButton>
-  //             <IconButton
-  //               color="error"
-  //               onClick={() => handleDelete(params.row.id)}
-  //             >
-  //               <DeleteIcon />
-  //             </IconButton>
-  //           </>
-  //         ),
-  //       },
-
-  //   ];
-
   return (
     <>
+      {/* <Box sx={{ flex: "1 1 auto", maxWidth: 300 }}>
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Search Quotation"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
         <Button
           variant="contained"
@@ -127,9 +125,44 @@ export const AirpotList = () => {
           onClick={handleOpen}
           sx={{ marginBottom: 2 }}
         >
-          Create Role
+          Add Airports
+        </Button>
+      </Box> */}
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap", // Optional: helps in responsiveness
+          gap: 2, // Optional: adds spacing between elements on small screens
+          mb: 2, // Optional: margin bottom
+        }}
+      >
+        {/* Search box on the left */}
+        <Box sx={{ flex: "1 1 auto", maxWidth: 300 }}>
+          <TextField
+            variant="outlined"
+            size="small"
+            label="Search Airports"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+
+        {/* Add Airports button on the right */}
+        <Button variant="contained" color="primary" onClick={handleOpen}>
+          Add Airports
         </Button>
       </Box>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -142,7 +175,7 @@ export const AirpotList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {airport?.map((item, index) => (
+            {airport?.data?.map((item, index) => (
               <TableRow key={item.id}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.iata_code}</TableCell>
@@ -167,14 +200,16 @@ export const AirpotList = () => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={airport.totalCount}
+          page={page}
+          onPageChange={(e, newPage) => setPage(newPage)}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={(e) => setPageSize(parseInt(e.target.value, 10))}
+          rowsPerPageOptions={[5, 10, 20]}
+        />
       </TableContainer>
-      {/* <DataGrid
-        rows={airport}
-        columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10,50,100]}
-        sx={{ border: 0 }}
-      /> */}
 
       <Dialog
         open={open}
@@ -183,7 +218,19 @@ export const AirpotList = () => {
         maxWidth="md"
       >
         <DialogTitle>
-          {isEdit ? "Edit Aircraft Category" : "Edit Aircraft Category"}
+          {isEdit ? "Edit Airport Details" : "Edit Airport Details"}
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {isEdit ? (
@@ -196,11 +243,11 @@ export const AirpotList = () => {
             <AirportCreate onClose={handleClose} refreshList={refreshList} />
           )}
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => setOpen(false)} color="secondary">
             Cancel
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );

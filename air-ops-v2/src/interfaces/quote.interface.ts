@@ -13,6 +13,7 @@ export interface Iaircraft {
 export interface Iclient {
   id: string;
   name: string;
+  lastName: string;
   phone: string;
   email: string;
   address: string;

@@ -6,14 +6,28 @@ import { PageContainer } from "@toolpad/core/PageContainer";
 import { Account } from "@toolpad/core/Account";
 import { useSession } from "../SessionContext";
 import { Box } from "@mui/material";
+import { ClockCompact } from "../components/Clock";
+
+// function CustomAccount() {
+//   return (
+//     <Account
+//       slotProps={{
+//         preview: { slotProps: { avatarIconButton: { sx: { border: "0" } } } },
+//       }}
+//     />
+//   );
+// }
 
 function CustomAccount() {
   return (
-    <Account
-      slotProps={{
-        preview: { slotProps: { avatarIconButton: { sx: { border: "0" } } } },
-      }}
-    />
+    <Box display="flex" alignItems="center" gap={2}>
+      <ClockCompact /> {/* Clock on the left */}
+      <Account
+        slotProps={{
+          preview: { slotProps: { avatarIconButton: { sx: { border: "0" } } } },
+        }}
+      />
+    </Box>
   );
 }
 
