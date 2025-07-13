@@ -46,7 +46,7 @@ export const CrewDetailList = ({
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   // const [crewDetails, setCrewDetails] = useState<any>([]);
   //   const [open, setOpen] = useState(false);
@@ -134,7 +134,7 @@ export const CrewDetailList = ({
                   <TableCell>{`${item.fullName}`.trim()}</TableCell>
 
                   <TableCell>{item.email}</TableCell>
-                  <TableCell>{item?.mobileNumber}</TableCell>
+                  <TableCell>{item?.phone}</TableCell>
                   <TableCell>{item?.type}</TableCell>
                   <TableCell>
                     <Switch checked={item.createdAt} size="small" />
@@ -162,7 +162,8 @@ export const CrewDetailList = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog className="panel-one"
+      <Dialog
+        className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -170,7 +171,8 @@ export const CrewDetailList = ({
       >
         <DialogTitle>
           {isEdit ? "Edit Staff Details" : "Create Staff Details"}
-          <IconButton className="popup-quote-model"
+          <IconButton
+            className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -180,7 +182,7 @@ export const CrewDetailList = ({
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon className="popup-close-panel"/>
+            <CloseIcon className="popup-close-panel" />
           </IconButton>
         </DialogTitle>
         <DialogContent>

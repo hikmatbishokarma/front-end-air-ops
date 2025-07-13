@@ -133,6 +133,9 @@ export const FLIGHT_SEGMENTS_FOR_CALENDER = gql`
       title
       start
       end
+      depatureTime
+      arrivalTime
+      aircraft
     }
   }
 `;

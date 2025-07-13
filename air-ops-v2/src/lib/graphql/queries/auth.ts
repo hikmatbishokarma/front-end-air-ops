@@ -6,11 +6,11 @@ export const SIGN_IN = gql`
       access_token
       user {
         id
-        name
+        fullName
         email
-        image
+        profile
         roles
-        type
+
         permissions
         operator {
           id

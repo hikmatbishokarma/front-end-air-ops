@@ -48,7 +48,7 @@ export const SecurityList = ({
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [isEdit, setIsEdit] = useState(false);
   const [currentRecordId, setCurrentRecordId] = useState("");

@@ -219,8 +219,8 @@ export default function AppWithSession() {
     if (loading) return; // Don't run until session is loaded
 
     if (session) {
-      const logoImg = session?.user?.agent?.companyLogo ? (
-        <img src={`${apiBaseUrl}${session.user.agent.companyLogo}`} alt="" />
+      const logoImg = session?.user?.operator?.companyLogo ? (
+        <img src={`${apiBaseUrl}${session.user.operator.companyLogo}`} alt="" />
       ) : (
         <img src={logoPhn} alt="" />
       );

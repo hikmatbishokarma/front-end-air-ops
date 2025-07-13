@@ -14,7 +14,8 @@ export const LeaveRequest = () => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
+  const userId = session?.user?.id || null;
 
   const [filters, setFilters] = useState({ type: "", status: "" });
   const [page, setPage] = useState(0);
@@ -78,6 +79,7 @@ export const LeaveRequest = () => {
   };
 
   const handelLeaveRequest = async (formData) => {
+    formData = { ...formData, crew: userId };
     await createLeaveRequest(formData);
     handleCloseDrawer();
     await getLeaves();

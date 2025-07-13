@@ -26,7 +26,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
 
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const editFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },

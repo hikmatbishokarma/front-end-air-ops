@@ -169,6 +169,10 @@ import FlightMap from "../components/Map";
 import WorldFlightMap from "../components/WorldMap";
 import DynamicFlightMap from "../components/DynamicFlightMap";
 import IndiaFlightMap from "../components/IndianMap";
+import {
+  FlightCalendarWidget,
+  StaffLeaveWidget,
+} from "../components/CalenderWidget";
 
 export default function DashboardPage() {
   const { session } = useSession();
@@ -231,13 +235,6 @@ export default function DashboardPage() {
     getLeaves(startDate, endDate);
   }, []);
 
-  const handleFlightDatesSet = (arg) => {
-    const startDate = moment.utc(arg.start).startOf("day").toISOString();
-    const endDate = moment.utc(arg.end).endOf("day").toISOString();
-
-    getFlightSegementsForCalender(startDate, endDate);
-  };
-
   const handleLeaveDatesSet = (arg) => {
     const startDate = moment.utc(arg.start).startOf("day").toISOString();
     const endDate = moment.utc(arg.end).endOf("day").toISOString();
@@ -284,9 +281,28 @@ export default function DashboardPage() {
       <Box mt={2} mb={3}>
         {/* Add filter dropdowns or chips here */}
       </Box>
+      {/* <Grid container spacing={4}>
+        <Grid item xs={12} md={6}>
+          <FlightCalendarWidget />
+        </Grid>
+      </Grid>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={6}>
+          <StaffLeaveWidget />
+        </Grid>
+      </Grid> */}
+
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={6}>
+          <FlightCalendarWidget />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <StaffLeaveWidget />
+        </Grid>
+      </Grid>
 
       {/* Dual Calendar Layout */}
-      <Grid container spacing={2}>
+      {/* <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
@@ -334,7 +350,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
+      </Grid> */}
     </Box>
   );
 }

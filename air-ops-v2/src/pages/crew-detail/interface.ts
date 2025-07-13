@@ -28,7 +28,7 @@ export interface CrewDetailFormValues {
   gender: string;
   dateOfBirth: string;
 
-  mobileNumber: string;
+  phone: string;
   alternateContact: string;
 
   email: string;

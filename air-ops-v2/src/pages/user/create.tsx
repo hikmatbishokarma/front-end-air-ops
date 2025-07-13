@@ -170,7 +170,7 @@ import { useSession } from "../../SessionContext";
 const UserCreate = ({ onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const showSnackbar = useSnackbar();
   const [roleOptions, setRoleOptions] = useState([]);
