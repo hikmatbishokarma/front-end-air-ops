@@ -10,6 +10,7 @@ import {
   Button,
   CircularProgress,
   Tooltip,
+  InputAdornment,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
@@ -25,6 +26,7 @@ import { SEND_ACKNOWLEDGEMENT } from "../lib/graphql/queries/quote";
 import { useSnackbar } from "../SnackbarContext";
 import { getEnumKeyByValue, SalesDocumentType } from "../lib/utils";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface ActionButtonProps {
   currentId: string;
@@ -161,7 +163,22 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             fullWidth
             maxWidth="xs"
           >
-            <DialogTitle>Send via Email</DialogTitle>
+            <DialogTitle>
+              Send via Email
+              <IconButton
+                className="popup-quote-model"
+                aria-label="close"
+                onClick={() => setShowEmailDialog(false)}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <CloseIcon className="popup-close-panel" />
+              </IconButton>
+            </DialogTitle>
             <DialogContent>
               <Box display="flex" gap={2} alignItems="center">
                 <TextField
@@ -177,30 +194,28 @@ const ActionButton: React.FC<ActionButtonProps> = ({
                   }}
                   error={error}
                   helperText={helperText}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={handleSendEmail}
+                          edge="end"
+                          color="primary"
+                          disabled={!clientEmail || error || loading}
+                          size="small"
+                        >
+                          {loading ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            <SendIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSendEmail}
-                  endIcon={<SendIcon />}
-                >
-                  {loading ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    "Send"
-                  )}
-                </Button>
               </Box>
             </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => setShowEmailDialog(false)}
-                color="secondary"
-              >
-                Cancel
-              </Button>
-            </DialogActions>
           </Dialog>
         </>
       )}

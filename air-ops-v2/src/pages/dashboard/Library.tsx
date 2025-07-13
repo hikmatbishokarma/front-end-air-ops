@@ -17,7 +17,7 @@ const LibraryDashboard = () => {
 
   const navigate = useNavigate();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [selectedTab, setSelectedTab] = useState("Libraries");
   const [searchTerm, setSearchTerm] = useState("");

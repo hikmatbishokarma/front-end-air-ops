@@ -32,7 +32,7 @@ export const AircraftDetailList = () => {
   const showSnackbar = useSnackbar();
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [aircraftDetail, setAircraftDetail] = useState<any>([]);
   const [open, setOpen] = useState(false);

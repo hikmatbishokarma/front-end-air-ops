@@ -17,7 +17,7 @@ export const LibraryEdit = ({ id, onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const { control, handleSubmit, reset, setValue } = useForm<ILibrary>({
     defaultValues: {

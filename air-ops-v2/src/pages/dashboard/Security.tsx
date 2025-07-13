@@ -21,7 +21,7 @@ const SecurityDashboard = () => {
 
   const navigate = useNavigate();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [selectedTab, setSelectedTab] = useState("Securities");
   const [searchTerm, setSearchTerm] = useState("");

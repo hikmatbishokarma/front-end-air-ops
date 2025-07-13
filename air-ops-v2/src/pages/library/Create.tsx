@@ -15,7 +15,7 @@ export const LibraryCreate = ({ onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const createLibrary = async (formData) => {
     const result = await useGql({

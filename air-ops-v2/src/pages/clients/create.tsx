@@ -8,7 +8,7 @@ import { useSession } from "../../SessionContext";
 export const CreateClient = ({ handleSubDialogClose }) => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const createFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },

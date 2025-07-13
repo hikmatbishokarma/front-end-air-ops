@@ -25,7 +25,7 @@ export interface ISession {
     roles?: string[] | null;
     type: string;
     permissions?: any;
-    agent?: IAgent;
+    operator?: IAgent;
   };
 }
 

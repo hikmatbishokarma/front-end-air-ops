@@ -47,7 +47,7 @@ export const ManualList = ({
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [isEdit, setIsEdit] = useState(false);
   const [currentRecordId, setCurrentRecordId] = useState("");
@@ -208,15 +208,17 @@ export const ManualList = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog className="panel-one"
+      <Dialog
+        className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle >
+        <DialogTitle>
           {isEdit ? "Edit Manual" : "Create Manual"}
-          <IconButton className="popup-quote-model"
+          <IconButton
+            className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{

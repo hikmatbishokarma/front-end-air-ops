@@ -108,14 +108,16 @@ export default function Login() {
       return {
         user: {
           id: data.user.id,
-          name: data.user.name,
+          name: data.user.name || data?.user?.fullName,
           email: data.user.email,
-          type: data.user.type,
-          image: `${apiBaseUrl}${data?.user?.image}` || "",
+          type: data?.user?.type,
+          image:
+            `${apiBaseUrl}${data?.user?.image}` ||
+            `${apiBaseUrl}${data?.user?.profile}`,
           // role: data.user.role,
           roles: data.user.roles,
           permissions: data.user.permissions,
-          agent: data?.user?.agent,
+          operator: data?.user?.operator,
         },
       };
     } catch (error) {

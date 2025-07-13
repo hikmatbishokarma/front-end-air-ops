@@ -17,7 +17,7 @@ const TrainingDashboard = () => {
 
   const navigate = useNavigate();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [trainingAndSalesSummary, setTrainingAndSalesSummary] = useState<any>({
     summary: {

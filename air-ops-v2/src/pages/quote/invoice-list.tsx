@@ -49,7 +49,7 @@ export const InvoiceList = ({
 }) => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();

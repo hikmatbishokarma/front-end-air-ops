@@ -208,7 +208,7 @@ export const categoryOptions = [
 export const QuoteCreate = () => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const navigate = useNavigate();
 
