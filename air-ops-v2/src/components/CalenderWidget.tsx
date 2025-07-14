@@ -168,6 +168,7 @@ interface FormattedFlightEvent {
   title: string;
   depatureTime: string;
   arrivalTime: string;
+  aircraft?: any;
 }
 
 export const FlightCalendarWidget = () => {
@@ -200,9 +201,10 @@ export const FlightCalendarWidget = () => {
 
         if (response && response.length > 0) {
           const events: FormattedFlightEvent[] = response.map((item) => ({
-            title: `${item.title}${item?.aircraft?.code ? ` (${item.aircraft.code})` : ""}`,
+            title: item.title,
             depatureTime: item.depatureTime,
             arrivalTime: item.arrivalTime,
+            aircraft: item.aircraft,
           }));
           setFlightEvents(events);
         } else {
@@ -290,7 +292,8 @@ export const FlightCalendarWidget = () => {
                       }
                       secondary={
                         <Typography variant="caption" color="text.secondary">
-                          {event.depatureTime} - {event.arrivalTime}
+                          ({event?.aircraft.code}) | {event.depatureTime} -{" "}
+                          {event.arrivalTime}
                         </Typography>
                       }
                     />
@@ -402,10 +405,16 @@ export const StaffLeaveWidget = () => {
         queryType: "query-with-count",
         variables: {
           filter: {
-            createdAt: {
-              // Keep createdAt filter as per your latest code
-              between: { lower: startOfPeriod, upper: endOfPeriod },
-            },
+            // createdAt: {
+            //   // Keep createdAt filter as per your latest code
+            //   between: { lower: startOfPeriod, upper: endOfPeriod },
+            // },
+
+            and: [
+              { fromDate: { "lte": endOfPeriod } },
+              { toDate: { "gte": startOfPeriod } },
+            ],
+
             // REMEMBER: Filtering by `createdAt` will get leaves *created* in the period,
             // not necessarily leaves that *start/end* in the period.
             // If your API supports `fromDate` or a range overlap, that would be better for a calendar view.

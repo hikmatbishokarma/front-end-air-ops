@@ -37,9 +37,10 @@ export default function StaffLeaveCalenderView() {
         queryType: "query-with-count",
         variables: {
           filter: {
-            createdAt: {
-              between: { lower: startDate, upper: endDate },
-            },
+            and: [
+              { fromDate: { "lte": endDate } },
+              { toDate: { "gte": startDate } },
+            ],
           },
         },
       });
@@ -47,7 +48,7 @@ export default function StaffLeaveCalenderView() {
       if (!result.data) showSnackbar("Failed to fetch Manual!", "error");
 
       const events = result.data.map((item) => ({
-        title: `${item?.crew ?? ""}-${LeaveType[item.type]}`,
+        title: `${item?.crew?.fullName || item?.crew?.displayName}-${LeaveType[item.type]}`,
         start: moment(item.fromDate).format("YYYY-MM-DD"),
         end: moment(item.toDate).format("YYYY-MM-DD"),
         color: "#fbc02d",
