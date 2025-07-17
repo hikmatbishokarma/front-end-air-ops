@@ -33,8 +33,9 @@ import moment from "moment";
 import InvoicePreview from "../../components/invoice-preview";
 import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
-import { TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
+import { SALE_CONFIRMATION } from "../../lib/graphql/queries/quote";
 import { CustomDialog } from "../../components/CustomeDialog";
+import { SalesCategoryLabels } from "../../lib/utils";
 
 export const InvoiceList = ({
   filter,
@@ -44,7 +45,7 @@ export const InvoiceList = ({
   setRefreshKey,
   setFilter,
   setShowTripConfirmationPreview,
-  setTripConfirmationData,
+  setSaleConfirmationData,
 }) => {
   const { session, setSession, loading } = useSession();
 
@@ -132,12 +133,12 @@ export const InvoiceList = ({
     borderBottom: "2px solid #ccc",
   };
 
-  /** TRIP CONFIRMATION */
+  /** SALE CONFIRMATION */
 
-  const handelTripConfirmation = async ({ quotationNo }) => {
+  const handelSaleConfirmation = async ({ quotationNo }) => {
     const result = await useGql({
-      query: TRIP_CONFIRMATION,
-      queryName: "tripConfirmation",
+      query: SALE_CONFIRMATION,
+      queryName: "saleConfirmation",
       queryType: "mutation",
       variables: {
         args: {
@@ -153,20 +154,17 @@ export const InvoiceList = ({
         "error"
       );
     } else {
-      // setTripConfirmationData(result?.data?.tripConfirmation);
-      // setShowTripConfirmationPreview(true);
-      // setIsTripConfirmed(true);
-      showSnackbar("Trip confirmed successfully!", "success");
-      setTripConfirmationData(result?.data?.tripConfirmation);
+      showSnackbar("Sale confirmed successfully!", "success");
+      setSaleConfirmationData(result?.data?.saleConfirmation);
       setShowPreview(false);
       setShowTripConfirmationPreview(true);
       setFilter({
         status: {
-          eq: "CONFIRMED",
+          eq: "SALE_CONFIRMED",
         },
       });
 
-      setSelectedTab("Trip Confirmation");
+      setSelectedTab(SalesCategoryLabels.SALE_CONFIRMATION);
       setRefreshKey();
     }
   };
@@ -259,7 +257,7 @@ export const InvoiceList = ({
           htmlContent={selectedRowData?.template}
           currentQuotation={selectedRowData?.quotationNo}
           type={selectedRowData?.type}
-          handelTripConfirmation={handelTripConfirmation}
+          handelSaleConfirmation={handelSaleConfirmation}
         />
       </CustomDialog>
     </>

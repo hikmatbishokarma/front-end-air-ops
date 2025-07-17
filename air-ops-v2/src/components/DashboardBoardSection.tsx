@@ -18,7 +18,7 @@ interface DashboardBoardSectionProps {
 export const singularMap = {
   Quotes: "Quote",
   Invoices: "Invoice",
-  tripconfirmation: "Trip Confirmation",
+  tripconfirmation: "Sale Confirmation",
 };
 
 const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
