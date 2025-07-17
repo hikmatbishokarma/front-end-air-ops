@@ -58,7 +58,7 @@ import {
   validateArrivalTime,
   validateDepartureTime,
 } from "./create";
-
+import DeleteIcon from "@mui/icons-material/Delete";
 const QuoteEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -230,7 +230,7 @@ const QuoteEdit = () => {
   };
 
   // const steps = ["General Information", "Itinerary Details", "Price"];
-  const steps = ["General Information", "Itinerary Details", "Price", "Review"];
+  const steps = ["Enquiry", "Sectors", "Price", "Review"];
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -730,13 +730,22 @@ const QuoteEdit = () => {
                             <Controller
                               name={`itinerary.${index}.paxNumber`}
                               control={control}
-                              render={({ field }) => (
+                              rules={{
+                                min: {
+                                  value: 0,
+                                  message: "PAX must be at least 0",
+                                },
+                              }}
+                              render={({ field, fieldState: { error } }) => (
                                 <TextField
                                   {...field}
                                   type="number"
                                   fullWidth
                                   size="small"
                                   label="PAX"
+                                  error={!!error}
+                                  helperText={error?.message}
+                                  inputProps={{ min: 0 }}
                                 />
                               )}
                             />
@@ -747,25 +756,23 @@ const QuoteEdit = () => {
                             xs={6}
                             sx={{ display: "flex", justifyContent: "flex-end" }}
                           >
-                            <Button
-                              variant="outlined"
-                              startIcon={<Delete />}
-                              onClick={() => removeItinerary(index)}
-                              color="error"
-                            >
-                              Remove
-                            </Button>
+                            {index < 5 && (
+                              <IconButton aria-label="add">
+                                <AddIcon onClick={addItinerary} />
+                              </IconButton>
+                            )}
+
+                            {index > 0 && (
+                              <IconButton aria-label="delete">
+                                <DeleteIcon
+                                  onClick={() => removeItinerary(index)}
+                                />
+                              </IconButton>
+                            )}
                           </Grid>
                         </Grid>
                       ))}
                     </LocalizationProvider>
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      onClick={addItinerary}
-                    >
-                      Add Itinerary
-                    </Button>
                   </Box>
 
                   <Box
@@ -1042,11 +1049,19 @@ const QuoteEdit = () => {
               {activeStep === 3 && (
                 <>
                   <div className="space-y-4">
-                    <h2 className="text-xl font-semibold">Basic Info</h2>
+                    <h2
+                      style={{
+                        fontSize: "20px",
+                        fontWeight: "600",
+                        marginTop: "24px",
+                      }}
+                    >
+                      Enquiry:
+                    </h2>
 
                     <div className="space-y-2">
                       <p>
-                        <strong>Requested By:</strong>{" "}
+                        <strong>Enquiry From:</strong>{" "}
                         {clients?.find(
                           (client) => client.id === getValues("requestedBy")
                         )?.name || "N/A"}
@@ -1081,7 +1096,7 @@ const QuoteEdit = () => {
                         marginTop: "24px",
                       }}
                     >
-                      Itinerary
+                      Sectors:
                     </h2>
                     <div style={{ overflowX: "auto" }}>
                       <table
@@ -1244,7 +1259,7 @@ const QuoteEdit = () => {
                         marginTop: "24px",
                       }}
                     >
-                      Price
+                      Price:
                     </h2>
                     <div style={{ overflowX: "auto" }}>
                       <table
@@ -1379,7 +1394,7 @@ const QuoteEdit = () => {
                       </table>
                     </div>
                     <p>
-                      <strong>Total:</strong> {getValues("grandTotal") || "N/A"}
+                      <strong>Total:</strong> {getValues("grandTotal") || 0}
                     </p>
                   </div>
                 </>

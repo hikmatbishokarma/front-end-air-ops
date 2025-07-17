@@ -7,14 +7,14 @@ interface InvoicePreviewProps {
   htmlContent: string;
   currentQuotation: any;
   type?: string;
-  handelTripConfirmation?: ({ quotationNo }) => void;
+  handelSaleConfirmation?: ({ quotationNo }) => void;
 }
 
 const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   htmlContent,
   currentQuotation,
   type,
-  handelTripConfirmation,
+  handelSaleConfirmation,
 }) => {
   useEffect(() => {
     // Extract styles and apply them to the document head
@@ -46,12 +46,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const componentRef = React.useRef(null);
 
-  console.log(
-    "showGenerateTripConfirmation::",
-    type,
-    type == "PROFOMA_INVOICE" ? true : false
-  );
-
   return (
     <Box>
       <ActionButton
@@ -65,7 +59,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         showDownload={true}
         showEmail={true}
         showGenerateTripConfirmation={type == "PROFORMA_INVOICE" ? true : false}
-        handelTripConfirmation={handelTripConfirmation}
+        handelSaleConfirmation={handelSaleConfirmation}
       />
       {/* A4 size container */}
       <Paper

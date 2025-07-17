@@ -274,7 +274,7 @@ export const QuoteCreate = () => {
           },
         },
       });
-      console.log("dataaaa", data);
+
       if (data?.errors?.length > 0) {
         showSnackbar("Failed To Create Quote!", "error");
       } else showSnackbar("Created new Quote!", "success");

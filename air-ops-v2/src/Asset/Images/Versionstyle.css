@@ -245,6 +245,7 @@
     color: #fff;
     font-size: 24px;
     font-weight: bold;
+    margin-bottom: 20px;
 }
 .css-f84ov1-MuiTypography-root{
     display: none
@@ -518,4 +519,14 @@ border-top-left-radius: 50% 200px;
     width: 100% !important;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
+    height: 100% !important;
+}
+.css-k0sogd{
+    margin-top: 0px !important;
+}
+.css-23htwk .MuiStack-root{
+    margin-top: 0px !important;
+}
+.css-1mth41f{
+    margin-top: 0px;
 }
