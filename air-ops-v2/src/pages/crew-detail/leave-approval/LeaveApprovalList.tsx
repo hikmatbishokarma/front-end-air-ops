@@ -54,7 +54,7 @@ const LeaveApprovalRequestTable = ({
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     try {
@@ -98,6 +98,7 @@ const LeaveApprovalRequestTable = ({
         <Table size="small">
           <TableHead>
             <TableRow>
+              <TableCell>Name</TableCell>
               <TableCell>Leave Type</TableCell>
               <TableCell>From Date</TableCell>
               <TableCell>To Date</TableCell>
@@ -110,6 +111,9 @@ const LeaveApprovalRequestTable = ({
           <TableBody>
             {data.map((row, idx) => (
               <TableRow key={idx}>
+                <TableCell>
+                  {row?.crew?.fullName || row?.crew?.displayName}
+                </TableCell>
                 <TableCell>{LeaveType[row.type]}</TableCell>
                 <TableCell>
                   {moment(row.fromDate).format("DD-MM-YYYY")}

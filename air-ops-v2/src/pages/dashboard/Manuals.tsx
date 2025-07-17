@@ -19,7 +19,7 @@ const ManualDashboard = () => {
 
   const navigate = useNavigate();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [selectedTab, setSelectedTab] = useState("Manuals");
   const [searchTerm, setSearchTerm] = useState("");

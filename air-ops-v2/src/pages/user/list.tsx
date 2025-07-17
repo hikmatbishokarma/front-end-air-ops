@@ -31,7 +31,7 @@ interface User {
 const UserList: React.FC = () => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [rows, setRows] = useState<any[]>([]);
   const [open, setOpen] = useState(false);

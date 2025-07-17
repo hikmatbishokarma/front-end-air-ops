@@ -58,7 +58,7 @@ const SalesDashboard = () => {
 
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [filter, setFilter] = useState({});
   const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
@@ -641,7 +641,6 @@ const SalesDashboard = () => {
         title="Sale Confirmation Preview"
         width="900px"
         maxWidth="md"
-        
       >
         <SaleConfirmationPreview
           htmlContent={saleConfirmationData?.confirmationTemplate}

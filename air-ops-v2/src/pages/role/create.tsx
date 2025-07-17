@@ -75,7 +75,7 @@ type ComponentProps = {
 const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const {
     control,

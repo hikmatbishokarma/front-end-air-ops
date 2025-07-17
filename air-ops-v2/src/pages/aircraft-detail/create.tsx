@@ -55,7 +55,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
 
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   // const methods = useForm<FormValues>({
   //   mode: "onTouched", // or "onSubmit"

@@ -32,7 +32,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
 
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const getAircraftCategories = async () => {
     try {

@@ -19,7 +19,7 @@ export const useQuoteData = () => {
 
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const [aircrafts, setAircrafts] = useState<Iaircraft[]>([]);
   const [representatives, setRepresentatives] = useState<Irepresentative[]>([]);

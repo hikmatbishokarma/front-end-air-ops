@@ -10,6 +10,7 @@ export const GET_CLIENTS = gql`
       nodes {
         id
         name
+        lastName
         isCompany
         isPerson
       }
@@ -40,6 +41,7 @@ export const GET_CLIENT_BY_ID = gql`
       isCompany
       isPerson
       name
+      lastName
       phone
       email
       address

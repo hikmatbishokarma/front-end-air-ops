@@ -3,14 +3,14 @@ import { Card, CardContent, Grid, Typography, Box } from "@mui/material";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 
 const iconMap: Record<string, React.ReactNode> = {
   Casual: <BeachAccessIcon color="primary" />,
   Sick: <LocalHospitalIcon color="error" />,
   Privilege: <EmojiEventsIcon color="warning" />,
-  Marriage: <FavoriteIcon color="secondary" />,
+  Bereavement: <FavoriteOutlinedIcon />,
   Paternity: <FamilyRestroomIcon color="secondary" />,
 };
 

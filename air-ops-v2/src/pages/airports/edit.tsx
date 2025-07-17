@@ -8,7 +8,7 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
@@ -27,6 +27,11 @@ type FormData = {
   country: string;
   latitude: number;
   longitude: number;
+  contactNumber: string;
+  openHrs: string;
+  closeHrs: string;
+  email: string;
+  groundHandlersInfo: any[];
 };
 
 export const AirportEdit = ({ id, onClose, refreshList }) => {
@@ -39,7 +44,22 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      iata_code: "",
+      icao_code: "",
+      city: "",
+      openHrs: "",
+      closeHrs: "",
+      latitude: 0,
+      longitude: 0,
+      country: "",
+      contactNumber: "",
+      email: "",
+      groundHandlersInfo: [],
+    },
+  });
 
   const [airport, setAirport] = useState<FormData>();
 
@@ -67,8 +87,13 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       setValue("iata_code", airport.iata_code || "");
       setValue("icao_code", airport.icao_code || "");
       setValue("country", airport.country || "");
+      setValue("openHrs", airport.openHrs || "");
+      setValue("closeHrs", airport.closeHrs || "");
       setValue("latitude", airport.latitude || 0);
       setValue("longitude", airport.longitude || 0);
+      setValue("contactNumber", airport.contactNumber || "");
+      setValue("email", airport.email || "");
+      setValue("groundHandlersInfo", airport.groundHandlersInfo || []);
     }
   }, [airport, setValue]);
 
@@ -104,14 +129,58 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
     onClose();
   };
 
+  const {
+    fields: groundHandlersInfo,
+    append: addGroundHandler,
+    remove: removeGroundHandler,
+  } = useFieldArray({
+    control,
+    name: "groundHandlersInfo",
+  });
+
   const editFields = [
-    { name: "name", label: "Airport Name", xs: 6 },
-    { name: "iata_code", label: "IATA Code", xs: 6 },
-    { name: "icao_code", label: "ICAO Code", xs: 6 },
-    { name: "city", label: "City", xs: 6, options: [] },
-    { name: "country", label: "Country", xs: 6 },
-    { name: "latitude", label: "Latitude", type: "number", xs: 6 },
-    { name: "longitude", label: "Longitude", type: "number", xs: 6 },
+    { name: "name", label: "Airport Name", xs: 6, required: true },
+    { name: "iata_code", label: "IATA Code", xs: 6, required: true },
+    { name: "icao_code", label: "ICAO Code", xs: 6, required: true },
+    { name: "city", label: "City", xs: 6, options: [], required: true },
+    { name: "country", label: "Country", xs: 6, required: true },
+    { name: "openHrs", label: "Open Hrs", xs: 3, required: true, type: "time" },
+    {
+      name: "closeHrs",
+      label: "Close Hrs",
+      xs: 3,
+      required: true,
+      type: "time",
+    },
+    {
+      name: "latitude",
+      label: "Latitude",
+      required: true,
+    },
+    {
+      name: "longitude",
+      label: "Longitude",
+      required: true,
+    },
+    {
+      name: "contactNumber",
+      label: "Contact Number",
+      pattern: {
+        value: /^[0-9]{10}$/,
+        message: "Phone number must be 10 digits",
+      },
+      required: true,
+    },
+    {
+      name: "email",
+      label: "Email",
+
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Invalid email address",
+      },
+      required: true,
+    },
   ];
 
   return (
@@ -119,6 +188,16 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       control={control}
       onSubmit={handleSubmit(onSubmit)}
       fields={editFields}
+      groundHandlerInfoFields={groundHandlersInfo}
+      addGroundHandler={() =>
+        addGroundHandler({
+          fullName: "",
+          companyName: "",
+          contactNumber: "",
+          email: "",
+        })
+      }
+      removeGroundHandler={removeGroundHandler}
     />
   );
 };

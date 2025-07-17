@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
@@ -16,6 +16,11 @@ type FormValues = {
   latitude: number;
   longitude: number;
   country: string;
+  openHrs: string;
+  closeHrs: string;
+  contactNumber: string;
+  email: string;
+  groundHandlersInfo: any[];
 };
 
 export const AirportCreate = ({ onClose, refreshList }) => {
@@ -37,17 +42,65 @@ export const AirportCreate = ({ onClose, refreshList }) => {
       latitude: 0,
       longitude: 0,
       country: "",
+      contactNumber: "",
+      email: "",
+      groundHandlersInfo: [],
     },
   });
 
+  const {
+    fields: groundHandlersInfo,
+    append: addGroundHandler,
+    remove: removeGroundHandler,
+  } = useFieldArray({
+    control,
+    name: "groundHandlersInfo",
+  });
+
   const createFields = [
-    { name: "name", label: "Airport Name" },
-    { name: "iata_code", label: "IATA Code" },
-    { name: "icao_code", label: "ICAO Code", xs: 6 },
-    { name: "city", label: "City", xs: 6, options: [] },
-    { name: "country", label: "Country", xs: 6 },
-    { name: "latitude", label: "Latitude", type: "number", xs: 6 },
-    { name: "longitude", label: "Longitude", type: "number", xs: 6 },
+    { name: "name", label: "Airport Name", required: true },
+    { name: "iata_code", label: "IATA Code", required: true },
+    { name: "icao_code", label: "ICAO Code", xs: 6, required: true },
+    { name: "city", label: "City", xs: 6, options: [], required: true },
+    { name: "country", label: "Country", xs: 6, required: true },
+    { name: "openHrs", label: "Open Hrs", xs: 3, required: true, type: "time" },
+    {
+      name: "closeHrs",
+      label: "Close Hrs",
+      xs: 3,
+      required: true,
+      type: "time",
+    },
+    {
+      name: "latitude",
+      label: "Latitude",
+      required: true,
+    },
+    {
+      name: "longitude",
+      label: "Longitude",
+      required: true,
+    },
+    {
+      name: "contactNumber",
+      label: "Contact Number",
+
+      pattern: {
+        value: /^[0-9]{10}$/,
+        message: "Phone number must be 10 digits",
+      },
+      required: true,
+    },
+    {
+      name: "email",
+      label: "Email",
+
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Invalid email address",
+      },
+      required: true,
+    },
   ];
 
   const CreateAirport = async (formData) => {
@@ -85,6 +138,16 @@ export const AirportCreate = ({ onClose, refreshList }) => {
       control={control}
       onSubmit={handleSubmit(onSubmit)}
       fields={createFields}
+      groundHandlerInfoFields={groundHandlersInfo}
+      addGroundHandler={() =>
+        addGroundHandler({
+          fullName: "",
+          companyName: "",
+          contactNumber: "",
+          email: "",
+        })
+      }
+      removeGroundHandler={removeGroundHandler}
     />
   );
 };

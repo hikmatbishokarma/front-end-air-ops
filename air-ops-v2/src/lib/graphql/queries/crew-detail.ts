@@ -27,7 +27,7 @@ export const GET_CREW_DETAILS = gql`
         id
         fullName
         email
-        mobileNumber
+        phone
         createdAt
         updatedAt
       }
@@ -49,7 +49,7 @@ export const GET_CREW_DETAIL_BY_ID = gql`
       displayName
       gender
       dateOfBirth
-      mobileNumber
+      phone
       alternateContact
       email
       education
@@ -101,6 +101,14 @@ export const GET_STAFF_CERTIFICATION = gql`
     staffCertificates(args: $args) {
       data
       totalCount
+    }
+  }
+`;
+
+export const CREATE_CREW = gql`
+  mutation createCrew($input: CreateCrewInput!) {
+    createCrew(input: $input) {
+      id
     }
   }
 `;

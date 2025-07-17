@@ -66,7 +66,7 @@ console.log("resources", resources);
 const RoleEdit = () => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const { id } = useParams();
   const navigate = useNavigate();

@@ -17,7 +17,7 @@ import {
   Settings,
   AccountBalance,
 } from "@mui/icons-material";
-import logoPhn from "./Asset/images/logo_phn.png";
+
 import { SessionProvider } from "./SessionContext";
 import { SnackbarProvider } from "./SnackbarContext";
 
