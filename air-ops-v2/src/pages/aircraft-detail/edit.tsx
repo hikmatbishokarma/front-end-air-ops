@@ -49,7 +49,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const methods = useForm<FormData>({});
 

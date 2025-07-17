@@ -6,43 +6,95 @@ import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import { getEnumKeyByValue, QuotationStatus } from "../../lib/utils";
 import { useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
+import { CrewDetailList } from "../crew-detail/List";
+import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "../../SessionContext";
+import { GET_CREW_DETAILS } from "../../lib/graphql/queries/crew-detail";
+import { ManualList } from "../manual/List";
+
+import { GET_SECURITIES } from "../../lib/graphql/queries/security";
+import { SecurityList } from "../security/List";
 
 const SecurityDashboard = () => {
+  const showSnackbar = useSnackbar();
+  const { session, setSession } = useSession();
+
   const navigate = useNavigate();
 
-  const [selectedTab, setSelectedTab] = useState("Quotes");
+  const operatorId = session?.user.operator?.id || null;
 
-  const [salesDashboardData, setSalesDashboardData] = useState<any>();
+  const [selectedTab, setSelectedTab] = useState("Securities");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({});
+  const [securityData, setSecurityData] = useState({
+    totalCount: {},
+    data: [],
+  });
+  const [loading, setLoading] = useState(false);
+  const [securitySummary, setSecuritySummary] = useState<any>({
+    summary: {
+      securities: 0,
+    },
+  });
+
+  const getSecurity = async () => {
+    try {
+      const result = await useGql({
+        query: GET_SECURITIES,
+        queryName: "securities",
+        queryType: "query-with-count",
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
+        },
+      });
+
+      if (!result.data) showSnackbar("Failed to fetch Security!", "error");
+      setSecurityData(result);
+      setSecuritySummary((prev) => ({
+        ...prev,
+        summary: {
+          ...prev.summary,
+          securities: result.totalCount,
+        },
+      }));
+    } catch (error) {
+      showSnackbar(error.message || "Failed to fetch Security!", "error");
+    }
+  };
+
+  useEffect(() => {
+    getSecurity();
+  }, [selectedTab, searchTerm, filters]);
 
   const handelFilter = (data) => {
     setSelectedTab(data.name);
+  };
 
-    const statusFilter = data.status.map((s) => ({
-      status: { eq: getEnumKeyByValue(QuotationStatus, s) },
-    }));
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+  };
 
-    const _filter = {
-      // isLatest: { is: true },
-      or: statusFilter,
-    };
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  const refreshList = async () => {
+    // Fetch updated categories from API
+    await getSecurity();
   };
 
   const categories = [
-    { status: ["Ops"], name: "Ops" },
-    { status: ["Tax Invoice", "Proforma Invoice"], name: "Invoices" },
-    { status: ["Cancelled"], name: "Cancellations" },
-    { status: [], name: "Revenue" },
+    { status: [], name: "Securities", countLabel: "securities" },
+
+    { status: [], name: "Reports", countLabel: "Reports" },
   ];
 
+  const [open, setOpen] = useState(false);
+
   const handelCreate = (selectedTab) => {
-    // const redirectTo = selectedTab == "Quotes" ? "/quotes/create" : "";
-
-    // navigate(redirectTo);
-
-    if (selectedTab === "Quotes") {
-      navigate("/quotes/create");
-    } else if (selectedTab === "Invoices") {
-    }
+    setOpen(true);
   };
 
   return (
@@ -50,12 +102,20 @@ const SecurityDashboard = () => {
       <DashboardBoardSection
         selectedTab={selectedTab}
         categories={categories}
-        salesDashboardData={salesDashboardData}
+        salesDashboardData={securitySummary}
         onCreate={handelCreate}
         onFilter={handelFilter}
-        createEnabledTabs={["Ops", "Invoices"]}
+        createEnabledTabs={["Securities"]}
       />
-      <p className="coming-soon">Comming soon</p>
+      <SecurityList
+        open={open}
+        setOpen={setOpen}
+        list={securityData.data}
+        loading={loading}
+        onSearch={handleSearch}
+        onFilterChange={handleFilterChange}
+        refreshList={refreshList}
+      />
     </>
   );
 };

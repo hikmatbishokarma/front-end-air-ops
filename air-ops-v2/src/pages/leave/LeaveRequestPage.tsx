@@ -14,7 +14,8 @@ export const LeaveRequest = () => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
+  const userId = session?.user?.id || null;
 
   const [filters, setFilters] = useState({ type: "", status: "" });
   const [page, setPage] = useState(0);
@@ -78,6 +79,7 @@ export const LeaveRequest = () => {
   };
 
   const handelLeaveRequest = async (formData) => {
+    formData = { ...formData, crew: userId };
     await createLeaveRequest(formData);
     handleCloseDrawer();
     await getLeaves();
@@ -101,8 +103,8 @@ export const LeaveRequest = () => {
           { type: "Casual", used: 2, total: 12 },
           { type: "Sick", used: 1, total: 8 },
           { type: "Privilege", used: 5, total: 15 },
-          { type: "Marriage", used: 0, total: 1 },
           { type: "Paternity", used: 0, total: 1 },
+          { type: "Bereavement", used: 0, total: 1 },
         ]}
       />{" "}
       {/* top cards */}

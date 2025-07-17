@@ -43,6 +43,7 @@ import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import AdminPanelSettingsOutlined from "@mui/icons-material/AdminPanelSettingsOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import BeachAccessOutlinedIcon from "@mui/icons-material/BeachAccessOutlined";
+import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
 
 export const NAVIGATION: Navigation = [
   {
@@ -75,7 +76,11 @@ export const NAVIGATION: Navigation = [
     title: "Security",
     icon: <PrivacyTipOutlinedIcon />,
   },
-
+  {
+    segment: "library",
+    title: "Library",
+    icon: <LocalLibraryOutlinedIcon />,
+  },
   {
     segment: "camo",
     title: "CAMO",
@@ -214,8 +219,8 @@ export default function AppWithSession() {
     if (loading) return; // Don't run until session is loaded
 
     if (session) {
-      const logoImg = session?.user?.agent?.companyLogo ? (
-        <img src={`${apiBaseUrl}${session.user.agent.companyLogo}`} alt="" />
+      const logoImg = session?.user?.operator?.companyLogo ? (
+        <img src={`${apiBaseUrl}${session.user.operator.companyLogo}`} alt="" />
       ) : (
         <img src={logoPhn} alt="" />
       );

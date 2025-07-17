@@ -20,7 +20,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const { control, handleSubmit, reset, setValue } =
     useForm<CrewDetailFormValues>({
@@ -69,7 +69,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("anniversaryDate", crewDetail.anniversaryDate);
       setValue("religion", crewDetail.religion);
       setValue("nationality", crewDetail.nationality);
-      setValue("mobileNumber", crewDetail?.mobileNumber);
+      setValue("phone", crewDetail?.phone);
       setValue("aadhar", crewDetail.aadhar || "");
       setValue("pan", crewDetail.pan || "");
       setValue("passportNo", crewDetail.passportNo || "");

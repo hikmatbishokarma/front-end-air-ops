@@ -530,3 +530,27 @@ border-top-left-radius: 50% 200px;
 .css-1mth41f{
     margin-top: 0px;
 }
+.css-1eg89m4{
+  
+    background-color: #001551 !important;
+    box-shadow: 0 0 0 2px #001551 !important;
+    color:#ffffff;
+}
+.notification-side-bar .MuiButton-containedPrimary{
+     background-color: #001551 !important;
+  
+    color:#ffffff;
+}
+
+.notification-side-bar .MuiButton-textPrimary{
+     background-color: #001551 !important;
+  
+    color:#ffffff;
+}
+.tripcnfrm .Mui-selected{
+    background-color: #001551 !important;
+}
+.leave-format {
+     
+    color:#000;
+}

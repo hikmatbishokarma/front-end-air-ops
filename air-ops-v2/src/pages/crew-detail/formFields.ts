@@ -23,7 +23,7 @@ export const crewDetailFormFields = [
     required: true,
   },
   {
-    name: "mobileNumber",
+    name: "phone",
     label: "Mobile Number",
     required: true,
     pattern: {

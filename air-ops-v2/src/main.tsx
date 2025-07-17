@@ -45,6 +45,9 @@ import SalesDashboard from "./pages/dashboard/SalesDashboard";
 // import "../dist/assets/styleview.css";
 import "../src/Asset/Images/Versionstyle.css";
 import { LeaveRequest } from "./pages/leave/LeaveRequestPage";
+import LibraryDashboard from "./pages/dashboard/Library";
+import TripConfirmationCalenderView from "./pages/full-calender-view/TripConfirmation";
+import StaffLeaveCalenderView from "./pages/full-calender-view/LeaveCalender";
 
 const router = createBrowserRouter(
   [
@@ -74,6 +77,10 @@ const router = createBrowserRouter(
             {
               path: "security",
               Component: SecurityDashboard,
+            },
+            {
+              path: "library",
+              Component: LibraryDashboard,
             },
             {
               path: "camo",
@@ -178,6 +185,14 @@ const router = createBrowserRouter(
             {
               path: "invoices/preview",
               Component: GenerateInvoice,
+            },
+            {
+              path: "trip-confirmation/calender",
+              Component: TripConfirmationCalenderView,
+            },
+            {
+              path: "staff-leave/calender",
+              Component: StaffLeaveCalenderView,
             },
           ],
         },

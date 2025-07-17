@@ -33,12 +33,11 @@ import moment from "moment";
 import InvoicePreview from "../../components/invoice-preview";
 import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
-import { TRIP_CONFIRMATION } from "../../lib/graphql/queries/quote";
 
 export const AccountList = ({ filter }) => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();

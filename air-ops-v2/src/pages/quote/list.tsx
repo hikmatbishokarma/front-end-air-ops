@@ -78,7 +78,7 @@ export const QuoteList = ({
 }) => {
   const { session, setSession, loading } = useSession();
 
-  const operatorId = session?.user.agent?.id || null;
+  const operatorId = session?.user.operator?.id || null;
 
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -244,13 +244,12 @@ export const QuoteList = ({
         />
       </TableContainer>
 
-      <CustomDialog 
+      <CustomDialog
         open={showPreview}
         onClose={() => setShowPreview(false)}
         title="Quote Preview"
         width="100%"
         maxWidth="md"
-      
       >
         <QuotePreview
           htmlContent={previewData}
@@ -262,7 +261,7 @@ export const QuoteList = ({
         />
       </CustomDialog>
 
-      <CustomDialog 
+      <CustomDialog
         open={showTripConfirmationPreview}
         onClose={() => setShowTripConfirmationPreview(false)}
         title="Sale Confirmation Preview"

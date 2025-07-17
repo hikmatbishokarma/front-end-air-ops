@@ -10,26 +10,42 @@ import {
   nomineeFormFields,
   certificationFormFields,
 } from "./FormFields";
-import { CREATE_CREW_DETAIL } from "../../lib/graphql/queries/crew-detail";
+import {
+  CREATE_CREW,
+  CREATE_CREW_DETAIL,
+} from "../../lib/graphql/queries/crew-detail";
+import { useSnackbar } from "../../SnackbarContext";
 
 export const CrewDetailCreate = ({ onClose, refreshList }) => {
   const { session, setSession, loading } = useSession();
-
-  const operatorId = session?.user.agent?.id || null;
+  const showSnackbar = useSnackbar();
+  const operatorId = session?.user.operator?.id || null;
 
   const createCrewDetail = async (formData) => {
-    const data = await useGql({
-      query: CREATE_CREW_DETAIL,
+    // const data = await useGql({
+    //   query: CREATE_CREW_DETAIL,
+    //   queryName: "",
+    //   queryType: "mutation",
+    //   variables: {
+    //     input: {
+    //       crewDetail: formData,
+    //     },
+    //   },
+    // });
+
+    const result = await useGql({
+      query: CREATE_CREW,
       queryName: "",
       queryType: "mutation",
       variables: {
         input: {
-          crewDetail: formData,
+          crew: formData,
         },
       },
     });
 
-    console.log("submitted data:", data);
+    if (!result.data) showSnackbar("Failed to fetch Manual!", "error");
+    console.log("submitted data:", result);
   };
 
   const { control, handleSubmit, reset } = useForm<CrewDetailFormValues>({
