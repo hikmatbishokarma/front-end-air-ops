@@ -557,7 +557,7 @@ export const StaffLeaveWidget = () => {
                 boxShadow: isSelected ? "0 0 0 2px #001551" : "none",
                 transition: "all 0.2s ease-in-out",
                 "&:hover": {
-                  backgroundColor: isSelected ? "#001551" : "#e0e0e0",
+                  backgroundColor: isSelected ? "#001551cd" : "#e0e0e0",
                 },
               }}
             >
