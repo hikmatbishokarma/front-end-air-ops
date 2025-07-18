@@ -379,6 +379,8 @@ border-top-left-radius: 50% 200px;
 }
 .MuiListItemButton-root:hover{
         background-color: #ffffff2e !important;
+        border-top-left-radius: 50% 200px;
+    border-bottom-right-radius: 50% 200px;
 }
 .MuiTableHead-root th{
     background-color: #001551 !important;
@@ -553,4 +555,7 @@ border-top-left-radius: 50% 200px;
 .leave-format {
      
     color:#000;
+}
+.MuiDrawer-docked{
+    height: 100vh !important;
 }
