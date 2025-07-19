@@ -613,7 +613,7 @@ export const QuoteCreate = () => {
                   </Grid>
 
                   <Grid item xs={12} md={6} display="flex" alignItems="center">
-                    <IconButton
+                    <IconButton className="add-icon-v1"
                       aria-label="add"
                       color="primary"
                       onClick={() => setSubDialogOpen(true)}
@@ -673,7 +673,7 @@ export const QuoteCreate = () => {
                         display="flex"
                         alignItems="center"
                       >
-                        <IconButton
+                        <IconButton className="add-icon-v1"
                           aria-label="add"
                           color="primary"
                           onClick={() => setRepresentativeDialogOpen(true)}
@@ -1049,7 +1049,7 @@ export const QuoteCreate = () => {
                     </Button> */}
                   </Box>
 
-                  <Box
+                  <Box className="calendar-right"
                     sx={{
                       flex: 0.6,
                       backgroundColor: "#fff",
@@ -1078,7 +1078,7 @@ export const QuoteCreate = () => {
               )}
 
               {activeStep === 2 && (
-                <Box sx={{ mt: 5 }}>
+                <Box sx={{ mt: 5 }} className="price-units">
                   <Grid container spacing={2} sx={{ mb: 3 }}>
                     <Grid item xs={3}>
                       <h4 style={{ margin: "0px" }}>Label</h4>
@@ -1380,7 +1380,7 @@ export const QuoteCreate = () => {
                           </Grid>
 
                           <Grid item xs={1}>
-                            <IconButton
+                            <IconButton className="add-icon-v1"
                               onClick={() => removePrice(index)}
                               color="error"
                             >
@@ -1392,7 +1392,7 @@ export const QuoteCreate = () => {
                     </>
                   ))}
                   <Grid item xs={1.5}>
-                    <IconButton aria-label="Add" onClick={handleAddFee}>
+                    <IconButton aria-label="Add" onClick={handleAddFee} className="add-icon-v1">
                       <AddIcon />
                     </IconButton>
                   </Grid>
@@ -1400,7 +1400,7 @@ export const QuoteCreate = () => {
                     <Grid item xs={1.5}>
                       <span>TOTAL</span>
                     </Grid>
-                    <Grid item xs={1.5}>
+                    <Grid item xs={1.5} className="inr-width">
                       <span>INR</span>
                     </Grid>
 
@@ -1759,7 +1759,7 @@ export const QuoteCreate = () => {
               <Box
                 sx={{ display: "flex", justifyContent: "space-between", p: 3 }}
               >
-                <Button disabled={activeStep === 0} onClick={handleBack}>
+                <Button disabled={activeStep === 0} onClick={handleBack} className="review-back-btn">
                   Back
                 </Button>
 

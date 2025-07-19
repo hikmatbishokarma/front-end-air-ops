@@ -242,7 +242,7 @@ export const FlightCalendarWidget = () => {
       {/* Left: Events */}
       <Box
         sx={{
-          width: "45%",
+          width: "35%",
           //   backgroundColor: "#e3f2fd",
           backgroundColor: "#FFFFFF",
           p: 1.5,
@@ -252,7 +252,7 @@ export const FlightCalendarWidget = () => {
         }}
         onClick={onClickTripConfirmationWidget}
       >
-        <Box flexGrow={1}>
+        <Box flexGrow={1} className="dashboard-trip">
           <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
             ✈️ Trip Confirmation
           </Typography>
