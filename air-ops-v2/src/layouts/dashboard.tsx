@@ -209,7 +209,7 @@ export default function Layout() {
     };
 
     return (
-      <Box display="flex" alignItems="center" gap={2}>
+      <Box display="flex" alignItems="center" gap={2} >
         <ClockCompact />
         <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
           <Badge badgeContent={unreadCount} color="error">
@@ -255,7 +255,7 @@ export default function Layout() {
         >
           {/* Optional: Show current user info at the top of the menu */}
           {session?.user && (
-            <Box
+            <Box 
               sx={{
                 p: 1.5,
                 pb: 0,
@@ -272,7 +272,7 @@ export default function Layout() {
             </Box>
           )}
           {/* Your custom menu items */}
-          <MenuItem
+          <MenuItem 
             onClick={() => {
               handleMenuClose(); // Close our menu
               navigate("/settings/profile"); // Navigate to My Profile page
@@ -289,7 +289,7 @@ export default function Layout() {
             My Leaves
           </MenuItem>
           <Divider />
-          <MenuItem sx={{ p: 0 }}>
+          <MenuItem sx={{ p: 0 }} className="top-header-file">
             <SignOutButton
               // sx={{
               //   width: "100%",
@@ -326,7 +326,7 @@ export default function Layout() {
                 // Also target the icon explicitly in case its color is separate
                 "& .MuiButton-startIcon svg": {
                   // Target the SVG inside the icon span
-                  fill: "blue !important", // Force icon color as well
+                  fill: "#fff !important", // Force icon color as well
                 },
                 // Ensure nothing is hiding it by size
                 minWidth: "auto",
