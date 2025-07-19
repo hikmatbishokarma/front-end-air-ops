@@ -76,21 +76,21 @@ const defaultValues = {
   prices: [
     {
       label: "Charter Charges",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0,
     },
     {
       label: "Ground Handling",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0,
     },
     {
       label: "Crew BLT",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0,
@@ -493,7 +493,7 @@ export const QuoteCreate = () => {
   const handleAddFee = () => {
     appendPrice({
       label: "",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0, // Calculate total

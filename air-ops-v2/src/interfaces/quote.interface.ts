@@ -19,6 +19,8 @@ export interface Iclient {
   address: string;
   isCompany: boolean;
   isPerson: boolean;
+  gstNo?: string;
+  panNo?: string;
 }
 
 export interface Irepresentative {
