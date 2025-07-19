@@ -46,6 +46,7 @@ import { useQuoteData } from "../../hooks/useQuoteData";
 import FilterPanel from "../quote/FilterPanel";
 import { Iclient } from "../../interfaces/quote.interface";
 import SearchIcon from "@mui/icons-material/Search";
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 
 const SalesDashboard = () => {
   const navigate = useNavigate();
@@ -582,8 +583,8 @@ const SalesDashboard = () => {
           />
         </Box>
 
-        <Button variant="outlined" onClick={handleFilterOpen}>
-          Filter
+        <Button variant="outlined" onClick={handleFilterOpen} className="filter-date-range">
+          <FilterAltOutlinedIcon />
         </Button>
       </Box>
 

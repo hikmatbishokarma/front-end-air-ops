@@ -125,7 +125,7 @@ export const AccountList = ({ filter }) => {
   return (
     <>
       <TableContainer component={Paper} className="dash-table search">
-        <Box
+        <Box className="search_quo1"
           display="flex"
           justifyContent="space-between"
           alignItems="center"
