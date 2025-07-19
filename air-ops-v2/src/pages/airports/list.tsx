@@ -129,7 +129,7 @@ export const AirpotList = () => {
         </Button>
       </Box> */}
 
-      <Box
+      <Box className="search_quo1"
         sx={{
           display: "flex",
           justifyContent: "space-between",

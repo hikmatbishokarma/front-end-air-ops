@@ -559,3 +559,46 @@ border-top-left-radius: 50% 200px;
 .MuiDrawer-docked{
     height: 100vh !important;
 }
+.calendar-right {
+    border: 1px solid #001551 !important;
+    padding: 8px !important;
+}
+
+.calendar-right .MuiTypography-h6{
+        background-color: #c3c9e0;
+    border-radius: 4px;
+    padding: 5px;
+}
+.price-units .MuiGrid-spacing-xs-2{
+background: #c3c9e0;
+    /* padding-top: 0px !important; */
+    border-radius: 5px;
+    color: #000;
+    
+}
+.price-units .MuiGrid-item{
+    padding:12px !important;
+}
+.dashboard-trip h6{
+font-size: 13px;
+}
+.top-header-file .MuiButton-outlined{
+    border: 0px !important;
+    background: #001551 !important;
+    color: #fff !important;
+}
+
+.top-header-file .MuiButton-outlined:hover{
+ 
+    background: #ff0202;
+   
+}
+.filter-date-range{
+    border-radius: 29px !important;
+}
+.inr-width{
+    max-width: 5% !important;
+}
+.review-back-btn{
+    height: 37px !important;
+}
