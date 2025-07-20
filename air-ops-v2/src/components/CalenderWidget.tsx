@@ -14,6 +14,8 @@ import {
   CircularProgress,
   Alert,
   Fade,
+  Stack,
+  Avatar,
 } from "@mui/material";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -28,6 +30,8 @@ import { LeaveType } from "../lib/utils";
 import { FLIGHT_SEGMENTS_FOR_CALENDER } from "../lib/graphql/queries/quote";
 import NoScheduleFound from "./NoScheduleFound";
 import { useNavigate } from "react-router";
+
+import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 
 // export const FlightCalendarWidget = () => {
 //   const [flightEvents, setFlightEvents] = useState<any[]>([]);
@@ -175,21 +179,22 @@ export const FlightCalendarWidget = () => {
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
-  const [flightEvents, setFlightEvents] = useState<FormattedFlightEvent[]>([]);
+  // const [flightEvents, setFlightEvents] = useState<FormattedFlightEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [flightTrips, setFlightTrips] = useState<any>();
 
   const getFlightSegmentsForCalendar = useCallback(
     async (date: moment.Moment) => {
       setLoading(true);
       setError(null);
-      setFlightEvents([]);
+      setFlightTrips([]);
 
       const startDate = date.startOf("day").toISOString();
       const endDate = date.endOf("day").endOf("day").toISOString(); // Ensure endDate is end of the day
 
       try {
-        const response: FlightSegment[] = await useGql({
+        const response = await useGql({
           query: FLIGHT_SEGMENTS_FOR_CALENDER,
           queryName: "flightSegmentsForCalendar",
           queryType: "query-without-edge",
@@ -200,20 +205,48 @@ export const FlightCalendarWidget = () => {
         });
 
         if (response && response.length > 0) {
-          const events: FormattedFlightEvent[] = response.map((item) => ({
-            title: item.title,
-            depatureTime: item.depatureTime,
-            arrivalTime: item.arrivalTime,
-            aircraft: item.aircraft,
-          }));
-          setFlightEvents(events);
+          // const events: FormattedFlightEvent[] = response.map((item) => ({
+          //   title: item.title,
+          //   depatureTime: item.depatureTime,
+          //   arrivalTime: item.arrivalTime,
+          //   aircraft: item.aircraft,
+          // }));
+
+          const groupedTrips = Object.values(
+            response.reduce((acc, curr) => {
+              const tripId = curr.id;
+              if (!acc[tripId]) {
+                acc[tripId] = {
+                  tripId,
+                  aircraftDetail: {
+                    name: curr.aircraft.name,
+                    code: curr.aircraft.code,
+                  },
+                  sectors: [],
+                };
+              }
+
+              acc[tripId].sectors.push({
+                title: curr.title,
+                source: curr.source,
+                destination: curr.destination,
+                depatureTime: curr.depatureTime,
+                arrivalTime: curr.arrivalTime,
+                duration: curr.duration,
+              });
+
+              return acc;
+            }, {})
+          );
+
+          setFlightTrips(groupedTrips);
         } else {
-          setFlightEvents([]);
+          setFlightTrips([]);
         }
       } catch (err: any) {
         showSnackbar(err.message || "Failed to fetch flight events!", "error");
         setError(err.message || "Failed to load flight events.");
-        setFlightEvents([]);
+        setFlightTrips([]);
       } finally {
         setLoading(false);
       }
@@ -230,7 +263,8 @@ export const FlightCalendarWidget = () => {
   };
 
   return (
-    <Card className="tripcnfrm"
+    <Card
+      className="tripcnfrm"
       sx={{
         display: "flex",
         height: 300,
@@ -242,7 +276,7 @@ export const FlightCalendarWidget = () => {
       {/* Left: Events */}
       <Box
         sx={{
-          width: "35%",
+          width: "45%",
           //   backgroundColor: "#e3f2fd",
           backgroundColor: "#FFFFFF",
           p: 1.5,
@@ -272,34 +306,113 @@ export const FlightCalendarWidget = () => {
             </Box>
           ) : error ? (
             <Alert severity="error">{error}</Alert>
-          ) : flightEvents.length > 0 ? (
+          ) : flightTrips?.length > 0 ? (
             <Fade in={!loading}>
-              <List
-                dense
-                sx={{ maxHeight: "calc(100% - 60px)", overflowY: "auto" }}
+              <Box
+                sx={{
+                  maxHeight: "calc(100% - 60px)",
+                  overflowY: "auto",
+                  pr: 1,
+                }}
               >
-                {flightEvents.map((event, index) => (
-                  <ListItem key={index} sx={{ px: 0, py: 0.5 }}>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="caption"
-                          fontWeight={500}
-                          color="text.primary"
+                {flightTrips?.map((trip, index) => (
+                  <Box key={index} mb={2}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography variant="subtitle2" fontWeight="bold">
+                        {trip.aircraftDetail.name}
+                      </Typography>
+
+                      <Typography variant="caption" color="text.secondary">
+                        {trip.aircraftDetail.code}
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        borderRadius: 2,
+                        backgroundColor: "#f7f7f7",
+                        px: 1,
+                        py: 1,
+                        border: "1px solid #e0e0e0",
+                      }}
+                    >
+                      {trip.sectors.map((sector, i) => (
+                        <Stack
+                          key={i}
+                          direction="row"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          spacing={1}
+                          sx={{
+                            py: 0.1,
+                            borderBottom:
+                              i !== trip.sectors.length - 1
+                                ? "1px solid #e0e0e0"
+                                : "none",
+                          }}
                         >
-                          {event.title}
-                        </Typography>
-                      }
-                      secondary={
-                        <Typography variant="caption" color="text.secondary">
-                          ({event?.aircraft.code}) | {event.depatureTime} -{" "}
-                          {event.arrivalTime}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
+                          {/* Departure */}
+                          <Box textAlign="center" minWidth={50}>
+                            <Typography
+                              variant="body1"
+                              fontWeight="bold"
+                              lineHeight={1.1}
+                            >
+                              {sector.source}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              lineHeight={1.2}
+                            >
+                              {sector.depatureTime}
+                            </Typography>
+                          </Box>
+
+                          {/* Icon + Duration */}
+                          <Box textAlign="center" minWidth={60}>
+                            <Typography lineHeight={1.1} fontSize="medium">
+                              ..... 🛫 .....
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ fontStyle: "italic" }}
+                              lineHeight={1.2}
+                            >
+                              {sector.duration}
+                            </Typography>
+                          </Box>
+
+                          {/* Arrival */}
+                          <Box textAlign="center" minWidth={50}>
+                            <Typography
+                              variant="body1"
+                              fontWeight="bold"
+                              lineHeight={1.1}
+                            >
+                              {sector.destination}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              lineHeight={1.2}
+                            >
+                              {sector.arrivalTime}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      ))}
+                    </Box>
+                  </Box>
                 ))}
-              </List>
+              </Box>
             </Fade>
           ) : (
             // <Fade in={!loading}>
@@ -505,7 +618,7 @@ export const StaffLeaveWidget = () => {
         alignItems="center"
         mb={2}
       >
-        <Box 
+        <Box
           width="100%"
           display="flex"
           justifyContent="space-between"
@@ -522,14 +635,15 @@ export const StaffLeaveWidget = () => {
         </Box>
       </Box>
 
-      <Box display="flex" justifyContent="space-between" mb={1} gap={1} >
+      <Box display="flex" justifyContent="space-between" mb={1} gap={1}>
         {weekDays.map((date, index) => {
           const isToday = date.isSame(today, "day");
           const isSelected = date.isSame(selectedDate, "day");
           const leavesOnDayDots = getLeavesForDateDots(date);
 
           return (
-            <Box className="leave-format"
+            <Box
+              className="leave-format"
               key={index}
               onClick={() => handleDayClick(date)}
               sx={{
@@ -538,12 +652,8 @@ export const StaffLeaveWidget = () => {
                   : isToday
                     ? "#e0f2f7" // Different color for today if not selected
                     : "#f5f5f5", // Default background
-                   color: isSelected
-                    ? "#fff"
-                    : "#000",
-                    
-                   
-                  
+                color: isSelected ? "#fff" : "#000",
+
                 borderRadius: 2,
                 minWidth: 40,
                 height: 40,
