@@ -130,12 +130,17 @@ export const SALE_CONFIRMATION = gql`
 export const FLIGHT_SEGMENTS_FOR_CALENDER = gql`
   query flightSegmentsForCalendar($endDate: DateTime!, $startDate: DateTime!) {
     flightSegmentsForCalendar(startDate: $startDate, endDate: $endDate) {
+      id
       title
       start
       end
       depatureTime
       arrivalTime
       aircraft
+      source
+      destination
+      duration
+      __typename
     }
   }
 `;

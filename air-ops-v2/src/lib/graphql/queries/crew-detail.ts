@@ -30,6 +30,11 @@ export const GET_CREW_DETAILS = gql`
         phone
         createdAt
         updatedAt
+        roles {
+          id
+          name
+          type
+        }
       }
     }
   }
