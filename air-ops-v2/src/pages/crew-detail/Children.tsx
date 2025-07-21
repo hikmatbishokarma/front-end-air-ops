@@ -14,6 +14,8 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import { Controller, Control, SubmitHandler, useWatch } from "react-hook-form";
 import ReactQuill from "react-quill";
@@ -34,6 +36,8 @@ import useGql from "../../lib/graphql/gql";
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import { RoleType } from "../role/create";
 import MultiSelectAutoComplete from "../../components/MultiSelectAutoComplete";
+import MediaUpload from "../../components/MediaUpload";
+import { Add, Delete } from "@mui/icons-material";
 interface FormField {
   name: string;
   label: string;
@@ -344,114 +348,138 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
           <h3>Certifications</h3>
           {certFields &&
             certFields.map((item, index) => (
-              <Grid container spacing={2} key={item.id}>
-                <Grid item xs={6}>
-                  <Controller
-                    name={`certifications.${index}.name`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field, fieldState: { error } }) => (
-                      <TextField
-                        {...field}
-                        label="Name"
-                        fullWidth
-                        size="small"
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Controller
-                    name={`certifications.${index}.licenceNo`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field, fieldState: { error } }) => (
-                      <TextField
-                        {...field}
-                        label="Licence No"
-                        fullWidth
-                        size="small"
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Controller
-                    name={`certifications.${index}.dateOfIssue`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field, fieldState: { error } }) => (
-                      <DatePicker
-                        {...field}
-                        label="Date of Issue"
-                        format="DD-MM-YYYY"
-                        value={field.value ? moment(field.value) : null}
-                        onChange={(newValue) => field.onChange(newValue)}
-                        maxDate={moment()}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            size: "small",
-                            error: !!error,
-                            helperText: error?.message,
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Controller
-                    name={`certifications.${index}.validTill`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field, fieldState: { error } }) => (
-                      <DatePicker
-                        {...field}
-                        label="ValidTill"
-                        format="DD-MM-YYYY"
-                        value={field.value ? moment(field.value) : null}
-                        onChange={(newValue) => field.onChange(newValue)}
-                        // minDate={moment()}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            size: "small",
-                            error: !!error,
-                            helperText: error?.message,
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Controller
-                    name={`certifications.${index}.issuedBy`}
-                    control={control}
-                    render={({ field }) => (
-                      <FileUpload
-                        size="small"
-                        category="Issued By"
-                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                        value={field.value}
-                        onUpload={(url) => field.onChange(url)}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={4}>
+              <>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography fontWeight="bold">
+                    Certificate {index + 1}
+                  </Typography>
+                  <IconButton onClick={() => removeCert(index)}>
+                    <Delete />
+                  </IconButton>
+                </Box>
+                <Grid container spacing={2} key={item.id}>
+                  <Grid item xs={6}>
+                    <Controller
+                      name={`certifications.${index}.name`}
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          label="Name"
+                          fullWidth
+                          size="small"
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Controller
+                      name={`certifications.${index}.licenceNo`}
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          label="Licence No"
+                          fullWidth
+                          size="small"
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Controller
+                      name={`certifications.${index}.dateOfIssue`}
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field, fieldState: { error } }) => (
+                        <DatePicker
+                          {...field}
+                          label="Date of Issue"
+                          format="DD-MM-YYYY"
+                          value={field.value ? moment(field.value) : null}
+                          onChange={(newValue) => field.onChange(newValue)}
+                          maxDate={moment()}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              size: "small",
+                              error: !!error,
+                              helperText: error?.message,
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Controller
+                      name={`certifications.${index}.validTill`}
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field, fieldState: { error } }) => (
+                        <DatePicker
+                          {...field}
+                          label="ValidTill"
+                          format="DD-MM-YYYY"
+                          value={field.value ? moment(field.value) : null}
+                          onChange={(newValue) => field.onChange(newValue)}
+                          // minDate={moment()}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              size: "small",
+                              error: !!error,
+                              helperText: error?.message,
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Controller
+                      name={`certifications.${index}.issuedBy`}
+                      control={control}
+                      render={({ field }) => (
+                        // <FileUpload
+                        //   size="small"
+                        //   category="Issued By"
+                        //   accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        //   value={field.value}
+                        //   onUpload={(url) => field.onChange(url)}
+                        // />
+
+                        <MediaUpload
+                          size="medium"
+                          label="Issued By"
+                          category="Issued By"
+                          accept=".pdf,.doc,.docx"
+                          value={field.value}
+                          onUpload={(url) => field.onChange(url)}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  {/* <Grid item xs={4}>
                   <Button color="error" onClick={() => removeCert(index)}>
                     Remove
                   </Button>
+                </Grid> */}
                 </Grid>
-              </Grid>
+              </>
             ))}
-          <Button
+
+          <IconButton
             onClick={() =>
               addCert({
                 name: "",
@@ -461,165 +489,170 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                 validTill: "",
               })
             }
-            variant="outlined"
-            sx={{ mt: 1 }}
           >
-            Add Certification
-          </Button>
+            <Add />
+          </IconButton>
         </Grid>
 
         {/* Nominees */}
         <Grid item xs={12}>
           <h3>Nominees</h3>
           {nomineeFields.map((item, index) => (
-            <Grid container spacing={2} key={item.id}>
-              <Grid item xs={6}>
-                <Controller
-                  name={`nominees.${index}.fullName`}
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Full Name"
-                      fullWidth
-                      size="small"
-                    />
-                  )}
-                />
+            <>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography fontWeight="bold">Nominee {index + 1}</Typography>
+                <IconButton onClick={() => removeNominee(index)}>
+                  <Delete />
+                </IconButton>
+              </Box>
+              <Grid container spacing={2} key={item.id}>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`nominees.${index}.fullName`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Full Name"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`nominees.${index}.gender`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field, fieldState: { error } }) => (
+                      <FormControl
+                        fullWidth
+                        component="fieldset"
+                        error={!!error}
+                        size="small"
+                        variant="outlined" // ✅ this is needed
+                      >
+                        <InputLabel id="gender-label">Gender</InputLabel>
+                        <Select
+                          labelId="gender-label"
+                          label="Gender"
+                          {...field}
+                        >
+                          {genderOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {error && (
+                          <FormHelperText>{error.message}</FormHelperText>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`nominees.${index}.relation`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Relation"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Controller
+                    name={`nominees.${index}.mobileNumber`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Mobile Number"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`nominees.${index}.alternateContact`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Alternate Contact No"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    name={`nominees.${index}.address`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Address"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`nominees.${index}.idProof`}
+                    control={control}
+                    render={({ field }) => (
+                      <MediaUpload
+                        label="Id Proof"
+                        size="medium"
+                        category="idProof"
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        value={field.value}
+                        onUpload={(url) => field.onChange(url)}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`nominees.${index}.insurance`}
+                    control={control}
+                    render={({ field }) => (
+                      <MediaUpload
+                        label="Insurance Doc"
+                        size="medium"
+                        category="idProof"
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        value={field.value}
+                        onUpload={(url) => field.onChange(url)}
+                      />
+                    )}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name={`nominees.${index}.gender`}
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field, fieldState: { error } }) => (
-                    <FormControl
-                      fullWidth
-                      component="fieldset"
-                      error={!!error}
-                      size="small"
-                      variant="outlined" // ✅ this is needed
-                    >
-                      <InputLabel id="gender-label">Gender</InputLabel>
-                      <Select labelId="gender-label" label="Gender" {...field}>
-                        {genderOptions.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {error && (
-                        <FormHelperText>{error.message}</FormHelperText>
-                      )}
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name={`nominees.${index}.relation`}
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Relation"
-                      fullWidth
-                      size="small"
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name={`nominees.${index}.idProof`}
-                  control={control}
-                  render={({ field }) => (
-                    // <TextField
-                    //   {...field}
-                    //   label="ID Proof"
-                    //   fullWidth
-                    //   size="small"
-                    // />
-                    <FileUpload
-                      label="Id Proof"
-                      size="small"
-                      category="idProof"
-                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                      value={field.value}
-                      onUpload={(url) => field.onChange(url)}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name={`nominees.${index}.mobileNumber`}
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Mobile Number"
-                      fullWidth
-                      size="small"
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name={`nominees.${index}.alternateContact`}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Alternate Contact No"
-                      fullWidth
-                      size="small"
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Controller
-                  name={`nominees.${index}.address`}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Address"
-                      fullWidth
-                      size="small"
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Controller
-                  name={`nominees.${index}.insurance`}
-                  control={control}
-                  render={({ field }) => (
-                    <FileUpload
-                      label="Insurance Doc"
-                      size="small"
-                      category="idProof"
-                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                      value={field.value}
-                      onUpload={(url) => field.onChange(url)}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Button color="error" onClick={() => removeNominee(index)}>
-                  Remove
-                </Button>
-              </Grid>
-            </Grid>
+            </>
           ))}
-          <Button
+
+          <IconButton
             onClick={() =>
               addNominee({
                 fullName: "",
@@ -632,11 +665,9 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                 insurance: "",
               })
             }
-            variant="outlined"
-            sx={{ mt: 1 }}
           >
-            Add Nominee
-          </Button>
+            <Add />
+          </IconButton>
         </Grid>
       </LocalizationProvider>
 

@@ -37,7 +37,7 @@ export const operatorFormFields = [
     name: "supportEmail",
     label: "Support Email",
     xs: 6,
-    required: true,
+    required: false,
     pattern: {
       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
       message: "Invalid email address",

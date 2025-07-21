@@ -53,7 +53,7 @@ export const OperatorEdit = ({ id, onClose, refreshList }) => {
       setValue("companyLogo", operator.companyLogo || "");
       setValue("address", operator.address || "");
       setValue("city", operator.city || "");
-      setValue("country", operator.country || "");
+      // setValue("country", operator.country || "");
       setValue("pinCode", operator.pinCode || "");
       setValue("supportEmail", operator.supportEmail || "");
       setValue("websiteUrl", operator.websiteUrl || "");
