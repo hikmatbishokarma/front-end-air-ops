@@ -4,7 +4,13 @@ import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import useGql from "../lib/graphql/gql";
 import { GET_CITIES } from "../lib/graphql/queries/city";
 
-const CityAutocomplete = ({ value, onChange, label }: any) => {
+const CityAutocomplete = ({
+  value,
+  onChange,
+  label,
+  error = null,
+  helperText = null,
+}: any) => {
   const [inputValue, setInputValue] = useState(""); // Stores user input
   const [options, setOptions] = useState<ICity[]>([]); // Stores fetched airport options
   const [loading, setLoading] = useState(false); // Indicates loading state
@@ -107,6 +113,8 @@ const CityAutocomplete = ({ value, onChange, label }: any) => {
           fullWidth
           size="small"
           variant="outlined"
+          error={error} // Pass the error prop here
+          helperText={helperText} // Pass the helperText prop here
           sx={{
             minHeight: "50px",
             "& .MuiInputBase-root": { minHeight: "50px" },

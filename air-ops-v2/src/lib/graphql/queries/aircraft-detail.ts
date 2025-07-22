@@ -7,15 +7,12 @@ export const GET_AIRCRAFT = gql`
     $sorting: [AircraftDetailSort!]! = []
   ) {
     aircraftDetails(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
       nodes {
         id
         isActive
         name
         code
-        category {
-          id
-          name
-        }
       }
     }
   }
@@ -37,10 +34,6 @@ export const GET_AIRCRAFT_DETAIL_BY_ID = gql`
       rangeMapImage
       termsAndConditions
       specifications
-      category {
-        id
-        name
-      }
     }
   }
 `;
@@ -59,6 +52,14 @@ export const UPDATE_AIRCRAFT_DETAIL = gql`
     updateOneAircraftDetail(input: $input) {
       id
       name
+    }
+  }
+`;
+
+export const DELETE_AIRCRAFT = gql`
+  mutation deleteOneAircraftDetail($input: DeleteOneAircraftDetailInput!) {
+    deleteOneAircraftDetail(input: $input) {
+      id
     }
   }
 `;

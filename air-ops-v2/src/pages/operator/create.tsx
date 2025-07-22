@@ -50,8 +50,6 @@ const OperatorCreate = ({ onClose, refreshList }) => {
     onClose(); // ✅ Then close dialog
   };
 
-  console.log("handleSubmit is:", handleSubmit);
-
   const onInvalid = (errors: any) => {
     console.log("Validation errors:", errors);
   };
