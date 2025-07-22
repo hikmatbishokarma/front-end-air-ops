@@ -41,7 +41,6 @@ const OperatorChildren: React.FC<ReusableFormProps> = ({
   fields,
 }) => {
   const wrappedSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("OperatorChildren form submit event");
     onSubmit(e);
   };
 
@@ -68,6 +67,8 @@ const OperatorChildren: React.FC<ReusableFormProps> = ({
                     <CityAutocomplete
                       {...controllerField}
                       label={field.label}
+                      error={!!error} // Pass boolean error state
+                      helperText={error?.message} // Pass the error message
                     />
                   );
                 } else if (field.type == "file") {

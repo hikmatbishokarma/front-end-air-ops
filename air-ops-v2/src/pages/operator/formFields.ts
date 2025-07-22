@@ -22,8 +22,8 @@ export const operatorFormFields = [
   },
   { name: "companyName", label: "Company Name", xs: 6, required: true },
   { name: "address", label: "Address", required: true },
-  { name: "city", label: "City", options: [] },
-  { name: "state", label: "State" },
+  { name: "city", label: "City", options: [], required: true },
+  { name: "state", label: "State", required: true },
   {
     name: "pinCode",
     label: "Pin Code",
@@ -32,6 +32,7 @@ export const operatorFormFields = [
       value: /^[0-9]{6}$/, // Simple 10-digit number validation
       message: "Zip Code must be 6 digits",
     },
+    required: true,
   },
   {
     name: "supportEmail",
@@ -43,7 +44,7 @@ export const operatorFormFields = [
       message: "Invalid email address",
     },
   },
-  { name: "websiteUrl", label: "Website Url", xs: 6 },
+  { name: "websiteUrl", label: "Website Url", xs: 6, required: true },
   {
     name: "companyLogo",
     label: "Company Logo",

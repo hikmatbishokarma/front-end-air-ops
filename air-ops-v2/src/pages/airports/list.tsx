@@ -28,10 +28,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import { AirportCreate } from "./create";
 import { AirportEdit } from "./edit";
-import { GET_AIRPORTS } from "../../lib/graphql/queries/airports";
+import {
+  DELETE_AIRPORT,
+  GET_AIRPORTS,
+} from "../../lib/graphql/queries/airports";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
 export const AirpotList = () => {
   const showSnackbar = useSnackbar();
@@ -43,6 +47,8 @@ export const AirpotList = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [recordToDeleteId, setRecordToDeleteId] = useState<string | null>(null);
 
   const handleOpen = () => {
     setOpen(true);
@@ -67,7 +73,11 @@ export const AirpotList = () => {
                 ],
               }
             : {},
-          paging: { limit: 20 },
+          paging: {
+            offset: page * pageSize,
+            limit: pageSize,
+          },
+          sorting: [{ field: "createdAt", direction: "DESC" }],
         },
       });
 
@@ -80,7 +90,7 @@ export const AirpotList = () => {
 
   useEffect(() => {
     getAirports();
-  }, [searchTerm]);
+  }, [searchTerm, page, pageSize]);
 
   const handleEdit = (id) => {
     setIsEdit(true);
@@ -88,8 +98,37 @@ export const AirpotList = () => {
     setCurrentRecordId(id);
   };
 
-  const handleDelete = (id) => {
-    //TODO
+  const handleConfirmDelete = async () => {
+    setOpenConfirmDialog(false); // Close the confirmation dialog
+    if (recordToDeleteId) {
+      try {
+        const { data, errors } = await useGql({
+          query: DELETE_AIRPORT,
+          queryName: "",
+          queryType: "mutation",
+          variables: {
+            input: {
+              "id": recordToDeleteId,
+            },
+          },
+        });
+        if (!data) {
+          showSnackbar("Failed to delete airport!", "error");
+        } else {
+          showSnackbar("Airport deleted successfully!", "success"); // Add a success message
+          getAirports(); // Refresh the list
+        }
+      } catch (error) {
+        showSnackbar(error.message || "Failed to delete airport!", "error");
+      } finally {
+        setRecordToDeleteId(null); // Clear the ID after deletion attempt
+      }
+    }
+  };
+
+  const confirmDelete = (id: string) => {
+    setRecordToDeleteId(id);
+    setOpenConfirmDialog(true);
   };
 
   const handleClose = () => setOpen(false);
@@ -102,34 +141,8 @@ export const AirpotList = () => {
 
   return (
     <>
-      {/* <Box sx={{ flex: "1 1 auto", maxWidth: 300 }}>
-        <TextField
-          variant="outlined"
-          size="small"
-          label="Search Quotation"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpen}
-          sx={{ marginBottom: 2 }}
-        >
-          Add Airports
-        </Button>
-      </Box> */}
-
-      <Box className="search_quo1"
+      <Box
+        className="search_quo1"
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -191,7 +204,7 @@ export const AirpotList = () => {
 
                   <IconButton
                     color="secondary"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => confirmDelete(item.id)}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -207,7 +220,7 @@ export const AirpotList = () => {
           onPageChange={(e, newPage) => setPage(newPage)}
           rowsPerPage={pageSize}
           onRowsPerPageChange={(e) => setPageSize(parseInt(e.target.value, 10))}
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[5, 10, 20, 50]}
         />
       </TableContainer>
 
@@ -249,6 +262,14 @@ export const AirpotList = () => {
           </Button>
         </DialogActions> */}
       </Dialog>
+
+      <ConfirmationDialog
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this record? This action cannot be undone."
+      />
     </>
   );
 };

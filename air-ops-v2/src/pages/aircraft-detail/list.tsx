@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TablePagination,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
@@ -22,11 +23,15 @@ import { useSnackbar } from "../../SnackbarContext";
 import moment from "moment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { GET_AIRCRAFT } from "../../lib/graphql/queries/aircraft-detail";
+import {
+  DELETE_AIRCRAFT,
+  GET_AIRCRAFT,
+} from "../../lib/graphql/queries/aircraft-detail";
 import { AircraftDetailCreate } from "./create";
 import { AircraftDetailEdit } from "./edit";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSession } from "../../SessionContext";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 
 export const AircraftDetailList = () => {
   const showSnackbar = useSnackbar();
@@ -39,6 +44,12 @@ export const AircraftDetailList = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [currentRecordId, setCurrentRecordId] = useState("");
 
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [recordToDeleteId, setRecordToDeleteId] = useState<string | null>(null);
+
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
   const handleOpen = () => {
     setOpen(true);
     setIsEdit(false);
@@ -49,15 +60,19 @@ export const AircraftDetailList = () => {
       const data = await useGql({
         query: GET_AIRCRAFT,
         queryName: "aircraftDetails",
-        queryType: "query",
+        queryType: "query-with-count",
         variables: {
           filter: {
             ...(operatorId && { operatorId: { eq: operatorId } }),
           },
+          paging: {
+            offset: page * pageSize,
+            limit: pageSize,
+          },
+          sorting: [{ field: "createdAt", direction: "DESC" }],
         },
       });
 
-      console.log("data:hghg", data);
       if (!data) showSnackbar("Failed to fetch categories!", "error");
       setAircraftDetail(data);
     } catch (error) {
@@ -67,7 +82,7 @@ export const AircraftDetailList = () => {
 
   useEffect(() => {
     getAircraftDetails();
-  }, []);
+  }, [page, pageSize]);
 
   const handleEdit = (id) => {
     setIsEdit(true);
@@ -75,8 +90,58 @@ export const AircraftDetailList = () => {
     setCurrentRecordId(id);
   };
 
-  const handleDelete = (id) => {
-    //TODO
+  // const handleDelete = async (id) => {
+  //   try {
+  //     const data = await useGql({
+  //       query: DELETE_AIRCRAFT,
+  //       queryName: "",
+  //       queryType: "mutation",
+  //       variables: {
+  //         input: {
+  //           "id": id,
+  //         },
+  //       },
+  //     });
+
+  //     if (!data) showSnackbar("Failed to delete aircraft!", "error");
+  //     getAircraftDetails();
+  //   } catch (error) {
+  //     showSnackbar(error.message || "Failed to delete aircraft!", "error");
+  //   }
+  // };
+
+  const handleConfirmDelete = async () => {
+    setOpenConfirmDialog(false); // Close the confirmation dialog
+    if (recordToDeleteId) {
+      try {
+        const { data, errors } = await useGql({
+          query: DELETE_AIRCRAFT,
+          queryName: "", // The mutation name is often inferred, or not strictly needed if the query is just the mutation definition.
+          queryType: "mutation",
+          variables: {
+            input: {
+              id: recordToDeleteId,
+            },
+          },
+        });
+
+        if (!data) {
+          showSnackbar("Failed to delete aircraft!", "error");
+        } else {
+          showSnackbar("Aircraft deleted successfully!", "success"); // Add a success message
+          getAircraftDetails(); // Refresh the list
+        }
+      } catch (error) {
+        showSnackbar(error.message || "Failed to delete aircraft!", "error");
+      } finally {
+        setRecordToDeleteId(null); // Clear the ID after deletion attempt
+      }
+    }
+  };
+
+  const confirmDelete = (id: string) => {
+    setRecordToDeleteId(id);
+    setOpenConfirmDialog(true);
   };
 
   const handleClose = () => setOpen(false);
@@ -105,17 +170,17 @@ export const AircraftDetailList = () => {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Code</TableCell>
-              <TableCell>Category</TableCell>
+
               <TableCell>isActive</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {aircraftDetail?.map((item, index) => (
+            {aircraftDetail?.data?.map((item, index) => (
               <TableRow key={item.id}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.code}</TableCell>
-                <TableCell>{item?.category?.name}</TableCell>
+
                 <TableCell>
                   <Switch checked={item.isActive} size="small" />
                 </TableCell>
@@ -132,7 +197,7 @@ export const AircraftDetailList = () => {
                   {/* Delete Button */}
                   <IconButton
                     color="secondary"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => confirmDelete(item.id)} // Call confirmDelete
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -141,6 +206,15 @@ export const AircraftDetailList = () => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={aircraftDetail.totalCount}
+          page={page}
+          onPageChange={(e, newPage) => setPage(newPage)}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={(e) => setPageSize(parseInt(e.target.value, 10))}
+          rowsPerPageOptions={[5, 10, 20, 50]}
+        />
       </TableContainer>
       <Dialog
         open={open}
@@ -183,6 +257,13 @@ export const AircraftDetailList = () => {
           </Button>
         </DialogActions> */}
       </Dialog>
+      <ConfirmationDialog
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this record? This action cannot be undone."
+      />
     </>
   );
 };
