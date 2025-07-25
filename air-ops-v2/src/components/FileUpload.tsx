@@ -202,50 +202,6 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 // Example: replace this with your actual API base URL
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-// const UploadPlaceholder = ({
-//   label,
-//   getRootProps,
-//   getInputProps,
-//   handleFileChange,
-// }) => (
-//   <>
-//     <Typography variant="h6" gutterBottom>
-//       Upload {label}
-//     </Typography>
-
-//     <Paper
-//       {...getRootProps()}
-//       sx={{
-//         padding: 3,
-//         border: "2px dashed #1976d2",
-//         backgroundColor: "#f0f0f0",
-//         cursor: "pointer",
-//         textAlign: "center",
-//         borderRadius: 2,
-//         "&:hover": { backgroundColor: "#e3e3e3" },
-//       }}
-//     >
-//       <input {...getInputProps()} onChange={handleFileChange} />
-
-//       <CloudUploadIcon color="primary" fontSize="large" />
-//       <Box sx={{ mt: 2 }}>
-//         <Typography variant="body2" color="text.secondary">
-//           Drag & Drop a file here
-//         </Typography>
-//         <Typography variant="body2" color="text.secondary">
-//           or
-//         </Typography>
-//         <Typography
-//           variant="body2"
-//           sx={{ color: "#1976d2", cursor: "pointer" }}
-//         >
-//           Choose File
-//         </Typography>
-//       </Box>
-//     </Paper>
-//   </>
-// );
-
 const UploadPlaceholder = ({
   label,
   getRootProps,

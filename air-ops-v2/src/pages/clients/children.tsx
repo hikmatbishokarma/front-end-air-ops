@@ -43,6 +43,7 @@ interface ReusableFormProps {
   defaultValues?: any;
   // setValue: (name: string, value: any) => void; // ✅ Add this
   setValue: UseFormSetValue<any>;
+  submitButtonName?: string;
 }
 
 const ClientChildren: React.FC<ReusableFormProps> = ({
@@ -50,6 +51,7 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
   onSubmit,
   fields,
   setValue,
+  submitButtonName = "Submit",
 }) => {
   const selectedType = useWatch({ control, name: "type" });
 
@@ -142,7 +144,7 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
 
       <Box sx={{ display: "flex", justifyContent: "end", mt: 3 }}>
         <Button type="submit" variant="contained" color="primary">
-          Submit
+          {submitButtonName}
         </Button>
       </Box>
     </Box>

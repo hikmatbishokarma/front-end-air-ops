@@ -118,7 +118,6 @@ const QuoteEdit = () => {
       variables: { id },
     });
 
-    console.log("response", response.prices);
     if (response) {
       //setValue("referenceNo", response.referenceNo);
       // setValue("status", response.status);
@@ -180,7 +179,6 @@ const QuoteEdit = () => {
   useEffect(() => {
     let grandTotal =
       prices?.reduce((sum, item) => sum + (Number(item.total) || 0), 0) || 0;
-    console.log("grandTotal", grandTotal);
 
     grandTotal = Math.round(grandTotal * 100) / 100;
 
@@ -191,12 +189,11 @@ const QuoteEdit = () => {
   }, [prices, setValue]);
 
   const handleAddFee = (selectedFee) => {
-    console.log("selectedFee", selectedFee);
     if (!selectedFee) return;
 
     appendPrice({
       label: selectedFee.label,
-      unit: "0",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       margin: 0,
@@ -1524,6 +1521,8 @@ const QuoteEdit = () => {
       <ClientDialog
         subDialogOpen={subDialogOpen}
         handleSubDialogClose={handleSubDialogClose}
+        clientId={selectedClient?.id}
+        isEdit={true}
       />
 
       <RepresentativeDialog

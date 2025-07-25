@@ -59,6 +59,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
 import { CustomDialog } from "../../components/CustomeDialog";
 
+type currentQuotationInfo = {
+  id: string;
+  quotationNo: string;
+  status?: string;
+  client: any;
+  isLatest: boolean;
+};
+
 export const QuoteList = ({
   filter,
   isGenerated = true,
@@ -88,6 +96,9 @@ export const QuoteList = ({
   const [showPreview, setShowPreview] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
 
+  const [currentQuotationInfo, setCurrentQuotationInfo] =
+    useState<currentQuotationInfo>();
+
   const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
     useState(false);
   const [saleConfirmationPreviewTemplate, setSaleConfirmationPreviewTemplate] =
@@ -95,6 +106,14 @@ export const QuoteList = ({
 
   const handelPreview = async (row) => {
     setSelectedRowData(row);
+
+    setCurrentQuotationInfo({
+      id: row.id,
+      quotationNo: row.quotationNo,
+      isLatest: row.isLatest,
+      client: row.requestedBy,
+      status: row.status,
+    });
 
     if (
       row.status == QuotationStatus.SALE_CONFIRMED &&
@@ -196,7 +215,7 @@ export const QuoteList = ({
             <TableRow>
               <TableCell sx={headerStyle}>Quotation No</TableCell>
 
-              <TableCell sx={headerStyle}>Requester</TableCell>
+              <TableCell sx={headerStyle}>Enquiry From</TableCell>
               <TableCell sx={headerStyle}>Sectors</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
               {/* <TableCell sx={headerStyle}>Action</TableCell> */}
@@ -258,6 +277,7 @@ export const QuoteList = ({
           showEdit={selectedRowData?.isLatest}
           showGeneratePI={selectedRowData?.isLatest}
           onGenerateInvoice={onGenerateInvoice}
+          currentRecord={currentQuotationInfo}
         />
       </CustomDialog>
 
