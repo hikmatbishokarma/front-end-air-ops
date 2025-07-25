@@ -19,6 +19,8 @@ type FormData = {
   email: string;
   address: string;
   type: string;
+  gstNo?: string;
+  panNo?: string;
 };
 
 export const EditClient = ({ id, handleSubDialogClose }) => {
@@ -31,7 +33,13 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
   const editFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
     { name: "name", label: "First Name", xs: 6, required: true },
-    { name: "lastName", label: "Last Name", xs: 6, required: true },
+    {
+      name: "lastName",
+      label: "Last Name",
+      xs: 6,
+      required: true,
+      visible: (type: string) => type !== "COMPANY",
+    },
     {
       name: "phone",
       label: "Phone",
@@ -112,6 +120,8 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       setValue("email", client.email || "");
       setValue("address", client.address || "");
       setValue("type", client.isCompany ? "COMPANY" : "PERSON");
+      setValue("panNo", client.panNo || "");
+      setValue("gstNo", client.gstNo || "");
     }
   }, [client, setValue]);
 

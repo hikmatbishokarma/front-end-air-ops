@@ -13,6 +13,7 @@ import ReactQuill from "react-quill";
 import Autocomplete from "@mui/material/Autocomplete";
 import CityAutocomplete from "../../components/city-autocomplete";
 import FileUpload from "../../components/fileupload";
+import MediaUpload from "../../components/MediaUpload";
 
 interface FormField {
   name: string;
@@ -40,7 +41,6 @@ const OperatorChildren: React.FC<ReusableFormProps> = ({
   fields,
 }) => {
   const wrappedSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("OperatorChildren form submit event");
     onSubmit(e);
   };
 
@@ -67,12 +67,16 @@ const OperatorChildren: React.FC<ReusableFormProps> = ({
                     <CityAutocomplete
                       {...controllerField}
                       label={field.label}
+                      error={!!error} // Pass boolean error state
+                      helperText={error?.message} // Pass the error message
                     />
                   );
                 } else if (field.type == "file") {
                   return (
                     <>
-                      <FileUpload
+                      <MediaUpload
+                        size="small" // Essential for the avatar style
+                        accept="image/*"
                         value={controllerField.value}
                         onUpload={(url) => controllerField.onChange(url)} // Update form value with uploaded URL
                         label={field.label}

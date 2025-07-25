@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Typography,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
@@ -122,7 +123,7 @@ export const CrewDetailList = ({
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>MobileNo</TableCell>
-              <TableCell>Type</TableCell>
+              <TableCell>Role</TableCell>
               <TableCell>Created On</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -132,29 +133,33 @@ export const CrewDetailList = ({
               list?.map((item, index) => (
                 <TableRow key={item.id}>
                   <TableCell>{`${item.fullName}`.trim()}</TableCell>
-
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item?.phone}</TableCell>
-                  <TableCell>{item?.type}</TableCell>
                   <TableCell>
-                    <Switch checked={item.createdAt} size="small" />
+                    <Typography variant="body2">
+                      {item?.roles?.map((item) => item?.name)?.join(", ")}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    {moment(item.createdAt).format("DD-MM-YYYY")}
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell className="panel-one">
                     {/* Edit Button */}
-                    <IconButton
+                    <IconButton className="popup-quote-model"
                       color="primary"
                       onClick={() => handleEdit(item.id)}
                     >
-                      <EditIcon />
+                      <EditIcon className="popup-close-panel" />
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton
+                    <IconButton className="popup-quote-model"
                       color="secondary"
                       onClick={() => handleDelete(item.id)}
                     >
-                      <DeleteIcon />
+                      <DeleteIcon className="popup-close-panel"/>
                     </IconButton>
                   </TableCell>
                 </TableRow>

@@ -94,7 +94,7 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
                               newValue ? moment(newValue).format("HH:mm") : ""
                             )
                           }
-                          label="Departure Time"
+                          label={field.label}
                           size="small"
                           format="HH:mm"
                           slotProps={{
@@ -224,7 +224,7 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
             ))}
 
           <IconButton aria-label="add" className="add-icon-v1">
-            <AddIcon
+            <AddIcon className="ground-handlers"
               onClick={() =>
                 addGroundHandler({
                   fullName: "",

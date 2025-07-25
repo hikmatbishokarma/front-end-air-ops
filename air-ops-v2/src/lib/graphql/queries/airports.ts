@@ -60,3 +60,11 @@ export const GET_AIRPORT_BY_ID = gql`
     }
   }
 `;
+
+export const DELETE_AIRPORT = gql`
+  mutation deleteAirport($input: DeleteOneAirportInput!) {
+    deleteOneAirport(input: $input) {
+      id
+    }
+  }
+`;

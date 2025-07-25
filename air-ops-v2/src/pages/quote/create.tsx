@@ -76,21 +76,21 @@ const defaultValues = {
   prices: [
     {
       label: "Charter Charges",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0,
     },
     {
       label: "Ground Handling",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0,
     },
     {
       label: "Crew BLT",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0,
@@ -493,7 +493,7 @@ export const QuoteCreate = () => {
   const handleAddFee = () => {
     appendPrice({
       label: "",
-      unit: "1",
+      unit: "00:00",
       price: 0,
       currency: "INR",
       total: 0, // Calculate total
@@ -753,7 +753,7 @@ export const QuoteCreate = () => {
               )}
 
               {activeStep === 1 && (
-                <Box sx={{ display: "flex", mt: 5 }}>
+                <Box sx={{ display: "flex", mt: 5 }} className="sector-map">
                   <Box sx={{ flex: 0.4, pr: 2 }}>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                       {itineraryFields.map((item, index) => {
@@ -769,7 +769,7 @@ export const QuoteCreate = () => {
                               pb: 2,
                             }}
                           >
-                            <Grid item xs={6}>
+                            <Grid item xs={6} className="fromto">
                               <Controller
                                 name={`itinerary.${index}.source`}
                                 control={control}
@@ -784,7 +784,7 @@ export const QuoteCreate = () => {
                                 )}
                               />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} className="fromto">
                               <Controller
                                 name={`itinerary.${index}.destination`}
                                 control={control}
@@ -799,7 +799,7 @@ export const QuoteCreate = () => {
                                 )}
                               />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} className="fromto">
                               <Controller
                                 name={`itinerary.${index}.depatureDate`}
                                 control={control}
@@ -837,7 +837,7 @@ export const QuoteCreate = () => {
                                 )}
                               />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} className="fromto">
                               <Controller
                                 name={`itinerary.${index}.depatureTime`}
                                 control={control}
@@ -888,7 +888,7 @@ export const QuoteCreate = () => {
                                 }}
                               />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} className="fromto">
                               <Controller
                                 name={`itinerary.${index}.arrivalDate`}
                                 control={control}
@@ -941,7 +941,7 @@ export const QuoteCreate = () => {
                                 }}
                               />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} >
                               <Controller
                                 name={`itinerary.${index}.arrivalTime`}
                                 control={control}
@@ -1079,24 +1079,24 @@ export const QuoteCreate = () => {
 
               {activeStep === 2 && (
                 <Box sx={{ mt: 5 }} className="price-units">
-                  <Grid container spacing={2} sx={{ mb: 3 }}>
-                    <Grid item xs={3} className="label-price-c1">
+                  <Grid container spacing={2} sx={{ mb: 3 }} className="label-price-c1">
+                    <Grid item xs={3} >
                       <h4 style={{ margin: "0px" }}>Label</h4>
                     </Grid>
-                    <Grid item xs={1.5} className="label-price-c1">
+                    <Grid item xs={1.5} >
                       <h4 style={{ margin: "0px" }}>Unit (Hrs)</h4>
                     </Grid>
-                    <Grid item xs={0.5} className="label-price-c1">
+                    <Grid item xs={0.5} >
                       <h4 style={{ margin: "0px" }}>X</h4>
                     </Grid>
-                    <Grid item xs={1.5} className="label-price-c1">
+                    <Grid item xs={1.5} >
                       <h4 style={{ margin: "0px" }}>Price</h4>
                     </Grid>
-                    <Grid item xs={1.5} className="label-price-c1">
+                    <Grid item xs={1.5} >
                       <h4 style={{ margin: "0px" }}>Currency</h4>
                     </Grid>
 
-                    <Grid item xs={1.5} className="label-price-c1">
+                    <Grid item xs={1.5} >
                       <h4 style={{ margin: "0px" }}>Total</h4>
                     </Grid>
                   </Grid>

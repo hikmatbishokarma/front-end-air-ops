@@ -33,6 +33,7 @@ import moment from "moment";
 import InvoicePreview from "../../components/invoice-preview";
 import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
+import { CustomDialog } from "../../components/CustomeDialog";
 
 export const AccountList = ({ filter }) => {
   const { session, setSession, loading } = useSession();
@@ -197,38 +198,18 @@ export const AccountList = ({ filter }) => {
         />
       </TableContainer>
 
-      {/* <Dialog
+      <CustomDialog
         open={showPreview}
         onClose={() => setShowPreview(false)}
-        fullWidth
+        title="Invoice Preview"
+        width="900px"
         maxWidth="md"
       >
-        <DialogTitle>
-          {" "}
-          Invoice Preview
-          <IconButton
-            aria-label="close"
-            onClick={() => setShowPreview(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-
-        <DialogContent>
-          <InvoicePreview
-            htmlContent={selectedRowData?.template}
-            currentQuotation={selectedRowData?.quotationNo}
-            type={selectedRowData?.type}
-            handelTripConfirmation={handelTripConfirmation}
-          />
-        </DialogContent>
-      </Dialog> */}
+        <InvoicePreview
+          htmlContent={selectedRowData?.template}
+          currentQuotation={selectedRowData?.quotationNo}
+        />
+      </CustomDialog>
     </>
   );
 };
