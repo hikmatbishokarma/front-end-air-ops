@@ -211,7 +211,7 @@ export const AirpotList = () => {
         />
       </TableContainer>
 
-      <Dialog
+      <Dialog className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -219,7 +219,7 @@ export const AirpotList = () => {
       >
         <DialogTitle>
           {isEdit ? "Edit Airport Details" : "Edit Airport Details"}
-          <IconButton
+          <IconButton className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -229,7 +229,7 @@ export const AirpotList = () => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon />
+            <CloseIcon className="popup-close-panel"/>
           </IconButton>
         </DialogTitle>
         <DialogContent>
