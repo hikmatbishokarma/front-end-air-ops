@@ -1080,23 +1080,23 @@ export const QuoteCreate = () => {
               {activeStep === 2 && (
                 <Box sx={{ mt: 5 }} className="price-units">
                   <Grid container spacing={2} sx={{ mb: 3 }}>
-                    <Grid item xs={3}>
+                    <Grid item xs={3} className="label-price-c1">
                       <h4 style={{ margin: "0px" }}>Label</h4>
                     </Grid>
-                    <Grid item xs={1.5}>
+                    <Grid item xs={1.5} className="label-price-c1">
                       <h4 style={{ margin: "0px" }}>Unit (Hrs)</h4>
                     </Grid>
-                    <Grid item xs={0.5}>
+                    <Grid item xs={0.5} className="label-price-c1">
                       <h4 style={{ margin: "0px" }}>X</h4>
                     </Grid>
-                    <Grid item xs={1.5}>
+                    <Grid item xs={1.5} className="label-price-c1">
                       <h4 style={{ margin: "0px" }}>Price</h4>
                     </Grid>
-                    <Grid item xs={1.5}>
+                    <Grid item xs={1.5} className="label-price-c1">
                       <h4 style={{ margin: "0px" }}>Currency</h4>
                     </Grid>
 
-                    <Grid item xs={1.5}>
+                    <Grid item xs={1.5} className="label-price-c1">
                       <h4 style={{ margin: "0px" }}>Total</h4>
                     </Grid>
                   </Grid>

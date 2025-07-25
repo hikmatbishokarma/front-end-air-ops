@@ -142,7 +142,7 @@ export const AircraftCategoryList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
+      <Dialog className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -151,7 +151,7 @@ export const AircraftCategoryList = () => {
         <DialogTitle>
           {isEdit ? "Edit Aircraft Category" : "Create Aircraft Category"}
 
-          <IconButton
+          <IconButton className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -161,7 +161,7 @@ export const AircraftCategoryList = () => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon />
+            <CloseIcon className="popup-close-panel" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
