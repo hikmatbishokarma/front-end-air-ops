@@ -34,7 +34,7 @@ export enum RoleType {
   SUPER_ADMIN = "SUPER_ADMIN",
   ADMIN = "ADMIN",
   SALES = "SALES",
-  OPERATOR = "OPERATOR",
+  OPS = "OPS",
   ENGINEERING = "ENGINEERING",
   AUDIT = "AUDIT",
   ACCOUNTING = "ACCOUNTING",
@@ -135,7 +135,15 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
     });
   };
 
-  console.log("resources:::", resources);
+  // Determine the filtered roles based on operatorId presence
+  const availableRoles = React.useMemo(() => {
+    let roles = Object.keys(RoleType);
+    if (operatorId) {
+      // If operatorId is present, filter out SUPER_ADMIN
+      roles = roles.filter((role) => role !== RoleType.SUPER_ADMIN);
+    }
+    return roles;
+  }, [operatorId]); // Recalculate if operatorId changes
 
   return (
     <Box
@@ -152,8 +160,8 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
               control={control}
               rules={{ required: "Type is required" }}
               render={({ field }) => (
-                <Select {...field} displayEmpty>
-                  {Object.keys(RoleType).map((role) => (
+                <Select {...field} displayEmpty variant="outlined">
+                  {availableRoles?.map((role) => (
                     <MenuItem key={role} value={role}>
                       {role}
                     </MenuItem>
@@ -191,15 +199,6 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
               control={control}
               rules={{ required: "Label is required" }}
               render={({ field }) => (
-                // <TextField
-                //   {...field}
-                //   label="Resource"
-                //   fullWidth
-                //   size="small"
-                //   error={!!errors.accessPermissions?.[index]?.resource}
-                //   helperText={errors.accessPermissions?.[index]?.resource?.message}
-                // />
-
                 <Autocomplete
                   {...field}
                   disablePortal

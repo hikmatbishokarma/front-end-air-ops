@@ -124,7 +124,7 @@ const CrewDashboard = () => {
         variables: {
           args: {
             where: {
-              ...(operatorId && { operatorId: { eq: operatorId } }),
+              ...(operatorId && { operatorId }),
             },
           },
         },

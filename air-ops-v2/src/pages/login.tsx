@@ -36,7 +36,7 @@ import bgtwo from "../Asset/Images/backimg.jpeg";
 import pfIMG from "../Asset/Images/profile_view.png";
 import leftLogo from "../Asset/Images/Left-side-logo.png";
 
-const apiBaseUrl = import.meta.env.VITE_BASE_URL;
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export default function Login() {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -111,9 +111,7 @@ export default function Login() {
           name: data.user.name || data?.user?.fullName,
           email: data.user.email,
           type: data?.user?.type,
-          image:
-            `${apiBaseUrl}${data?.user?.image}` ||
-            `${apiBaseUrl}${data?.user?.profile}`,
+          image: `${apiBaseUrl}${data?.user?.profile}`,
           // role: data.user.role,
           roles: data.user.roles,
           permissions: data.user.permissions,

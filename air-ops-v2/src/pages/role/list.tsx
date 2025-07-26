@@ -13,58 +13,16 @@ import {
   DialogTitle,
   DialogActions,
   Box,
+  IconButton,
 } from "@mui/material";
 
 import { GET_ROLES } from "../../lib/graphql/queries/role";
 import useGql from "../../lib/graphql/gql";
 import RoleCreate from "./create";
 
-import {
-  TextField,
-  Container,
-  Typography,
-  MenuItem,
-  Grid,
-  Avatar,
-  Card,
-  CardContent,
-} from "@mui/material";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import ChatIcon from "@mui/icons-material/Chat";
 import { Outlet, useNavigate } from "react-router";
 import { useSession } from "../../SessionContext";
-// const roles = [
-//   {
-//     id: "67b0b5455366fdf6aee04554",
-//     roleType: "USER",
-//     name: "User",
-//     accessPermission: [
-//       {
-//         action: ["READ"],
-//         resource: "dashboard",
-//       },
-//     ],
-//   },
-//   {
-//     id: "67b0b5da5366fdf6aee04559",
-//     roleType: "ADMIN",
-//     name: "Admin",
-//     accessPermission: [
-//       {
-//         action: ["READ", "CREATE"],
-//         resource: "dashboard",
-//       },
-//       {
-//         action: ["READ", "CREATE"],
-//         resource: "query",
-//       },
-//       {
-//         action: ["READ", "CREATE"],
-//         resource: "ops",
-//       },
-//     ],
-//   },
-// ];
+import CloseIcon from "@mui/icons-material/Close";
 
 const checkPermission = (actions, permission) =>
   actions.includes(permission) ? "✅" : "❌";
@@ -181,15 +139,25 @@ const RoleList = () => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>Create New Role</DialogTitle>
+        <DialogTitle>
+          Create New Role
+          <IconButton
+            className="popup-quote-model"
+            aria-label="close"
+            onClick={() => setOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon className="popup-close-panel" />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <RoleCreate onClose={handleClose} refreshList={refreshList} />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   );
