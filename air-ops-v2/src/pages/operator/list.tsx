@@ -128,7 +128,7 @@ export const OperatorList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
+      <Dialog className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -136,7 +136,7 @@ export const OperatorList = () => {
       >
         <DialogTitle>
           {isEdit ? "Edit operator" : "Create operator"}
-          <IconButton
+          <IconButton className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -146,7 +146,7 @@ export const OperatorList = () => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon />
+            <CloseIcon className="popup-close-panel"/>
           </IconButton>
         </DialogTitle>
         <DialogContent>

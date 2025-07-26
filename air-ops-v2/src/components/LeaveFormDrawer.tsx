@@ -59,7 +59,7 @@ const LeaveFormDrawer: React.FC<LeaveFormDrawerProps> = ({
   }));
 
   return (
-    <Drawer
+    <Drawer className="leave-request"
       anchor="right"
       open={open}
       onClose={onClose}
@@ -236,7 +236,7 @@ const LeaveFormDrawer: React.FC<LeaveFormDrawerProps> = ({
               justifyContent: "flex-end",
             }}
           >
-            <Button
+            <Button className="canecl-leave-btn"
               onClick={onClose}
               sx={{ mr: 2 }}
               variant="outlined"

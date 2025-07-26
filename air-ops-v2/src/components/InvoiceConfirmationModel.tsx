@@ -424,7 +424,7 @@ export const InvoiceConfirmationModal = ({
   };
 
   return (
-    <Dialog open={open} maxWidth="sm" fullWidth>
+    <Dialog open={open} maxWidth="sm" fullWidth className="panel-one">
       <DialogTitle>
         <Typography
           variant="h5"
@@ -433,7 +433,7 @@ export const InvoiceConfirmationModal = ({
         >
           {clientDetailConfirm ? "Generate Invoice " : "Confirm Client Details"}
         </Typography>
-        <IconButton
+        <IconButton className="popup-quote-model"
           aria-label="close"
           onClick={handelOnClose}
           sx={{
@@ -443,10 +443,10 @@ export const InvoiceConfirmationModal = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon />
+          <CloseIcon className="popup-close-panel"/>
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className="invoice-button">
         {!clientDetailConfirm && currentClient && open && (
           <ClientDetailConfirmationForm
             clientId={initialClient.id}

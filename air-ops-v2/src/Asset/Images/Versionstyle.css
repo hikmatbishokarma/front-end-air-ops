@@ -389,7 +389,7 @@ border-top-left-radius: 50% 200px;
     padding-bottom: 10px !important;;
 }
 .MuiTableRow-root:hover {
-    background: #c3c9e0;
+    background: #eee;
     color: #fff;
 }
 .css-1ji9znz{
@@ -406,6 +406,9 @@ border-top-left-radius: 50% 200px;
 .MuiBox-root.css-1f266ni .MuiButtonBase-root{
 
     background: #001551 !important;
+    height: 25px;
+    width: 25px;
+    margin: 5px;
 }
 .Mui-active{
     color: #001551 !important;
@@ -480,12 +483,12 @@ border-top-left-radius: 50% 200px;
     color: #fff !important;
 }
 .v1_board .MuiCardContent-root:hover{
-    background-color: #c3c9e0 !important;
-     border: #c3c9e0 !important;
+    background-color: #eee !important;
+     border: #eee !important;
      color: #000 !important;
 }
 .MuiTablePagination-toolbar{
-    background-color: #c3c9e0;
+    background-color: #eee;
 }
 .enquirey-data-1 .add-icon-v1{
     background-color: #001551 !important;
@@ -500,17 +503,22 @@ border-top-left-radius: 50% 200px;
    background-color: #ff0202 !important;
 }
 .panel-one .MuiDialogTitle-root{
-    background-color: #c3c9e0;
+    background-color: #eee;
 }
 .MuiBox-root.css-1f266ni .MuiButtonBase-root:hover{
     background: #ff0202 !important; 
 }
 .panel-one .popup-quote-model{
      background-color: #001551 !important;
+     height: 25px;
+     width: 25px;
+     margin: 5px;
 
 }
 .panel-one .popup-quote-model .popup-close-panel{
     color: #fff;
+    height: 20px;
+    width: 20px;
 }
 .panel-one .popup-quote-model:hover{
      background-color: #ff0202 !important;
@@ -565,19 +573,38 @@ border-top-left-radius: 50% 200px;
 }
 
 .calendar-right .MuiTypography-h6{
-        background-color: #c3c9e0;
+        background-color: #eee;
     border-radius: 4px;
     padding: 5px;
 }
 .price-units .MuiGrid-spacing-xs-2{
-background: #c3c9e0;
+
     /* padding-top: 0px !important; */
-    border-radius: 5px;
+   
     color: #000;
-    
+    padding-top: 0px !important;
+    color: #000;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 7px;
+    width: 100%;
+     margin-left: 0px !important;
+     
+}
+
+.price-units .label-price-c1{
+    background-color: #eee !important;
+     border-radius: 5px;
+    color: #000;
+    width: 100% !important;
+    margin-left: 0px !important;
+    border-bottom: 0px !important;
 }
 .price-units .MuiGrid-item{
     padding:12px !important;
+}
+.price-units{
+        border: 1px solid #ddd;
+            padding-top: 15px !important;
 }
 .dashboard-trip h6{
 font-size: 13px;
@@ -601,4 +628,38 @@ font-size: 13px;
 }
 .review-back-btn{
     height: 37px !important;
+}
+.invoice-button .MuiButton-containedPrimary{
+    background-color: #001551 !important;
+    color: #ffffff !important;
+}
+
+.invoice-button .MuiButton-containedPrimary:hover{
+        background: #ff0202 !important;
+    border: #ff0202 !important;
+}
+.leave-request .canecl-leave-btn{
+         background: #ff0202 !important;
+    border: #ff0202 !important;
+}
+.ground-handlers{
+        background-color: #001551 !important;
+    height: 25px;
+    width: 25px;
+    margin: 5px;
+    border-radius: 50%;
+    color: #fff;
+    
+}
+
+.ground-handlers:hover{
+        background-color: #ff0202 !important;
+}
+
+.leave-table{
+    background-color: #fff;
+}
+.sector-map .fromto{
+    height: 69px;
+    margin-bottom: 20px;
 }

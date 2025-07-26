@@ -224,7 +224,7 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
             ))}
 
           <IconButton aria-label="add" className="add-icon-v1">
-            <AddIcon
+            <AddIcon className="ground-handlers"
               onClick={() =>
                 addGroundHandler({
                   fullName: "",
