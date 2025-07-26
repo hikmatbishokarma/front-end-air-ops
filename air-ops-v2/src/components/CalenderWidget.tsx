@@ -20,7 +20,7 @@ import {
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import CircleIcon from "@mui/icons-material/Circle";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import useGql from "../lib/graphql/gql";
@@ -32,6 +32,8 @@ import NoScheduleFound from "./NoScheduleFound";
 import { useNavigate } from "react-router";
 
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
+import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
+import { useSession } from "../SessionContext";
 
 // export const FlightCalendarWidget = () => {
 //   const [flightEvents, setFlightEvents] = useState<any[]>([]);
@@ -162,27 +164,62 @@ const NO_EVENTS_GIF_URL =
   "https://media.giphy.com/media/l4FGp6wB6QJ6VpB7Q/giphy.gif"; // A "No Direct Flight" GIF
 
 interface FlightSegment {
+  id: string;
   title: string;
-  aircraft?: { code: string };
-  depatureTime: string;
-  arrivalTime: string;
+  start: string; // ISO string for start date/time
+  end: string; // ISO string for end date/time
+  depatureTime: string; // "HH:mm"
+  arrivalTime: string; // "HH:mm"
+  aircraft: {
+    _id: string;
+    name: string;
+    code: string;
+  };
+  source: string;
+  destination: string;
+  duration: string;
 }
-
-interface FormattedFlightEvent {
-  title: string;
-  depatureTime: string;
-  arrivalTime: string;
-  aircraft?: any;
+// Define the structure for grouped flight trips
+interface FormattedFlightTrip {
+  tripId: string;
+  aircraftDetail: {
+    name: string;
+    code: string;
+  };
+  sectors: {
+    title: string;
+    source: string;
+    destination: string;
+    depatureTime: string;
+    arrivalTime: string;
+    duration: string;
+  }[];
 }
 
 export const FlightCalendarWidget = () => {
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
+  const { session, setSession } = useSession();
+
+  const operatorId = session?.user.operator?.id || null;
+
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
   // const [flightEvents, setFlightEvents] = useState<FormattedFlightEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [flightTrips, setFlightTrips] = useState<any>();
+
+  const [fetchedMonth, setFetchedMonth] = useState<Moment | null>(null);
+
+  const [loadingMonthlySegments, setLoadingMonthlySegments] =
+    useState<boolean>(false); // Loading for calendar blocked dates (monthly segments)
+  const [errorMonthlySegments, setErrorMonthlySegments] = useState<
+    string | null
+  >(null);
+
+  const [monthlyFlightSegments, setMonthlyFlightSegments] = useState<
+    FlightSegment[]
+  >([]); // Data for calendar blocked dates
 
   const getFlightSegmentsForCalendar = useCallback(
     async (date: moment.Moment) => {
@@ -201,6 +238,7 @@ export const FlightCalendarWidget = () => {
           variables: {
             startDate: startDate,
             endDate: endDate,
+            ...(operatorId && { operatorId }),
           },
         });
 
@@ -261,6 +299,81 @@ export const FlightCalendarWidget = () => {
   const onClickTripConfirmationWidget = () => {
     navigate("/trip-confirmation/calender");
   };
+
+  // --- Logic for the CALENDAR (Monthly Blocked Dates) ---
+  const fetchMonthlyFlightSegments = useCallback(
+    async (date: moment.Moment) => {
+      setLoadingMonthlySegments(true);
+      setErrorMonthlySegments(null);
+      setMonthlyFlightSegments([]); // Clear previous month's segments
+
+      const startOfMonth = date
+        .clone()
+        .startOf("month")
+        .startOf("day")
+        .toISOString();
+      const endOfMonth = date.clone().endOf("month").endOf("day").toISOString();
+
+      try {
+        const response: FlightSegment[] = await useGql({
+          query: FLIGHT_SEGMENTS_FOR_CALENDER,
+          queryName: "flightSegmentsForCalendar",
+          queryType: "query-without-edge",
+          variables: {
+            startDate: startOfMonth,
+            endDate: endOfMonth,
+            ...(operatorId && { operatorId }),
+          },
+        });
+
+        if (response && response.length > 0) {
+          setMonthlyFlightSegments(response);
+        } else {
+          setMonthlyFlightSegments([]);
+          setFetchedMonth(date.clone().startOf("month"));
+        }
+      } catch (err: any) {
+        console.error("Failed to fetch monthly flight segments:", err);
+        showSnackbar(
+          err.message || "Failed to load monthly flight events for calendar.",
+          "error"
+        );
+        setErrorMonthlySegments(
+          err.message || "Failed to load monthly flight events for calendar."
+        );
+        setFetchedMonth(null);
+      } finally {
+        setLoadingMonthlySegments(false);
+      }
+    },
+    [showSnackbar]
+  );
+
+  // Effect to re-fetch monthly flight segments when the calendar month changes
+  // This ensures we have data for all days in the currently displayed month.
+  useEffect(() => {
+    // Only fetch if the month has changed or if it's the initial load
+    if (!fetchedMonth || !selectedDate.isSame(fetchedMonth, "month")) {
+      fetchMonthlyFlightSegments(selectedDate);
+    }
+  }, [selectedDate, fetchedMonth]);
+
+  // Memoize the blocked dates from all monthly flight segments
+  const blockedDates = useMemo(() => {
+    const dates = new Set<string>();
+    monthlyFlightSegments.forEach((segment) => {
+      // Use the 'start' field to determine the date to block
+      dates.add(moment(segment.start).format("YYYY-MM-DD"));
+    });
+    return Array.from(dates);
+  }, [monthlyFlightSegments]);
+
+  const MemoizedCustomDay = useMemo(() => {
+    return (props: PickersDayProps<Moment>) => {
+      const isBlocked = blockedDates.includes(props.day.format("YYYY-MM-DD"));
+      return <CustomDay {...props} isBlocked={isBlocked} />;
+    };
+  }, [blockedDates]); // Recalculate only when blockedDates changes
 
   return (
     <Card
@@ -448,7 +561,7 @@ export const FlightCalendarWidget = () => {
         }}
       >
         <LocalizationProvider dateAdapter={AdapterMoment}>
-          <StaticDatePicker
+          {/* <StaticDatePicker
             displayStaticWrapperAs="desktop"
             value={selectedDate}
             onChange={(newDate: moment.Moment | null) => {
@@ -469,10 +582,64 @@ export const FlightCalendarWidget = () => {
                 height: 32,
               },
             }}
+          /> */}
+
+          <StaticDatePicker
+            displayStaticWrapperAs="desktop"
+            value={selectedDate}
+            onChange={(newDate: moment.Moment | null) => {
+              if (newDate) {
+                setSelectedDate(newDate);
+              }
+            }}
+            slots={{
+              actionBar: () => null,
+              day: MemoizedCustomDay,
+            }}
+            sx={{
+              "& .MuiDayCalendar-weekDayLabel": {
+                fontSize: "0.7rem",
+              },
+              "& .MuiPickersDay-root": {
+                fontSize: "0.75rem",
+                width: 32,
+                height: 32,
+              },
+            }}
           />
         </LocalizationProvider>
       </Box>
     </Card>
+  );
+};
+
+// --- Custom Day Component for StaticDatePicker ---
+interface CustomDayProps extends PickersDayProps<Moment> {
+  isBlocked: boolean;
+}
+
+const CustomDay = (props: CustomDayProps) => {
+  const { day, isBlocked, selected, today, ...other } = props;
+
+  return (
+    <PickersDay // Use PickersDay component as the base
+      {...other} // Spread the rest of the original PickersDayProps
+      day={day}
+      selected={selected} // Use the 'selected' prop provided by PickersDayProps
+      today={today} // Use the 'today' prop provided by PickersDayProps
+      sx={{
+        position: "relative",
+        boxSizing: "border-box",
+        // Apply green outline for blocked dates
+        border: isBlocked ? "2px solid green" : "none",
+        // Override default styles or add new ones here if needed
+        // The PickersDay component handles 'selected' and 'today' styling by default
+        // but you can customize if needed.
+        // For example, if you want to explicitly override selected/today background:
+        // ...(selected && { backgroundColor: '#001551', color: '#fff' }),
+        // ...(!selected && today && { backgroundColor: '#e0f2f7' }),
+      }}
+    />
   );
 };
 
