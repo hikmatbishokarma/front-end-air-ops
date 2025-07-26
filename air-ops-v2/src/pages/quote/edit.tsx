@@ -193,7 +193,7 @@ const QuoteEdit = () => {
 
     appendPrice({
       label: selectedFee.label,
-      unit: "00:00",
+      unit: "01:00",
       price: 0,
       currency: "INR",
       margin: 0,

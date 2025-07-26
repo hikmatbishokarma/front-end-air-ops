@@ -34,6 +34,13 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ImageIcon from "@mui/icons-material/Image";
 import DocumentPreviewDialog from "../../components/DocumentPreviewDialog";
+import {
+  GET_ACCESS_REQUEST_BY_ID,
+  GET_ACCESS_REQUESTS,
+  REQUEST_ACCESS,
+} from "../../lib/graphql/queries/access-request";
+import AccessRequestModal from "../../components/AccessRequestModal";
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ManualList = ({
   open,
@@ -58,6 +65,11 @@ export const ManualList = ({
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); //
+
+  const [currentDoc, setCurrentDoc] = useState<any>();
 
   const handleEdit = (id) => {
     setIsEdit(true);
@@ -113,10 +125,61 @@ export const ManualList = ({
   //   setPreviewOpen(true);
   // };
 
-  const handlePreview = (url: string) => {
-    setPreviewUrl(url);
-    setPreviewOpen(true);
+  const checkForAccessRequest = async (Id) => {
+    const response = await useGql({
+      query: GET_ACCESS_REQUESTS,
+      queryName: "accessRequests",
+      queryType: "query",
+      variables: {
+        filter: {
+          docId: { eq: Id },
+        },
+      },
+    });
+
+    if (response?.errors?.length) {
+      showSnackbar("Internal Server!", "error");
+    }
+
+    return response.length ? response[0] : undefined;
   };
+
+  const handlePreview = async (row) => {
+    setCurrentDoc(row);
+    const checkforRequest: any = await checkForAccessRequest(row.id);
+
+    if (!checkforRequest) {
+      setIsModalOpen(true);
+    }
+    if (checkforRequest.status == "PENDING") {
+      showSnackbar("Your Request Not Accepted yet", "info");
+    }
+
+    if (checkforRequest.status == "ACCEPTED") {
+      console.log(
+        "checkforRequest.status",
+        checkforRequest.status == "ACCEPTED"
+      );
+      setPreviewUrl(row.attachment);
+      setPreviewOpen(true);
+    }
+  };
+
+  const handleRequestAccessClick = async () => {
+    const response = await useGql({
+      query: REQUEST_ACCESS,
+      queryName: "",
+      queryType: "mutation",
+      variables: { docId: currentDoc.id },
+    });
+    setIsModalOpen(false);
+    if (response?.errors?.length) {
+      showSnackbar("Internal Server!", "error");
+    } else showSnackbar("Request sent successfully!", "success");
+  };
+
+  console.log("Preview Open:", previewOpen);
+  console.log("Preview URL:", previewUrl);
 
   return (
     <>
@@ -172,7 +235,7 @@ export const ManualList = ({
 
                   <TableCell>
                     {row.attachment ? (
-                      <IconButton onClick={() => handlePreview(row.attachment)}>
+                      <IconButton onClick={() => handlePreview(row)}>
                         {/* <VisibilityIcon color="primary" /> */}
                         <PictureAsPdfIcon color="primary" />
                       </IconButton>
@@ -316,6 +379,14 @@ export const ManualList = ({
           </Button>
         </DialogActions>
       </Dialog>
+
+      <AccessRequestModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        documentTitle={currentDoc?.name}
+        onRequestAccess={handleRequestAccessClick}
+        isLoading={isLoading} // Pass the loading state
+      />
     </>
   );
 };

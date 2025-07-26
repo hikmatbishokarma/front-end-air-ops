@@ -45,6 +45,9 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import BeachAccessOutlinedIcon from "@mui/icons-material/BeachAccessOutlined";
 import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
 
+// Email: srikar_13@yahoo.co.uk
+// Temporary Password: 5v11FUQE
+
 export const NAVIGATION: Navigation = [
   {
     kind: "header",
@@ -237,28 +240,56 @@ export default function AppWithSession() {
       );
 
       if (accessResources && accessResources.length > 0) {
+        // const filterNavigation = (item: any) => {
+        //   // Check if the main item matches
+        //   if (accessResources.includes(item.segment) || item.kind) {
+        //     return true;
+        //   }
+
+        //   // If the item has children, recursively check the children
+        //   if (item.children && item.children.length > 0) {
+        //     const filteredChildren = item.children.filter(
+        //       (child: any) =>
+        //         accessResources.includes(child.segment) || child.kind
+        //     );
+
+        //     // If there are any valid children, keep this item
+        //     return filteredChildren.length > 0;
+        //   }
+
+        //   // If no match found in the item or its children
+        //   return false;
+        // };
+
         const filterNavigation = (item: any) => {
-          // Check if the main item matches
-          if (accessResources.includes(item.segment) || item.kind) {
+          // Always include header items
+          if (item.kind === "header") {
             return true;
           }
 
-          // If the item has children, recursively check the children
+          // Check if the main item's segment matches
+          const hasDirectAccess = accessResources.includes(item.segment);
+
+          // If the item has children, recursively filter them
           if (item.children && item.children.length > 0) {
-            const filteredChildren = item.children.filter(
-              (child: any) =>
-                accessResources.includes(child.segment) || child.kind
+            const filteredChildren = item.children.filter((child: any) =>
+              accessResources.includes(child.segment)
             );
 
-            // If there are any valid children, keep this item
-            return filteredChildren.length > 0;
+            // If there are any valid children, update the item's children and include the parent
+            if (filteredChildren.length > 0) {
+              item.children = filteredChildren; // Update the children of the current item
+              return true; // Include the parent if it has any valid children
+            }
           }
 
-          // If no match found in the item or its children
-          return false;
+          // Include the item if it has direct access or if it had filtered children
+          return hasDirectAccess;
         };
 
         const filteredNavigation = NAVIGATION.filter(filterNavigation);
+
+        console.log("filteredNavigation::", filteredNavigation);
 
         setValidNavigation([...defaultNavigation, ...filteredNavigation]);
       }

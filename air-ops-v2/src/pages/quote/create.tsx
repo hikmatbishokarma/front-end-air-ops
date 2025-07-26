@@ -76,21 +76,21 @@ const defaultValues = {
   prices: [
     {
       label: "Charter Charges",
-      unit: "00:00",
+      unit: "01:00",
       price: 0,
       currency: "INR",
       total: 0,
     },
     {
       label: "Ground Handling",
-      unit: "00:00",
+      unit: "01:00",
       price: 0,
       currency: "INR",
       total: 0,
     },
     {
       label: "Crew BLT",
-      unit: "00:00",
+      unit: "01:00",
       price: 0,
       currency: "INR",
       total: 0,
@@ -493,7 +493,7 @@ export const QuoteCreate = () => {
   const handleAddFee = () => {
     appendPrice({
       label: "",
-      unit: "00:00",
+      unit: "01:00",
       price: 0,
       currency: "INR",
       total: 0, // Calculate total
@@ -613,7 +613,8 @@ export const QuoteCreate = () => {
                   </Grid>
 
                   <Grid item xs={12} md={6} display="flex" alignItems="center">
-                    <IconButton className="add-icon-v1"
+                    <IconButton
+                      className="add-icon-v1"
                       aria-label="add"
                       color="primary"
                       onClick={() => setSubDialogOpen(true)}
@@ -673,7 +674,8 @@ export const QuoteCreate = () => {
                         display="flex"
                         alignItems="center"
                       >
-                        <IconButton className="add-icon-v1"
+                        <IconButton
+                          className="add-icon-v1"
                           aria-label="add"
                           color="primary"
                           onClick={() => setRepresentativeDialogOpen(true)}
@@ -1049,7 +1051,8 @@ export const QuoteCreate = () => {
                     </Button> */}
                   </Box>
 
-                  <Box className="calendar-right"
+                  <Box
+                    className="calendar-right"
                     sx={{
                       flex: 0.6,
                       backgroundColor: "#fff",
@@ -1380,7 +1383,8 @@ export const QuoteCreate = () => {
                           </Grid>
 
                           <Grid item xs={1}>
-                            <IconButton className="add-icon-v1"
+                            <IconButton
+                              className="add-icon-v1"
                               onClick={() => removePrice(index)}
                               color="error"
                             >
@@ -1392,7 +1396,11 @@ export const QuoteCreate = () => {
                     </>
                   ))}
                   <Grid item xs={1.5}>
-                    <IconButton aria-label="Add" onClick={handleAddFee} className="add-icon-v1">
+                    <IconButton
+                      aria-label="Add"
+                      onClick={handleAddFee}
+                      className="add-icon-v1"
+                    >
                       <AddIcon />
                     </IconButton>
                   </Grid>
@@ -1759,7 +1767,11 @@ export const QuoteCreate = () => {
               <Box
                 sx={{ display: "flex", justifyContent: "space-between", p: 3 }}
               >
-                <Button disabled={activeStep === 0} onClick={handleBack} className="review-back-btn">
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  className="review-back-btn"
+                >
                   Back
                 </Button>
 
