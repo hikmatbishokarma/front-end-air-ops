@@ -700,6 +700,12 @@ export const QuoteCreate = () => {
                           error={!!error}
                           helperText={error?.message}
                           size="small"
+                          required
+                          slotProps={{
+                            inputLabel: {
+                              shrink: true,
+                            },
+                          }}
                         >
                           {categoryOptions.map((option) => (
                             <MenuItem key={option.id} value={option.id}>
