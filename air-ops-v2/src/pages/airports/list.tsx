@@ -176,7 +176,7 @@ export const AirpotList = () => {
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className="panel-one">
         <Table>
           <TableHead>
             <TableRow>
@@ -195,18 +195,18 @@ export const AirpotList = () => {
                 <TableCell>{item?.icao_code}</TableCell>
                 <TableCell>{item?.city}</TableCell>
                 <TableCell>
-                  <IconButton
+                  <IconButton className="popup-quote-model"
                     color="primary"
                     onClick={() => handleEdit(item.id)}
                   >
-                    <EditIcon />
+                    <EditIcon className="popup-close-panel"/>
                   </IconButton>
 
-                  <IconButton
+                  <IconButton className="popup-quote-model"
                     color="secondary"
                     onClick={() => confirmDelete(item.id)}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon className="popup-close-panel"/>
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -224,7 +224,7 @@ export const AirpotList = () => {
         />
       </TableContainer>
 
-      <Dialog
+      <Dialog className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -232,7 +232,7 @@ export const AirpotList = () => {
       >
         <DialogTitle>
           {isEdit ? "Edit Airport Details" : "Edit Airport Details"}
-          <IconButton
+          <IconButton className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -242,7 +242,7 @@ export const AirpotList = () => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon />
+            <CloseIcon className="popup-close-panel"/>
           </IconButton>
         </DialogTitle>
         <DialogContent>

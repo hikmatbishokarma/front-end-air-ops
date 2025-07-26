@@ -145,13 +145,14 @@ export const CrewDetailList = ({
                     {moment(item.createdAt).format("DD-MM-YYYY")}
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell className="panel-one">
                     {/* Edit Button */}
                     <IconButton
+                      className="popup-quote-model"
                       color="primary"
                       onClick={() => handleEdit(item.id)}
                     >
-                      <EditIcon />
+                      <EditIcon className="popup-close-panel" />
                     </IconButton>
 
                     {/* Delete Button */}

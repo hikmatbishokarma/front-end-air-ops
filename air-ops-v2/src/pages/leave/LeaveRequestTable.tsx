@@ -36,7 +36,7 @@ const LeaveRequestTable = ({
 }) => {
   return (
     <>
-      <Table size="small">
+      <Table size="small" className="leave-table">
         <TableHead>
           <TableRow>
             <TableCell>Leave Type</TableCell>
