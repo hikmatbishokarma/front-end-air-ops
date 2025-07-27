@@ -941,7 +941,7 @@ export const QuoteCreate = () => {
                                 }}
                               />
                             </Grid>
-                            <Grid item xs={6} >
+                            <Grid item xs={6}  className="fromto">
                               <Controller
                                 name={`itinerary.${index}.arrivalTime`}
                                 control={control}
