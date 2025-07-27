@@ -191,7 +191,7 @@ export const AircraftDetailList = () => {
                     color="primary"
                     onClick={() => handleEdit(item.id)}
                   >
-                    <EditIcon />
+                    <EditIcon className="ground-handlers"/>
                   </IconButton>
 
                   {/* Delete Button */}
@@ -199,7 +199,7 @@ export const AircraftDetailList = () => {
                     color="secondary"
                     onClick={() => confirmDelete(item.id)} // Call confirmDelete
                   >
-                    <DeleteIcon />
+                    <DeleteIcon className="ground-handlers"/>
                   </IconButton>
                 </TableCell>
               </TableRow>

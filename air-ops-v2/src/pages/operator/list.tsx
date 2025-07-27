@@ -120,7 +120,7 @@ export const OperatorList = () => {
                     color="primary"
                     onClick={() => handleEdit(item.id)}
                   >
-                    <EditIcon />
+                    <EditIcon className="ground-handlers"/>
                   </IconButton>
                 </TableCell>
               </TableRow>

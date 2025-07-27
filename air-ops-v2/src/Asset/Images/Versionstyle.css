@@ -663,3 +663,11 @@ font-size: 13px;
     height: 69px;
     margin-bottom: 20px;
 }
+.month_calender .MuiDateCalendar-viewTransitionContainer{
+width: 250px;
+}
+
+.month_calender .MuiPickersCalendarHeader-root{
+        padding-left: 9px;
+    padding-right: 70px
+}

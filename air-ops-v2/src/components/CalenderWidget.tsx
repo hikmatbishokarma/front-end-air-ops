@@ -428,7 +428,7 @@ export const FlightCalendarWidget = () => {
       </Box>
 
       {/* Right: Calendar */}
-      <Box
+      <Box className="month_calender"
         sx={{
           width: "55%",
           backgroundColor: "#f5f5f5",

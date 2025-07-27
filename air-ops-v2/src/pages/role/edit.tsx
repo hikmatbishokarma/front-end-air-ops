@@ -290,7 +290,7 @@ const RoleEdit = () => {
         {/* Add Row Button */}
         <Box sx={{ display: "flex", justifyContent: "start", mt: 2 }}>
           <IconButton aria-label="Add" onClick={addAccessPermissionRow}>
-            <AddIcon />
+            <AddIcon className="ground-handler"/>
           </IconButton>
         </Box>
 

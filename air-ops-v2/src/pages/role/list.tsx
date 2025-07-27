@@ -175,7 +175,7 @@ const RoleList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
+      <Dialog className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
