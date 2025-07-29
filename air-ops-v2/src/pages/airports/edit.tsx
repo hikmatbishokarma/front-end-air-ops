@@ -20,6 +20,7 @@ import {
 } from "../../lib/graphql/queries/airports";
 
 type FormData = {
+  type: string;
   name: string;
   iata_code: string;
   icao_code: string;
@@ -32,6 +33,7 @@ type FormData = {
   closeHrs: string;
   email: string;
   groundHandlersInfo: any[];
+  fuelSuppliers: any[];
 };
 
 export const AirportEdit = ({ id, onClose, refreshList }) => {
@@ -46,6 +48,7 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
+      type: "",
       name: "",
       iata_code: "",
       icao_code: "",
@@ -58,6 +61,7 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       contactNumber: "",
       email: "",
       groundHandlersInfo: [],
+      fuelSuppliers: [],
     },
   });
 
@@ -82,7 +86,8 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
 
   useEffect(() => {
     if (airport) {
-      setValue("city", airport.city || "false");
+      setValue("type", airport.type || "");
+      setValue("city", airport.city || "");
       setValue("name", airport.name || "");
       setValue("iata_code", airport.iata_code || "");
       setValue("icao_code", airport.icao_code || "");
@@ -94,6 +99,7 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       setValue("contactNumber", airport.contactNumber || "");
       setValue("email", airport.email || "");
       setValue("groundHandlersInfo", airport.groundHandlersInfo || []);
+      setValue("fuelSuppliers", airport.fuelSuppliers || []);
     }
   }, [airport, setValue]);
 
@@ -122,6 +128,12 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       ...data,
       latitude: Number(data.latitude),
       longitude: Number(data.longitude),
+      groundHandlersInfo: data?.groundHandlersInfo?.map(
+        ({ __typename, ...rest }) => rest
+      ),
+      fuelSuppliers: data?.fuelSuppliers?.map(
+        ({ __typename, ...rest }) => rest
+      ),
     };
 
     UpdateAirport(id, formattedData);
@@ -138,7 +150,27 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
     name: "groundHandlersInfo",
   });
 
+  const {
+    fields: fuelSuppliers,
+    append: addFuelSupplier,
+    remove: removeFuelSupplier,
+  } = useFieldArray({
+    control,
+    name: "fuelSuppliers",
+  });
+
   const editFields = [
+    {
+      name: "type",
+      label: "Airport Type",
+      required: true,
+      options: [
+        { key: "CIVIL", value: "Civil Airport" },
+        { key: "HELIPORT", value: "Heliport" },
+        { key: "AIR_STRIP", value: "Air Strip" },
+        { key: "DEFENCE", value: "Defence Airport" },
+      ],
+    },
     { name: "name", label: "Airport Name", xs: 6, required: true },
     { name: "iata_code", label: "IATA Code", xs: 6, required: true },
     { name: "icao_code", label: "ICAO Code", xs: 6, required: true },
@@ -194,10 +226,21 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
           fullName: "",
           companyName: "",
           contactNumber: "",
+          alternateContactNumber: "",
           email: "",
         })
       }
       removeGroundHandler={removeGroundHandler}
+      fuelSuppliersFields={fuelSuppliers}
+      addFuelSupplier={() =>
+        addFuelSupplier({
+          companyName: "",
+          contactNumber: "",
+          alternateContactNumber: "",
+          email: "",
+        })
+      }
+      removeFuelSupplier={removeFuelSupplier}
     />
   );
 };
