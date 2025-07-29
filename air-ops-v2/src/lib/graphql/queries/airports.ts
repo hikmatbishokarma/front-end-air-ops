@@ -31,6 +31,7 @@ export const GET_AIRPORTS = gql`
         name
         city
         country
+        type
       }
     }
   }
@@ -51,10 +52,18 @@ export const GET_AIRPORT_BY_ID = gql`
       email
       openHrs
       closeHrs
+      type
       groundHandlersInfo {
         fullName
         companyName
         contactNumber
+        alternateContactNumber
+        email
+      }
+      fuelSuppliers {
+        companyName
+        contactNumber
+        alternateContactNumber
         email
       }
     }

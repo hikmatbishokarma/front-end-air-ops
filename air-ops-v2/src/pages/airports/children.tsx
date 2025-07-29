@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Typography,
   IconButton,
+  MenuItem,
 } from "@mui/material";
 import { Controller, Control, SubmitHandler } from "react-hook-form";
 import ReactQuill from "react-quill";
@@ -39,6 +40,9 @@ interface ReusableFormProps {
   groundHandlerInfoFields: any[];
   addGroundHandler: (item: any) => void;
   removeGroundHandler: (index: number) => void;
+  fuelSuppliersFields: any[];
+  addFuelSupplier: (item: any) => void;
+  removeFuelSupplier: (index: number) => void;
 }
 
 const AirportChildren: React.FC<ReusableFormProps> = ({
@@ -48,6 +52,9 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
   groundHandlerInfoFields,
   addGroundHandler,
   removeGroundHandler,
+  fuelSuppliersFields,
+  addFuelSupplier,
+  removeFuelSupplier,
 }) => {
   return (
     <Box
@@ -73,12 +80,30 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
                     field: controllerField,
                     fieldState: { error },
                   }) => {
-                    if (field.options) {
+                    if (field.name === "city") {
                       return (
                         <CityAutocomplete
                           {...controllerField}
                           label={field.label}
                         />
+                      );
+                    } else if (field.name === "type") {
+                      return (
+                        <TextField
+                          {...controllerField}
+                          select
+                          fullWidth
+                          size="small"
+                          label={field.label}
+                          error={!!error}
+                          helperText={error?.message}
+                        >
+                          {field.options?.map((option) => (
+                            <MenuItem key={option.key} value={option.key}>
+                              {option.value}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       );
                     } else if (field.type == "time") {
                       return (
@@ -191,7 +216,29 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
                     )}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`groundHandlersInfo.${index}.alternateContactNumber`}
+                    control={control}
+                    rules={{
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: "Phone number must be 10 digits",
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Alternate Contact Number"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
                   <Controller
                     name={`groundHandlersInfo.${index}.email`}
                     control={control}
@@ -224,12 +271,127 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
             ))}
 
           <IconButton aria-label="add" className="add-icon-v1">
-            <AddIcon className="ground-handlers"
+            <AddIcon
+              className="ground-handlers"
               onClick={() =>
                 addGroundHandler({
                   fullName: "",
                   companyName: "",
                   contactNumber: "",
+                  alternateContactNumber: "",
+                  email: "",
+                })
+              }
+            />
+          </IconButton>
+        </Grid>
+        <Grid item xs={12}>
+          <h3>Fuel Suppliers</h3>
+          {fuelSuppliersFields &&
+            fuelSuppliersFields.map((item, index) => (
+              <Grid container spacing={2} key={item.id}>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fuelSuppliers.${index}.companyName`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Company Name"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fuelSuppliers.${index}.contactNumber`}
+                    control={control}
+                    rules={{
+                      required: true,
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: "Phone number must be 10 digits",
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Contact Number"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fuelSuppliers.${index}.alternateContactNumber`}
+                    control={control}
+                    rules={{
+                      pattern: {
+                        value: /^[0-9]{10}$/,
+                        message: "Phone number must be 10 digits",
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Alternate Contact Number"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fuelSuppliers.${index}.email`}
+                    control={control}
+                    rules={{
+                      required: true,
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Invalid email address",
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Email"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={4}>
+                  <IconButton aria-label="delete" className="add-icon-v1">
+                    <DeleteIcon onClick={() => removeFuelSupplier(index)} />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ))}
+
+          <IconButton aria-label="add" className="add-icon-v1">
+            <AddIcon
+              className="ground-handlers"
+              onClick={() =>
+                addFuelSupplier({
+                  companyName: "",
+                  contactNumber: "",
+                  alternateContactNumber: "",
                   email: "",
                 })
               }

@@ -10,6 +10,8 @@ import { useSession } from "../../SessionContext";
 
 import { GET_LIBRARIES } from "../../lib/graphql/queries/library";
 import { LibraryList } from "../library/List";
+import { Box, InputAdornment, TextField } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 const LibraryDashboard = () => {
   const showSnackbar = useSnackbar();
@@ -42,6 +44,14 @@ const LibraryDashboard = () => {
         variables: {
           filter: {
             ...(operatorId && { operatorId: { eq: operatorId } }),
+            ...(searchTerm
+              ? {
+                  or: [
+                    { name: { iLike: searchTerm } },
+                    { department: { iLike: searchTerm } },
+                  ],
+                }
+              : {}),
           },
         },
       });
@@ -103,6 +113,22 @@ const LibraryDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Libraries"]}
       />
+      <Box>
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Search Airports"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
       <LibraryList
         open={open}
         setOpen={setOpen}

@@ -9,6 +9,7 @@ import AirportChildren from "./children";
 import { CREATE_AIRPORT } from "../../lib/graphql/queries/airports";
 
 type FormValues = {
+  type: string;
   name: string;
   iata_code: string;
   icao_code: string;
@@ -21,6 +22,7 @@ type FormValues = {
   contactNumber: string;
   email: string;
   groundHandlersInfo: any[];
+  fuelSuppliers: any[];
 };
 
 export const AirportCreate = ({ onClose, refreshList }) => {
@@ -35,6 +37,7 @@ export const AirportCreate = ({ onClose, refreshList }) => {
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
+      type: "",
       name: "",
       iata_code: "",
       icao_code: "",
@@ -45,6 +48,7 @@ export const AirportCreate = ({ onClose, refreshList }) => {
       contactNumber: "",
       email: "",
       groundHandlersInfo: [],
+      fuelSuppliers: [],
     },
   });
 
@@ -57,7 +61,27 @@ export const AirportCreate = ({ onClose, refreshList }) => {
     name: "groundHandlersInfo",
   });
 
+  const {
+    fields: fuelSuppliers,
+    append: addFuelSupplier,
+    remove: removeFuelSupplier,
+  } = useFieldArray({
+    control,
+    name: "fuelSuppliers",
+  });
+
   const createFields = [
+    {
+      name: "type",
+      label: "Airport Type",
+      required: true,
+      options: [
+        { key: "CIVIL", value: "Civil Airport" },
+        { key: "HELIPORT", value: "Heliport" },
+        { key: "AIR_STRIP", value: "Air Strip" },
+        { key: "DEFENCE", value: "Defence Airport" },
+      ],
+    },
     { name: "name", label: "Airport Name", required: true },
     { name: "iata_code", label: "IATA Code", required: true },
     { name: "icao_code", label: "ICAO Code", xs: 6, required: true },
@@ -144,10 +168,21 @@ export const AirportCreate = ({ onClose, refreshList }) => {
           fullName: "",
           companyName: "",
           contactNumber: "",
+          alternateContactNumber: "",
           email: "",
         })
       }
       removeGroundHandler={removeGroundHandler}
+      fuelSuppliersFields={fuelSuppliers}
+      addFuelSupplier={() =>
+        addFuelSupplier({
+          companyName: "",
+          contactNumber: "",
+          alternateContactNumber: "",
+          email: "",
+        })
+      }
+      removeFuelSupplier={removeFuelSupplier}
     />
   );
 };

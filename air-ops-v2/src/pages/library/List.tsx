@@ -15,6 +15,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -35,6 +37,7 @@ import DocumentPreviewDialog from "../../components/DocumentPreviewDialog";
 import { DELETE_SECURITY } from "../../lib/graphql/queries/security";
 import { LibraryEdit } from "./Edit";
 import { LibraryCreate } from "./Create";
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const LibraryList = ({
   open,
