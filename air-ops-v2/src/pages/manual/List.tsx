@@ -250,20 +250,20 @@ export const ManualList = ({
 
                   <TableCell>
                     {/* Edit Button */}
-                    <IconButton
+                    <IconButton  className="ground-handlers"
                       color="primary"
                       onClick={() => handleEdit(row.id)}
                     >
-                      <EditIcon />
+                      <EditIcon className="edit-icon-size" />
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton
+                    <IconButton className="ground-handlers"
                       color="secondary"
                       //   onClick={() => handleDelete(row.id)}
                       onClick={() => handleDeleteClick(row.id)}
                     >
-                      <DeleteIcon />
+                      <DeleteIcon className="edit-icon-size"/>
                     </IconButton>
                   </TableCell>
                 </TableRow>

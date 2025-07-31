@@ -102,7 +102,7 @@ export const LibraryList = ({
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table manuals-quo-v1">
+      <TableContainer component={Paper} className="dash-table library-quo-v1">
         <Table>
           <TableHead>
             <TableRow>
@@ -139,20 +139,20 @@ export const LibraryList = ({
 
                   <TableCell>
                     {/* Edit Button */}
-                    <IconButton
+                    <IconButton className="ground-handlers"
                       color="primary"
                       onClick={() => handleEdit(row.id)}
                     >
-                      <EditIcon />
+                      <EditIcon className="edit-icon-size"/>
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton
+                    <IconButton className="ground-handlers"
                       color="secondary"
                       //   onClick={() => handleDelete(row.id)}
                       onClick={() => handleDeleteClick(row.id)}
                     >
-                      <DeleteIcon />
+                      <DeleteIcon className="edit-icon-size"/>
                     </IconButton>
                   </TableCell>
                 </TableRow>

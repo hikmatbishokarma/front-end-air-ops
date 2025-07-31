@@ -308,7 +308,7 @@ export default function FilterPanel({
             <Button className="rest-fiter-btn" onClick={onReset} variant="outlined" size="small">
               Reset
             </Button>
-            <Button onClick={onApply} variant="contained" size="small">
+            <Button onClick={onApply} variant="contained" size="small" className="fiter-apply">
               Apply
             </Button>
           </Stack>
