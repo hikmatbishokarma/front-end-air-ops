@@ -160,13 +160,19 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
               control={control}
               rules={{ required: "Type is required" }}
               render={({ field }) => (
-                <Select {...field} displayEmpty variant="outlined">
+                <TextField
+                  {...field}
+                  select
+                  variant="outlined"
+                  label="Category"
+                  size="small"
+                >
                   {availableRoles?.map((role) => (
                     <MenuItem key={role} value={role}>
                       {role}
                     </MenuItem>
                   ))}
-                </Select>
+                </TextField>
               )}
             />
           </FormControl>
@@ -266,7 +272,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
           {/* Delete Button */}
           <Grid item xs={0.5} sx={{ textAlign: "center" }}>
             <IconButton onClick={() => remove(index)} color="error">
-              <Delete fontSize="small" className="ground-handlers"/>
+              <Delete fontSize="small" className="ground-handlers" />
             </IconButton>
           </Grid>
         </Grid>
@@ -275,7 +281,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
       {/* Add Row Button */}
       <Box sx={{ display: "flex", justifyContent: "start", mt: 2 }}>
         <IconButton aria-label="Add" onClick={addAccessPermissionRow}>
-          <AddIcon className="ground-handlers"/>
+          <AddIcon className="ground-handlers" />
         </IconButton>
       </Box>
 

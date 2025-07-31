@@ -60,8 +60,12 @@ const RequestedByDialog = ({ subDialogOpen, handleSubDialogClose }) => {
   };
 
   return (
-    <Dialog open={subDialogOpen} onClose={handleSubDialogClose} className="panel-one">
-      <DialogTitle >Add Requested By Details</DialogTitle>
+    <Dialog
+      open={subDialogOpen}
+      onClose={handleSubDialogClose}
+      className="panel-one"
+    >
+      <DialogTitle>Enquiry From</DialogTitle>
       <DialogContent>
         <Controller
           name="type"
