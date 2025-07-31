@@ -187,19 +187,19 @@ export const AircraftDetailList = () => {
 
                 <TableCell>
                   {/* Edit Button */}
-                  <IconButton
+                  <IconButton className="ground-handlers"
                     color="primary"
                     onClick={() => handleEdit(item.id)}
                   >
-                    <EditIcon className="ground-handlers"/>
+                    <EditIcon  className="edit-icon-size"/>
                   </IconButton>
 
                   {/* Delete Button */}
-                  <IconButton
+                  <IconButton className="ground-handlers"
                     color="secondary"
                     onClick={() => confirmDelete(item.id)} // Call confirmDelete
                   >
-                    <DeleteIcon className="ground-handlers"/>
+                    <DeleteIcon className="edit-icon-size"/>
                   </IconButton>
                 </TableCell>
               </TableRow>

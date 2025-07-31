@@ -340,7 +340,7 @@ export default function SignIn() {
                     {/* <Link href="#" variant="body2">
                       Forgot email?
                     </Link> */}
-                    <Button
+                    <Button className="password-styles"
                       variant="text"
                       onClick={() => {
                         setForgotPwdModelOpen(true), setApiError(null);

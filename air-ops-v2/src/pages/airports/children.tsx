@@ -270,9 +270,9 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
               </Grid>
             ))}
 
-          <IconButton aria-label="add" className="add-icon-v1">
-            <AddIcon
-              className="ground-handlers"
+          <IconButton aria-label="add" className="add-icon-v1 ground-handlers">
+            <AddIcon className="edit-icon-size"
+              
               onClick={() =>
                 addGroundHandler({
                   fullName: "",
@@ -384,9 +384,9 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
               </Grid>
             ))}
 
-          <IconButton aria-label="add" className="add-icon-v1">
-            <AddIcon
-              className="ground-handlers"
+          <IconButton aria-label="add" className="add-icon-v1 ground-handlers">
+            <AddIcon className="edit-icon-size"
+              
               onClick={() =>
                 addFuelSupplier({
                   companyName: "",

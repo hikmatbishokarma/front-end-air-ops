@@ -116,11 +116,11 @@ export const OperatorList = () => {
 
                 <TableCell>
                   {/* Edit Button */}
-                  <IconButton
+                  <IconButton className="ground-handlers"
                     color="primary"
                     onClick={() => handleEdit(item.id)}
                   >
-                    <EditIcon className="ground-handlers"/>
+                    <EditIcon className="edit-icon-size"/>
                   </IconButton>
                 </TableCell>
               </TableRow>
