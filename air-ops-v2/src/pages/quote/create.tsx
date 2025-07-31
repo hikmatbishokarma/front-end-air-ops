@@ -949,7 +949,7 @@ export const QuoteCreate = () => {
                                 }}
                               />
                             </Grid>
-                            <Grid item xs={6}  className="fromto">
+                            <Grid item xs={6} className="fromto">
                               <Controller
                                 name={`itinerary.${index}.arrivalTime`}
                                 control={control}
@@ -1081,6 +1081,16 @@ export const QuoteCreate = () => {
                       }}
                       events={events}
                       datesSet={handleDatesSet}
+                      eventTimeFormat={{
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false, // This is crucial for 24-hour format
+                      }}
+                      slotLabelFormat={{
+                        hour: "numeric",
+                        minute: "2-digit",
+                        meridiem: "short",
+                      }}
                     />
                   </Box>
                 </Box>
@@ -1088,24 +1098,29 @@ export const QuoteCreate = () => {
 
               {activeStep === 2 && (
                 <Box sx={{ mt: 5 }} className="price-units">
-                  <Grid container spacing={2} sx={{ mb: 3 }} className="label-price-c1">
-                    <Grid item xs={3} >
+                  <Grid
+                    container
+                    spacing={2}
+                    sx={{ mb: 3 }}
+                    className="label-price-c1"
+                  >
+                    <Grid item xs={3}>
                       <h4 style={{ margin: "0px" }}>Label</h4>
                     </Grid>
-                    <Grid item xs={1.5} >
+                    <Grid item xs={1.5}>
                       <h4 style={{ margin: "0px" }}>Unit (Hrs)</h4>
                     </Grid>
-                    <Grid item xs={0.5} >
+                    <Grid item xs={0.5}>
                       <h4 style={{ margin: "0px" }}>X</h4>
                     </Grid>
-                    <Grid item xs={1.5} >
+                    <Grid item xs={1.5}>
                       <h4 style={{ margin: "0px" }}>Price</h4>
                     </Grid>
-                    <Grid item xs={1.5} >
+                    <Grid item xs={1.5}>
                       <h4 style={{ margin: "0px" }}>Currency</h4>
                     </Grid>
 
-                    <Grid item xs={1.5} >
+                    <Grid item xs={1.5}>
                       <h4 style={{ margin: "0px" }}>Total</h4>
                     </Grid>
                   </Grid>

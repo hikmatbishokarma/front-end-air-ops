@@ -796,6 +796,16 @@ const QuoteEdit = () => {
                       }}
                       events={events}
                       datesSet={handleDatesSet}
+                      eventTimeFormat={{
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false, // This is crucial for 24-hour format
+                      }}
+                      slotLabelFormat={{
+                        hour: "numeric",
+                        minute: "2-digit",
+                        meridiem: "short",
+                      }}
                     />
                   </Box>
                 </Box>

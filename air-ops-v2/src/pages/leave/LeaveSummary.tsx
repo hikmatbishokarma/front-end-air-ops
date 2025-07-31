@@ -5,12 +5,13 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
+import AirlineSeatFlatIcon from "@mui/icons-material/AirlineSeatFlat";
 
 const iconMap: Record<string, React.ReactNode> = {
   Casual: <BeachAccessIcon color="primary" />,
   Sick: <LocalHospitalIcon color="error" />,
   Privilege: <EmojiEventsIcon color="warning" />,
-  Bereavement: <FavoriteOutlinedIcon />,
+  Bereavement: <AirlineSeatFlatIcon />,
   Paternity: <FamilyRestroomIcon color="secondary" />,
 };
 
