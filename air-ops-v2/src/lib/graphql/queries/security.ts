@@ -34,6 +34,7 @@ export const GET_SECURITIES = gql`
       totalCount
       nodes {
         id
+        type
         name
         department
         attachment
@@ -47,6 +48,7 @@ export const GET_SECURITIES = gql`
 export const GET_SECURITY_BY_ID = gql`
   query security($id: ID!) {
     security(id: $id) {
+      type
       id
       name
       department
