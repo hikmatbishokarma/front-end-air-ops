@@ -113,7 +113,7 @@ const LibraryDashboard = () => {
         onFilter={handelFilter}
         createEnabledTabs={["Libraries"]}
       />
-      <Box>
+      <Box className="search_quo1">
         <TextField
           variant="outlined"
           size="small"

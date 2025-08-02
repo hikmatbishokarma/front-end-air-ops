@@ -63,7 +63,7 @@ const RequestedByDialog = ({ subDialogOpen, handleSubDialogClose }) => {
     <Dialog
       open={subDialogOpen}
       onClose={handleSubDialogClose}
-      className="panel-one"
+      className="panel-one tetttttttttt"
     >
       <DialogTitle>Enquiry From</DialogTitle>
       <DialogContent>

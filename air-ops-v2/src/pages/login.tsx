@@ -341,7 +341,7 @@ export default function Login() {
                         label="Remember me"
                       /> */}
 
-                      <Button
+                      <Button className="password-styles"
                         variant="text"
                         onClick={() => {
                           setForgotPwdModelOpen(true), setApiError(null);
