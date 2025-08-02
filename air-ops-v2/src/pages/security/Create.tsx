@@ -41,6 +41,7 @@ export const SecurityCreate = ({ onClose, refreshList }) => {
 
   const { control, handleSubmit, reset } = useForm<ISecurity>({
     defaultValues: {
+      type: "",
       name: "",
       department: "",
       attachment: "",

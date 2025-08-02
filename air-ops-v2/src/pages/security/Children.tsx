@@ -10,9 +10,11 @@ import {
   FormLabel,
   RadioGroup,
   Radio,
+  MenuItem,
 } from "@mui/material";
 import { Controller, Control, SubmitHandler, useWatch } from "react-hook-form";
 import FileUpload from "../../components/fileupload";
+import MediaUpload from "../../components/MediaUpload";
 
 interface FormField {
   name: string;
@@ -59,14 +61,31 @@ const SecurityChildren: React.FC<ReusableFormProps> = ({
               render={({ field: controllerField, fieldState: { error } }) => {
                 if (field.type == "upload") {
                   return (
-                    <FileUpload
-                      size="small"
+                    <MediaUpload
+                      size="medium"
                       category="securities"
-                      //   accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                      accept=".pdf"
+                      accept=".pdf,.doc,.docx"
                       value={controllerField.value}
                       onUpload={(url) => controllerField.onChange(url)}
                     />
+                  );
+                } else if (field.name == "type") {
+                  return (
+                    <TextField
+                      {...controllerField}
+                      select
+                      fullWidth
+                      size="small"
+                      label={field.label}
+                      error={!!error}
+                      helperText={error?.message}
+                    >
+                      {field.options?.map((option) => (
+                        <MenuItem key={option.key} value={option.key}>
+                          {option.value}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   );
                 } else
                   return (

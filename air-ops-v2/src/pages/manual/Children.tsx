@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Controller, Control, SubmitHandler, useWatch } from "react-hook-form";
 import FileUpload from "../../components/fileupload";
+import MediaUpload from "../../components/MediaUpload";
 
 interface FormField {
   name: string;
@@ -59,11 +60,10 @@ const ManualChildren: React.FC<ReusableFormProps> = ({
               render={({ field: controllerField, fieldState: { error } }) => {
                 if (field.type == "upload") {
                   return (
-                    <FileUpload
-                      size="small"
-                      category="manuals"
-                      //   accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                      accept=".pdf"
+                    <MediaUpload
+                      size="medium"
+                      category="securities"
+                      accept=".pdf,.doc,.docx"
                       value={controllerField.value}
                       onUpload={(url) => controllerField.onChange(url)}
                     />

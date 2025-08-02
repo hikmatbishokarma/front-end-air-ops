@@ -20,6 +20,7 @@ export const SecurityEdit = ({ id, onClose, refreshList }) => {
 
   const { control, handleSubmit, reset, setValue } = useForm<ISecurity>({
     defaultValues: {
+      type: "",
       name: "",
       department: "",
       attachment: "",
@@ -49,6 +50,7 @@ export const SecurityEdit = ({ id, onClose, refreshList }) => {
 
   useEffect(() => {
     if (security) {
+      setValue("type", security.type || "");
       setValue("name", security.name || "");
       setValue("department", security.department || "");
       setValue("attachment", security.attachment || "");
