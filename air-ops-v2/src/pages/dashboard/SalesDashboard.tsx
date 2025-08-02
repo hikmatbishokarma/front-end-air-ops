@@ -516,7 +516,7 @@ const SalesDashboard = () => {
         <Box
           component="form"
           onSubmit={handleTripSubmit(handelTripConfirmation)}
-          sx={{ width: "80%" }}
+          sx={{ width: "100%" }}
         >
           <Controller
             name="quotationNo"

@@ -645,17 +645,19 @@ font-size: 13px;
 .ground-handlers{
         background-color: #001551 !important;
     height: 25px;
-    width: 25px;
-    margin: 5px;
-    border-radius: 50%;
-    color: #fff;
+    width: 25px !important;
+    margin: 5px !important;
+    border-radius: 50% !important;
+    color: #fff !important;
     
 }
 
 .ground-handlers:hover{
         background-color: #ff0202 !important;
 }
-
+.edit-icon-size{
+    font-size: 16px !important;
+}
 .leave-table{
     background-color: #fff;
 }
@@ -670,4 +672,14 @@ width: 250px;
 .month_calender .MuiPickersCalendarHeader-root{
         padding-left: 9px;
     padding-right: 70px
+}
+.password-styles{
+        background: transparent !important;
+    color: #ff0202 !important;
+}
+.library-quo-v1{
+        margin-top: 22px;
+}
+.fiter-apply{
+        background-color: #001551 !important;
 }

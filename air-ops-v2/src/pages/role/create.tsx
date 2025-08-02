@@ -271,8 +271,12 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
 
           {/* Delete Button */}
           <Grid item xs={0.5} sx={{ textAlign: "center" }}>
-            <IconButton onClick={() => remove(index)} color="error">
-              <Delete fontSize="small" className="ground-handlers" />
+            <IconButton
+              className="ground-handlers"
+              onClick={() => remove(index)}
+              color="error"
+            >
+              <Delete fontSize="small" className="edit-icon-size" />
             </IconButton>
           </Grid>
         </Grid>
@@ -280,8 +284,12 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
 
       {/* Add Row Button */}
       <Box sx={{ display: "flex", justifyContent: "start", mt: 2 }}>
-        <IconButton aria-label="Add" onClick={addAccessPermissionRow}>
-          <AddIcon className="ground-handlers" />
+        <IconButton
+          className="ground-handlers"
+          aria-label="Add"
+          onClick={addAccessPermissionRow}
+        >
+          <AddIcon className="edit-icon-size" />
         </IconButton>
       </Box>
 

@@ -136,20 +136,20 @@ export const SecurityList = ({
 
                   <TableCell>
                     {/* Edit Button */}
-                    <IconButton
+                    <IconButton className="ground-handlers"
                       color="primary"
                       onClick={() => handleEdit(row.id)}
                     >
-                      <EditIcon />
+                      <EditIcon className="edit-icon-size"/>
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton
+                    <IconButton className="ground-handlers"
                       color="secondary"
                       //   onClick={() => handleDelete(row.id)}
                       onClick={() => handleDeleteClick(row.id)}
                     >
-                      <DeleteIcon />
+                      <DeleteIcon className="ground-handlers"/>
                     </IconButton>
                   </TableCell>
                 </TableRow>
