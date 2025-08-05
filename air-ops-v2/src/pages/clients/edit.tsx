@@ -32,7 +32,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
 
   const editFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
-    { name: "name", label: "First Name", xs: 6, required: true },
+    { name: "name", label: "Name", xs: 6, required: true },
     {
       name: "lastName",
       label: "Last Name",
