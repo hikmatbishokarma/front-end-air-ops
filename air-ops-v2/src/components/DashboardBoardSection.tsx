@@ -35,7 +35,7 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
 
       <div style={{ padding: 20 }} className="v1_board">
         {/* Table Header Section */}
-        <Grid
+        <Grid className="pt-board"
           container
           justifyContent="space-between"
           alignItems="center"
