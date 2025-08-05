@@ -10,6 +10,11 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -569,7 +574,7 @@ export const QuoteCreate = () => {
             <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
               {activeStep === 0 && (
                 <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={9}>
                     <Controller
                       name="requestedBy"
                       control={control}
@@ -612,7 +617,7 @@ export const QuoteCreate = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} md={6} display="flex" alignItems="center">
+                  <Grid item xs={12} md={3} display="flex" alignItems="center">
                     <IconButton
                       className="add-icon-v1"
                       aria-label="add"
@@ -625,7 +630,7 @@ export const QuoteCreate = () => {
 
                   {selectedClient?.isCompany && (
                     <>
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} md={9}>
                         <Controller
                           name="representative"
                           control={control}
@@ -670,7 +675,7 @@ export const QuoteCreate = () => {
                       <Grid
                         item
                         xs={12}
-                        md={6}
+                        md={3}
                         display="flex"
                         alignItems="center"
                       >
@@ -686,7 +691,7 @@ export const QuoteCreate = () => {
                     </>
                   )}
 
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={9}>
                     <Controller
                       name="category"
                       control={control}
@@ -716,7 +721,7 @@ export const QuoteCreate = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={9}>
                     <Controller
                       name="aircraft"
                       control={control}
@@ -760,9 +765,21 @@ export const QuoteCreate = () => {
                 </Grid>
               )}
 
+              
+
               {activeStep === 1 && (
-                <Box sx={{ display: "flex", mt: 5 }} className="sector-map">
-                  <Box sx={{ flex: 0.4, pr: 2 }}>
+                <Box sx={{ display: "flex", mt: 5 }} className="sector-map AccordionSummary_flex">
+                    <Accordion defaultExpanded className="top-border-view1">
+        <AccordionSummary className="Sector_Typography"
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Typography className="add_sectors_size" component="span">Add Sectors</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+             <Box sx={{ flex: 0.4, pr: 2 }}>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                       {itineraryFields.map((item, index) => {
                         return (
@@ -777,7 +794,7 @@ export const QuoteCreate = () => {
                               pb: 2,
                             }}
                           >
-                            <Grid item xs={6} className="fromto">
+                            <Grid item xs={6}  className="fromto">
                               <Controller
                                 name={`itinerary.${index}.source`}
                                 control={control}
@@ -1056,6 +1073,10 @@ export const QuoteCreate = () => {
                       Add Itinerary
                     </Button> */}
                   </Box>
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+                 
 
                   <Box
                     className="calendar-right"
@@ -1488,6 +1509,8 @@ export const QuoteCreate = () => {
                     </div>
 
                     {/* Itinerary Section */}
+
+
                     <h2
                       style={{
                         fontSize: "20px",
@@ -1497,6 +1520,10 @@ export const QuoteCreate = () => {
                     >
                       Sectors:
                     </h2>
+
+                    
+
+                    
                     <div style={{ overflowX: "auto" }}>
                       <table
                         style={{

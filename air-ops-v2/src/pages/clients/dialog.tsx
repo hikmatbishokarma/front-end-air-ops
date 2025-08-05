@@ -19,10 +19,10 @@ const ClientDialog = ({
   isEdit = false,
 }) => {
   return (
-    <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
+    <Dialog open={subDialogOpen} onClose={handleSubDialogClose} className="panel-one">
       <DialogTitle>
         {isEdit ? "Edit" : "Add"} Enquiry From
-        <IconButton
+        <IconButton className="popup-quote-model"
           aria-label="close"
           onClick={handleSubDialogClose}
           sx={{
@@ -32,7 +32,7 @@ const ClientDialog = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon />
+          <CloseIcon className="popup-close-panel"/>
         </IconButton>
       </DialogTitle>
       <DialogContent>
