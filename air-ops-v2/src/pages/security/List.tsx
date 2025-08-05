@@ -103,6 +103,7 @@ export const SecurityList = ({
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Type</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Department</TableCell>
               <TableCell>Attachment</TableCell>
@@ -115,10 +116,9 @@ export const SecurityList = ({
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
+                  <TableCell>{`${row.type}`.trim()}</TableCell>
                   <TableCell>{`${row.name}`.trim()}</TableCell>
-
                   <TableCell>{row.department}</TableCell>
-
                   <TableCell>
                     {row.attachment ? (
                       <IconButton onClick={() => handlePreview(row.attachment)}>
@@ -136,20 +136,22 @@ export const SecurityList = ({
 
                   <TableCell>
                     {/* Edit Button */}
-                    <IconButton className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="primary"
                       onClick={() => handleEdit(row.id)}
                     >
-                      <EditIcon className="edit-icon-size"/>
+                      <EditIcon className="edit-icon-size" />
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="secondary"
                       //   onClick={() => handleDelete(row.id)}
                       onClick={() => handleDeleteClick(row.id)}
                     >
-                      <DeleteIcon className="ground-handlers"/>
+                      <DeleteIcon className="ground-handlers" />
                     </IconButton>
                   </TableCell>
                 </TableRow>

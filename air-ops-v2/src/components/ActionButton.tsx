@@ -118,7 +118,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       if (!result) {
         showSnackbar("Internal server error!", "error");
       } else {
-        showSnackbar("Quote sent successfully!", "success");
+        showSnackbar("Email sent successfully!", "success");
       }
     } catch (err) {
       showSnackbar("Internal server error!", "error");

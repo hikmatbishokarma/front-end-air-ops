@@ -98,13 +98,13 @@ export const NAVIGATION: Navigation = [
 
   {
     segment: "crew",
-    title: "CREW",
+    title: "Crews",
     icon: <BadgeOutlinedIcon />,
   },
 
   {
     segment: "training-sales",
-    title: "Training & Sales",
+    title: "Training",
     icon: <AutoStoriesOutlinedIcon />,
   },
   {

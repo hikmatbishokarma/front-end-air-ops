@@ -362,7 +362,7 @@ export const UserProfile = () => {
     CrewDetailFormValues | undefined
   >();
 
-  const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
+  // const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
 
   const [tab, setTab] = useState(0);
   const {
@@ -407,7 +407,7 @@ export const UserProfile = () => {
     });
 
     if (response) {
-      setProfilePicUrl(response.profile || null);
+      // setProfilePicUrl(response.profile || null);
       setCrewDetail(response);
     } else {
       showSnackbar("Failed to Edit Crew Detail!", "error");
@@ -870,7 +870,7 @@ export const UserProfile = () => {
         certifications,
         nominees,
         operatorId,
-        profile: profilePicUrl,
+        // profile: profilePicUrl,
       };
 
       if (formattedData.roles) {
@@ -898,15 +898,29 @@ export const UserProfile = () => {
         <Grid item xs={12} sm={4} md={3}>
           <Card sx={{ p: 2 }}>
             <Box display="flex" flexDirection="column" alignItems="center">
-              <MediaUpload
+              {/* <MediaUpload
                 label="Profile" // You might not want this label to show visually here if space is tight
                 category="profile"
                 size="small" // Essential for the avatar style
                 accept="image/*"
                 value={profilePicUrl} // Use the dedicated state for profile picture
                 onUpload={setProfilePicUrl} // Update the dedicated state on upload
+              /> */}
+              +{" "}
+              <Controller
+                name="profile"
+                control={control}
+                render={({ field }) => (
+                  <MediaUpload
+                    label="Profile"
+                    category="profile"
+                    size="small"
+                    accept="image/*"
+                    value={field.value}
+                    onUpload={(url) => field.onChange(url)}
+                  />
+                )}
               />
-
               <Typography variant="h6" fontWeight={600}>
                 {crewDetail?.fullName}
               </Typography>

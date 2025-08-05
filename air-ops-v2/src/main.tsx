@@ -48,6 +48,7 @@ import { LeaveRequest } from "./pages/leave/LeaveRequestPage";
 import LibraryDashboard from "./pages/dashboard/Library";
 import TripConfirmationCalenderView from "./pages/full-calender-view/TripConfirmation";
 import StaffLeaveCalenderView from "./pages/full-calender-view/LeaveCalender";
+import Library from "./pages/library/List";
 
 const router = createBrowserRouter(
   [
@@ -80,7 +81,8 @@ const router = createBrowserRouter(
             },
             {
               path: "library",
-              Component: LibraryDashboard,
+              // Component: LibraryDashboard,
+              Component: Library,
             },
             {
               path: "camo",
