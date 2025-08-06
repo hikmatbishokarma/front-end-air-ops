@@ -219,7 +219,7 @@
 //   );
 // };
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -264,6 +264,28 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import ListViewIcon from "@mui/icons-material/ViewList";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert"; // Import 3-dot icon
+import { LibraryCreate } from "./Create";
+import CloseIcon from "@mui/icons-material/Close";
+import { LibraryEdit } from "./Edit";
+import useGql from "../../lib/graphql/gql";
+import { GET_LIBRARIES } from "../../lib/graphql/queries/library";
+import { useSession } from "../../SessionContext";
+import { useSnackbar } from "../../SnackbarContext";
+import DocumentCard from "../../components/DocumentCard";
+import PdfThumbnailCard from "../../components/ThumbnailCard";
+
+const apiBaseUrl =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/";
+
+interface Document {
+  id: string;
+  name: string;
+  department: string;
+  attachment: string;
+
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 // Custom Theme with Blue and Red
 const theme = createTheme({
@@ -327,104 +349,78 @@ const theme = createTheme({
   },
 });
 
-// Custom Upload Document Component
-const UploadDocument = ({ onFileUpload, initialFileName = "" }) => {
-  const [fileName, setFileName] = useState(initialFileName);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setFileName(file.name);
-      onFileUpload(file.name); // Pass file name or actual file object to parent
-    }
-  };
-
-  return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
-      <Button
-        variant="outlined"
-        component="label"
-        startIcon={<UploadFileIcon />}
-        color="primary"
-      >
-        {fileName ? "Change Document" : "Upload Document"}
-        <input type="file" hidden onChange={handleFileChange} />
-      </Button>
-      {fileName && (
-        <Typography variant="body2" color="text.secondary">
-          {fileName}
-        </Typography>
-      )}
-    </Box>
-  );
-};
-
 // Main App Component
 const Library = () => {
-  const [libraries, setLibraries] = useState([
-    {
-      id: 1,
-      name: "Project Alpha Report",
-      type: "ENGINEERING",
-      fileName: "alpha_report.pdf",
-    },
-    {
-      id: 2,
-      name: "Q3 Sales Forecast",
-      type: "SALES",
-      fileName: "sales_forecast.xlsx",
-    },
-    {
-      id: 3,
-      name: "HR Onboarding Guide",
-      type: "HR",
-      fileName: "onboarding_guide.docx",
-    },
-    {
-      id: 4,
-      name: "Security Policy V2",
-      type: "SECURITY",
-      fileName: "security_policy.pdf",
-    },
-    {
-      id: 5,
-      name: "Audit Findings 2024",
-      type: "AUDIT",
-      fileName: "audit_2024.pptx",
-    },
-    {
-      id: 6,
-      name: "Training Module 1",
-      type: "TRAINING",
-      fileName: "module1.mp4",
-    },
-    {
-      id: 7,
-      name: "Accounts Payable Process",
-      type: "ACCOUNTS",
-      fileName: "ap_process.pdf",
-    },
-    {
-      id: 8,
-      name: "Admin Procedures Manual",
-      type: "ADMIN",
-      fileName: "admin_manual.docx",
-    },
-  ]);
+  const showSnackbar = useSnackbar();
+  const { session, setSession } = useSession();
+
+  const operatorId = session?.user.operator?.id || null;
+
+  // const [libraries, setLibraries] = useState([
+  //   {
+  //     id: "1",
+  //     name: "Project Alpha Report",
+  //     department: "ENGINEERING",
+  //     attachment: "alpha_report.pdf",
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "Q3 Sales Forecast",
+  //     department: "SALES",
+  //     attachment: "sales_forecast.xlsx",
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "HR Onboarding Guide",
+  //     department: "HR",
+  //     attachment: "onboarding_guide.docx",
+  //   },
+  //   {
+  //     id: "4",
+  //     name: "Security Policy V2",
+  //     department: "SECURITY",
+  //     attachment: "security_policy.pdf",
+  //   },
+  //   {
+  //     id: "5",
+  //     name: "Audit Findings 2024",
+  //     department: "AUDIT",
+  //     attachment: "audit_2024.pptx",
+  //   },
+  //   {
+  //     id: "6",
+  //     name: "Training Module 1",
+  //     department: "TRAINING",
+  //     attachment: "module1.mp4",
+  //   },
+  //   {
+  //     id: "7",
+  //     name: "Accounts Payable Process",
+  //     department: "ACCOUNTS",
+  //     attachment: "ap_process.pdf",
+  //   },
+  //   {
+  //     id: "8",
+  //     name: "Admin Procedures Manual",
+  //     department: "ADMIN",
+  //     attachment: "admin_manual.docx",
+  //   },
+  // ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
-  const [currentDocument, setCurrentDocument] = useState(null); // For editing
-  const [newDocument, setNewDocument] = useState({
-    name: "",
-    type: "",
-    fileName: "",
-  });
+  const [currentDocument, setCurrentDocument] = useState<Document | null>(); // For editing
+  const [newDocument, setNewDocument] = useState<Document>();
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+
+  const [isEdit, setIsEdit] = useState(false);
+  const [libraries, setLibraries] = useState<Document[]>([]);
 
   // Simulate user permissions (replace with actual auth/role logic)
   const [canEdit, setCanEdit] = useState(true);
   const [canDelete, setCanDelete] = useState(true);
+
+  const [selectedDocUrl, setSelectedDocUrl] = useState<string | null>(null);
 
   const documentTypes = [
     "SALES",
@@ -443,7 +439,48 @@ const Library = () => {
   // State for the 3-dot menu
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
-  const [selectedDocForMenu, setSelectedDocForMenu] = useState(null);
+  const [selectedDocForMenu, setSelectedDocForMenu] = useState<Document | null>(
+    null
+  );
+
+  const getLibrary = async () => {
+    try {
+      const result = await useGql({
+        query: GET_LIBRARIES,
+        queryName: "libraries",
+        queryType: "query-with-count",
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+            ...(searchTerm
+              ? {
+                  or: [
+                    { name: { iLike: searchTerm } },
+                    { department: { iLike: searchTerm } },
+                  ],
+                }
+              : {}),
+          },
+        },
+      });
+
+      if (!result.data) showSnackbar("Failed to fetch Library!", "error");
+
+      console.log("result:::::", result);
+      setLibraries(result.data);
+    } catch (error) {
+      showSnackbar(error.message || "Failed to fetch Library!", "error");
+    }
+  };
+
+  useEffect(() => {
+    getLibrary();
+  }, [searchTerm, filterType]);
+
+  const refreshList = async () => {
+    // Fetch updated categories from API
+    await getLibrary();
+  };
 
   const handleMenuClick = (event, doc) => {
     setAnchorEl(event.currentTarget);
@@ -468,32 +505,16 @@ const Library = () => {
   // Filter documents based on search term and type
   const filteredDocuments = useMemo(() => {
     let filtered = libraries;
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (doc) =>
-          doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          doc.fileName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (filterType) {
-      filtered = filtered.filter((doc) => doc.type === filterType);
-    }
     return filtered;
   }, [libraries, searchTerm, filterType]);
 
   // Open the Add/Edit Document dialog
-  const handleOpenAddEditDialog = useCallback((doc = null) => {
+  const handleOpenAddEditDialog = useCallback((doc: Document | null = null) => {
     setCurrentDocument(doc);
     if (doc) {
-      setNewDocument({
-        name: doc.name,
-        type: doc.type,
-        fileName: doc.fileName,
-      });
+      setIsEdit(true);
     } else {
-      setNewDocument({ name: "", type: "", fileName: "" });
+      setIsEdit(false);
     }
     setOpenAddEditDialog(true);
     handleMenuClose(); // Close menu if opened from there
@@ -503,43 +524,7 @@ const Library = () => {
   const handleCloseAddEditDialog = useCallback(() => {
     setOpenAddEditDialog(false);
     setCurrentDocument(null);
-    setNewDocument({ name: "", type: "", fileName: "" });
   }, []);
-
-  // Handle changes in new document form fields
-  const handleNewDocumentChange = useCallback((event) => {
-    const { name, value } = event.target;
-    setNewDocument((prev) => ({ ...prev, [name]: value }));
-  }, []);
-
-  // Handle file upload in the dialog
-  const handleDocumentFileUpload = useCallback((fileName) => {
-    setNewDocument((prev) => ({ ...prev, fileName: fileName }));
-  }, []);
-
-  // Add or Update document entry
-  const handleSaveDocument = useCallback(() => {
-    if (newDocument.name && newDocument.type) {
-      if (currentDocument) {
-        // Update existing document
-        setLibraries((prev) =>
-          prev.map((doc) =>
-            doc.id === currentDocument.id
-              ? { ...doc, ...newDocument, id: doc.id }
-              : doc
-          )
-        );
-      } else {
-        // Add new document
-        setLibraries((prev) => [...prev, { id: Date.now(), ...newDocument }]);
-      }
-      handleCloseAddEditDialog();
-    } else {
-      // Basic validation feedback
-      // In a real app, use MUI's error props instead of alert
-      alert("Please fill in Document Name and select a Document Type.");
-    }
-  }, [newDocument, currentDocument, handleCloseAddEditDialog]);
 
   // Simulate viewing a document
   const handleViewDocument = useCallback((documentName) => {
@@ -567,18 +552,7 @@ const Library = () => {
           bgcolor: "background.default",
         }}
       >
-        {/* AppBar */}
-        {/* <AppBar position="static" color="primary">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              <DescriptionIcon sx={{ mr: 1 }} /> Library Documents
-            </Typography>
-          </Toolbar>
-        </AppBar> */}
-
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
-          {/* <Paper elevation={3} sx={{ p: 4 }}> */}
-          {/* Top Controls: Search, Filter, View Toggles, Upload */}
           <Box
             sx={{
               display: "flex",
@@ -651,7 +625,7 @@ const Library = () => {
           </Box>
 
           {/* Document Display Area */}
-          {filteredDocuments.length === 0 ? (
+          {filteredDocuments?.length === 0 ? (
             <Typography
               variant="h6"
               align="center"
@@ -662,11 +636,11 @@ const Library = () => {
             </Typography>
           ) : viewMode === "grid" ? (
             <Grid container spacing={3}>
-              {filteredDocuments.map((doc) => (
+              {filteredDocuments?.map((doc) => (
                 <Grid item xs={12} sm={6} md={3} key={doc.id}>
                   {" "}
                   {/* Changed md={4} to md={3} for 4 cards per row */}
-                  <Card
+                  {/* <Card
                     elevation={2}
                     sx={{
                       display: "flex",
@@ -674,11 +648,10 @@ const Library = () => {
                       height: "100%",
                     }}
                   >
-                    {/* Thumbnail Image Placeholder */}
                     <Box
                       sx={{
-                        height: 150, // Fixed height for thumbnail area
-                        bgcolor: "#f0f0f0", // Light gray background
+                        height: 150,
+                        bgcolor: "#f0f0f0",
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
@@ -687,20 +660,19 @@ const Library = () => {
                         position: "relative",
                       }}
                     >
-                      {/* Placeholder for PDF/Doc Thumbnail */}
                       <img
-                        src={`https://placehold.co/200x150/e0e0e0/555555?text=${doc.fileName.split(".").pop().toUpperCase()}`}
+                        src={`https://placehold.co/200x150/e0e0e0/555555?text=${doc?.attachment?.split(".").pop().toUpperCase()}`}
                         alt="Document Thumbnail"
                         style={{
                           width: "100%",
                           height: "100%",
                           objectFit: "cover",
                         }}
-                        onError={(e) => {
+                        onError={(e: any) => {
                           e.target.onerror = null;
                           e.target.src =
                             "https://placehold.co/200x150/e0e0e0/555555?text=DOC";
-                        }} // Fallback
+                        }}
                       />
                     </Box>
 
@@ -714,7 +686,6 @@ const Library = () => {
                       }}
                     >
                       {" "}
-                      {/* Adjusted padding */}
                       <Typography
                         variant="subtitle1"
                         component="div"
@@ -732,33 +703,42 @@ const Library = () => {
                       >
                         <Box sx={{ flexGrow: 1, pr: 0.5 }}>
                           {" "}
-                          {/* Added padding right to prevent overlap with icon */}
                           <Typography
                             variant="caption"
                             color="text.secondary"
                             sx={{ display: "block", lineHeight: 1.2 }}
                           >
-                            {doc.fileName || "N/A"}
+                            {doc.name || "N/A"}
                           </Typography>
                           <Typography
                             variant="caption"
                             color="text.secondary"
                             sx={{ display: "block", lineHeight: 1.2 }}
                           >
-                            Department: {doc.type}
+                            Department: {doc.department}
                           </Typography>
                         </Box>
                         <IconButton
                           aria-label="more actions"
                           onClick={(event) => handleMenuClick(event, doc)}
                           size="small"
-                          sx={{ p: 0.5, alignSelf: "flex-end" }} // Reduced padding, aligned to bottom right
+                          sx={{ p: 0.5, alignSelf: "flex-end" }}
                         >
                           <MoreVertIcon fontSize="small" />
                         </IconButton>
                       </Box>
                     </CardContent>
-                  </Card>
+                  </Card> */}
+                  {/* <DocumentCard
+                    title={doc.name}
+                    url={`${apiBaseUrl}/${doc.attachment}`}
+                    onClick={() => setSelectedDocUrl(doc.attachment)}
+                  /> */}
+                  <PdfThumbnailCard
+                    doc={doc}
+                    onClick={() => setSelectedDocUrl(doc.attachment)}
+                    handleMenuClick={handleMenuClick}
+                  />
                 </Grid>
               ))}
             </Grid>
@@ -782,7 +762,7 @@ const Library = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredDocuments.map((doc) => (
+                  {filteredDocuments?.map((doc) => (
                     <TableRow key={doc.id} hover>
                       <TableCell>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -792,12 +772,12 @@ const Library = () => {
                           {doc.name}
                         </Box>
                       </TableCell>
-                      <TableCell>{doc.type}</TableCell>
-                      <TableCell>{doc.fileName || "N/A"}</TableCell>
+                      <TableCell>{doc.department}</TableCell>
+                      <TableCell>{doc.name || "N/A"}</TableCell>
                       <TableCell>
                         <IconButton
                           aria-label="view"
-                          onClick={() => handleViewDocument(doc.fileName)}
+                          onClick={() => handleViewDocument(doc.name)}
                           color="primary"
                         >
                           <VisibilityIcon />
@@ -840,7 +820,7 @@ const Library = () => {
           }}
         >
           <MenuItem
-            onClick={() => handleViewDocument(selectedDocForMenu?.fileName)}
+            onClick={() => handleViewDocument(selectedDocForMenu?.name)}
           >
             <VisibilityIcon sx={{ mr: 1 }} /> View
           </MenuItem>
@@ -862,64 +842,45 @@ const Library = () => {
         </Menu>
 
         {/* Add/Edit Document Dialog */}
+
         <Dialog
+          className="panel-one"
           open={openAddEditDialog}
           onClose={handleCloseAddEditDialog}
           fullWidth
-          maxWidth="sm"
+          maxWidth="md"
         >
-          <DialogTitle sx={{ bgcolor: "primary.main", color: "white" }}>
-            {currentDocument ? "Edit Document Entry" : "Add New Document Entry"}
-          </DialogTitle>
-          <DialogContent dividers>
-            <TextField
-              autoFocus
-              margin="dense"
-              name="name"
-              label="Document Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={newDocument.name}
-              onChange={handleNewDocumentChange}
-            />
-            <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
-              <InputLabel id="document-type-label">Department</InputLabel>
-              <Select
-                labelId="document-type-label"
-                name="type"
-                value={newDocument.type}
-                onChange={handleNewDocumentChange}
-                label="Department"
-              >
-                {documentTypes.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <UploadDocument
-              onFileUpload={handleDocumentFileUpload}
-              initialFileName={newDocument.fileName}
-            />
-          </DialogContent>
-          <DialogActions sx={{ p: 2 }}>
-            <Button
+          <DialogTitle>
+            {isEdit ? "Edit Library" : "Create Library"}
+
+            <IconButton
+              className="popup-quote-model"
+              aria-label="close"
               onClick={handleCloseAddEditDialog}
-              variant="outlined"
-              color="primary"
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSaveDocument}
-              variant="contained"
-              color="primary"
-            >
-              {currentDocument ? "Save Changes" : "Add Document"}
-            </Button>
-          </DialogActions>
+              <CloseIcon className="popup-close-panel" />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            {isEdit ? (
+              <LibraryEdit
+                id={currentDocument?.id}
+                onClose={handleCloseAddEditDialog}
+                refreshList={refreshList}
+              />
+            ) : (
+              <LibraryCreate
+                onClose={handleCloseAddEditDialog}
+                refreshList={refreshList}
+              />
+            )}
+          </DialogContent>
         </Dialog>
       </Box>
     </ThemeProvider>
