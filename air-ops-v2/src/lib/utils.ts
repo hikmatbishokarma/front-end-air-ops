@@ -87,3 +87,58 @@ export const DEPARTMENT_TYPES = [
   { label: "Training", value: "TRAINING" },
   { label: "Others", value: "OTHERS" },
 ];
+
+export const SECURITY_TYPES = [
+  {
+    "label": "All",
+    "value": "All",
+  },
+  {
+    "label": "Approvals",
+    "value": "APPROVALS",
+  },
+  {
+    "label": "Organization",
+    "value": "ORGANIZATION",
+  },
+  {
+    "label": "Meetings",
+    "value": "MEETINGS",
+  },
+  {
+    "label": "Audit",
+    "value": "AUDIT",
+  },
+  {
+    "label": "File Records",
+    "value": "FILE_RECORDS",
+  },
+  {
+    "label": "Library",
+    "value": "LIBRARY",
+  },
+  {
+    "label": "Staff",
+    "value": "STAFF",
+  },
+  {
+    "label": "Security Training",
+    "value": "SECURITY_TRAINING",
+  },
+  {
+    "label": "Registers",
+    "value": "REGISTERS",
+  },
+  {
+    "label": "Aircraft Documents",
+    "value": "AIRCRAFT_DOCUMENTS",
+  },
+  {
+    "label": "Manuals",
+    "value": "MANUALS",
+  },
+  {
+    "label": "Agreements",
+    "value": "AGREEMENTS",
+  },
+];

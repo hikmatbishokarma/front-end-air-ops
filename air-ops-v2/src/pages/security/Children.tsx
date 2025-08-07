@@ -69,7 +69,7 @@ const SecurityChildren: React.FC<ReusableFormProps> = ({
                       onUpload={(url) => controllerField.onChange(url)}
                     />
                   );
-                } else if (field.name == "type") {
+                } else if (field.name == "type" || field.name == "department") {
                   return (
                     <TextField
                       {...controllerField}
@@ -81,8 +81,8 @@ const SecurityChildren: React.FC<ReusableFormProps> = ({
                       helperText={error?.message}
                     >
                       {field.options?.map((option) => (
-                        <MenuItem key={option.key} value={option.key}>
-                          {option.value}
+                        <MenuItem key={option.label} value={option.value}>
+                          {option.label}
                         </MenuItem>
                       ))}
                     </TextField>
