@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -36,15 +37,7 @@ import { DELETE_SECURITY } from "../../lib/graphql/queries/security";
 import { SecurityEdit } from "./Edit";
 import { SecurityCreate } from "./Create";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-export const SecurityList = ({
-  open,
-  setOpen,
-  list,
-  loading,
-  onSearch,
-  onFilterChange,
-  refreshList,
-}) => {
+export const SecurityList = ({ open, setOpen, list, loading, refreshList }) => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
@@ -116,9 +109,29 @@ export const SecurityList = ({
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
-                  <TableCell>{`${row.type}`.trim()}</TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        border: "1px solid",
+                        borderColor: "#1976d2", // Dark blue border color
+                        color: "#212121", // Dark gray/black text color
+                        fontWeight: "bold",
+                        textTransform: "uppercase",
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      {`${row.type}`.trim()}
+                    </Box>
+                  </TableCell>
                   <TableCell>{`${row.name}`.trim()}</TableCell>
-                  <TableCell>{row.department}</TableCell>
+                  <TableCell>
+                    <Chip label={row.department} />
+                  </TableCell>
                   <TableCell>
                     {row.attachment ? (
                       <IconButton onClick={() => handlePreview(row.attachment)}>
