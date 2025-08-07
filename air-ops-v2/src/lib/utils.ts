@@ -73,3 +73,17 @@ export enum LeaveStatus {
   DECLINED = "Declined",
   CANCELLED = "Cancelled",
 }
+
+export const DEPARTMENT_TYPES = [
+  { label: "Sales", value: "SALES" },
+  { label: "Ops", value: "OPS" },
+  { label: "Camo", value: "CAMO" },
+  { label: "Engineering", value: "ENGINEERING" },
+  { label: "Security", value: "SECURITY" },
+  { label: "Accounts", value: "ACCOUNTS" },
+  { label: "HR", value: "HR" },
+  { label: "Admin", value: "ADMIN" },
+  { label: "Audit", value: "AUDIT" },
+  { label: "Training", value: "TRAINING" },
+  { label: "Others", value: "OTHERS" },
+];

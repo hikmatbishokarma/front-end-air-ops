@@ -252,7 +252,8 @@ import {
   createTheme,
   ThemeProvider,
   CssBaseline,
-  Menu, // Import Menu for the 3-dot actions
+  Menu,
+  TablePagination, // Import Menu for the 3-dot actions
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -271,9 +272,13 @@ import useGql from "../../lib/graphql/gql";
 import { GET_LIBRARIES } from "../../lib/graphql/queries/library";
 import { useSession } from "../../SessionContext";
 import { useSnackbar } from "../../SnackbarContext";
-import DocumentCard from "../../components/DocumentCard";
-import PdfThumbnailCard from "../../components/ThumbnailCard";
 
+import PdfThumbnailCard from "../../components/ThumbnailCard";
+import ReusableFilterPanel from "../../components/ReusableFilterPanel";
+import moment from "moment";
+import { DEPARTMENT_TYPES } from "../../lib/utils";
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import DocumentPreviewDialog from "../../components/DocumentPreviewDialog";
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/";
 
@@ -287,68 +292,6 @@ interface Document {
   updatedAt?: string;
 }
 
-// Custom Theme with Blue and Red
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2", // Blue
-    },
-    secondary: {
-      main: "#dc3545", // Red
-    },
-    background: {
-      default: "#f0f2f5",
-      paper: "#ffffff",
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: "8px",
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "8px",
-          },
-        },
-      },
-    },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          borderRadius: "8px",
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: "12px",
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: "12px",
-        },
-      },
-    },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {
-          borderRadius: "12px",
-        },
-      },
-    },
-  },
-});
-
 // Main App Component
 const Library = () => {
   const showSnackbar = useSnackbar();
@@ -356,62 +299,15 @@ const Library = () => {
 
   const operatorId = session?.user.operator?.id || null;
 
-  // const [libraries, setLibraries] = useState([
-  //   {
-  //     id: "1",
-  //     name: "Project Alpha Report",
-  //     department: "ENGINEERING",
-  //     attachment: "alpha_report.pdf",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Q3 Sales Forecast",
-  //     department: "SALES",
-  //     attachment: "sales_forecast.xlsx",
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "HR Onboarding Guide",
-  //     department: "HR",
-  //     attachment: "onboarding_guide.docx",
-  //   },
-  //   {
-  //     id: "4",
-  //     name: "Security Policy V2",
-  //     department: "SECURITY",
-  //     attachment: "security_policy.pdf",
-  //   },
-  //   {
-  //     id: "5",
-  //     name: "Audit Findings 2024",
-  //     department: "AUDIT",
-  //     attachment: "audit_2024.pptx",
-  //   },
-  //   {
-  //     id: "6",
-  //     name: "Training Module 1",
-  //     department: "TRAINING",
-  //     attachment: "module1.mp4",
-  //   },
-  //   {
-  //     id: "7",
-  //     name: "Accounts Payable Process",
-  //     department: "ACCOUNTS",
-  //     attachment: "ap_process.pdf",
-  //   },
-  //   {
-  //     id: "8",
-  //     name: "Admin Procedures Manual",
-  //     department: "ADMIN",
-  //     attachment: "admin_manual.docx",
-  //   },
-  // ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("");
   const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
   const [currentDocument, setCurrentDocument] = useState<Document | null>(); // For editing
-  const [newDocument, setNewDocument] = useState<Document>();
+
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState("");
 
   const [isEdit, setIsEdit] = useState(false);
   const [libraries, setLibraries] = useState<Document[]>([]);
@@ -422,60 +318,19 @@ const Library = () => {
 
   const [selectedDocUrl, setSelectedDocUrl] = useState<string | null>(null);
 
-  const documentTypes = [
-    "SALES",
-    "OPS",
-    "CAMO",
-    "ENGINEERING",
-    "SECURITY",
-    "ACCOUNTS",
-    "HR",
-    "ADMIN",
-    "AUDIT",
-    "TRAINING",
-    "OTHERS",
-  ];
-
   // State for the 3-dot menu
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openMenu = Boolean(anchorEl);
-  const [selectedDocForMenu, setSelectedDocForMenu] = useState<Document | null>(
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(
     null
   );
 
-  const getLibrary = async () => {
-    try {
-      const result = await useGql({
-        query: GET_LIBRARIES,
-        queryName: "libraries",
-        queryType: "query-with-count",
-        variables: {
-          filter: {
-            ...(operatorId && { operatorId: { eq: operatorId } }),
-            ...(searchTerm
-              ? {
-                  or: [
-                    { name: { iLike: searchTerm } },
-                    { department: { iLike: searchTerm } },
-                  ],
-                }
-              : {}),
-          },
-        },
-      });
+  const openMenu = Boolean(menuAnchorEl);
 
-      if (!result.data) showSnackbar("Failed to fetch Library!", "error");
-
-      console.log("result:::::", result);
-      setLibraries(result.data);
-    } catch (error) {
-      showSnackbar(error.message || "Failed to fetch Library!", "error");
-    }
-  };
-
-  useEffect(() => {
-    getLibrary();
-  }, [searchTerm, filterType]);
+  const [selectedDocForMenu, setSelectedDocForMenu] = useState<Document | null>(
+    null
+  );
 
   const refreshList = async () => {
     // Fetch updated categories from API
@@ -483,23 +338,18 @@ const Library = () => {
   };
 
   const handleMenuClick = (event, doc) => {
-    setAnchorEl(event.currentTarget);
+    setMenuAnchorEl(event.currentTarget);
     setSelectedDocForMenu(doc);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setMenuAnchorEl(null);
     setSelectedDocForMenu(null);
   };
 
   // Handle search input change
   const handleSearchChange = useCallback((event) => {
     setSearchTerm(event.target.value);
-  }, []);
-
-  // Handle filter by type change
-  const handleFilterTypeChange = useCallback((event) => {
-    setFilterType(event.target.value);
   }, []);
 
   // Filter documents based on search term and type
@@ -523,12 +373,13 @@ const Library = () => {
   // Close the Add/Edit Document dialog and reset form
   const handleCloseAddEditDialog = useCallback(() => {
     setOpenAddEditDialog(false);
-    setCurrentDocument(null);
+    // setCurrentDocument(null);
   }, []);
 
   // Simulate viewing a document
   const handleViewDocument = useCallback((documentName) => {
-    alert(`Viewing document: ${documentName || "No document uploaded"}`);
+    setPreviewUrl(documentName);
+    setPreviewOpen(true);
     handleMenuClose();
   }, []);
 
@@ -541,9 +392,182 @@ const Library = () => {
     handleMenuClose();
   }, []);
 
+  const [offset, setOffset] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
+  const [hasMore, setHasMore] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+
+  // --- DATE FILTER STATES ---
+  const [filter, setFilter] = useState({});
+  const [openFilter, setOpenFilter] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<any>();
+
+  const [dateFilterType, setDateFilterType] = useState("anyDate");
+  const [customFromDate, setCustomFromDate] = useState("");
+  const [customToDate, setCustomToDate] = useState("");
+
+  const formatStartOfDayISO = useCallback((date: Date): string => {
+    const d = new Date(date);
+    d.setUTCHours(0, 0, 0, 0); // Set to start of UTC day
+    return d.toISOString();
+  }, []);
+
+  const formatEndOfDayISO = useCallback((date: Date): string => {
+    const d = new Date(date);
+    d.setUTCHours(23, 59, 59, 999); // Set to end of UTC day
+    return d.toISOString();
+  }, []);
+
+  const handleFilterOpen = (e) => {
+    setFilterAnchorEl(e.currentTarget);
+    setOpenFilter(true);
+  };
+
+  const handleFilterClose = () => {
+    setOpenFilter(false);
+  };
+
+  const handelOnApply = () => {
+    const today = new Date();
+
+    let from: string | null = null;
+    let to: string | null = null;
+
+    switch (dateFilterType) {
+      case "today":
+        from = formatStartOfDayISO(today);
+        to = formatEndOfDayISO(today);
+        break;
+      case "yesterday":
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        from = formatStartOfDayISO(yesterday);
+        to = formatEndOfDayISO(yesterday);
+        break;
+      case "lastWeek": // NEW CASE FOR LAST WEEK
+        const lastWeekStart = new Date(today);
+        lastWeekStart.setDate(today.getDate() - 7); // Start of day 7 days ago
+        from = formatStartOfDayISO(lastWeekStart);
+        to = formatEndOfDayISO(today); // End of today
+        break;
+      case "lastMonth":
+        const firstDayOfLastMonth = new Date(
+          today.getFullYear(),
+          today.getMonth() - 1,
+          1
+        );
+        const lastDayOfLastMonth = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          0
+        ); // Day 0 of current month is last day of previous
+        from = formatStartOfDayISO(firstDayOfLastMonth);
+        to = formatEndOfDayISO(lastDayOfLastMonth);
+        break;
+      case "custom":
+        if (customFromDate) {
+          from = formatStartOfDayISO(new Date(customFromDate));
+        }
+        if (customToDate) {
+          to = formatEndOfDayISO(new Date(customToDate));
+        }
+        break;
+      case "anyDate":
+      default:
+        from = "";
+        to = "";
+        break;
+    }
+
+    if (dateFilterType !== "custom") {
+      setCustomFromDate("");
+      setCustomToDate("");
+    }
+
+    const newFilter = {
+      ...(selectedDepartment && {
+        department: { eq: selectedDepartment },
+      }),
+
+      ...(from &&
+        to && {
+          createdAt: {
+            between: {
+              lower: from,
+              upper: to,
+            },
+          },
+        }),
+    };
+
+    setFilter(newFilter);
+  };
+
+  const getLibrary = async (newOffset = 0, isLoadMore = false) => {
+    try {
+      const result = await useGql({
+        query: GET_LIBRARIES,
+        queryName: "libraries",
+        queryType: "query-with-count",
+        variables: {
+          filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+            ...(searchTerm
+              ? {
+                  or: [
+                    { name: { iLike: searchTerm } },
+                    { department: { iLike: searchTerm } },
+                  ],
+                }
+              : {}),
+            ...(filter ? filter : {}),
+          },
+          paging: {
+            offset: newOffset,
+            limit: rowsPerPage,
+          },
+          sorting: [{ "field": "createdAt", "direction": "DESC" }],
+        },
+      });
+
+      if (!result.data) showSnackbar("Failed to fetch Library!", "error");
+
+      setTotalCount(result.totalCount);
+
+      if (isLoadMore) {
+        setLibraries((prev) => [...prev, ...result.data]);
+      } else {
+        setLibraries(result.data);
+      }
+      const nextOffset = newOffset + result.data.length;
+      setOffset(nextOffset);
+      setHasMore(nextOffset < result.totalCount);
+    } catch (error) {
+      showSnackbar(error.message || "Failed to fetch Library!", "error");
+    }
+  };
+
+  useEffect(() => {
+    getLibrary();
+  }, [searchTerm, filter, offset, rowsPerPage]);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    const newOffset = newPage * rowsPerPage;
+    setOffset(newOffset);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setOffset(0);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <>
+      <h3>Library</h3>
       <Box
         sx={{
           display: "flex",
@@ -578,24 +602,13 @@ const Library = () => {
                 ),
               }}
             />
-            <FormControl variant="outlined" size="small" sx={{ minWidth: 180 }}>
-              <InputLabel id="filter-type-label">Filter by type</InputLabel>
-              <Select
-                labelId="filter-type-label"
-                value={filterType}
-                onChange={handleFilterTypeChange}
-                label="Filter by type"
-              >
-                <MenuItem value="">
-                  <em>All Types</em>
-                </MenuItem>
-                {documentTypes.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Button
+              variant="outlined"
+              onClick={handleFilterOpen}
+              className="filter-date-range"
+            >
+              <FilterAltOutlinedIcon />
+            </Button>
 
             <Box sx={{ display: "flex", gap: 1 }}>
               <IconButton
@@ -635,118 +648,30 @@ const Library = () => {
               No documents found.
             </Typography>
           ) : viewMode === "grid" ? (
-            <Grid container spacing={3}>
-              {filteredDocuments?.map((doc) => (
-                <Grid item xs={12} sm={6} md={3} key={doc.id}>
-                  {" "}
-                  {/* Changed md={4} to md={3} for 4 cards per row */}
-                  {/* <Card
-                    elevation={2}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        height: 150,
-                        bgcolor: "#f0f0f0",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderBottom: "1px solid #eee",
-                        overflow: "hidden",
-                        position: "relative",
-                      }}
-                    >
-                      <img
-                        src={`https://placehold.co/200x150/e0e0e0/555555?text=${doc?.attachment?.split(".").pop().toUpperCase()}`}
-                        alt="Document Thumbnail"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                        onError={(e: any) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            "https://placehold.co/200x150/e0e0e0/555555?text=DOC";
-                        }}
-                      />
-                    </Box>
-
-                    <CardContent
-                      sx={{
-                        flexGrow: 1,
-                        pt: 1.5,
-                        pb: 0.5,
-                        px: 2,
-                        position: "relative",
-                      }}
-                    >
-                      {" "}
-                      <Typography
-                        variant="subtitle1"
-                        component="div"
-                        sx={{ fontWeight: "bold", lineHeight: 1.3, mb: 0.5 }}
-                      >
-                        {doc.name}
-                      </Typography>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "flex-end",
-                          width: "100%",
-                        }}
-                      >
-                        <Box sx={{ flexGrow: 1, pr: 0.5 }}>
-                          {" "}
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            sx={{ display: "block", lineHeight: 1.2 }}
-                          >
-                            {doc.name || "N/A"}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            sx={{ display: "block", lineHeight: 1.2 }}
-                          >
-                            Department: {doc.department}
-                          </Typography>
-                        </Box>
-                        <IconButton
-                          aria-label="more actions"
-                          onClick={(event) => handleMenuClick(event, doc)}
-                          size="small"
-                          sx={{ p: 0.5, alignSelf: "flex-end" }}
-                        >
-                          <MoreVertIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    </CardContent>
-                  </Card> */}
-                  {/* <DocumentCard
-                    title={doc.name}
-                    url={`${apiBaseUrl}/${doc.attachment}`}
-                    onClick={() => setSelectedDocUrl(doc.attachment)}
-                  /> */}
-                  <PdfThumbnailCard
-                    doc={doc}
-                    onClick={() => setSelectedDocUrl(doc.attachment)}
-                    handleMenuClick={handleMenuClick}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            <>
+              <Grid container spacing={3}>
+                {filteredDocuments?.map((doc) => (
+                  <Grid item xs={12} sm={6} md={3} key={doc.id}>
+                    {" "}
+                    <PdfThumbnailCard
+                      doc={doc}
+                      onClick={() => setSelectedDocUrl(doc.attachment)}
+                      handleMenuClick={handleMenuClick}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+              {hasMore && (
+                <Button variant="text" onClick={() => getLibrary(offset, true)}>
+                  View more
+                </Button>
+              )}
+            </>
           ) : (
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: theme.palette.primary.light }}>
+                  <TableRow>
                     <TableCell sx={{ fontWeight: "bold", color: "white" }}>
                       Document Name
                     </TableCell>
@@ -766,9 +691,7 @@ const Library = () => {
                     <TableRow key={doc.id} hover>
                       <TableCell>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <DescriptionIcon
-                            sx={{ mr: 1, color: theme.palette.primary.main }}
-                          />
+                          <DescriptionIcon sx={{ mr: 1 }} />
                           {doc.name}
                         </Box>
                       </TableCell>
@@ -805,6 +728,15 @@ const Library = () => {
                   ))}
                 </TableBody>
               </Table>
+              <TablePagination
+                component="div"
+                count={totalCount}
+                page={offset}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
             </TableContainer>
           )}
           {/* </Paper> */}
@@ -812,7 +744,7 @@ const Library = () => {
 
         {/* 3-dot Actions Menu */}
         <Menu
-          anchorEl={anchorEl}
+          anchorEl={menuAnchorEl}
           open={openMenu}
           onClose={handleMenuClose}
           MenuListProps={{
@@ -820,7 +752,7 @@ const Library = () => {
           }}
         >
           <MenuItem
-            onClick={() => handleViewDocument(selectedDocForMenu?.name)}
+            onClick={() => handleViewDocument(selectedDocForMenu?.attachment)}
           >
             <VisibilityIcon sx={{ mr: 1 }} /> View
           </MenuItem>
@@ -840,8 +772,6 @@ const Library = () => {
             </MenuItem>
           )}
         </Menu>
-
-        {/* Add/Edit Document Dialog */}
 
         <Dialog
           className="panel-one"
@@ -883,7 +813,76 @@ const Library = () => {
           </DialogContent>
         </Dialog>
       </Box>
-    </ThemeProvider>
+      <ReusableFilterPanel
+        open={openFilter}
+        anchorEl={filterAnchorEl}
+        onClose={handleFilterClose}
+        title="Filter"
+        showDateFilter
+        dateFilterType={dateFilterType}
+        onDateFilterChange={setDateFilterType}
+        fromDate={customFromDate ? moment(customFromDate) : null}
+        toDate={customToDate ? moment(customToDate) : null}
+        onFromDateChange={(date) => {
+          if (date) {
+            if (dateFilterType !== "custom") {
+              setDateFilterType("custom");
+            }
+            setCustomFromDate(date.format("YYYY-MM-DD"));
+          } else {
+            setCustomFromDate("");
+          }
+        }}
+        onToDateChange={(date) => {
+          if (date) {
+            if (dateFilterType !== "custom") {
+              setDateFilterType("custom");
+            }
+            setCustomToDate(date.format("YYYY-MM-DD"));
+          } else {
+            setCustomToDate("");
+          }
+        }}
+        onApply={() => {
+          // your apply logic
+          handelOnApply();
+          handleFilterClose();
+        }}
+        onReset={() => {
+          setDateFilterType("anyDate");
+          setCustomFromDate("");
+          setCustomToDate("");
+          setSelectedDepartment("");
+        }}
+      >
+        <Typography variant="subtitle2" gutterBottom>
+          Department
+        </Typography>
+        <Select
+          fullWidth
+          size="small"
+          value={selectedDepartment}
+          onChange={(e) => {
+            setSelectedDepartment(e.target.value);
+          }}
+          sx={{ mb: 3 }}
+        >
+          <MenuItem value="">All</MenuItem>
+          {DEPARTMENT_TYPES.map((dept) => (
+            <MenuItem key={dept.value} value={dept.value}>
+              {dept.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </ReusableFilterPanel>
+
+      <DocumentPreviewDialog
+        open={previewOpen}
+        url={previewUrl}
+        apiBaseUrl={apiBaseUrl}
+        onClose={() => setPreviewOpen(false)}
+      />
+    </>
   );
 };
 
