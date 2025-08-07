@@ -48,7 +48,7 @@ const SecurityDashboard = () => {
 
   const [totalCount, setTotalCount] = useState(0); // total count from backend
 
-  const [selectedTab, setSelectedTab] = useState({});
+  const [selectedTab, setSelectedTab] = useState("All");
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
