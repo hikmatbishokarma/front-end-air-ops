@@ -2,7 +2,7 @@ import React from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { Card, CardContent, Box, Typography, IconButton } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/";
 
@@ -31,110 +31,7 @@ const PdfThumbnailCard: React.FC<Props> = ({
   const url = `${apiBaseUrl}/${doc.attachment}`;
   const isPDF = doc.attachment.toLowerCase().endsWith(".pdf");
 
-  console.log("url:::", url);
-
   return (
-    // <Card
-    //   elevation={2}
-    //   sx={{
-    //     display: "flex",
-    //     flexDirection: "column",
-    //     height: "100%",
-    //     width: 200,
-    //     borderRadius: 2,
-    //   }}
-    // >
-    //   <Box
-    //     onClick={() => onClick(doc)}
-    //     sx={{
-    //       height: 150,
-    //       bgcolor: "#f0f0f0",
-    //       display: "flex",
-    //       justifyContent: "center",
-    //       alignItems: "center",
-    //       borderBottom: "1px solid #eee",
-    //       overflow: "hidden",
-    //       position: "relative",
-    //       cursor: "pointer",
-    //     }}
-    //   >
-    //     {doc.attachment.endsWith(".pdf") ? (
-    //       <Document
-    //         file={url}
-    //         onLoadError={(err) => console.error("PDF load error", err)}
-    //         loading={<div style={{ height: 150 }}>Loading...</div>}
-    //       >
-    //         <div style={{ backgroundColor: "#f0f0f0", padding: 4 }}>
-    //           <Page pageNumber={1} width={200} />
-    //         </div>
-    //       </Document>
-    //     ) : (
-    //       <img
-    //         src={`https://placehold.co/200x150/e0e0e0/555555?text=${doc?.attachment?.split(".").pop()?.toUpperCase()}`}
-    //         alt="Document Thumbnail"
-    //         style={{ width: "100%", height: "100%", objectFit: "cover" }}
-    //         onError={(e: any) => {
-    //           e.target.onerror = null;
-    //           e.target.src =
-    //             "https://placehold.co/200x150/e0e0e0/555555?text=DOC";
-    //         }}
-    //       />
-    //     )}
-    //   </Box>
-
-    //   <CardContent
-    //     sx={{
-    //       flexGrow: 1,
-    //       pt: 1.5,
-    //       pb: 0.5,
-    //       px: 2,
-    //       position: "relative",
-    //     }}
-    //   >
-    //     <Typography
-    //       variant="subtitle1"
-    //       sx={{ fontWeight: "bold", lineHeight: 1.3, mb: 0.5 }}
-    //       noWrap
-    //     >
-    //       {doc.name}
-    //     </Typography>
-
-    //     <Box
-    //       sx={{
-    //         display: "flex",
-    //         justifyContent: "space-between",
-    //         alignItems: "flex-end",
-    //         width: "100%",
-    //       }}
-    //     >
-    //       <Box sx={{ flexGrow: 1, pr: 0.5 }}>
-    //         <Typography
-    //           variant="caption"
-    //           color="text.secondary"
-    //           sx={{ display: "block", lineHeight: 1.2 }}
-    //         >
-    //           {doc.name || "N/A"}
-    //         </Typography>
-    //         <Typography
-    //           variant="caption"
-    //           color="text.secondary"
-    //           sx={{ display: "block", lineHeight: 1.2 }}
-    //         >
-    //           Department: {doc.department || "N/A"}
-    //         </Typography>
-    //       </Box>
-
-    //       <IconButton
-    //         aria-label="more actions"
-    //         onClick={(event) => handleMenuClick(event, doc)}
-    //         size="small"
-    //         sx={{ p: 0.5, alignSelf: "flex-end" }}
-    //       >
-    //         <MoreVertIcon fontSize="small" />
-    //       </IconButton>
-    //     </Box>
-    //   </CardContent>
-    // </Card>
     <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box
         sx={{
@@ -169,16 +66,54 @@ const PdfThumbnailCard: React.FC<Props> = ({
         )}
       </Box>
 
-      <CardContent sx={{ flex: 1 }}>
-        <Typography variant="subtitle1" fontWeight={600}>
-          {doc.name}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          Department: {doc.department}
-        </Typography>
-        {/* <Typography variant="caption" color="text.secondary" display="block">
-          Type: {doc.department}
-        </Typography> */}
+      <CardContent
+        sx={{
+          p: 1.5,
+          pt: 1,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        {/* Left content (icon + text) */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            overflow: "hidden",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <PictureAsPdfIcon fontSize="small" color="error" />
+            <Typography
+              variant="subtitle2"
+              fontWeight={600}
+              noWrap
+              sx={{ flex: 1, fontSize: "0.875rem" }}
+            >
+              {doc.name}
+            </Typography>
+          </Box>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            noWrap
+            sx={{ ml: 4, fontSize: "0.75rem" }}
+          >
+            Department: {doc.department}
+          </Typography>
+        </Box>
+
+        {/* Menu button */}
+        <IconButton
+          aria-label="actions"
+          onClick={(event) => handleMenuClick(event, doc)}
+          size="small"
+          sx={{ ml: 1 }}
+        >
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
       </CardContent>
     </Card>
   );
