@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogActions,
   TablePagination,
+  Chip,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -41,6 +42,10 @@ import {
   REQUEST_ACCESS,
 } from "../../lib/graphql/queries/access-request";
 import AccessRequestModal from "../../components/AccessRequestModal";
+
+import { grey } from "@mui/material/colors";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
+import { UserAvatarCell } from "../../components/UserAvatar";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ManualList = ({
@@ -199,7 +204,8 @@ export const ManualList = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>Uploaded By</TableCell>
+              <TableCell>Document Name</TableCell>
               <TableCell>Department</TableCell>
               <TableCell>Uploaded On</TableCell>
               <TableCell>Action</TableCell>
@@ -209,6 +215,21 @@ export const ManualList = ({
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
+                  <TableCell>
+                    <UserAvatarCell
+                      user={
+                        row.createdBy
+                          ? {
+                              ...row.createdBy,
+                              name:
+                                row?.createdBy?.displayName ||
+                                row.createdBy?.displayName?.fullName,
+                              profilePicUrl: `${apiBaseUrl}${row?.createdBy?.profile}`,
+                            }
+                          : null
+                      }
+                    />
+                  </TableCell>
                   <TableCell>
                     {row.attachment ? (
                       <>
@@ -222,13 +243,23 @@ export const ManualList = ({
                     )}
                   </TableCell>
 
-                  <TableCell>{row.department}</TableCell>
+                  <TableCell>
+                    <Chip label={row.department} />
+                  </TableCell>
 
-                  <TableCell align="right">
+                  <TableCell>
                     {moment(row.createdAt).format("DD-MM-YYYY")}
                   </TableCell>
 
                   <TableCell>
+                    <IconButton
+                      aria-label="view"
+                      onClick={() => handlePreview(row)}
+                      color="primary"
+                      className="ground-handlers"
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
                     {/* Edit Button */}
                     <IconButton
                       className="ground-handlers"
@@ -358,19 +389,13 @@ export const ManualList = ({
         onClose={() => setPreviewOpen(false)}
       />
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this item?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
-          <Button color="error" onClick={handleDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      <ConfirmationDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this record? This action cannot be undone."
+      />
       <AccessRequestModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -251,7 +251,7 @@ const ManualDashboard = () => {
 
   useEffect(() => {
     getManual();
-  }, [searchTerm, filter]);
+  }, [searchTerm, filter, page, rowsPerPage]);
 
   return (
     <>

@@ -39,6 +39,12 @@ export const GET_LIBRARIES = gql`
         attachment
         createdAt
         updatedAt
+        createdBy {
+          id
+          profile
+          displayName
+          fullName
+        }
       }
     }
   }
