@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogActions,
   Chip,
+  TablePagination,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -37,7 +38,18 @@ import { DELETE_SECURITY } from "../../lib/graphql/queries/security";
 import { SecurityEdit } from "./Edit";
 import { SecurityCreate } from "./Create";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-export const SecurityList = ({ open, setOpen, list, loading, refreshList }) => {
+export const SecurityList = ({
+  open,
+  setOpen,
+  list,
+  loading,
+  refreshList,
+  totalCount,
+  rowsPerPage,
+  page,
+  setPage,
+  setRowsPerPage,
+}) => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
 
@@ -90,17 +102,26 @@ export const SecurityList = ({ open, setOpen, list, loading, refreshList }) => {
     setPreviewOpen(true);
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <>
-      <TableContainer component={Paper} className="dash-table manuals-quo-v1">
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Type</TableCell>
               <TableCell>Name</TableCell>
+              <TableCell>Type</TableCell>
               <TableCell>Department</TableCell>
-              <TableCell>Attachment</TableCell>
-
               <TableCell>Created On</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -109,6 +130,21 @@ export const SecurityList = ({ open, setOpen, list, loading, refreshList }) => {
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
+                  <TableCell>
+                    {row.attachment ? (
+                      <>
+                        <IconButton
+                          onClick={() => handlePreview(row.attachment)}
+                        >
+                          <PictureAsPdfIcon color="primary" />
+                        </IconButton>
+                        {`${row.name}`.trim()}
+                      </>
+                    ) : (
+                      "No Attachment"
+                    )}
+                  </TableCell>
+
                   <TableCell>
                     <Box
                       sx={{
@@ -128,19 +164,9 @@ export const SecurityList = ({ open, setOpen, list, loading, refreshList }) => {
                       {`${row.type}`.trim()}
                     </Box>
                   </TableCell>
-                  <TableCell>{`${row.name}`.trim()}</TableCell>
+
                   <TableCell>
                     <Chip label={row.department} />
-                  </TableCell>
-                  <TableCell>
-                    {row.attachment ? (
-                      <IconButton onClick={() => handlePreview(row.attachment)}>
-                        {/* <VisibilityIcon color="primary" /> */}
-                        <PictureAsPdfIcon color="primary" />
-                      </IconButton>
-                    ) : (
-                      "No Attachment"
-                    )}
                   </TableCell>
 
                   <TableCell align="right">
@@ -171,6 +197,15 @@ export const SecurityList = ({ open, setOpen, list, loading, refreshList }) => {
               ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={totalCount}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
       </TableContainer>
       <Dialog
         className="panel-one"

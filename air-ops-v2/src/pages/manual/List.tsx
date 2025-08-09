@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TablePagination,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -47,9 +48,12 @@ export const ManualList = ({
   setOpen,
   list,
   loading,
-  onSearch,
-  onFilterChange,
   refreshList,
+  totalCount,
+  rowsPerPage,
+  page,
+  setPage,
+  setRowsPerPage,
 }) => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
@@ -178,20 +182,26 @@ export const ManualList = ({
     } else showSnackbar("Request sent successfully!", "success");
   };
 
-  console.log("Preview Open:", previewOpen);
-  console.log("Preview URL:", previewUrl);
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table manuals-quo-v1">
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Department</TableCell>
-              <TableCell>Attachment</TableCell>
-
-              <TableCell>Created On</TableCell>
+              <TableCell>Uploaded On</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -199,50 +209,20 @@ export const ManualList = ({
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
-                  <TableCell>{`${row.name}`.trim()}</TableCell>
-
-                  <TableCell>{row.department}</TableCell>
-                  {/* <TableCell>
-                    {row.attachment ? (
-                      <a
-                        href={row.attachment}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          textDecoration: "none",
-                        }}
-                      >
-                        {row.attachment.endsWith(".pdf") && (
-                          <PictureAsPdfIcon color="error" />
-                        )}
-                        {(row.attachment.endsWith(".doc") ||
-                          row.attachment.endsWith(".docx")) && (
-                          <DescriptionIcon color="primary" />
-                        )}
-                        {(row.attachment.endsWith(".png") ||
-                          row.attachment.endsWith(".jpg") ||
-                          row.attachment.endsWith(".jpeg")) && (
-                          <ImageIcon color="action" />
-                        )}
-                        <span style={{ marginLeft: "8px" }}>View Document</span>
-                      </a>
-                    ) : (
-                      "No Attachment"
-                    )}
-                  </TableCell> */}
-
                   <TableCell>
                     {row.attachment ? (
-                      <IconButton onClick={() => handlePreview(row)}>
-                        {/* <VisibilityIcon color="primary" /> */}
-                        <PictureAsPdfIcon color="primary" />
-                      </IconButton>
+                      <>
+                        <IconButton onClick={() => handlePreview(row)}>
+                          <PictureAsPdfIcon color="primary" />
+                        </IconButton>
+                        {`${row.name}`.trim()}
+                      </>
                     ) : (
                       "No Attachment"
                     )}
                   </TableCell>
+
+                  <TableCell>{row.department}</TableCell>
 
                   <TableCell align="right">
                     {moment(row.createdAt).format("DD-MM-YYYY")}
@@ -250,7 +230,8 @@ export const ManualList = ({
 
                   <TableCell>
                     {/* Edit Button */}
-                    <IconButton  className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="primary"
                       onClick={() => handleEdit(row.id)}
                     >
@@ -258,18 +239,28 @@ export const ManualList = ({
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="secondary"
                       //   onClick={() => handleDelete(row.id)}
                       onClick={() => handleDeleteClick(row.id)}
                     >
-                      <DeleteIcon className="edit-icon-size"/>
+                      <DeleteIcon className="edit-icon-size" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={totalCount}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
       </TableContainer>
       <Dialog
         className="panel-one"

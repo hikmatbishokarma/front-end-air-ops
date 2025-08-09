@@ -92,6 +92,7 @@ const SecurityDashboard = () => {
 
       if (!result.data) showSnackbar("Failed to fetch Security!", "error");
       setSecurityData(result);
+      setTotalCount(result?.totalCount || 0);
     } catch (error) {
       showSnackbar(error.message || "Failed to fetch Security!", "error");
     }
@@ -229,55 +230,13 @@ const SecurityDashboard = () => {
 
   return (
     <>
+      <h3>Security</h3>
       <Box sx={{ p: 3 }}>
         <DashboardTabs
           tabsData={SECURITY_TYPES}
           selectedTab={selectedTab}
           onTabChange={handleTabChange}
         />
-        {/* 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 3,
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <TextField
-            variant="outlined"
-            placeholder="Search by name"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            size="small"
-            sx={{ flexGrow: 1, minWidth: "180px" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="outlined"
-            onClick={handleFilterOpen}
-            className="filter-date-range"
-          >
-            <FilterAltOutlinedIcon />
-          </Button>
-
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setOpen(true)}
-            color="primary"
-          >
-            Upload Document
-          </Button>
-        </Box> */}
 
         <Box
           sx={{
@@ -319,7 +278,7 @@ const SecurityDashboard = () => {
               onClick={() => setOpen(true)}
               color="primary"
             >
-              Upload Document
+              Upload Doc
             </Button>
           </Box>
         </Box>
@@ -339,6 +298,11 @@ const SecurityDashboard = () => {
             list={securityData.data}
             loading={loading}
             refreshList={refreshList}
+            totalCount={totalCount}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
           />
         )}
       </Box>
