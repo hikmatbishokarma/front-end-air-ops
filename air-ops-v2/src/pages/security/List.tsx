@@ -37,6 +37,9 @@ import DocumentPreviewDialog from "../../components/DocumentPreviewDialog";
 import { DELETE_SECURITY } from "../../lib/graphql/queries/security";
 import { SecurityEdit } from "./Edit";
 import { SecurityCreate } from "./Create";
+
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
+import { UserAvatarCell } from "../../components/UserAvatar";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const SecurityList = ({
   open,
@@ -119,7 +122,8 @@ export const SecurityList = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>Uploaded By</TableCell>
+              <TableCell>Document Name</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Department</TableCell>
               <TableCell>Created On</TableCell>
@@ -130,6 +134,21 @@ export const SecurityList = ({
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
+                  <TableCell>
+                    <UserAvatarCell
+                      user={
+                        row.createdBy
+                          ? {
+                              ...row.createdBy,
+                              name:
+                                row?.createdBy?.displayName ||
+                                row.createdBy?.displayName?.fullName,
+                              profilePicUrl: `${apiBaseUrl}${row?.createdBy?.profile}`,
+                            }
+                          : null
+                      }
+                    />
+                  </TableCell>
                   <TableCell>
                     {row.attachment ? (
                       <>
@@ -174,6 +193,14 @@ export const SecurityList = ({
                   </TableCell>
 
                   <TableCell>
+                    <IconButton
+                      aria-label="view"
+                      onClick={() => handlePreview(row.attachment)}
+                      color="primary"
+                      className="ground-handlers"
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
                     {/* Edit Button */}
                     <IconButton
                       className="ground-handlers"
@@ -250,18 +277,13 @@ export const SecurityList = ({
         onClose={() => setPreviewOpen(false)}
       />
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this item?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
-          <Button color="error" onClick={handleDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this record? This action cannot be undone."
+      />
     </>
   );
 };

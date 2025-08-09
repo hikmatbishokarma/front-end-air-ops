@@ -40,6 +40,12 @@ export const GET_SECURITIES = gql`
         attachment
         createdAt
         updatedAt
+        createdBy {
+          id
+          profile
+          displayName
+          fullName
+        }
       }
     }
   }

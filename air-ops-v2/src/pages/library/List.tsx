@@ -253,7 +253,8 @@ import {
   ThemeProvider,
   CssBaseline,
   Menu,
-  TablePagination, // Import Menu for the 3-dot actions
+  TablePagination,
+  Chip, // Import Menu for the 3-dot actions
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -269,7 +270,10 @@ import { LibraryCreate } from "./Create";
 import CloseIcon from "@mui/icons-material/Close";
 import { LibraryEdit } from "./Edit";
 import useGql from "../../lib/graphql/gql";
-import { GET_LIBRARIES } from "../../lib/graphql/queries/library";
+import {
+  DELETE_LIBRARY,
+  GET_LIBRARIES,
+} from "../../lib/graphql/queries/library";
 import { useSession } from "../../SessionContext";
 import { useSnackbar } from "../../SnackbarContext";
 
@@ -279,6 +283,8 @@ import moment from "moment";
 import { DEPARTMENT_TYPES } from "../../lib/utils";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import DocumentPreviewDialog from "../../components/DocumentPreviewDialog";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
+import { UserAvatarCell } from "../../components/UserAvatar";
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/";
 
@@ -290,12 +296,16 @@ interface Document {
 
   createdAt?: string;
   updatedAt?: string;
+  createdBy?: any;
 }
 
 // Main App Component
 const Library = () => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   const operatorId = session?.user.operator?.id || null;
 
@@ -380,15 +390,6 @@ const Library = () => {
   const handleViewDocument = useCallback((documentName) => {
     setPreviewUrl(documentName);
     setPreviewOpen(true);
-    handleMenuClose();
-  }, []);
-
-  // Simulate deleting a document entry
-  const handleDeleteDocument = useCallback((id) => {
-    // In a real app, use a custom modal instead of window.confirm
-    if (window.confirm("Are you sure you want to delete this document?")) {
-      setLibraries((prev) => prev.filter((doc) => doc.id !== id));
-    }
     handleMenuClose();
   }, []);
 
@@ -565,6 +566,30 @@ const Library = () => {
     setOffset(0);
   };
 
+  const handleDelete = async () => {
+    try {
+      const result = await useGql({
+        query: DELETE_LIBRARY,
+        queryName: "",
+        queryType: "mutation",
+        variables: { input: { id: deleteId } },
+      });
+
+      if (!result.data) showSnackbar("Failed to Delete Doc!", "error");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to Delete Doc!", "error");
+    } finally {
+      setConfirmOpen(false);
+      refreshList();
+      setDeleteId(null);
+    }
+  };
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setConfirmOpen(true);
+  };
+
   return (
     <>
       <h3>Library</h3>
@@ -675,10 +700,13 @@ const Library = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontWeight: "bold", color: "white" }}>
+                      Uploaded By
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold", color: "white" }}>
                       Document Name
                     </TableCell>
                     <TableCell sx={{ fontWeight: "bold", color: "white" }}>
-                      Type
+                      Department
                     </TableCell>
                     <TableCell sx={{ fontWeight: "bold", color: "white" }}>
                       File Name
@@ -692,18 +720,41 @@ const Library = () => {
                   {filteredDocuments?.map((doc) => (
                     <TableRow key={doc.id} hover>
                       <TableCell>
+                        <UserAvatarCell
+                          user={
+                            doc.createdBy
+                              ? {
+                                  ...doc.createdBy,
+                                  name:
+                                    doc?.createdBy?.displayName ||
+                                    doc?.createdBy?.fullName,
+                                  profilePicUrl: `${apiBaseUrl}${doc?.createdBy?.profile}`,
+                                }
+                              : null
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <DescriptionIcon sx={{ mr: 1 }} />
+                          {/* <DescriptionIcon sx={{ mr: 1 }} /> */}
+                          <IconButton
+                            onClick={() => handleViewDocument(doc.attachment)}
+                          >
+                            <DescriptionIcon color="primary" />
+                          </IconButton>
                           {doc.name}
                         </Box>
                       </TableCell>
-                      <TableCell>{doc.department}</TableCell>
+                      <TableCell>
+                        <Chip label={doc.department} />
+                      </TableCell>
                       <TableCell>{doc.name || "N/A"}</TableCell>
                       <TableCell>
                         <IconButton
                           aria-label="view"
-                          onClick={() => handleViewDocument(doc.name)}
+                          onClick={() => handleViewDocument(doc.attachment)}
                           color="primary"
+                          className="ground-handlers"
                         >
                           <VisibilityIcon />
                         </IconButton>
@@ -712,6 +763,7 @@ const Library = () => {
                             aria-label="edit"
                             onClick={() => handleOpenAddEditDialog(doc)}
                             color="primary"
+                            className="ground-handlers"
                           >
                             <EditIcon />
                           </IconButton>
@@ -719,8 +771,9 @@ const Library = () => {
                         {canDelete && (
                           <IconButton
                             aria-label="delete"
-                            onClick={() => handleDeleteDocument(doc.id)}
+                            onClick={() => handleDeleteClick(doc.id)}
                             color="secondary"
+                            className="ground-handlers"
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -767,7 +820,7 @@ const Library = () => {
           )}
           {canDelete && (
             <MenuItem
-              onClick={() => handleDeleteDocument(selectedDocForMenu?.id)}
+              onClick={() => handleDeleteClick(selectedDocForMenu?.id)}
               sx={{ color: "secondary.main" }}
             >
               <DeleteIcon sx={{ mr: 1 }} /> Delete
@@ -883,6 +936,14 @@ const Library = () => {
         url={previewUrl}
         apiBaseUrl={apiBaseUrl}
         onClose={() => setPreviewOpen(false)}
+      />
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this record? This action cannot be undone."
       />
     </>
   );
