@@ -571,72 +571,74 @@ const Library = () => {
       <Box
         sx={{
           display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+          flexWrap: "wrap",
+        }}
+      >
+        <TextField
+          variant="outlined"
+          placeholder="Search by name"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          size="small"
+          sx={{ width: 300, mr: 2 }} // Removed flexGrow and added a right margin
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Button
+            variant="outlined"
+            onClick={handleFilterOpen}
+            className="filter-date-range"
+          >
+            <FilterAltOutlinedIcon />
+          </Button>
+
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <IconButton
+              color={viewMode === "grid" ? "primary" : "default"}
+              onClick={() => setViewMode("grid")}
+              aria-label="grid view"
+            >
+              <GridViewIcon />
+            </IconButton>
+            <IconButton
+              color={viewMode === "list" ? "primary" : "default"}
+              onClick={() => setViewMode("list")}
+              aria-label="list view"
+            >
+              <ListViewIcon />
+            </IconButton>
+          </Box>
+
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenAddEditDialog()}
+            color="primary"
+          >
+            Upload Doc
+          </Button>
+        </Box>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
           flexDirection: "column",
           minHeight: "100vh",
           bgcolor: "background.default",
         }}
       >
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 3,
-              flexWrap: "wrap",
-              gap: 2,
-            }}
-          >
-            <TextField
-              variant="outlined"
-              placeholder="Search by name"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              size="small"
-              sx={{ flexGrow: 1, minWidth: "180px" }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button
-              variant="outlined"
-              onClick={handleFilterOpen}
-              className="filter-date-range"
-            >
-              <FilterAltOutlinedIcon />
-            </Button>
-
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <IconButton
-                color={viewMode === "grid" ? "primary" : "default"}
-                onClick={() => setViewMode("grid")}
-                aria-label="grid view"
-              >
-                <GridViewIcon />
-              </IconButton>
-              <IconButton
-                color={viewMode === "list" ? "primary" : "default"}
-                onClick={() => setViewMode("list")}
-                aria-label="list view"
-              >
-                <ListViewIcon />
-              </IconButton>
-            </Box>
-
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={() => handleOpenAddEditDialog()}
-              color="primary"
-            >
-              Upload Document
-            </Button>
-          </Box>
-
           {/* Document Display Area */}
           {filteredDocuments?.length === 0 ? (
             <Typography
