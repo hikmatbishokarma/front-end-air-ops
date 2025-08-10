@@ -86,7 +86,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
     },
   ];
 
-  const { control, handleSubmit, reset, setValue, setError } =
+  const { control, handleSubmit, reset, setValue, setError, getValues } =
     useForm<FormData>({
       defaultValues: {
         type: "PERSON", // <- make sure this exists
@@ -160,6 +160,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       onSubmit={handleSubmit(onSubmit)}
       fields={editFields}
       setValue={setValue} // ✅ Pass it down here
+      getValues={getValues}
     />
   );
 };

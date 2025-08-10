@@ -199,6 +199,7 @@ export const InvoiceList = ({
           <TableHead>
             <TableRow>
               <TableCell sx={headerStyle}>Quotation No</TableCell>
+              <TableCell>Aircarft</TableCell>
               <TableCell sx={headerStyle}>Proforma Invoice No</TableCell>
               <TableCell sx={headerStyle}>Tax Invoice No</TableCell>
               <TableCell sx={headerStyle}>Requester</TableCell>
@@ -216,7 +217,7 @@ export const InvoiceList = ({
                 <TableCell component="th" scope="row">
                   {row.quotationNo}
                 </TableCell>
-
+                <TableCell> {row?.quotation?.aircraft?.code}</TableCell>
                 <TableCell align="right">{row.proformaInvoiceNo}</TableCell>
                 <TableCell align="right">
                   {row.taxInvoiceNo ? row.taxInvoiceNo : "NA"}

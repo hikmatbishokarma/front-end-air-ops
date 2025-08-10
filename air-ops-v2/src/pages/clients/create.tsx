@@ -69,7 +69,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
     },
   ];
 
-  const { control, handleSubmit, reset, setValue } = useForm({
+  const { control, handleSubmit, reset, setValue, getValues } = useForm({
     defaultValues: {
       name: "",
       lastName: "",
@@ -116,6 +116,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       onSubmit={handleSubmit(onSubmit)}
       fields={createFields}
       setValue={setValue} // ✅ Pass it down here
+      getValues={getValues}
     />
   );
 };

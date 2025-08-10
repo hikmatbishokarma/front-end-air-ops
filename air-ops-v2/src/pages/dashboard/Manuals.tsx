@@ -304,7 +304,7 @@ const ManualDashboard = () => {
             onClick={() => setOpen(true)}
             color="primary"
           >
-            Upload Doc
+            Add Docs
           </Button>
         </Box>
       </Box>

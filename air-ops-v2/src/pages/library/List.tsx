@@ -650,7 +650,7 @@ const Library = () => {
             onClick={() => handleOpenAddEditDialog()}
             color="primary"
           >
-            Upload Doc
+            Add Docs
           </Button>
         </Box>
       </Box>

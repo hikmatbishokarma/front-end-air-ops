@@ -34,6 +34,11 @@ export const GET_INVOICES = gql`
             id
             name
           }
+          aircraft {
+            id
+            name
+            code
+          }
         }
       }
     }

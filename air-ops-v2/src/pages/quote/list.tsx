@@ -214,7 +214,7 @@ export const QuoteList = ({
           <TableHead>
             <TableRow>
               <TableCell sx={headerStyle}>Quotation No</TableCell>
-
+              <TableCell sx={headerStyle}>Aircraft</TableCell>
               <TableCell sx={headerStyle}>Enquiry From</TableCell>
               <TableCell sx={headerStyle}>Sectors</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
@@ -235,6 +235,9 @@ export const QuoteList = ({
               >
                 <TableCell component="th" scope="row">
                   {row.quotationNo}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row?.aircraft?.code}
                 </TableCell>
 
                 <TableCell align="right">{row.requester}</TableCell>

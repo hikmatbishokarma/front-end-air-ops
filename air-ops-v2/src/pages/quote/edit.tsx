@@ -1502,7 +1502,7 @@ const QuoteEdit = () => {
                 </>
               )}
 
-              <Box
+              {/* <Box
                 sx={{ display: "flex", justifyContent: "space-between", p: 3 }}
               >
                 <Button disabled={activeStep === 0} onClick={handleBack}>
@@ -1523,6 +1523,44 @@ const QuoteEdit = () => {
                     Next
                   </Button>
                 )}
+              </Box> */}
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  p: 3,
+                }}
+              >
+                <Box>
+                  {activeStep !== 0 ? (
+                    <Button onClick={handleBack} disabled={activeStep === 0}>
+                      Back
+                    </Button>
+                  ) : (
+                    // This is the key change: an invisible placeholder
+                    <Box sx={{ visibility: "hidden" }}>
+                      <Button>Back</Button>
+                    </Box>
+                  )}
+                </Box>
+
+                <Box>
+                  {activeStep === steps.length - 1 ? (
+                    <Button type="submit" variant="contained" color="success">
+                      Submit
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSubmit(() =>
+                        setActiveStep(activeStep + 1)
+                      )}
+                      variant="contained"
+                    >
+                      Next
+                    </Button>
+                  )}
+                </Box>
               </Box>
             </Box>
           </Paper>

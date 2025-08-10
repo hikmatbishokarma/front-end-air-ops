@@ -133,10 +133,16 @@ export const validateArrivalTime =
       "YYYY-MM-DD HH:mm"
     );
 
+    const minArrivalTime = depDateTime.add(2, "minutes");
+
     // Validate
-    return arrDateTime.isSameOrAfter(depDateTime)
+    // return arrDateTime.isSameOrAfter(depDateTime)
+    //   ? true
+    //   : "Arrival must be after departure";
+
+    return arrDateTime.isSameOrAfter(minArrivalTime)
       ? true
-      : "Arrival must be after departure";
+      : "Arrival must be atleast 2min after departure";
   };
 
 export const validateArrivalAfterDeparture =
@@ -1785,16 +1791,22 @@ export const QuoteCreate = () => {
                 </>
               )}
 
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", p: 3 }}
+              {/* <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  p: 3,
+                }}
               >
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  className="review-back-btn"
-                >
-                  Back
-                </Button>
+                {activeStep !== 0 && (
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    className="review-back-btn"
+                  >
+                    Back
+                  </Button>
+                )}
 
                 {activeStep === steps.length - 1 ? (
                   <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
@@ -1810,6 +1822,44 @@ export const QuoteCreate = () => {
                     Next
                   </Button>
                 )}
+              </Box> */}
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  p: 3,
+                }}
+              >
+                <Box>
+                  {activeStep !== 0 ? (
+                    <Button onClick={handleBack} disabled={activeStep === 0}>
+                      Back
+                    </Button>
+                  ) : (
+                    // This is the key change: an invisible placeholder
+                    <Box sx={{ visibility: "hidden" }}>
+                      <Button>Back</Button>
+                    </Box>
+                  )}
+                </Box>
+
+                <Box>
+                  {activeStep === steps.length - 1 ? (
+                    <Button type="submit" variant="contained" color="success">
+                      Submit
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSubmit(() =>
+                        setActiveStep(activeStep + 1)
+                      )}
+                      variant="contained"
+                    >
+                      Next
+                    </Button>
+                  )}
+                </Box>
               </Box>
             </Box>
           </Paper>
