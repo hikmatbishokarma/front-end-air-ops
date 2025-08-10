@@ -26,10 +26,12 @@ export const GET_CREW_DETAILS = gql`
       nodes {
         id
         fullName
+        displayName
         email
         phone
         createdAt
         updatedAt
+        isActive
         roles {
           id
           name
@@ -71,7 +73,8 @@ export const GET_CREW_DETAIL_BY_ID = gql`
       currentAddress
       permanentAddress
       bloodGroup
-
+      crewId
+      isActive
       certifications {
         name
         licenceNo

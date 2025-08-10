@@ -57,7 +57,6 @@ export const SalesCategoryLabels = {
 } as const;
 
 export enum LeaveType {
-  ALL = "all",
   CASUAL_LEAVE = "Casual Leave",
   SICK_LEAVE = "Sick Leave",
   PRIVILEGE_LEAVE = "Privilege Leave",
@@ -67,7 +66,6 @@ export enum LeaveType {
 }
 
 export enum LeaveStatus {
-  ALL = "all",
   PENDING = "Pending",
   APPROVED = "Approved",
   DECLINED = "Declined",

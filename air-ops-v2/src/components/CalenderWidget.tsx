@@ -541,7 +541,8 @@ export const FlightCalendarWidget = () => {
       </Box>
 
       {/* Right: Calendar */}
-      <Box className="month_calender"
+      <Box
+        className="month_calender"
         sx={{
           width: "55%",
           backgroundColor: "#f5f5f5",
@@ -591,6 +592,10 @@ export const FlightCalendarWidget = () => {
               if (newDate) {
                 setSelectedDate(newDate);
               }
+            }}
+            onMonthChange={(newMonth: moment.Moment) => {
+              // Fetch flight segments for the new month
+              fetchMonthlyFlightSegments(newMonth);
             }}
             slots={{
               actionBar: () => null,
