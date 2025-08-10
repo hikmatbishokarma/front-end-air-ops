@@ -98,7 +98,7 @@ export const NAVIGATION: Navigation = [
 
   {
     segment: "crew",
-    title: "Crews",
+    title: "Crew",
     icon: <BadgeOutlinedIcon />,
   },
 

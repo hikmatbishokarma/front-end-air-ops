@@ -100,7 +100,7 @@ export const ClientDetailConfirmationForm = ({
     },
   ];
 
-  const { control, handleSubmit, reset, setValue, setError } =
+  const { control, handleSubmit, reset, setValue, setError, getValues } =
     useForm<FormData>({
       defaultValues: {
         type: "PERSON", // <- make sure this exists
@@ -178,6 +178,7 @@ export const ClientDetailConfirmationForm = ({
       fields={editFields}
       setValue={setValue} // ✅ Pass it down here
       submitButtonName={"Confirm"}
+      getValues={getValues}
     />
   );
 };
@@ -433,7 +434,8 @@ export const InvoiceConfirmationModal = ({
         >
           {clientDetailConfirm ? "Generate Invoice " : "Confirm Client Details"}
         </Typography>
-        <IconButton className="popup-quote-model"
+        <IconButton
+          className="popup-quote-model"
           aria-label="close"
           onClick={handelOnClose}
           sx={{
@@ -443,7 +445,7 @@ export const InvoiceConfirmationModal = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon className="popup-close-panel"/>
+          <CloseIcon className="popup-close-panel" />
         </IconButton>
       </DialogTitle>
       <DialogContent className="invoice-button">
