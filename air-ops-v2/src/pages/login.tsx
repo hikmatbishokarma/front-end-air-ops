@@ -35,6 +35,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import bgtwo from "../Asset/Images/backimg.jpeg";
 import pfIMG from "../Asset/Images/profile_view.png";
 import leftLogo from "../Asset/Images/Left-side-logo.png";
+import { useSnackbar } from "../SnackbarContext";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export default function Login() {
@@ -46,6 +47,8 @@ export default function Login() {
     reset,
     formState: { errors },
   } = useForm();
+
+  const showSnackbar = useSnackbar();
 
   const [showPassword, setShowPassword] = useState(false);
   const { setSession } = useSession();
@@ -99,8 +102,9 @@ export default function Login() {
         },
       });
 
-      if (!data || !data.user) {
-        throw new Error("Invalid credentials.");
+      if (data?.errors?.length) {
+        showSnackbar(`${data?.errors?.[0]?.message}`, "error");
+        throw new Error(data?.errors?.[0]?.message);
       }
 
       localStorage.setItem("token", data.access_token);
@@ -119,6 +123,10 @@ export default function Login() {
         },
       };
     } catch (error) {
+      showSnackbar(
+        error.message || "Login failed. Please check your credentials.",
+        "error"
+      );
       throw new Error(
         error.message || "Login failed. Please check your credentials."
       );
@@ -157,7 +165,6 @@ export default function Login() {
       if (tabIndex === 0) {
         const session = await signIn(data);
 
-        console.log("setSession", session);
         if (session) {
           setSession(session);
           navigate("/", { replace: true });
@@ -341,7 +348,8 @@ export default function Login() {
                         label="Remember me"
                       /> */}
 
-                      <Button className="password-styles"
+                      <Button
+                        className="password-styles"
                         variant="text"
                         onClick={() => {
                           setForgotPwdModelOpen(true), setApiError(null);

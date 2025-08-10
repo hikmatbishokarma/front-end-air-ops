@@ -7,6 +7,8 @@ export const crewDetailFormFields = [
   { name: "fullName", label: "Full Name", required: true },
   { name: "displayName", label: "Display Name", required: true },
 
+  { name: "crewId", label: "Crew ID", required: true },
+
   {
     name: "gender",
     label: "Gender",

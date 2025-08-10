@@ -51,4 +51,5 @@ export interface CrewDetailFormValues {
   nominees: Nominee[];
 
   bloodGroup: string;
+  crewId?: string;
 }
