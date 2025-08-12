@@ -213,7 +213,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
               <EmailIcon fontSize="small" />
             </IconButton>
 
-            <Dialog
+            <Dialog className="panel-one"
               open={showEmailDialog}
               onClose={() => setShowEmailDialog(false)}
               fullWidth
