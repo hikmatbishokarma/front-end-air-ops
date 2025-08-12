@@ -604,6 +604,7 @@ border-top-left-radius: 50% 200px;
 }
 .price-units .MuiGrid-item{
     padding:12px !important;
+    height: 86px;
 }
 .price-units{
         border: 1px solid #ddd;
