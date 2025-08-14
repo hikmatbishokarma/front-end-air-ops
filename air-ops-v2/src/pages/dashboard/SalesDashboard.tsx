@@ -28,7 +28,7 @@ import {
   QuotationStatus,
   SalesCategoryLabels,
 } from "../../lib/utils";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
 import { useSession } from "../../SessionContext";
 import { Controller, set, useForm, useWatch } from "react-hook-form";
@@ -46,11 +46,12 @@ import { useQuoteData } from "../../hooks/useQuoteData";
 import FilterPanel from "../quote/FilterPanel";
 import { Iclient } from "../../interfaces/quote.interface";
 import SearchIcon from "@mui/icons-material/Search";
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
 const SalesDashboard = () => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
+  const location = useLocation();
 
   const { clients } = useQuoteData();
 
@@ -440,6 +441,14 @@ const SalesDashboard = () => {
     getQuotes(newFilter); // pass filter directly
   };
 
+  useEffect(() => {
+    if (location.state?.refresh) {
+      setRefreshKey(Date.now()); // forces getQuotes to re-run
+      // optional: clear the refresh flag so it doesn't trigger again
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state]);
+
   return (
     <>
       <CustomDialog
@@ -583,7 +592,11 @@ const SalesDashboard = () => {
           />
         </Box>
 
-        <Button variant="outlined" onClick={handleFilterOpen} className="filter-date-range">
+        <Button
+          variant="outlined"
+          onClick={handleFilterOpen}
+          className="filter-date-range"
+        >
           <FilterAltOutlinedIcon />
         </Button>
       </Box>
