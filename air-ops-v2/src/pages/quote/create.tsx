@@ -285,17 +285,24 @@ export const QuoteCreate = () => {
 
       if (data?.errors?.length > 0) {
         showSnackbar("Failed To Create Quote!", "error");
-      } else showSnackbar("Created new Quote!", "success");
+        return { success: false };
+      } else {
+        showSnackbar("Created new Quote!", "success");
+        return { success: true };
+      }
     } catch (error) {
       showSnackbar(error?.message || "Failed To Create Quote!", "error");
+      return { success: false };
     }
   };
 
-  const onSubmit = (data: any) => {
-    createQuote({ ...data, operatorId });
-    // setIsNewQuote(false);
-    navigate("/quotes");
-    reset();
+  const onSubmit = async (data: any) => {
+    const result = await createQuote({ ...data, operatorId });
+
+    if (result?.success) {
+      navigate("/quotes", { state: { refresh: true } });
+      reset();
+    }
   };
 
   const itinerary = watch("itinerary", []);
