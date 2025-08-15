@@ -30,6 +30,7 @@ export const GET_INVOICES = gql`
         quotationNo
         quotation {
           id
+          quotationNo
           requestedBy {
             id
             name
@@ -39,6 +40,7 @@ export const GET_INVOICES = gql`
             name
             code
           }
+          itinerary
         }
       }
     }

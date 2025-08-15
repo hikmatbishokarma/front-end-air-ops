@@ -545,6 +545,67 @@ export const QuoteCreate = () => {
     getFlightSegementsForCalender(startDate, endDate);
   };
 
+  const calculateTotalFlightTime = (itinerary) => {
+    let totalMinutes = 0;
+
+    itinerary.forEach((sector) => {
+      if (
+        sector.depatureDate &&
+        sector.depatureTime &&
+        sector.arrivalDate &&
+        sector.arrivalTime
+      ) {
+        const depDateTime = moment(
+          `${sector.depatureDate} ${sector.depatureTime}`,
+          "YYYY-MM-DD HH:mm"
+        );
+        const arrDateTime = moment(
+          `${sector.arrivalDate} ${sector.arrivalTime}`,
+          "YYYY-MM-DD HH:mm"
+        );
+
+        if (arrDateTime.isAfter(depDateTime)) {
+          totalMinutes += arrDateTime.diff(depDateTime, "minutes");
+        }
+      }
+    });
+
+    console.log("totalMinutes:::", totalMinutes);
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    console.log(
+      "hghghg",
+      `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`
+    );
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    if (!itinerary.length) return;
+
+    const totalTime = calculateTotalFlightTime(itinerary);
+
+    // Update ONLY "Charter Charges" (assuming it's always prices[0])
+    const prices = [...getValues("prices")];
+    if (prices.length && prices[0].label === "Charter Charges") {
+      prices[0].unit = totalTime;
+
+      const decimalHours =
+        parseInt(totalTime.split(":")[0]) +
+        parseInt(totalTime.split(":")[1]) / 60;
+      prices[0].total = decimalHours * (Number(prices[0].price) || 0);
+
+      setValue("prices", prices, { shouldDirty: true });
+    }
+  }, [itinerary, getValues, setValue]);
+
   return (
     <>
       <Box
@@ -1279,6 +1340,7 @@ export const QuoteCreate = () => {
                                       setValue(`prices.${index}.total`, 0);
                                     }
                                   }}
+                                  disabled={index === 0}
                                   label="Unit (HH:mm)"
                                   size="small"
                                   format="HH:mm"

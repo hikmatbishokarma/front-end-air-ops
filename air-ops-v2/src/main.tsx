@@ -49,6 +49,7 @@ import LibraryDashboard from "./pages/dashboard/Library";
 import TripConfirmationCalenderView from "./pages/full-calender-view/TripConfirmation";
 import StaffLeaveCalenderView from "./pages/full-calender-view/LeaveCalender";
 import Library from "./pages/library/List";
+import AviationNSOPForm from "./pages/quote/passanger-detail";
 
 const router = createBrowserRouter(
   [
@@ -195,6 +196,11 @@ const router = createBrowserRouter(
             {
               path: "staff-leave/calender",
               Component: StaffLeaveCalenderView,
+            },
+
+            {
+              path: "passenger-details",
+              Component: AviationNSOPForm,
             },
           ],
         },

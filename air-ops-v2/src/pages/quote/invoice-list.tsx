@@ -16,6 +16,8 @@ import {
   TextField,
   TablePagination,
   IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -36,7 +38,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { SALE_CONFIRMATION } from "../../lib/graphql/queries/quote";
 import { CustomDialog } from "../../components/CustomeDialog";
 import { SalesCategoryLabels } from "../../lib/utils";
-
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import AviationNSOPForm from "./passanger-detail";
 export const InvoiceList = ({
   filter,
   isGenerated,
@@ -65,6 +68,9 @@ export const InvoiceList = ({
   const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
 
   const [totalCount, setTotalCount] = useState(0); // total count from backend
+
+  const [showPassengerDetail, setShowPassengerDetail] = useState(false);
+  const [quote, setQuote] = useState<any>();
 
   const getInvoices = async () => {
     try {
@@ -169,6 +175,24 @@ export const InvoiceList = ({
     }
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const onAddPassenger = (row) => {
+    console.log("onAddPassenger::::", row);
+    setQuote(row.quotation);
+    setShowPassengerDetail(true);
+  };
+
+  const handelSectorSave = () => {};
+
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
@@ -232,6 +256,44 @@ export const InvoiceList = ({
                     <PreviewIcon fontSize="small" />
                   </IconButton>
                 </TableCell> */}
+                <TableCell
+                  align="right"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <IconButton onClick={handleMenuOpen} size="small">
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        handelPreview(row);
+                      }}
+                    >
+                      Preview Invoice
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        onAddPassenger(row);
+                      }}
+                    >
+                      Add Passenger Details
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        // onGenerateSales(row);
+                      }}
+                    >
+                      Generate Sales Confirmation
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -259,6 +321,22 @@ export const InvoiceList = ({
           currentQuotation={selectedRowData?.quotationNo}
           type={selectedRowData?.type}
           handelSaleConfirmation={handelSaleConfirmation}
+        />
+      </CustomDialog>
+
+      <CustomDialog
+        open={showPassengerDetail}
+        onClose={() => setShowPassengerDetail(false)}
+        title="Passenger Details"
+        width="1200px"
+        maxWidth="md"
+      >
+        <AviationNSOPForm
+          logoColors={{ primary: "#0A58CA", accent: "#E11D48" }}
+          airCraft={quote?.aircraft}
+          sectors={quote?.itinerary}
+          quotationNo={quote?.quotationNo}
+          onSaveSector={handelSectorSave}
         />
       </CustomDialog>
     </>
