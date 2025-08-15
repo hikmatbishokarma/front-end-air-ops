@@ -207,6 +207,10 @@ export const QuoteList = ({
     }
   };
 
+  const handlePassanger = (row) => {
+    navigate("/passenger-details", { state: { refresh: true } });
+  };
+
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
@@ -251,6 +255,14 @@ export const QuoteList = ({
                     <PreviewIcon fontSize="small" />
                   </IconButton>
                 </TableCell> */}
+                <TableCell>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handlePassanger(row)}
+                  >
+                    <PreviewIcon fontSize="small" />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

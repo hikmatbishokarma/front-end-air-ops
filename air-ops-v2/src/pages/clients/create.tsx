@@ -4,9 +4,12 @@ import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import ClientChildren from "./children";
 import { useSession } from "../../SessionContext";
+import { useSnackbar } from "../../SnackbarContext";
 
 export const CreateClient = ({ handleSubDialogClose }) => {
   const { session, setSession, loading } = useSession();
+
+  const showSnackbar = useSnackbar();
 
   const operatorId = session?.user.operator?.id || null;
 
@@ -81,17 +84,27 @@ export const CreateClient = ({ handleSubDialogClose }) => {
   });
 
   const createClient = async (formData) => {
-    const data = await useGql({
-      query: CREATE_CLIENT,
-      queryName: "clients",
-      variables: {
-        input: {
-          client: formData,
+    try {
+      const data = await useGql({
+        query: CREATE_CLIENT,
+        queryName: "",
+        queryType: "mutation",
+        variables: {
+          input: {
+            client: formData,
+          },
         },
-      },
-    });
+      });
 
-    console.log("submitted data:", data);
+      if (!data || data?.errors) {
+        showSnackbar(
+          data?.errors?.[0]?.message || "Something went wrong",
+          "error"
+        );
+      } else showSnackbar("Add successfully", "success");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to Add Enquiry From!", "error");
+    }
   };
 
   const onSubmit = async (data) => {
