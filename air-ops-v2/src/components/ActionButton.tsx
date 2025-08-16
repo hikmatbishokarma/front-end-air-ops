@@ -179,7 +179,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       heightLeft -= pdfHeight;
     }
 
-    pdf.save(`${documentType}_Document.pdf`);
+    pdf.save(
+      `${currentRecord?.client?.name || documentType}_${currentQuotation}.pdf`
+    );
   };
 
   const handleAfterPrint = useCallback(() => {
@@ -188,7 +190,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 
   const printFn = useReactToPrint({
     contentRef: htmlRef,
-    documentTitle: `${documentType}_Preview`,
+    documentTitle: `${currentRecord?.client?.name || documentType}${currentQuotation}`,
     onAfterPrint: handleAfterPrint,
   });
 

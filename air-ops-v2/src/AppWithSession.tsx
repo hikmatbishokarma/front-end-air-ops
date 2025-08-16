@@ -289,8 +289,6 @@ export default function AppWithSession() {
 
         const filteredNavigation = NAVIGATION.filter(filterNavigation);
 
-        console.log("filteredNavigation::", filteredNavigation);
-
         setValidNavigation([...defaultNavigation, ...filteredNavigation]);
       }
     }

@@ -570,17 +570,8 @@ export const QuoteCreate = () => {
       }
     });
 
-    console.log("totalMinutes:::", totalMinutes);
-
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-
-    console.log(
-      "hghghg",
-      `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}`
-    );
 
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
@@ -604,7 +595,7 @@ export const QuoteCreate = () => {
 
       setValue("prices", prices, { shouldDirty: true });
     }
-  }, [itinerary, getValues, setValue]);
+  }, [JSON.stringify(itinerary), getValues, setValue]);
 
   return (
     <>
