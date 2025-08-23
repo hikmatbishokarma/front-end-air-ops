@@ -92,6 +92,16 @@ export const GET_CREW_DETAIL_BY_ID = gql`
         address
         insurance
       }
+
+      bankDetails {
+        accountPayee
+        bankName
+        accountNumber
+        branch
+        swiftCode
+        ifscCode
+        isDefault
+      }
     }
   }
 `;

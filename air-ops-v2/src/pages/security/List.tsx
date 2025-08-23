@@ -193,14 +193,15 @@ export const SecurityList = ({
                   </TableCell>
 
                   <TableCell>
-                    <IconButton
+                    {/* <IconButton
                       aria-label="view"
                       onClick={() => handlePreview(row.attachment)}
                       color="primary"
                       className="ground-handlers"
                     >
                       <VisibilityIcon />
-                    </IconButton>
+                    </IconButton> */}
+
                     {/* Edit Button */}
                     <IconButton
                       className="ground-handlers"

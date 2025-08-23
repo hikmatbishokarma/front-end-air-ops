@@ -13,6 +13,7 @@ export const GET_CLIENTS = gql`
         lastName
         isCompany
         isPerson
+        type
       }
     }
   }
@@ -48,6 +49,7 @@ export const GET_CLIENT_BY_ID = gql`
       panNo
       gstNo
       billingAddress
+      type
     }
   }
 `;

@@ -5,6 +5,7 @@ import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import ClientChildren from "./children";
 import { useSession } from "../../SessionContext";
 import { useSnackbar } from "../../SnackbarContext";
+import { ClientType } from "../../lib/utils";
 
 export const CreateClient = ({ handleSubDialogClose }) => {
   const { session, setSession, loading } = useSession();
@@ -79,7 +80,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       phone: "",
       email: "",
       address: "",
-      type: "PERSON",
+      type: ClientType.PERSON,
     },
   });
 
@@ -101,7 +102,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
           data?.errors?.[0]?.message || "Something went wrong",
           "error"
         );
-      } else showSnackbar("Add successfully", "success");
+      } else showSnackbar("Added successfully", "success");
     } catch (error) {
       showSnackbar(error.message || "Failed to Add Enquiry From!", "error");
     }
@@ -110,11 +111,13 @@ export const CreateClient = ({ handleSubDialogClose }) => {
   const onSubmit = async (data) => {
     const { type, ...rest } = data;
     const formData = { ...rest };
-    if (type == "COMPANY") {
-      formData["isCompany"] = true;
-    } else formData["isPerson"] = true;
+
+    // if (type == "COMPANY") {
+    //   formData["isCompany"] = true;
+    // } else formData["isPerson"] = true;
+
     try {
-      await createClient({ ...formData, operatorId }); // Wait for API call to complete
+      await createClient({ ...formData, type, operatorId }); // Wait for API call to complete
       reset(); // Reset form after successful submission
       handleSubDialogClose(); // <-- Close dialog after creating
     } catch (error) {

@@ -299,15 +299,8 @@ export default function Layout() {
     ).length;
   }, [notifications, session?.user?.id]);
 
-  console.log(
-    "session?.user?.id, session?.user?.roles:::",
-    session?.user?.id,
-    session?.user?.roles
-  );
-
   // --- Function to fetch initial notifications from backend ---
   const fetchNotifications = useCallback(async () => {
-    console.log("session?.user?.id::", session?.user?.id);
     if (!session?.user?.id) {
       console.warn("Cannot fetch notifications: User session ID is missing.");
       setLoadingNotifications(false);
@@ -344,7 +337,16 @@ export default function Layout() {
         // showSnackbar("No new notifications!", "info"); // Only show if genuinely no notifications
         console.log("No notifications fetched or empty array.");
       } else {
-        const mappedNotifications = fetchedNotifications.map((notif: any) => ({
+        // Sort the notifications array on the client side
+        const sortedNotifications = fetchedNotifications.sort((a, b) => {
+          // Convert dates to a comparable format (e.g., a number)
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          // Sort in descending order (latest date first)
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        const mappedNotifications = sortedNotifications.map((notif: any) => ({
           ...notif,
           id: notif._id || notif.id,
           timestamp: notif.createdAt,

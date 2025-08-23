@@ -660,6 +660,8 @@ export const StaffLeaveWidget = () => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar(); // Corrected usage if it's a hook
   const today = moment();
+  const { session, setSession } = useSession();
+  const operatorId = session?.user.operator?.id || null;
 
   // Use useMemo to ensure weekDays array is stable across renders
   // unless `today` somehow changes (which it won't within a component's lifecycle)
@@ -694,7 +696,7 @@ export const StaffLeaveWidget = () => {
             //   // Keep createdAt filter as per your latest code
             //   between: { lower: startOfPeriod, upper: endOfPeriod },
             // },
-
+            ...(operatorId && { operatorId: { eq: operatorId } }),
             and: [
               { fromDate: { "lte": endOfPeriod } },
               { toDate: { "gte": startOfPeriod } },

@@ -150,8 +150,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       if (!data || data.errors) {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
         showSnackbar(data?.errors?.[0]?.message, "error");
-      }
-      showSnackbar("Created Successfully", "success");
+      } else showSnackbar("Created Successfully", "success");
     } catch (error) {
       showSnackbar(error.message || "Failed to create categories!", "error");
     }

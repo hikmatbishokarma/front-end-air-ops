@@ -34,7 +34,7 @@ import {
 } from "../../lib/graphql/queries/quote";
 
 import AddIcon from "@mui/icons-material/Add";
-
+import EditIcon from "@mui/icons-material/Edit";
 import AirportsAutocomplete from "../../components/airport-autocommplete";
 
 import { useQuoteData } from "../../hooks/useQuoteData";
@@ -59,6 +59,8 @@ import {
   validateDepartureTime,
 } from "./create";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ClientType } from "../../lib/utils";
+import { useSession } from "../../SessionContext";
 const QuoteEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -75,6 +77,10 @@ const QuoteEdit = () => {
   } = useQuoteData();
   // const [selectedAircraftCategory, setSelectedAircraftCategory] =
   //   useState<IaircraftCategory | null>(null);
+
+  const { session, setSession } = useSession();
+
+  const operatorId = session?.user.operator?.id || null;
 
   const [selectedClient, setSelectedClient] = useState<Iclient | null>();
   const [selectedRepresentative, setSelectedRepresentative] =
@@ -153,10 +159,14 @@ const QuoteEdit = () => {
       query: UPDATE_QUOTE,
       queryName: "",
       queryType: "mutation",
-      variables: { input: { id, update: { ...data, providerType: "airops" } } },
+      variables: {
+        input: { id, update: { ...data, operatorId, providerType: "airops" } },
+      },
     });
     navigate("/quotes");
   };
+
+  const itinerary = watch("itinerary", []);
 
   const handlePriceChange = (index, field, value) => {
     const prices = watch("prices");
@@ -276,6 +286,58 @@ const QuoteEdit = () => {
     getFlightSegementsForCalender(startDate, endDate);
   };
 
+  const calculateTotalFlightTime = (itinerary) => {
+    let totalMinutes = 0;
+
+    itinerary.forEach((sector) => {
+      if (
+        sector.depatureDate &&
+        sector.depatureTime &&
+        sector.arrivalDate &&
+        sector.arrivalTime
+      ) {
+        const depDateTime = moment(
+          `${sector.depatureDate} ${sector.depatureTime}`,
+          "YYYY-MM-DD HH:mm"
+        );
+        const arrDateTime = moment(
+          `${sector.arrivalDate} ${sector.arrivalTime}`,
+          "YYYY-MM-DD HH:mm"
+        );
+
+        if (arrDateTime.isAfter(depDateTime)) {
+          totalMinutes += arrDateTime.diff(depDateTime, "minutes");
+        }
+      }
+    });
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    if (!itinerary.length) return;
+
+    const totalTime = calculateTotalFlightTime(itinerary);
+
+    // Update ONLY "Charter Charges" (assuming it's always prices[0])
+    const prices = [...getValues("prices")];
+    if (prices.length && prices[0].label === "Charter Charges") {
+      prices[0].unit = totalTime;
+
+      const decimalHours =
+        parseInt(totalTime.split(":")[0]) +
+        parseInt(totalTime.split(":")[1]) / 60;
+      prices[0].total = decimalHours * (Number(prices[0].price) || 0);
+
+      setValue("prices", prices, { shouldDirty: true });
+    }
+  }, [JSON.stringify(itinerary), getValues, setValue]);
+
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -361,11 +423,11 @@ const QuoteEdit = () => {
                       color="primary"
                       onClick={() => setSubDialogOpen(true)}
                     >
-                      <AddIcon />
+                      <EditIcon />
                     </IconButton>
                   </Grid>
 
-                  {selectedClient?.isCompany && (
+                  {selectedClient?.type === ClientType.COMPANY && (
                     <>
                       <Grid item xs={12} md={6}>
                         <Controller
@@ -421,7 +483,7 @@ const QuoteEdit = () => {
                           color="primary"
                           onClick={() => setRepresentativeDialogOpen(true)}
                         >
-                          <AddIcon />
+                          <EditIcon />
                         </IconButton>
                       </Grid>
                     </>
@@ -977,6 +1039,9 @@ const QuoteEdit = () => {
                                   label="Unit (HH:mm)"
                                   size="small"
                                   format="HH:mm"
+                                  disabled={
+                                    index === 0 || index === 1 || index === 2
+                                  }
                                   slotProps={{
                                     textField: {
                                       required: true,

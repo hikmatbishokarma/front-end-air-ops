@@ -21,7 +21,8 @@ const ClientDialog = ({
   return (
     <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
       <DialogTitle>
-        {isEdit ? "Edit" : "Add"} Enquiry From
+        {/* {isEdit ? "Edit" : "Add"} Enquiry From */}
+        Enquiry From
         <IconButton
           aria-label="close"
           onClick={handleSubDialogClose}
