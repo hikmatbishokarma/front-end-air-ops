@@ -119,7 +119,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       setValue("phone", client.phone || "");
       setValue("email", client.email || "");
       setValue("address", client.address || "");
-      setValue("type", client.isCompany ? "COMPANY" : "PERSON");
+      setValue("type", client.type || "");
       setValue("panNo", client.panNo || "");
       setValue("gstNo", client.gstNo || "");
     }
@@ -133,7 +133,6 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
         queryType: "mutation",
         variables: { input: { id: Id, update: formData } },
       });
-      console.log("data:::::", data);
 
       if (!data || data?.errors) {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
@@ -147,11 +146,11 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
   const onSubmit = (data: FormData) => {
     const { type, ...rest } = data;
     const formData = { ...rest };
-    if (type == "COMPANY") {
-      formData["isCompany"] = true;
-    } else formData["isPerson"] = true;
+    // if (type == "COMPANY") {
+    //   formData["isCompany"] = true;
+    // } else formData["isPerson"] = true;
 
-    UpdateClient(id, { ...formData, operatorId });
+    UpdateClient(id, { ...formData, type, operatorId });
     handleSubDialogClose();
   };
 

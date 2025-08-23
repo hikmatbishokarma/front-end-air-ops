@@ -22,7 +22,7 @@ const RepresentativeDialog = ({
   return (
     <Dialog open={dialogOpen} onClose={handleDialogClose}>
       <DialogTitle>
-        {isEdit ? "Edit" : "Add"} representative for {client?.name}
+        representative for {client?.name}
         <IconButton
           aria-label="close"
           onClick={handleDialogClose}

@@ -750,14 +750,14 @@ const Library = () => {
                       </TableCell>
                       <TableCell>{doc.name || "N/A"}</TableCell>
                       <TableCell>
-                        <IconButton
+                        {/* <IconButton
                           aria-label="view"
                           onClick={() => handleViewDocument(doc.attachment)}
                           color="primary"
                           className="ground-handlers"
                         >
                           <VisibilityIcon />
-                        </IconButton>
+                        </IconButton> */}
                         {canEdit && (
                           <IconButton
                             aria-label="edit"

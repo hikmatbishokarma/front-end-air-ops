@@ -199,6 +199,34 @@ export const CrewProfileView = ({ crewId }) => {
     </Box>
   );
 
+  const renderBankDetailTab = () => (
+    <Box p={2}>
+      {crewDetail && crewDetail?.bankDetails?.length > 0 ? (
+        crewDetail.bankDetails.map((bankDetail, index) => (
+          <Card key={index} sx={{ p: 2, mb: 2 }}>
+            <Typography fontWeight="bold" mb={1}>
+              Bank Details {index + 1}
+            </Typography>
+            <Grid container spacing={2}>
+              {renderViewField("Account Payee", bankDetail.accountPayee)}
+              {renderViewField("Bank Name", bankDetail.bankName)}
+              {renderViewField("Account Number", bankDetail.accountNumber)}
+              {renderViewField("Branch", bankDetail.branch)}
+              {renderViewField("SWIFT Code", bankDetail.swiftCode)}
+              {renderViewField("IFSC Code", bankDetail.ifscCode)}
+              {renderViewField(
+                "Is Default",
+                bankDetail.isDefault ? "TRUE" : "FALSE"
+              )}
+            </Grid>
+          </Card>
+        ))
+      ) : (
+        <Typography>No Bank details available.</Typography>
+      )}
+    </Box>
+  );
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={4} md={3}>
@@ -229,33 +257,36 @@ export const CrewProfileView = ({ crewId }) => {
           </Box>
           <Divider sx={{ my: 2 }} />
           <List component="nav">
-            {["Basic", "Nominee", "Certificate"].map((label, index) => (
-              <ListItemButton
-                selected={tab === index}
-                onClick={() => setTab(index)}
-                key={label}
-                sx={{
-                  color: tab === index ? "primary.main" : "text.primary",
-                  backgroundColor:
-                    tab === index ? "rgba(25, 118, 210, 0.1)" : "transparent",
-                  "&:hover": { backgroundColor: "rgba(25, 118, 210, 0.08)" },
-                }}
-              >
-                <ListItemText
-                  disableTypography
-                  primary={
-                    <Typography
-                      sx={{
-                        color: tab === index ? "primary.main" : "text.primary",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {label}
-                    </Typography>
-                  }
-                />
-              </ListItemButton>
-            ))}
+            {["Basic", "Nominee", "Certificate", "Bank Detail"].map(
+              (label, index) => (
+                <ListItemButton
+                  selected={tab === index}
+                  onClick={() => setTab(index)}
+                  key={label}
+                  sx={{
+                    color: tab === index ? "primary.main" : "text.primary",
+                    backgroundColor:
+                      tab === index ? "rgba(25, 118, 210, 0.1)" : "transparent",
+                    "&:hover": { backgroundColor: "rgba(25, 118, 210, 0.08)" },
+                  }}
+                >
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography
+                        sx={{
+                          color:
+                            tab === index ? "primary.main" : "text.primary",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {label}
+                      </Typography>
+                    }
+                  />
+                </ListItemButton>
+              )
+            )}
           </List>
         </Card>
       </Grid>
@@ -264,6 +295,7 @@ export const CrewProfileView = ({ crewId }) => {
           {tab === 0 && renderBasicTab()}
           {tab === 1 && renderNomineeTab()}
           {tab === 2 && renderCertificateTab()}
+          {tab === 3 && renderBankDetailTab()}
         </Card>
       </Grid>
     </Grid>

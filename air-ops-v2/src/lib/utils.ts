@@ -140,3 +140,9 @@ export const SECURITY_TYPES = [
     "value": "AGREEMENTS",
   },
 ];
+
+export enum ClientType {
+  COMPANY = "COMPANY",
+  PERSON = "PERSON",
+  OTHER = "OTHER",
+}

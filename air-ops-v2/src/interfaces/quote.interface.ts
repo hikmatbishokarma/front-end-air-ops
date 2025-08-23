@@ -17,10 +17,11 @@ export interface Iclient {
   phone: string;
   email: string;
   address: string;
-  isCompany: boolean;
-  isPerson: boolean;
+  // isCompany: boolean;
+  // isPerson: boolean;
   gstNo?: string;
   panNo?: string;
+  type?: string;
 }
 
 export interface Irepresentative {

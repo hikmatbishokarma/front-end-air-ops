@@ -183,7 +183,10 @@ export const CrewDetailList = ({
                       color="primary"
                     />
                   </TableCell>
-                  <TableCell className="panel-one">
+                  <TableCell
+                    className="panel-one"
+                    onClick={(event) => event.stopPropagation()}
+                  >
                     {/* Edit Button */}
                     <IconButton
                       className="popup-quote-model"

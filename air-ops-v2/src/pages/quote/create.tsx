@@ -53,6 +53,7 @@ import RepresentativeDialog from "../representative/dialog";
 import { useNavigate } from "react-router";
 import { useSession } from "../../SessionContext";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ClientType } from "../../lib/utils";
 
 const defaultValues = {
   requestedBy: "",
@@ -688,7 +689,7 @@ export const QuoteCreate = () => {
                     </IconButton>
                   </Grid>
 
-                  {selectedClient?.isCompany && (
+                  {selectedClient?.type == ClientType.COMPANY && (
                     <>
                       <Grid item xs={12} md={6}>
                         <Controller
@@ -766,12 +767,16 @@ export const QuoteCreate = () => {
                           helperText={error?.message}
                           size="small"
                           required
+                          value={field.value ?? ""}
                           slotProps={{
                             inputLabel: {
                               shrink: true,
                             },
                           }}
                         >
+                          <MenuItem value="" disabled>
+                            Select Category
+                          </MenuItem>
                           {categoryOptions.map((option) => (
                             <MenuItem key={option.id} value={option.id}>
                               {option.name}
@@ -1331,7 +1336,9 @@ export const QuoteCreate = () => {
                                       setValue(`prices.${index}.total`, 0);
                                     }
                                   }}
-                                  disabled={index === 0}
+                                  disabled={
+                                    index === 0 || index === 1 || index === 2
+                                  }
                                   label="Unit (HH:mm)"
                                   size="small"
                                   format="HH:mm"

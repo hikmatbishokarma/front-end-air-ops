@@ -27,6 +27,8 @@ export default function TripConfirmationCalenderView() {
   const showSnackbar = useSnackbar();
   const { name } = session?.user || {};
 
+  const operatorId = session?.user.operator?.id || null;
+
   const [flightEvents, setFlightEvents] = useState<any>();
 
   const getFlightSegementsForCalender = async (startDate, endDate) => {
@@ -37,6 +39,7 @@ export default function TripConfirmationCalenderView() {
       variables: {
         "startDate": startDate,
         "endDate": endDate,
+        ...(operatorId && { operatorId }),
       },
     });
 

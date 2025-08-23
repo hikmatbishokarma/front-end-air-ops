@@ -124,7 +124,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
         variables: { input: { id: Id, update: formData } },
       });
 
-      if (!data || data.data?.errors) {
+      if (!data || data?.errors) {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");

@@ -4,8 +4,11 @@ import useGql from "../../lib/graphql/gql";
 
 import { CREATE_REPRESENTATIVE } from "../../lib/graphql/queries/representative";
 import RepresentativeChildren from "./children";
+import { useSnackbar } from "../../SnackbarContext";
 
 export const CreateRepresentative = ({ client, handleDialogClose }) => {
+  const showSnackbar = useSnackbar();
+
   const createFields = [
     { name: "name", label: "Name", xs: 6, required: true },
     {
@@ -41,17 +44,27 @@ export const CreateRepresentative = ({ client, handleDialogClose }) => {
   });
 
   const createRepresentative = async (formData) => {
-    const data = await useGql({
-      query: CREATE_REPRESENTATIVE,
-      queryName: "",
-      variables: {
-        input: {
-          representative: formData,
+    try {
+      const data = await useGql({
+        query: CREATE_REPRESENTATIVE,
+        queryName: "",
+        queryType: "mutation",
+        variables: {
+          input: {
+            representative: formData,
+          },
         },
-      },
-    });
+      });
 
-    console.log("submitted data:", data);
+      if (!data || data?.errors) {
+        showSnackbar(
+          data?.errors?.[0]?.message || "Something went wrong",
+          "error"
+        );
+      } else showSnackbar("Added successfully", "success");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to Add Representative!", "error");
+    }
   };
 
   const onSubmit = async (data) => {

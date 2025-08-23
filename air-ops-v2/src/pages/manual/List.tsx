@@ -252,14 +252,14 @@ export const ManualList = ({
                   </TableCell>
 
                   <TableCell>
-                    <IconButton
+                    {/* <IconButton
                       aria-label="view"
                       onClick={() => handlePreview(row)}
                       color="primary"
                       className="ground-handlers"
                     >
                       <VisibilityIcon />
-                    </IconButton>
+                    </IconButton> */}
                     {/* Edit Button */}
                     <IconButton
                       className="ground-handlers"
