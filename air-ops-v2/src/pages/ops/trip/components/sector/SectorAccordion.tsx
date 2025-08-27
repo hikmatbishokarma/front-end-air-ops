@@ -11,17 +11,17 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SectorStepper from "./SectorStepper";
 import {
-  CrewDesignation,
+  AssignedCrewInfo,
   CrewMember,
-  FuelInfo,
+  FuelRecordInfo,
   Itinerary,
 } from "../../type/trip.type";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { logoColors } from "../../../../../lib/utils";
 
 export interface SectorFormData extends Itinerary {
-  crew: Record<CrewDesignation, CrewMember[]>; // multiple crew per designation
-  fuel?: FuelInfo;
+  assignedCrews: AssignedCrewInfo[];
+  fuelRecord?: FuelRecordInfo;
   documents?: string[];
 }
 
