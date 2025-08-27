@@ -146,3 +146,5 @@ export enum ClientType {
   PERSON = "PERSON",
   OTHER = "OTHER",
 }
+
+export const logoColors = { primary: "#0A58CA", accent: "#E11D48" }; // blue & red

@@ -42,6 +42,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PassengerDetails from "./passanger-detail";
 import {
   CREATE_PASSENGER_DETAILS,
+  GET_PASSENGER_DETAILS,
   UPADTE_PASSANGER_DETAIL,
 } from "../../lib/graphql/queries/passenger-detail";
 export const InvoiceList = ({
@@ -208,33 +209,73 @@ export const InvoiceList = ({
   const onAddPassenger = async (row) => {
     // Use try...catch to handle all potential errors in one place
     try {
-      const data = await useGql({
-        query: CREATE_PASSENGER_DETAILS,
-        queryName: "",
-        queryType: "mutation",
-        variables: {
-          input: {
-            passengerDetail: {
-              quotation: row.quotation.id,
-              quotationNo: row.quotation.quotationNo,
-              // sectors: [],
+      const passengerDetail = await getPassengerDetails(
+        row.quotation.id,
+        row.quotation.quotationNo
+      );
+
+      if (passengerDetail) {
+        setQuote({
+          aircraft: passengerDetail?.quotation?.aircraft,
+          itinerary: passengerDetail?.sectors,
+          quotationNo: passengerDetail?.quotationNo,
+          id: passengerDetail?.quotation?.id,
+        });
+        setShowPassengerDetail(true);
+      } else {
+        const data = await useGql({
+          query: CREATE_PASSENGER_DETAILS,
+          queryName: "",
+          queryType: "mutation",
+          variables: {
+            input: {
+              passengerDetail: {
+                quotation: row.quotation.id,
+                quotationNo: row.quotation.quotationNo,
+                // sectors: [],
+              },
             },
           },
-        },
-      });
+        });
 
-      if (data?.errors) {
-        // Use optional chaining for safer access
-        throw new Error(data.errors[0]?.message || "Something went wrong.");
-      } else {
-        setQuote(row.quotation);
-        setShowPassengerDetail(true);
-        // showSnackbar("Passenger details created successfully!", "success");
+        if (data?.errors) {
+          // Use optional chaining for safer access
+          throw new Error(data.errors[0]?.message || "Something went wrong.");
+        } else {
+          setQuote(row.quotation);
+          setShowPassengerDetail(true);
+          // showSnackbar("Passenger details created successfully!", "success");
+        }
       }
     } catch (error) {
       // Catch and handle all errors from API call or state updates
       console.error("Failed to add passenger:", error);
       showSnackbar(error.message || "Failed to add passenger!", "error");
+    }
+  };
+
+  const getPassengerDetails = async (quotation, quotationNo) => {
+    try {
+      const result = await useGql({
+        query: GET_PASSENGER_DETAILS,
+        variables: {
+          filter: {
+            quotation: { eq: quotation },
+            quotationNo: { eq: quotationNo },
+          },
+        },
+        queryName: "passengerDetails",
+        queryType: "query",
+      });
+
+      if (result?.errors) {
+        showSnackbar(
+          result?.errors?.[0]?.message || "some thing went wrong",
+          "error"
+        );
+      } else return result[0];
+    } catch (error) {
+      showSnackbar(error?.message || "some thing went wrong", "error");
     }
   };
 
