@@ -34,3 +34,57 @@ export const UPADTE_PASSANGER_DETAIL = gql`
     }
   }
 `;
+
+export const GET_PASSENGER_DETAILS = gql`
+  query passengerDetails(
+    $filter: PassengerDetailFilter! = {}
+    $paging: OffsetPaging! = { limit: 10 }
+    $sorting: [PassengerDetailSort!]! = []
+  ) {
+    passengerDetails(filter: $filter, paging: $paging, sorting: $sorting) {
+      nodes {
+        id
+        quotation {
+          id
+          aircraft {
+            id
+            name
+            code
+          }
+        }
+        quotationNo
+        sectors {
+          id
+          source
+          destination
+          depatureDate
+          depatureTime
+          arrivalDate
+          arrivalTime
+          pax
+          flightTime
+          passengers {
+            name
+            age
+            gender
+            aadharId
+          }
+          meals {
+            category
+            item
+            instructions
+            portions
+            type
+          }
+          travel {
+            seatingCapacity
+            category
+            vehicleChoice
+            dropAt
+            type
+          }
+        }
+      }
+    }
+  }
+`;

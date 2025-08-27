@@ -50,6 +50,7 @@ import TripConfirmationCalenderView from "./pages/full-calender-view/TripConfirm
 import StaffLeaveCalenderView from "./pages/full-calender-view/LeaveCalender";
 import Library from "./pages/library/List";
 import AviationNSOPForm from "./pages/quote/passanger-detail";
+import TripDetailPage from "./pages/ops/trip/TripDetailPage";
 
 const router = createBrowserRouter(
   [
@@ -201,6 +202,11 @@ const router = createBrowserRouter(
             {
               path: "passenger-details",
               Component: AviationNSOPForm,
+            },
+
+            {
+              path: "trip-detail/:quotationId",
+              Component: TripDetailPage,
             },
           ],
         },

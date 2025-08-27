@@ -13,7 +13,7 @@ import DashboardBoardSection from "../../components/DashboardBoardSection";
 import moment from "moment";
 import { GET_QUOTES } from "../../lib/graphql/queries/quote";
 import { useSession } from "../../SessionContext";
-import SalesConfirmationList from "../ops/tables/sales-confirmation";
+import SalesConfirmationList from "../ops/tables/SalesConfirmation";
 import { Box } from "@mui/material";
 
 const OpsDashboard = () => {
@@ -53,6 +53,9 @@ const OpsDashboard = () => {
     const finalFilter = customFilter || {
       ...filter,
       ...(operatorId && { operatorId: { eq: operatorId } }),
+      status: {
+        eq: "SALE_CONFIRMED",
+      },
     };
 
     try {

@@ -1,5 +1,5 @@
 // AviationNSOPForm.jsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Card,
@@ -153,6 +153,7 @@ export default function PassengerDetails({
     handleSubmit,
     setValue,
     getValues,
+    reset,
     formState: { isSubmitting },
   } = useForm({
     defaultValues,
@@ -163,6 +164,24 @@ export default function PassengerDetails({
     control,
     name: "sectors",
   });
+
+  useEffect(() => {
+    if (tripInfo) {
+      const newDefaultValues = {
+        sectors: sectors?.map((s, index) => {
+          // You need to replicate your logic here to make sure
+          // the data is in the correct format for the form.
+          return {
+            ...s, // use the existing data
+            passengers: s.passengers || [], // Ensure nested arrays are not null
+            meals: s.meals || [],
+            travel: s.travel || {},
+          };
+        }),
+      };
+      reset(newDefaultValues);
+    }
+  }, [sectors, reset]);
 
   // Keep only one sector expanded at a time
   const [expanded, setExpanded] = useState(0);
@@ -245,9 +264,28 @@ export default function PassengerDetails({
     const all = getValues();
     const payload = all.sectors?.[sectorIndex];
 
+    // Create a deep copy to avoid modifying the original form state
+    const cleanPayload = JSON.parse(JSON.stringify(payload));
+
+    // Remove __typename from objects
+    delete cleanPayload.__typename;
+
+    // Remove __typename from nested objects
+    delete cleanPayload.travel.__typename;
+
+    // Check if passengers exist and remove __typename
+    if (cleanPayload.passengers && Array.isArray(cleanPayload.passengers)) {
+      cleanPayload.passengers.forEach((p) => delete p.__typename);
+    }
+
+    // Check if meals exist and remove __typename
+    if (cleanPayload.meals && Array.isArray(cleanPayload.meals)) {
+      cleanPayload.meals.forEach((m) => delete m.__typename);
+    }
+
     onSaveSector({
       where: { quotation, quotationNo },
-      data: { sector: payload },
+      data: { sector: cleanPayload },
     });
   };
 
