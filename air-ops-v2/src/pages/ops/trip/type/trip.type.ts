@@ -18,22 +18,14 @@ export interface Quotation {
   status: string;
 }
 
-export type CrewDesignation =
-  | "Pilot"
-  | "Cabin Crew"
-  | "Engineer"
-  | "Security"
-  | "Operations"
-  | "CAMO";
-
 export interface CrewMember {
   id: string;
   name: string;
   phone?: string;
-  designation: CrewDesignation;
+  designation: string;
 }
 
-export interface FuelInfo {
+export interface FuelRecordInfo {
   fuelStation: string;
   uploadedDate: string; // ISO date
   fuelOnArrival: string;
@@ -50,12 +42,18 @@ export interface DocumentInfo {
   externalLink?: string; // optional online link
 }
 
+export interface AssignedCrewInfo {
+  designation: string;
+  crews: string[];
+}
+
 export interface SectorFormValues {
   depatureDate: string;
   depatureTime: string;
   arrivalDate: string;
   arrivalTime: string;
-  crew: Record<CrewDesignation, CrewMember[]>;
-  fuel: FuelInfo; // adjust with Fuel type
+  // crews: Record<CrewDesignation, CrewMember[]>;
+  assignedCrews: AssignedCrewInfo[];
+  fuelRecord: FuelRecordInfo; // adjust with Fuel type
   documents: DocumentInfo[];
 }
