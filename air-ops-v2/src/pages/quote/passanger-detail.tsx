@@ -32,6 +32,10 @@ import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatRecline
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import moment from "moment";
+import { useSnackbar } from "../../SnackbarContext";
+import useGql from "../../lib/graphql/gql";
+import { GET_PASSENGER_DETAILS } from "../../lib/graphql/queries/passenger-detail";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 /**
  * DEMO USAGE (unchanged design):
@@ -69,17 +73,260 @@ const sectionTitle = (text, icon) => (
 
 export default function PassengerDetails({
   logoColors = { primary: "#0A58CA", accent: "#E11D48" }, // blue & red
-  tripInfo,
+  quotation,
+  quotationNo,
   onSaveSector = (formData) => {},
+  onPreview = (allFormData) => {},
 }) {
-  const {
-    aircraft,
-    itinerary: sectors,
-    quotationNo,
-    quotationId: quotation,
-  } = tripInfo;
+  // const {
+  //   aircraft,
+  //   itinerary: sectors,
+  //   quotationNo,
+  //   quotationId: quotation,
+  // } = tripInfo;
 
-  // Build default values (Passengers replaced; add Meals & Travel)
+  // // Build default values (Passengers replaced; add Meals & Travel)
+  // const defaultValues = useMemo(() => {
+  //   const makePassenger = () => ({
+  //     name: "",
+  //     gender: "",
+  //     age: 0,
+  //     aadharId: "",
+  //   });
+
+  //   const makeMeal = () => ({
+  //     category: "",
+  //     type: "",
+  //     portions: 0,
+  //     item: "",
+  //     instructions: "",
+  //   });
+
+  //   const makeTravel = () => ({
+  //     category: "",
+  //     type: "",
+  //     seatingCapacity: 0,
+  //     vehicleChoice: "",
+  //     dropAt: "",
+  //   });
+
+  //   return {
+  //     sectors: sectors?.map((s, index) => {
+  //       // Combine date and time into moment objects
+  //       const depDateTime = moment(
+  //         `${s.depatureDate ?? ""} ${s.depatureTime ?? ""}`,
+  //         "YYYY-MM-DD HH:mm"
+  //       );
+  //       const arrDateTime = moment(
+  //         `${s.arrivalDate ?? ""} ${s.arrivalTime ?? ""}`,
+  //         "YYYY-MM-DD HH:mm"
+  //       );
+
+  //       // Calculate duration
+  //       let flightTime = "";
+  //       if (depDateTime.isValid() && arrDateTime.isValid()) {
+  //         const totalMinutes = arrDateTime.diff(depDateTime, "minutes");
+  //         if (totalMinutes >= 0) {
+  //           const hours = Math.floor(totalMinutes / 60);
+  //           const minutes = totalMinutes % 60;
+  //           flightTime = `${hours}h ${minutes}m`;
+  //         }
+  //       }
+
+  //       return {
+  //         id: index + 1,
+  //         source: s.source ?? "",
+  //         destination: s.destination ?? "",
+  //         depatureDate: s.depatureDate ?? "",
+  //         depatureTime: s.depatureTime ?? "",
+  //         arrivalTime: s.arrivalTime ?? "",
+  //         arrivalDate: s.arrivalDate ?? "",
+  //         pax: s?.paxNumber ?? "",
+  //         flightTime, // ⬅ store calculated value here
+
+  //         passengers: Array.from({ length: s.paxNumber }, () =>
+  //           makePassenger()
+  //         ),
+  //         meals: [makeMeal()],
+  //         travel: makeTravel(),
+  //       };
+  //     }),
+  //   };
+  // }, [sectors]);
+
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   setValue,
+  //   getValues,
+  //   reset,
+  //   formState: { isSubmitting },
+  // } = useForm({
+  //   defaultValues,
+  //   mode: "onChange",
+  // });
+
+  // const { fields: sectorFields } = useFieldArray({
+  //   control,
+  //   name: "sectors",
+  // });
+
+  // useEffect(() => {
+  //   if (tripInfo) {
+  //     const newDefaultValues = {
+  //       sectors: sectors?.map((s, index) => {
+  //         // You need to replicate your logic here to make sure
+  //         // the data is in the correct format for the form.
+  //         return {
+  //           ...s, // use the existing data
+  //           passengers: s.passengers || [], // Ensure nested arrays are not null
+  //           meals: s.meals || [],
+  //           travel: s.travel || {},
+  //         };
+  //       }),
+  //     };
+  //     reset(newDefaultValues);
+  //   }
+  // }, [sectors, reset]);
+
+  // // Keep only one sector expanded at a time
+  // const [expanded, setExpanded] = useState(0);
+  // const handleAccordionChange = (index) => (event, isExpanded) => {
+  //   setExpanded(isExpanded ? index : false);
+  // };
+
+  // // Non-destructive clone helper: fills only empty targets
+  // const fillIfEmpty = (target, source) => {
+  //   if (target == null || typeof target !== "object") return source;
+  //   if (Array.isArray(target) && Array.isArray(source)) {
+  //     const out = [...target];
+  //     const max = Math.max(target.length, source.length);
+  //     for (let i = 0; i < max; i++) {
+  //       if (
+  //         target[i] == null ||
+  //         target[i] === "" ||
+  //         (typeof target[i] === "object" && Object.keys(target[i]).length === 0)
+  //       ) {
+  //         out[i] =
+  //           source[i] !== undefined
+  //             ? JSON.parse(JSON.stringify(source[i]))
+  //             : target[i];
+  //       } else if (
+  //         typeof target[i] === "object" &&
+  //         typeof source[i] === "object"
+  //       ) {
+  //         out[i] = fillIfEmpty(target[i], source[i]);
+  //       }
+  //     }
+  //     return out;
+  //   }
+  //   const out = { ...target };
+  //   for (const k of Object.keys(source ?? {})) {
+  //     if (
+  //       out[k] === "" ||
+  //       out[k] == null ||
+  //       (typeof out[k] === "object" &&
+  //         !Array.isArray(out[k]) &&
+  //         Object.keys(out[k]).length === 0)
+  //     ) {
+  //       out[k] = JSON.parse(JSON.stringify(source[k]));
+  //     } else if (typeof out[k] === "object" && typeof source[k] === "object") {
+  //       out[k] = fillIfEmpty(out[k], source[k]);
+  //     }
+  //   }
+  //   return out;
+  // };
+
+  // // Clone (from Sector 1) → fills only empty fields in target sector
+  // const cloneFromFirstSector = (targetIndex) => {
+  //   const src = getValues(`sectors.0`);
+  //   if (!src) return;
+
+  //   const tgt = getValues(`sectors.${targetIndex}`);
+
+  //   // Only clone passengers, meals, travel (never overwrite meta)
+  //   const mergedPassengers = fillIfEmpty(
+  //     tgt.passengers ?? [],
+  //     src.passengers ?? []
+  //   );
+  //   const mergedMeals = fillIfEmpty(tgt.meals ?? [], src.meals ?? []);
+  //   const mergedTravel = fillIfEmpty(tgt.travel ?? {}, src.travel ?? {});
+
+  //   setValue(`sectors.${targetIndex}.passengers`, mergedPassengers, {
+  //     shouldValidate: true,
+  //     shouldDirty: true,
+  //   });
+  //   setValue(`sectors.${targetIndex}.meals`, mergedMeals, {
+  //     shouldValidate: true,
+  //     shouldDirty: true,
+  //   });
+  //   setValue(`sectors.${targetIndex}.travel`, mergedTravel, {
+  //     shouldValidate: true,
+  //     shouldDirty: true,
+  //   });
+  // };
+
+  // const saveSector = (sectorIndex) => {
+  //   const all = getValues();
+  //   const payload = all.sectors?.[sectorIndex];
+
+  //   // Create a deep copy to avoid modifying the original form state
+  //   const cleanPayload = JSON.parse(JSON.stringify(payload));
+
+  //   // Remove __typename from objects
+  //   delete cleanPayload.__typename;
+
+  //   // Remove __typename from nested objects
+  //   delete cleanPayload.travel.__typename;
+
+  //   // Check if passengers exist and remove __typename
+  //   if (cleanPayload.passengers && Array.isArray(cleanPayload.passengers)) {
+  //     cleanPayload.passengers.forEach((p) => delete p.__typename);
+  //   }
+
+  //   // Check if meals exist and remove __typename
+  //   if (cleanPayload.meals && Array.isArray(cleanPayload.meals)) {
+  //     cleanPayload.meals.forEach((m) => delete m.__typename);
+  //   }
+
+  //   onSaveSector({
+  //     where: { quotation, quotationNo },
+  //     data: { sector: cleanPayload },
+  //   });
+  // };
+
+  const showSnackbar = useSnackbar();
+
+  // State to hold the fetched trip data
+  const [tripInfo, setTripInfo] = useState<any>(null);
+  const [savedSectors, setSavedSectors] = useState({});
+  const [allSectorsSaved, setAllSectorsSaved] = useState(false);
+
+  const getPassengerDetails = async (quotation, quotationNo) => {
+    try {
+      const result = await useGql({
+        query: GET_PASSENGER_DETAILS,
+        variables: {
+          filter: {
+            quotation: { eq: quotation },
+            quotationNo: { eq: quotationNo },
+          },
+        },
+        queryName: "passengerDetails",
+        queryType: "query",
+      });
+
+      if (result?.errors) {
+        showSnackbar(
+          result?.errors?.[0]?.message || "some thing went wrong",
+          "error"
+        );
+      } else return result[0];
+    } catch (error) {
+      showSnackbar(error?.message || "some thing went wrong", "error");
+    }
+  };
+
   const defaultValues = useMemo(() => {
     const makePassenger = () => ({
       name: "",
@@ -104,49 +351,25 @@ export default function PassengerDetails({
       dropAt: "",
     });
 
+    // Provide a clear structure for TypeScript to infer
     return {
-      sectors: sectors?.map((s, index) => {
-        // Combine date and time into moment objects
-        const depDateTime = moment(
-          `${s.depatureDate ?? ""} ${s.depatureTime ?? ""}`,
-          "YYYY-MM-DD HH:mm"
-        );
-        const arrDateTime = moment(
-          `${s.arrivalDate ?? ""} ${s.arrivalTime ?? ""}`,
-          "YYYY-MM-DD HH:mm"
-        );
-
-        // Calculate duration
-        let flightTime = "";
-        if (depDateTime.isValid() && arrDateTime.isValid()) {
-          const totalMinutes = arrDateTime.diff(depDateTime, "minutes");
-          if (totalMinutes >= 0) {
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            flightTime = `${hours}h ${minutes}m`;
-          }
-        }
-
-        return {
-          id: index + 1,
-          source: s.source ?? "",
-          destination: s.destination ?? "",
-          depatureDate: s.depatureDate ?? "",
-          depatureTime: s.depatureTime ?? "",
-          arrivalTime: s.arrivalTime ?? "",
-          arrivalDate: s.arrivalDate ?? "",
-          pax: s?.paxNumber ?? "",
-          flightTime, // ⬅ store calculated value here
-
-          passengers: Array.from({ length: s.paxNumber }, () =>
-            makePassenger()
-          ),
+      sectors: [
+        {
+          source: "",
+          destination: "",
+          depatureDate: "",
+          depatureTime: "",
+          arrivalTime: "",
+          arrivalDate: "",
+          pax: 0,
+          flightTime: "",
+          passengers: [makePassenger()],
           meals: [makeMeal()],
           travel: makeTravel(),
-        };
-      }),
+        },
+      ],
     };
-  }, [sectors]);
+  }, []);
 
   const {
     control,
@@ -160,31 +383,35 @@ export default function PassengerDetails({
     mode: "onChange",
   });
 
+  // Use a useEffect hook to fetch data when the component loads or the ID changes
+  useEffect(() => {
+    const fetchData = async () => {
+      if (quotation && quotationNo) {
+        const data = await getPassengerDetails(quotation, quotationNo);
+        if (data) {
+          setTripInfo(data); // Set the fetched data to a state variable
+          const formattedData = {
+            sectors: data.sectors.map((s) => ({
+              ...s,
+              passengers: s.passengers || [],
+              meals: s.meals || [],
+              travel: s.travel || {},
+            })),
+          };
+          reset(formattedData);
+        }
+      }
+    };
+    fetchData();
+  }, [quotation, quotationNo, reset]);
+
   const { fields: sectorFields } = useFieldArray({
     control,
     name: "sectors",
   });
 
-  useEffect(() => {
-    if (tripInfo) {
-      const newDefaultValues = {
-        sectors: sectors?.map((s, index) => {
-          // You need to replicate your logic here to make sure
-          // the data is in the correct format for the form.
-          return {
-            ...s, // use the existing data
-            passengers: s.passengers || [], // Ensure nested arrays are not null
-            meals: s.meals || [],
-            travel: s.travel || {},
-          };
-        }),
-      };
-      reset(newDefaultValues);
-    }
-  }, [sectors, reset]);
-
   // Keep only one sector expanded at a time
-  const [expanded, setExpanded] = useState(0);
+  const [expanded, setExpanded] = useState<number | null>(0);
   const handleAccordionChange = (index) => (event, isExpanded) => {
     setExpanded(isExpanded ? index : false);
   };
@@ -287,7 +514,79 @@ export default function PassengerDetails({
       where: { quotation, quotationNo },
       data: { sector: cleanPayload },
     });
+
+    // Mark this sector as saved
+    setSavedSectors((prev) => ({ ...prev, [sectorIndex]: true }));
+
+    // Check if this is the last sector
+    const isLastSector = sectorIndex === sectorFields.length - 1;
+
+    // Close the current accordion and open the next one if it exists
+    if (!isLastSector) {
+      setExpanded(sectorIndex + 1);
+    } else {
+      // If it's the last one, close the accordion
+      setExpanded(null);
+    }
   };
+
+  const sectors = useMemo(() => {
+    if (!tripInfo || !tripInfo.sectors) return [];
+
+    return tripInfo.sectors.map((s, index) => {
+      // Combine date and time into moment objects
+      const depDateTime = moment(
+        `${s.depatureDate ?? ""} ${s.depatureTime ?? ""}`,
+        "YYYY-MM-DD HH:mm"
+      );
+      const arrDateTime = moment(
+        `${s.arrivalDate ?? ""} ${s.arrivalTime ?? ""}`,
+        "YYYY-MM-DD HH:mm"
+      );
+
+      // Calculate duration
+      let flightTime = "";
+      if (depDateTime.isValid() && arrDateTime.isValid()) {
+        const totalMinutes = arrDateTime.diff(depDateTime, "minutes");
+        if (totalMinutes >= 0) {
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          flightTime = `${hours}h ${minutes}m`;
+        }
+      }
+
+      // This is a simplified version of the logic from your original defaultValues
+      return {
+        id: index + 1,
+        source: s.source ?? "",
+        destination: s.destination ?? "",
+        depatureDate: s.depatureDate ?? "",
+        depatureTime: s.depatureTime ?? "",
+        arrivalTime: s.arrivalTime ?? "",
+        arrivalDate: s.arrivalDate ?? "",
+        pax: s?.paxNumber ?? "",
+        flightTime,
+
+        passengers: s.passengers,
+        meals: s.meals,
+        travel: s.travel,
+      };
+    });
+  }, [tripInfo]);
+
+  // Check if all sectors have been saved to enable the Preview button
+  useEffect(() => {
+    console.log(
+      "sectorrr",
+      Object.keys(savedSectors).length === sectorFields.length
+    );
+
+    if (Object.keys(savedSectors).length === sectorFields.length) {
+      setAllSectorsSaved(true);
+    } else {
+      setAllSectorsSaved(false);
+    }
+  }, [savedSectors, sectorFields.length]);
 
   return (
     <Box
@@ -311,10 +610,11 @@ export default function PassengerDetails({
             <Stack direction="row" alignItems="center" spacing={1.5}>
               <FlightTakeoffIcon sx={{ color: logoColors.primary }} />
               <Typography variant="h6" fontWeight={800}>
-                Passenger,Catering & Travel - {aircraft?.name}
+                Passenger,Catering & Travel -{" "}
+                {tripInfo?.quotation?.aircraft?.name}
               </Typography>
               <Chip
-                label={aircraft?.code}
+                label={tripInfo?.quotation?.aircraft?.code}
                 size="small"
                 sx={{
                   ml: 1,
@@ -581,6 +881,29 @@ export default function PassengerDetails({
                   </Accordion>
                 );
               })}
+              <CardActions sx={{ justifyContent: "flex-end" }}>
+                <Button
+                  variant="contained"
+                  startIcon={<VisibilityIcon />}
+                  disabled={!allSectorsSaved}
+                  // disabled={true}
+                  onClick={() => onPreview(quotationNo)}
+                  sx={(theme) => ({
+                    textTransform: "none",
+                    fontWeight: 700,
+                    bgcolor: allSectorsSaved
+                      ? logoColors.accent
+                      : theme.palette.action.disabledBackground,
+                    "&:hover": {
+                      bgcolor: allSectorsSaved
+                        ? "#cc1b40"
+                        : theme.palette.action.disabledBackground,
+                    },
+                  })}
+                >
+                  Save & Preview
+                </Button>
+              </CardActions>
             </Stack>
           </form>
         </CardContent>

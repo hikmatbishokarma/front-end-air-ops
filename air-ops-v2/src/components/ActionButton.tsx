@@ -28,6 +28,7 @@ import { getEnumKeyByValue, SalesDocumentType } from "../lib/utils";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import { InvoiceConfirmationModal } from "./InvoiceConfirmationModel";
+import { useSession } from "../SessionContext";
 
 interface ActionButtonProps {
   currentId: string;
@@ -66,6 +67,11 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 }) => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
+
+  const { session, setSession } = useSession();
+
+  const operatorId = session?.user.operator?.id || null;
+  const operatorName = session?.user.operator?.name || null;
 
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [clientEmail, setClientEmail] = useState("");
@@ -180,7 +186,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     }
 
     pdf.save(
-      `${currentRecord?.client?.name || documentType}_${currentQuotation}.pdf`
+      `${currentRecord?.client?.name || operatorName || "Airops"}_${currentQuotation}.pdf`
     );
   };
 
@@ -190,7 +196,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 
   const printFn = useReactToPrint({
     contentRef: htmlRef,
-    documentTitle: `${currentRecord?.client?.name || documentType}${currentQuotation}`,
+    documentTitle: `${currentRecord?.client?.name || operatorName || "Airops"}${currentQuotation}`,
     onAfterPrint: handleAfterPrint,
   });
 

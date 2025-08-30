@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import useGql from "../../../lib/graphql/gql";
 import { GET_QUOTE_BY_ID } from "../../../lib/graphql/queries/quote";
+import { GET_TRIP_DETAILS } from "../../../lib/graphql/queries/trip-detail";
 
-export function useTrip(quotationId: string) {
+export function useTrip(tripId: string) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
@@ -14,13 +15,14 @@ export function useTrip(quotationId: string) {
         setLoading(true);
 
         const response = await useGql({
-          query: GET_QUOTE_BY_ID,
-          queryName: "quote",
-          queryType: "query-without-edge",
-          variables: { id: quotationId },
+          query: GET_TRIP_DETAILS,
+          queryName: "tripDetails",
+          queryType: "query-with-count",
+          variables: { id: tripId },
         });
 
-        setData(response);
+        console.log("response:::", response);
+        setData(response.data[0]);
       } catch (err) {
         setError(err);
       } finally {
@@ -28,8 +30,8 @@ export function useTrip(quotationId: string) {
       }
     }
 
-    if (quotationId) fetchTrip();
-  }, [quotationId]);
+    if (tripId) fetchTrip();
+  }, [tripId]);
 
   return { data, loading, error };
 }

@@ -12,7 +12,7 @@ import StepSectorInfo from "./StepSectorInfo";
 import StepCrew from "./StepCrew";
 import StepFuel from "./StepFuel";
 import StepDocuments from "./StepDocuments";
-import { Itinerary } from "../../type/trip.type";
+
 import { useForm } from "react-hook-form";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -20,9 +20,10 @@ import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import DescriptionIcon from "@mui/icons-material/Description";
 const steps = ["Sector Info", "Crew Selection", "Fuel Info", "Upload Docs"];
 import { StepIconProps } from "@mui/material/StepIcon";
+import { Sector } from "../../type/trip.type";
 
 interface SectorStepperProps {
-  sector: Itinerary;
+  sector: Sector;
 }
 
 const stepIcons: { [index: string]: React.ReactElement } = {
@@ -55,8 +56,8 @@ export default function SectorStepper({ sector, onSave }) {
   const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       ...sector,
-      crew: sector.crew || [],
-      fuel: sector.fuel || {},
+      assignedCrews: sector.assignedCrews || [],
+      fuelRecord: sector.fuelRecord || {},
       documents: sector.documents || [],
     },
   });

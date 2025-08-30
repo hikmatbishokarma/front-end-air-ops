@@ -51,6 +51,8 @@ import StaffLeaveCalenderView from "./pages/full-calender-view/LeaveCalender";
 import Library from "./pages/library/List";
 import AviationNSOPForm from "./pages/quote/passanger-detail";
 import TripDetailPage from "./pages/ops/trip/TripDetailPage";
+import QuoteCreateTest from "./pages/quote/QuoteCreate";
+import QuoteEditTest from "./pages/quote/QuoteEdit";
 
 const router = createBrowserRouter(
   [
@@ -136,11 +138,14 @@ const router = createBrowserRouter(
             // },
             {
               path: "quotes/edit/:id",
-              Component: QuoteEdit,
+              // Component: QuoteEdit,
+              Component: QuoteEditTest,
             },
             {
               path: "quotes/create",
-              Component: QuoteCreate,
+              // Component: QuoteCreate,
+
+              Component: QuoteCreateTest,
             },
             // {
             //   path: "prices",
@@ -205,7 +210,7 @@ const router = createBrowserRouter(
             },
 
             {
-              path: "trip-detail/:quotationId",
+              path: "trip-detail/:tripId",
               Component: TripDetailPage,
             },
           ],

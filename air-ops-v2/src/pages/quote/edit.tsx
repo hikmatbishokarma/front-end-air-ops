@@ -50,16 +50,16 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import ClientDialog from "../clients/dialog";
 import RepresentativeDialog from "../representative/dialog";
+
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   categoryOptions,
+  ClientType,
   getMinDepartureTime,
-  parseUnitToDecimal,
   validateArrivalAfterDeparture,
   validateArrivalTime,
   validateDepartureTime,
-} from "./create";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { ClientType } from "../../lib/utils";
+} from "../../lib/utils";
 import { useSession } from "../../SessionContext";
 const QuoteEdit = () => {
   const { id } = useParams();

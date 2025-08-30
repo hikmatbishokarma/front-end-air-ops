@@ -22,8 +22,14 @@ import { useNavigate } from "react-router";
 import { useSnackbar } from "../../../SnackbarContext";
 import SaleConfirmationPreview from "../../../components/SaleConfirmationPreview";
 import { CustomDialog } from "../../../components/CustomeDialog";
-import { QuotationStatus, SalesCategoryLabels } from "../../../lib/utils";
+import {
+  calculateFlightTime,
+  QuotationStatus,
+  SalesCategoryLabels,
+} from "../../../lib/utils";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import useGql from "../../../lib/graphql/gql";
+import { CREATE_TRIP_DETAILS } from "../../../lib/graphql/queries/trip-detail";
 
 export const SalesConfirmationList = ({
   quoteList,
@@ -84,8 +90,48 @@ export const SalesConfirmationList = ({
     setSelectedRow(null);
   };
 
-  const onHandelCreateTrip = (row) => {
-    navigate(`/trip-detail/${row.id}`, { state: row });
+  const onHandelCreateTrip = async (row) => {
+    console.log("onHandelCreateTrip:::", row);
+
+    const data = await useGql({
+      query: CREATE_TRIP_DETAILS,
+      queryName: "createOneTripDetail",
+      queryType: "mutation",
+      variables: {
+        input: {
+          tripDetail: {
+            quotation: row.id,
+            quotationNo: row.quotationNo,
+            sectors: row.sectors.map((sector) => ({
+              source: sector.source,
+              destination: sector.destination,
+              depatureDate: sector.depatureDate,
+              depatureTime: sector.depatureTime,
+              arrivalTime: sector.arrivalTime,
+              arrivalDate: sector.arrivalDate,
+              pax: sector.paxNumber || 0,
+              flightTime: calculateFlightTime(
+                sector.depatureDate,
+                sector.depatureTime,
+                sector.arrivalDate,
+                sector.arrivalTime
+              ),
+            })),
+          },
+        },
+      },
+    });
+
+    console.log("data:::", data);
+
+    if (data?.errors) {
+      // Use optional chaining for safer access
+      throw new Error(data.errors[0]?.message || "Something went wrong.");
+    } else {
+      navigate(`/trip-detail/${data.id}`, { state: row });
+    }
+
+    // navigate(`/trip-detail/${row.id}`, { state: row });
   };
 
   const headerStyle = {

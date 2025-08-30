@@ -55,6 +55,10 @@ const useGql = async (gqlParams: gqlParams) => {
       };
     }
 
+    if (queryType == "mutation") {
+      return result.data[queryName];
+    }
+
     return result;
   } catch (error) {
     console.error("❌ An error occurred during the GraphQL operation:", error);

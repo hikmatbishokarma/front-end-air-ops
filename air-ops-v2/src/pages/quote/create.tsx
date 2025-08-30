@@ -53,7 +53,14 @@ import RepresentativeDialog from "../representative/dialog";
 import { useNavigate } from "react-router";
 import { useSession } from "../../SessionContext";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ClientType } from "../../lib/utils";
+import {
+  categoryOptions,
+  ClientType,
+  getMinDepartureTime,
+  validateArrivalAfterDeparture,
+  validateArrivalTime,
+  validateDepartureTime,
+} from "../../lib/utils";
 
 const defaultValues = {
   requestedBy: "",
@@ -100,117 +107,117 @@ const defaultValues = {
   grandTotal: 0,
 };
 
-export const parseUnitToDecimal = (unitString: string): number => {
-  if (!unitString) return 0;
+// export const parseUnitToDecimal = (unitString: string): number => {
+//   if (!unitString) return 0;
 
-  if (unitString.includes(":")) {
-    const [hoursStr, minutesStr] = unitString.split(":");
-    const hours = Number(hoursStr);
-    const minutes = Number(minutesStr);
+//   if (unitString.includes(":")) {
+//     const [hoursStr, minutesStr] = unitString.split(":");
+//     const hours = Number(hoursStr);
+//     const minutes = Number(minutesStr);
 
-    if (isNaN(hours) || isNaN(minutes)) return 0;
-    return hours + minutes / 60;
-  } else {
-    const hours = Number(unitString);
-    return isNaN(hours) ? 0 : hours;
-  }
-};
+//     if (isNaN(hours) || isNaN(minutes)) return 0;
+//     return hours + minutes / 60;
+//   } else {
+//     const hours = Number(unitString);
+//     return isNaN(hours) ? 0 : hours;
+//   }
+// };
 
-export const validateArrivalTime =
-  (getValues: any, index: number) => (arrivalTime: string) => {
-    const depDate = getValues(`itinerary.${index}.depatureDate`);
-    const depTime = getValues(`itinerary.${index}.depatureTime`);
-    const arrDate = getValues(`itinerary.${index}.arrivalDate`);
+// export const validateArrivalTime =
+//   (getValues: any, index: number) => (arrivalTime: string) => {
+//     const depDate = getValues(`itinerary.${index}.depatureDate`);
+//     const depTime = getValues(`itinerary.${index}.depatureTime`);
+//     const arrDate = getValues(`itinerary.${index}.arrivalDate`);
 
-    if (!depDate || !depTime || !arrDate || !arrivalTime) return true;
+//     if (!depDate || !depTime || !arrDate || !arrivalTime) return true;
 
-    // Parse all times as moment objects using consistent format
-    const depDateTime = moment(
-      `${moment(depDate).format("YYYY-MM-DD")} ${depTime}`,
-      "YYYY-MM-DD HH:mm"
-    );
-    const arrDateTime = moment(
-      `${moment(arrDate).format("YYYY-MM-DD")} ${arrivalTime}`,
-      "YYYY-MM-DD HH:mm"
-    );
+//     // Parse all times as moment objects using consistent format
+//     const depDateTime = moment(
+//       `${moment(depDate).format("YYYY-MM-DD")} ${depTime}`,
+//       "YYYY-MM-DD HH:mm"
+//     );
+//     const arrDateTime = moment(
+//       `${moment(arrDate).format("YYYY-MM-DD")} ${arrivalTime}`,
+//       "YYYY-MM-DD HH:mm"
+//     );
 
-    const minArrivalTime = depDateTime.add(2, "minutes");
+//     const minArrivalTime = depDateTime.add(2, "minutes");
 
-    // Validate
-    // return arrDateTime.isSameOrAfter(depDateTime)
-    //   ? true
-    //   : "Arrival must be after departure";
+//     // Validate
+//     // return arrDateTime.isSameOrAfter(depDateTime)
+//     //   ? true
+//     //   : "Arrival must be after departure";
 
-    return arrDateTime.isSameOrAfter(minArrivalTime)
-      ? true
-      : "Arrival must be atleast 2min after departure";
-  };
+//     return arrDateTime.isSameOrAfter(minArrivalTime)
+//       ? true
+//       : "Arrival must be atleast 2min after departure";
+//   };
 
-export const validateArrivalAfterDeparture =
-  (getValues, index) => (arrivalDate) => {
-    const departureDate = getValues(`itinerary.${index}.depatureDate`);
-    if (!arrivalDate || !departureDate) return true;
-    return (
-      moment(arrivalDate).isSameOrAfter(moment(departureDate), "day") ||
-      "Arrival date must be same as or after departure date"
-    );
-  };
+// export const validateArrivalAfterDeparture =
+//   (getValues, index) => (arrivalDate) => {
+//     const departureDate = getValues(`itinerary.${index}.depatureDate`);
+//     if (!arrivalDate || !departureDate) return true;
+//     return (
+//       moment(arrivalDate).isSameOrAfter(moment(departureDate), "day") ||
+//       "Arrival date must be same as or after departure date"
+//     );
+//   };
 
-export function validateDepartureTime(
-  depDate: string | null | undefined,
-  timeValue: string | undefined
-) {
-  if (!timeValue) return "Departure time is required";
-  if (!depDate) return true; // Can't validate without date
+// export function validateDepartureTime(
+//   depDate: string | null | undefined,
+//   timeValue: string | undefined
+// ) {
+//   if (!timeValue) return "Departure time is required";
+//   if (!depDate) return true; // Can't validate without date
 
-  const today = moment().startOf("day");
-  const isToday = moment(depDate).isSame(today, "day");
+//   const today = moment().startOf("day");
+//   const isToday = moment(depDate).isSame(today, "day");
 
-  const minDateTime = isToday
-    ? moment() // Current time
-    : moment(depDate).startOf("day"); // Start of depDate day
+//   const minDateTime = isToday
+//     ? moment() // Current time
+//     : moment(depDate).startOf("day"); // Start of depDate day
 
-  const inputDateTime = moment(depDate)
-    .hour(moment(timeValue, "HH:mm").hour())
-    .minute(moment(timeValue, "HH:mm").minute())
-    .second(0)
-    .millisecond(0);
+//   const inputDateTime = moment(depDate)
+//     .hour(moment(timeValue, "HH:mm").hour())
+//     .minute(moment(timeValue, "HH:mm").minute())
+//     .second(0)
+//     .millisecond(0);
 
-  if (inputDateTime.isBefore(minDateTime)) {
-    return "Departure time cannot be in the past";
-  }
+//   if (inputDateTime.isBefore(minDateTime)) {
+//     return "Departure time cannot be in the past";
+//   }
 
-  return true;
-}
+//   return true;
+// }
 
-export function getMinDepartureTime(depDate: string | null | undefined) {
-  if (!depDate) return moment("00:00", "HH:mm");
-  const today = moment().startOf("day");
-  const isToday = moment(depDate).isSame(today, "day");
-  return isToday ? moment() : moment("00:00", "HH:mm");
-}
+// export function getMinDepartureTime(depDate: string | null | undefined) {
+//   if (!depDate) return moment("00:00", "HH:mm");
+//   const today = moment().startOf("day");
+//   const isToday = moment(depDate).isSame(today, "day");
+//   return isToday ? moment() : moment("00:00", "HH:mm");
+// }
 
-export const categoryOptions = [
-  {
-    id: "CHARTER",
-    name: "Charter",
-  },
-  {
-    id: "IN_HOUSE",
-    name: "In House",
-  },
-  {
-    id: "TEST_FLIGHT",
-    name: "Test Flight",
-  },
-  {
-    id: "TRAINING",
-    name: "Training",
-  },
-  { id: "GROUND_RUN", name: "Ground Run" },
-  { id: "POSITIONING_FLIGHT", name: "Positioning Flight" },
-  { id: "FERRY", name: "Ferry" },
-];
+// export const categoryOptions = [
+//   {
+//     id: "CHARTER",
+//     name: "Charter",
+//   },
+//   {
+//     id: "IN_HOUSE",
+//     name: "In House",
+//   },
+//   {
+//     id: "TEST_FLIGHT",
+//     name: "Test Flight",
+//   },
+//   {
+//     id: "TRAINING",
+//     name: "Training",
+//   },
+//   { id: "GROUND_RUN", name: "Ground Run" },
+//   // { id: "POSITIONING_FLIGHT", name: "Positioning Flight" },
+//   // { id: "FERRY", name: "Ferry" },
+// ];
 
 export const QuoteCreate = () => {
   const { session, setSession, loading } = useSession();
@@ -598,6 +605,8 @@ export const QuoteCreate = () => {
     }
   }, [JSON.stringify(itinerary), getValues, setValue]);
 
+  const watchedCategory = watch("category");
+
   return (
     <>
       <Box
@@ -635,123 +644,6 @@ export const QuoteCreate = () => {
             <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
               {activeStep === 0 && (
                 <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Controller
-                      name="requestedBy"
-                      control={control}
-                      rules={{ required: "Enquiry From is required" }}
-                      render={({ field, fieldState: { error } }) => (
-                        <Autocomplete
-                          {...field}
-                          options={clients}
-                          getOptionLabel={(option) =>
-                            `${option.name}${option.lastName ? ` ${option.lastName}` : ""}`
-                          }
-                          value={
-                            field.value
-                              ? clients.find((c) => c.id === field.value)
-                              : null
-                          }
-                          onChange={(_, newValue) => {
-                            setSelectedClient(newValue);
-                            field.onChange(newValue ? newValue.id : "");
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Enquiry From"
-                              size="small"
-                              placeholder="Select Client"
-                              slotProps={{
-                                inputLabel: {
-                                  shrink: true,
-                                },
-                              }}
-                              required
-                              fullWidth
-                              error={!!error}
-                              helperText={error?.message}
-                            />
-                          )}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={6} display="flex" alignItems="center">
-                    <IconButton
-                      className="add-icon-v1"
-                      aria-label="add"
-                      color="primary"
-                      onClick={() => setSubDialogOpen(true)}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Grid>
-
-                  {selectedClient?.type == ClientType.COMPANY && (
-                    <>
-                      <Grid item xs={12} md={6}>
-                        <Controller
-                          name="representative"
-                          control={control}
-                          rules={{ required: "Representative is required" }}
-                          render={({ field, fieldState: { error } }) => (
-                            <Autocomplete
-                              {...field}
-                              options={representatives}
-                              getOptionLabel={(option) => option.name}
-                              value={
-                                field.value
-                                  ? representatives.find(
-                                      (rep) => rep.id === field.value
-                                    )
-                                  : null
-                              }
-                              onChange={(_, newValue) =>
-                                field.onChange(newValue ? newValue.id : "")
-                              }
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Representative"
-                                  size="small"
-                                  placeholder="Select Representative"
-                                  slotProps={{
-                                    inputLabel: {
-                                      shrink: true,
-                                    },
-                                  }}
-                                  required
-                                  fullWidth
-                                  error={!!error}
-                                  helperText={error?.message}
-                                />
-                              )}
-                            />
-                          )}
-                        />
-                      </Grid>
-
-                      <Grid
-                        item
-                        xs={12}
-                        md={6}
-                        display="flex"
-                        alignItems="center"
-                      >
-                        <IconButton
-                          className="add-icon-v1"
-                          aria-label="add"
-                          color="primary"
-                          onClick={() => setRepresentativeDialogOpen(true)}
-                        >
-                          <AddIcon />
-                        </IconButton>
-                      </Grid>
-                    </>
-                  )}
-
                   <Grid item xs={12} md={6}>
                     <Controller
                       name="category"
@@ -827,6 +719,133 @@ export const QuoteCreate = () => {
                       )}
                     />
                   </Grid>
+
+                  {watchedCategory === "CHARTER" && (
+                    <>
+                      <Grid item xs={12} md={6}>
+                        <Controller
+                          name="requestedBy"
+                          control={control}
+                          rules={{ required: "Enquiry From is required" }}
+                          render={({ field, fieldState: { error } }) => (
+                            <Autocomplete
+                              {...field}
+                              options={clients}
+                              getOptionLabel={(option) =>
+                                `${option.name}${option.lastName ? ` ${option.lastName}` : ""}`
+                              }
+                              value={
+                                field.value
+                                  ? clients.find((c) => c.id === field.value)
+                                  : null
+                              }
+                              onChange={(_, newValue) => {
+                                setSelectedClient(newValue);
+                                field.onChange(newValue ? newValue.id : "");
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Enquiry From"
+                                  size="small"
+                                  placeholder="Select Client"
+                                  slotProps={{
+                                    inputLabel: {
+                                      shrink: true,
+                                    },
+                                  }}
+                                  required
+                                  fullWidth
+                                  error={!!error}
+                                  helperText={error?.message}
+                                />
+                              )}
+                            />
+                          )}
+                        />
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        md={6}
+                        display="flex"
+                        alignItems="center"
+                      >
+                        <IconButton
+                          className="add-icon-v1"
+                          aria-label="add"
+                          color="primary"
+                          onClick={() => setSubDialogOpen(true)}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </Grid>
+
+                      {selectedClient?.type == ClientType.COMPANY && (
+                        <>
+                          <Grid item xs={12} md={6}>
+                            <Controller
+                              name="representative"
+                              control={control}
+                              rules={{ required: "Representative is required" }}
+                              render={({ field, fieldState: { error } }) => (
+                                <Autocomplete
+                                  {...field}
+                                  options={representatives}
+                                  getOptionLabel={(option) => option.name}
+                                  value={
+                                    field.value
+                                      ? representatives.find(
+                                          (rep) => rep.id === field.value
+                                        )
+                                      : null
+                                  }
+                                  onChange={(_, newValue) =>
+                                    field.onChange(newValue ? newValue.id : "")
+                                  }
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Representative"
+                                      size="small"
+                                      placeholder="Select Representative"
+                                      slotProps={{
+                                        inputLabel: {
+                                          shrink: true,
+                                        },
+                                      }}
+                                      required
+                                      fullWidth
+                                      error={!!error}
+                                      helperText={error?.message}
+                                    />
+                                  )}
+                                />
+                              )}
+                            />
+                          </Grid>
+
+                          <Grid
+                            item
+                            xs={12}
+                            md={6}
+                            display="flex"
+                            alignItems="center"
+                          >
+                            <IconButton
+                              className="add-icon-v1"
+                              aria-label="add"
+                              color="primary"
+                              onClick={() => setRepresentativeDialogOpen(true)}
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </Grid>
+                        </>
+                      )}
+                    </>
+                  )}
                 </Grid>
               )}
 
@@ -1228,71 +1247,6 @@ export const QuoteCreate = () => {
                             />
                           </Grid>
 
-                          {/* <Grid item xs={1.5}>
-                            <Controller
-                            name={`prices.${index}.unit`}
-                            control={control}
-                            rules={{
-                              required: "Unit is required",
-                              minLength: {
-                                value: 1,
-                                message: "Unit must be at least 1 character",
-                              },
-                              pattern: {
-                                value: /^[0-9]+$/,
-                                message: "Unit must be a number",
-                              },
-                            }}
-                            render={({ field, fieldState: { error } }) => (
-                              <TextField
-                                {...field}
-                                label="Unit (hours)"
-                                fullWidth
-                                size="small"
-                                type="text" // keep type text so string is passed
-                                inputProps={{
-                                  inputMode: "numeric",
-                                  pattern: "[0-9]*",
-                                }} // numeric keyboard on mobile
-                                onChange={(e) => {
-                                  const value = e.target.value;
-
-                                  // Allow only digits or empty
-                                  if (/^\d*$/.test(value)) {
-                                    field.onChange(value); // send string to form (and backend)
-
-                                    // parse for calculation
-                                    const intValue =
-                                      value === "" ? 0 : parseInt(value, 10);
-
-                                    if (intValue >= 1) {
-                                      const priceValue = getValues(
-                                        `prices.${index}.price`
-                                      );
-                                      if (priceValue) {
-                                        const total = intValue * priceValue;
-                                        const roundedTotal =
-                                          Math.round(total * 100) / 100;
-                                        setValue(
-                                          `prices.${index}.total`,
-                                          roundedTotal
-                                        );
-                                      }
-                                    } else {
-                                      setValue(`prices.${index}.total`, 0);
-                                    }
-                                  }
-                                }}
-                                required
-                                error={!!error}
-                                helperText={error?.message}
-                              />
-                            )}
-                          />
-
-                           
-                          </Grid> */}
-
                           <Grid item xs={1.5}>
                             <Controller
                               name={`prices.${index}.unit`}
@@ -1336,9 +1290,11 @@ export const QuoteCreate = () => {
                                       setValue(`prices.${index}.total`, 0);
                                     }
                                   }}
-                                  disabled={
-                                    index === 0 || index === 1 || index === 2
-                                  }
+                                  // disabled={
+                                  //   index === 0 || index === 1 || index === 2
+                                  // }
+
+                                  disabled={true}
                                   label="Unit (HH:mm)"
                                   size="small"
                                   format="HH:mm"
@@ -1370,38 +1326,6 @@ export const QuoteCreate = () => {
                                   label="Price"
                                   fullWidth
                                   size="small"
-                                  // onChange={(e) => {
-                                  //   const value = e.target.value;
-                                  //   if (
-                                  //     /^[0-9]*(\.[0-9]+)?$/.test(value) ||
-                                  //     value === ""
-                                  //   ) {
-                                  //     field.onChange(value ? Number(value) : "");
-
-                                  //     const unitString = getValues(
-                                  //       `prices.${index}.unit`
-                                  //     );
-                                  //     const decimalUnit =
-                                  //       parseUnitToDecimal(unitString);
-
-                                  //     console.log(
-                                  //       "decimalUnit",
-                                  //       decimalUnit,
-                                  //       unitString
-                                  //     );
-                                  //     if (unitString && decimalUnit) {
-                                  //       const total = decimalUnit * Number(value);
-                                  //       // Round to 2 decimals
-                                  //       const roundedTotal =
-                                  //         Math.round(total * 100) / 100;
-
-                                  //       setValue(
-                                  //         `prices.${index}.total`,
-                                  //         roundedTotal
-                                  //       );
-                                  //     }
-                                  //   }
-                                  // }}
                                   onChange={(e) => {
                                     const value = e.target.value;
                                     if (
@@ -1857,39 +1781,6 @@ export const QuoteCreate = () => {
                   </div>
                 </>
               )}
-
-              {/* <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  p: 3,
-                }}
-              >
-                {activeStep !== 0 && (
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    className="review-back-btn"
-                  >
-                    Back
-                  </Button>
-                )}
-
-                {activeStep === steps.length - 1 ? (
-                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-                    <Button type="submit" variant="contained" color="success">
-                      Submit
-                    </Button>
-                  </Box>
-                ) : (
-                  <Button
-                    variant="contained"
-                    onClick={handleSubmit(() => setActiveStep(activeStep + 1))}
-                  >
-                    Next
-                  </Button>
-                )}
-              </Box> */}
 
               <Box
                 sx={{

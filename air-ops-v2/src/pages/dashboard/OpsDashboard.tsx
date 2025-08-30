@@ -88,6 +88,7 @@ const OpsDashboard = () => {
               return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
             })
             .join(", "),
+          sectors: quote.itinerary,
           createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
           updatedAt: quote.updatedAt,
           code: quote.code,

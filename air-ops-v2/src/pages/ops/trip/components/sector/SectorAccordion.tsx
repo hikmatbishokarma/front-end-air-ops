@@ -14,25 +14,25 @@ import {
   AssignedCrewInfo,
   CrewMember,
   FuelRecordInfo,
-  Itinerary,
+  Sector,
 } from "../../type/trip.type";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { logoColors } from "../../../../../lib/utils";
 
-export interface SectorFormData extends Itinerary {
-  assignedCrews: AssignedCrewInfo[];
-  fuelRecord?: FuelRecordInfo;
-  documents?: string[];
-}
+// export interface SectorFormData extends Sector {
+//   assignedCrews: AssignedCrewInfo[];
+//   fuelRecord?: FuelRecordInfo;
+//   documents?: string[];
+// }
 
 interface SectorAccordionProps {
   index: number;
-  sector: Itinerary;
+  sector: Sector;
   aircraft?: any;
   expanded: boolean;
 
   onChange: () => void;
-  onSave?: (sectorIndex: number, data: SectorFormData) => void;
+  onSave?: (sectorIndex: number, data: Sector) => void;
 }
 
 export default function SectorAccordion({

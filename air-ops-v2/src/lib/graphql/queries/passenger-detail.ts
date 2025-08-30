@@ -16,14 +16,6 @@ export const UPDATE_PASSENGER_DETAILS = gql`
   }
 `;
 
-export const GET_PASSENGER_DETAIL_BY_ID = gql`
-  query getPassangerDetailById($id: ID!) {
-    passengerDetail(id: $id) {
-      id
-    }
-  }
-`;
-
 export const UPADTE_PASSANGER_DETAIL = gql`
   mutation updatePassengerDetail(
     $where: UpdatePassengerDetailWhereInput!
@@ -54,7 +46,7 @@ export const GET_PASSENGER_DETAILS = gql`
         }
         quotationNo
         sectors {
-          id
+          sectorNo
           source
           destination
           depatureDate
@@ -83,6 +75,54 @@ export const GET_PASSENGER_DETAILS = gql`
             dropAt
             type
           }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_PASSENGER_DETAIL_BY_ID = gql`
+  query getPassengerDetailById($id: ID!) {
+    passengerDetail(id: $id) {
+      id
+      quotation {
+        id
+        aircraft {
+          id
+          name
+          code
+        }
+      }
+      quotationNo
+      sectors {
+        id
+        source
+        destination
+        depatureDate
+        depatureTime
+        arrivalDate
+        arrivalTime
+        pax
+        flightTime
+        passengers {
+          name
+          age
+          gender
+          aadharId
+        }
+        meals {
+          category
+          item
+          instructions
+          portions
+          type
+        }
+        travel {
+          seatingCapacity
+          category
+          vehicleChoice
+          dropAt
+          type
         }
       }
     }

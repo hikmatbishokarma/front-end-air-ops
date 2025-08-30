@@ -26,6 +26,7 @@ export const GET_TRIP_DETAILS = gql`
     $sorting: [TripDetailSort!]! = []
   ) {
     tripDetails(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
       nodes {
         id
         tripId
