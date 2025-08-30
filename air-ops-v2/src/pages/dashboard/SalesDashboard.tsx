@@ -328,8 +328,9 @@ const SalesDashboard = () => {
           id: quote.id,
           quotationNo: quote?.quotationNo,
           status: QuotationStatus[quote.status],
-          requester: quote.requestedBy.name,
-          requesterId: quote.requestedBy.id,
+          category: quote?.category ?? "",
+          requester: quote?.requestedBy?.name ?? "N/A",
+          requesterId: quote?.requestedBy?.id ?? "",
           version: quote.version,
           revision: quote.revision,
           itinerary: quote.itinerary
@@ -337,6 +338,7 @@ const SalesDashboard = () => {
               return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
             })
             .join(", "),
+          sectors: quote.itinerary,
           createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
           updatedAt: quote.updatedAt,
           code: quote.code,

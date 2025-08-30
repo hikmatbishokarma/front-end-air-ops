@@ -9,13 +9,13 @@ import { useTrip } from "../hooks/useTrip";
 export default function TripDetailPage() {
   const [tab, setTab] = useState(0);
 
-  const { quotationId } = useParams();
+  const { tripId } = useParams();
 
-  console.log("quotationId:::", quotationId);
+  console.log("quotationId:::", tripId);
   const location = useLocation();
   const row = location.state;
 
-  const { data: trip, loading, error } = useTrip(quotationId!);
+  const { data: trip, loading, error } = useTrip(tripId!);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error fetching trip</div>;
@@ -44,12 +44,12 @@ export default function TripDetailPage() {
       <Box mt={3}>
         {tab === 0 && (
           <PassengerDetailsTab
-            quotation={quotationId}
+            quotation={trip?.quotation}
             quotationNo={trip?.quotationNo}
           />
         )}
         {tab === 1 && <IntimationsTab quotation={trip} />}
-        {tab === 2 && <TripDetailsTab quotation={trip} />}
+        {tab === 2 && <TripDetailsTab trip={trip} />}
         {/* {tab === 3 && <ChecklistTab />} */}
       </Box>
     </Box>

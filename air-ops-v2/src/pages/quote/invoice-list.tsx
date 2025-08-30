@@ -37,7 +37,7 @@ import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
 import { SALE_CONFIRMATION } from "../../lib/graphql/queries/quote";
 import { CustomDialog } from "../../components/CustomeDialog";
-import { SalesCategoryLabels } from "../../lib/utils";
+import { calculateFlightTime, SalesCategoryLabels } from "../../lib/utils";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PassengerDetails from "./passanger-detail";
 import {
@@ -232,7 +232,21 @@ export const InvoiceList = ({
               passengerDetail: {
                 quotation: row.quotation.id,
                 quotationNo: row.quotation.quotationNo,
-                // sectors: [],
+                sectors: row.sectors.map((sector) => ({
+                  source: sector.source,
+                  destination: sector.destination,
+                  depatureDate: sector.depatureDate,
+                  depatureTime: sector.depatureTime,
+                  arrivalTime: sector.arrivalTime,
+                  arrivalDate: sector.arrivalDate,
+                  pax: sector.paxNumber || 0,
+                  flightTime: calculateFlightTime(
+                    sector.depatureDate,
+                    sector.depatureTime,
+                    sector.arrivalDate,
+                    sector.arrivalTime
+                  ),
+                })),
               },
             },
           },
@@ -425,7 +439,7 @@ export const InvoiceList = ({
         />
       </CustomDialog>
 
-      <CustomDialog
+      {/* <CustomDialog
         open={showPassengerDetail}
         onClose={() => setShowPassengerDetail(false)}
         title="Passenger Details"
@@ -435,13 +449,11 @@ export const InvoiceList = ({
         {quote && (
           <PassengerDetails
             logoColors={{ primary: "#0A58CA", accent: "#E11D48" }}
-            // airCraft={quote?.aircraft}
-            // sectors={quote?.itinerary}
-            tripInfo={{ ...(quote || {}), quotationId: quote?.id }}
+             
             onSaveSector={handelSectorSave}
           />
         )}
-      </CustomDialog>
+      </CustomDialog> */}
     </>
   );
 };

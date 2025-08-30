@@ -1,4 +1,4 @@
-export interface Itinerary {
+export interface Sector {
   sectorNo?: number;
   source: string;
   destination: string;
@@ -6,15 +6,30 @@ export interface Itinerary {
   depatureTime: string;
   arrivalDate: string;
   arrivalTime: string;
-  paxNumber: number;
+  pax: number;
+  flightTime: string;
+  assignedCrews: AssignedCrewInfo[];
+  fuelRecord: FuelRecordInfo; // adjust with Fuel type
+  documents: DocumentInfo[];
+}
+
+export interface Aircraft {
+  id: string;
+  name: string;
+  code: string;
 }
 
 export interface Quotation {
   id: string;
   quotationNo: string;
-  requestedBy: { id: string; name: string };
-  itinerary: Itinerary[];
-  aircraft?: { id: string; name: string; code: string };
+  aircraft?: Aircraft;
+}
+
+export interface Trip {
+  id: string;
+  quotationNo: string;
+  quotation: Quotation;
+  sectors: Sector[];
   status: string;
 }
 

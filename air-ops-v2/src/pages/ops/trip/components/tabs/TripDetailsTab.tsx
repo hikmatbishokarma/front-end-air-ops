@@ -8,15 +8,13 @@ import {
   Typography,
 } from "@mui/material";
 import SectorAccordion from "../sector/SectorAccordion";
-import { Quotation } from "../../type/trip.type";
+
 import { useState } from "react";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { logoColors } from "../../../../../lib/utils";
+import { Trip } from "../../type/trip.type";
 
 // Props for TripDetailsTab
-interface TripDetailsTabProps {
-  quotation: Quotation;
-}
 
 const softCard = {
   borderRadius: "20px",
@@ -27,8 +25,15 @@ const softCard = {
   backdropFilter: "blur(2px)",
 };
 
-export default function TripDetailsTab({ quotation }: TripDetailsTabProps) {
+// Props for TripDetailsTab
+interface TripDetailsTabProps {
+  trip: Trip;
+}
+
+export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
   const [expanded, setExpanded] = useState(0);
+
+  console.log("trip:::", trip);
 
   return (
     <Box
@@ -54,10 +59,10 @@ export default function TripDetailsTab({ quotation }: TripDetailsTabProps) {
                 <FlightTakeoffIcon sx={{ color: logoColors.primary }} />
 
                 <Typography variant="h6" fontWeight={700} color="text.primary">
-                  {quotation?.aircraft?.name}
+                  {trip?.quotation?.aircraft?.name}
                 </Typography>
                 <Chip
-                  label={quotation?.aircraft?.code}
+                  label={trip?.quotation?.aircraft?.code}
                   size="small"
                   sx={{
                     ml: 1,
@@ -80,12 +85,12 @@ export default function TripDetailsTab({ quotation }: TripDetailsTabProps) {
         />
 
         <CardContent sx={{ pt: 0, pb: 2 }}>
-          {quotation?.itinerary?.map((sector, index) => (
+          {trip?.sectors?.map((sector, index) => (
             <SectorAccordion
               key={index}
               index={index + 1}
               sector={{ ...sector, sectorNo: index + 1 }}
-              aircraft={quotation.aircraft}
+              aircraft={trip?.quotation.aircraft}
               expanded={expanded === index}
               onChange={() => setExpanded(expanded === index ? -1 : index)}
               onSave={(sectorNo, data) => {

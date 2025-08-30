@@ -131,12 +131,12 @@ export const AirportCreate = ({ onClose, refreshList }) => {
     try {
       const data = await useGql({
         query: CREATE_AIRPORT,
-        queryName: "",
+        queryName: "createOneAirport",
         queryType: "mutation",
         variables: { input: { airport: formData } },
       });
 
-      if (!data || data.errors) {
+      if (!data || data?.errors) {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
         showSnackbar(data?.errors?.[0]?.message, "error");
       } else showSnackbar("Created Successfully", "success");
