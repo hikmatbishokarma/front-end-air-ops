@@ -33,8 +33,8 @@ import useGql from "../../../lib/graphql/gql";
 import { CREATE_TRIP_DETAILS } from "../../../lib/graphql/queries/trip-detail";
 import moment from "moment";
 
-export const SalesConfirmationList = ({
-  quoteList,
+export const TripDetailList = ({
+  tripDetailList,
   totalCount,
   rowsPerPage,
   page,
@@ -44,16 +44,12 @@ export const SalesConfirmationList = ({
 }) => {
   const { session, setSession, loading } = useSession();
 
+  console.log("tripDetailList::", tripDetailList);
+
   const operatorId = session?.user.operator?.id || null;
 
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
-
-  const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
-    useState(false);
-
-  const [saleConfirmationPreviewTemplate, setSaleConfirmationPreviewTemplate] =
-    useState(null);
 
   const [selectedRowData, setSelectedRowData] = useState<any>(null);
 
@@ -66,17 +62,6 @@ export const SalesConfirmationList = ({
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handelPreview = async (row) => {
-    setSelectedRowData(row);
-
-    console.log("row.status:::", row.status);
-
-    if (row.status == QuotationStatus.SALE_CONFIRMED) {
-      setSaleConfirmationPreviewTemplate(row.confirmationTemplate);
-      setShowTripConfirmationPreview(true);
-    }
   };
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -92,47 +77,8 @@ export const SalesConfirmationList = ({
     setSelectedRow(null);
   };
 
-  const onHandelCreateTrip = async (row) => {
-    const data = await useGql({
-      query: CREATE_TRIP_DETAILS,
-      queryName: "createOneTripDetail",
-      queryType: "mutation",
-      variables: {
-        input: {
-          tripDetail: {
-            operatorId,
-            quotation: row.id,
-            quotationNo: row.quotationNo,
-            sectors: row.sectors.map((sector) => ({
-              source: sector.source,
-              destination: sector.destination,
-              depatureDate: sector.depatureDate,
-              depatureTime: sector.depatureTime,
-              arrivalTime: sector.arrivalTime,
-              arrivalDate: sector.arrivalDate,
-              pax: sector.paxNumber || 0,
-              flightTime: calculateFlightTime(
-                sector.depatureDate,
-                sector.depatureTime,
-                sector.arrivalDate,
-                sector.arrivalTime
-              ),
-            })),
-          },
-        },
-      },
-    });
-
-    console.log("data:::", data);
-
-    if (data?.errors) {
-      // Use optional chaining for safer access
-      throw new Error(data.errors[0]?.message || "Something went wrong.");
-    } else {
-      navigate(`/trip-detail/${data.id}`, { state: row });
-    }
-
-    // navigate(`/trip-detail/${row.id}`, { state: row });
+  const onUpdateCreateTrip = async (row) => {
+    navigate(`/trip-detail/${row.id}`, { state: row });
   };
 
   const headerStyle = {
@@ -149,16 +95,15 @@ export const SalesConfirmationList = ({
             <TableRow>
               <TableCell sx={headerStyle}>Operator</TableCell>
               <TableCell sx={headerStyle}>Quotation No</TableCell>
-              <TableCell sx={headerStyle}>Category</TableCell>
+              <TableCell sx={headerStyle}>TripId</TableCell>
               <TableCell sx={headerStyle}>Aircraft</TableCell>
-              <TableCell sx={headerStyle}>Enquiry From</TableCell>
               <TableCell sx={headerStyle}>Sectors</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
               <TableCell sx={headerStyle}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {quoteList?.map((row) => (
+            {tripDetailList?.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{
@@ -167,7 +112,6 @@ export const SalesConfirmationList = ({
                   opacity: !row.isLatest ? 0.6 : 1,
                   cursor: "pointer",
                 }}
-                onClick={() => handelPreview(row)}
               >
                 <TableCell component="th" scope="row">
                   {row.operator?.companyName ?? "AirOps"}
@@ -175,15 +119,20 @@ export const SalesConfirmationList = ({
                 <TableCell component="th" scope="row">
                   {row.quotationNo}
                 </TableCell>
+
                 <TableCell component="th" scope="row">
-                  {FlightCategoryEnum[row.category]}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {`${row?.aircraft?.name} (${row?.aircraft?.code})`}
+                  {row?.tripId}
                 </TableCell>
 
-                <TableCell align="right">{row.requester}</TableCell>
-                <TableCell align="right">{row.itinerary}</TableCell>
+                <TableCell component="th" scope="row">
+                  {`${row?.quotation?.aircraft?.name} (${row?.quotation?.aircraft?.code})`}
+                </TableCell>
+
+                <TableCell align="right">
+                  {row.sectors.map(
+                    (sector) => `${sector.source}-${sector.destination}`
+                  )}
+                </TableCell>
                 <TableCell align="right">
                   {moment(row.createdAt).format("DD-MM-YYYY HH:mm")}
                 </TableCell>
@@ -206,18 +155,10 @@ export const SalesConfirmationList = ({
                     <MenuItem
                       onClick={() => {
                         handleMenuClose();
-                        handelPreview(selectedRow);
+                        onUpdateCreateTrip(selectedRow);
                       }}
                     >
-                      Preview Invoice
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleMenuClose();
-                        onHandelCreateTrip(selectedRow);
-                      }}
-                    >
-                      Generate Trip
+                      Edit Trip
                     </MenuItem>
                   </Menu>
                 </TableCell>
@@ -235,22 +176,8 @@ export const SalesConfirmationList = ({
           rowsPerPageOptions={[5, 10, 25]}
         />
       </TableContainer>
-
-      <CustomDialog
-        open={showTripConfirmationPreview}
-        onClose={() => setShowTripConfirmationPreview(false)}
-        title="Sale Confirmation Preview"
-        width="900px"
-        maxWidth="md"
-      >
-        <SaleConfirmationPreview
-          htmlContent={saleConfirmationPreviewTemplate}
-          currentQuotation={selectedRowData?.quotationNo}
-          showGenerateTI={false}
-        />
-      </CustomDialog>
     </>
   );
 };
 
-export default SalesConfirmationList;
+export default TripDetailList;

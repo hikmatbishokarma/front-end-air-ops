@@ -13,6 +13,8 @@ import { useState } from "react";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { logoColors } from "../../../../../lib/utils";
 import { Trip } from "../../type/trip.type";
+import useGql from "../../../../../lib/graphql/gql";
+import { UPDATE_TRIP_DETAILS } from "../../../../../lib/graphql/queries/trip-detail";
 
 // Props for TripDetailsTab
 
@@ -33,7 +35,29 @@ interface TripDetailsTabProps {
 export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
   const [expanded, setExpanded] = useState(0);
 
-  console.log("trip:::", trip);
+  const updateTripDetail = async (sectorNo, data) => {
+    delete data.__typename;
+
+    const result = await useGql({
+      query: UPDATE_TRIP_DETAILS,
+      queryName: "updateOneTripDetail",
+      queryType: "mutation",
+      variables: {
+        where: {
+          _id: trip.id,
+        },
+        data: { sector: data },
+      },
+    });
+
+    console.log("data:::", result);
+
+    if (result?.errors) {
+      throw new Error(result.errors[0]?.message || "Something went wrong.");
+    } else {
+      // navigate(`/trip-detail/${data.id}`, { state: row });
+    }
+  };
 
   return (
     <Box
@@ -94,8 +118,7 @@ export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
               expanded={expanded === index}
               onChange={() => setExpanded(expanded === index ? -1 : index)}
               onSave={(sectorNo, data) => {
-                // Call PATCH API here
-                console.log("TripDetailsTab save:", sectorNo, data);
+                updateTripDetail(sectorNo, data);
               }}
             />
           ))}

@@ -11,23 +11,20 @@ interface DashboardBoardSectionProps {
   selectedTab: string;
   categories: Category[];
   salesDashboardData: any;
-  onCreate: (tab: string) => void;
-  onFilter: (item: Category) => void;
+  onCreate?: (tab: string) => void;
+  onFilter?: (item: Category) => void;
   createEnabledTabs?: string[];
+  singularMap?: { [key: string]: string }; // Make this prop optional
 }
-export const singularMap = {
-  Quotes: "Quote",
-  Invoices: "Invoice",
-  tripconfirmation: "Sale Confirmation",
-};
 
 const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
   selectedTab,
   categories,
   salesDashboardData,
-  onCreate,
-  onFilter,
-  createEnabledTabs = ["Quotes", "Invoices"],
+  onCreate = () => {}, // Provide an empty default function
+  onFilter = () => {}, // Provide an empty default function
+  createEnabledTabs = [],
+  singularMap = {}, // Provide an empty default object
 }) => {
   return (
     <div className="dashboard_main_d">
