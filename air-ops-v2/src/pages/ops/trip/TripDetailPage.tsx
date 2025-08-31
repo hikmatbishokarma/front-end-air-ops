@@ -11,7 +11,6 @@ export default function TripDetailPage() {
 
   const { tripId } = useParams();
 
-  console.log("quotationId:::", tripId);
   const location = useLocation();
   const row = location.state;
 
@@ -30,7 +29,7 @@ export default function TripDetailPage() {
       <Box mb={2}>
         <h3>
           Trip ID: 2508021 &nbsp; | &nbsp; Quotation:{trip.quotationNo} – &nbsp;
-          {trip?.requestedBy?.name ?? ""}
+          {trip?.requestedBy?.name || trip?.quotation?.category}
         </h3>
       </Box>
 

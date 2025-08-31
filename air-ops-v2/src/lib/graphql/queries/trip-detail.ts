@@ -30,8 +30,10 @@ export const GET_TRIP_DETAILS = gql`
       nodes {
         id
         tripId
+        createdAt
         quotation {
           id
+          category
           aircraft {
             code
             name

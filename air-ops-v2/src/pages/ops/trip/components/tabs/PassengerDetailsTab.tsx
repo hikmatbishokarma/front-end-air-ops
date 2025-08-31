@@ -8,7 +8,7 @@ import {
 } from "../../../../../lib/graphql/queries/passenger-detail";
 
 interface PassengerDetailProps {
-  quotation: string | undefined;
+  quotation: any | undefined;
   quotationNo: string;
 }
 
@@ -18,45 +18,45 @@ export const PassengerDetailsTab = ({
 }: PassengerDetailProps) => {
   const showSnackbar = useSnackbar();
 
-  console.log("quotation:::", quotation, quotationNo);
+  // console.log("quotation:::", quotation, quotationNo);
 
-  const [quote, setQuote] = useState<any>();
+  // const [quote, setQuote] = useState<any>();
 
-  const getPassengerDetail = async () => {
-    try {
-      const result = await useGql({
-        query: GET_PASSENGER_DETAILS,
-        variables: {
-          filter: {
-            quotation: { eq: quotation },
-            quotationNo: { eq: quotationNo },
-          },
-        },
-        queryName: "passengerDetails",
-        queryType: "query",
-      });
+  // const getPassengerDetail = async () => {
+  //   try {
+  //     const result = await useGql({
+  //       query: GET_PASSENGER_DETAILS,
+  //       variables: {
+  //         filter: {
+  //           quotation: { eq: quotation },
+  //           quotationNo: { eq: quotationNo },
+  //         },
+  //       },
+  //       queryName: "passengerDetails",
+  //       queryType: "query",
+  //     });
 
-      if (result?.errors) {
-        showSnackbar(
-          result?.errors?.[0]?.message || "some thing went wrong",
-          "error"
-        );
-      } else {
-        setQuote({
-          aircraft: result[0]?.quotation?.aircraft,
-          itinerary: result[0]?.sectors,
-          quotationNo: result[0]?.quotationNo,
-          id: result[0]?.quotation?.id,
-        });
-      }
-    } catch (error) {
-      showSnackbar(error?.message || "some thing went wrong", "error");
-    }
-  };
+  //     if (result?.errors) {
+  //       showSnackbar(
+  //         result?.errors?.[0]?.message || "some thing went wrong",
+  //         "error"
+  //       );
+  //     } else {
+  //       setQuote({
+  //         aircraft: result[0]?.quotation?.aircraft,
+  //         itinerary: result[0]?.sectors,
+  //         quotationNo: result[0]?.quotationNo,
+  //         id: result[0]?.quotation?.id,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     showSnackbar(error?.message || "some thing went wrong", "error");
+  //   }
+  // };
 
-  useEffect(() => {
-    getPassengerDetail();
-  }, [quotation, quotationNo]);
+  // useEffect(() => {
+  //   getPassengerDetail();
+  // }, [quotation, quotationNo]);
 
   const handelSectorSave = async (payload) => {
     try {
@@ -82,7 +82,8 @@ export const PassengerDetailsTab = ({
     <>
       <PassengerDetails
         logoColors={{ primary: "#0A58CA", accent: "#E11D48" }}
-        tripInfo={{ ...(quote || {}), quotationId: quote?.id }}
+        quotation={quotation.id}
+        quotationNo={quotationNo}
         onSaveSector={handelSectorSave}
       />
     </>

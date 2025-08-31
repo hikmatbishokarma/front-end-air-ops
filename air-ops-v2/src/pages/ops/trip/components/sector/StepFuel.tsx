@@ -21,7 +21,7 @@ export default function StepFuel({ control }: StepFuelProps) {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.fuelStation"
+              name="fuelRecord.fuelStation"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -35,7 +35,7 @@ export default function StepFuel({ control }: StepFuelProps) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.uploadedDate"
+              name="fuelRecord.uploadedDate"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DateTimePicker
@@ -57,7 +57,7 @@ export default function StepFuel({ control }: StepFuelProps) {
 
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.fuelOnArrival"
+              name="fuelRecord.fuelOnArrival"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -71,7 +71,7 @@ export default function StepFuel({ control }: StepFuelProps) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.fuelLoaded"
+              name="fuelRecord.fuelLoaded"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -86,7 +86,7 @@ export default function StepFuel({ control }: StepFuelProps) {
 
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.fuelGauge"
+              name="fuelRecord.fuelGauge"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -101,7 +101,7 @@ export default function StepFuel({ control }: StepFuelProps) {
 
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.handledBy"
+              name="fuelRecord.handledBy"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -115,7 +115,7 @@ export default function StepFuel({ control }: StepFuelProps) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.designation"
+              name="fuelRecord.designation"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -129,7 +129,7 @@ export default function StepFuel({ control }: StepFuelProps) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="fuel.fuelReceipt"
+              name="fuelRecord.fuelReceipt"
               control={control}
               render={({ field }) => (
                 // <TextField

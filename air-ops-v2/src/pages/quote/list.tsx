@@ -245,6 +245,7 @@ export const QuoteList = ({
           variables: {
             input: {
               passengerDetail: {
+                operatorId,
                 quotation: row.id,
                 quotationNo: row.quotationNo,
                 sectors: row.sectors.map((sector, index) => ({
@@ -399,7 +400,7 @@ export const QuoteList = ({
                   {FlightCategoryEnum[row.category]}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row?.aircraft?.code}
+                  {`${row?.aircraft?.name} (${row?.aircraft?.code})`}
                 </TableCell>
 
                 <TableCell align="right">{row?.requester ?? "N/A"}</TableCell>

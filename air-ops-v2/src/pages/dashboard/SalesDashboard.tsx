@@ -48,6 +48,12 @@ import { Iclient } from "../../interfaces/quote.interface";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
+export const singularMap = {
+  Quotes: "Quote",
+  Invoices: "Invoice",
+  tripconfirmation: "Sale Confirmation",
+};
+
 const SalesDashboard = () => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -558,6 +564,7 @@ const SalesDashboard = () => {
         salesDashboardData={salesDashboardData}
         onCreate={handelCreate}
         onFilter={handelFilter}
+        singularMap={singularMap}
         createEnabledTabs={["Quotes", "Invoices", "Sale Confirmation"]}
       />
 
