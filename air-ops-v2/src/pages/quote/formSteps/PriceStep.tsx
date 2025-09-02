@@ -1,6 +1,6 @@
 // src/quotes/formSteps/PriceStep.tsx
 import React, { useState, useEffect } from "react";
-import { Controller, useFieldArray } from "react-hook-form";
+import { Controller, useFieldArray, useWatch } from "react-hook-form";
 import { Grid, Box, Typography, TextField, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Delete from "@mui/icons-material/Delete";
@@ -19,7 +19,23 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
     name: "prices",
   });
   const watchedPrices = watch("prices");
-  const [grandTotal, setGrandTotal] = useState(0);
+  // const [grandTotal, setGrandTotal] = useState(0);
+
+  const prices = useWatch({ control, name: "prices" });
+
+  const grandTotal = useWatch({ control, name: "grandTotal" }) || 0;
+
+  useEffect(() => {
+    let grandTotal =
+      prices?.reduce((sum, item) => sum + (Number(item.total) || 0), 0) || 0;
+
+    grandTotal = Math.round(grandTotal * 100) / 100;
+
+    setValue("grandTotal", grandTotal, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [prices, setValue]);
 
   // This is where you should keep the total flight time calculation
   useEffect(() => {
@@ -53,15 +69,15 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
   }, [JSON.stringify(itinerary), getValues, setValue]);
 
   // Calculate the grand total whenever the prices array changes
-  useEffect(() => {
-    if (watchedPrices) {
-      const newGrandTotal = watchedPrices.reduce((sum, item) => {
-        const total = getValues(`prices.${watchedPrices.indexOf(item)}.total`);
-        return sum + (total || 0);
-      }, 0);
-      setGrandTotal(newGrandTotal);
-    }
-  }, [watchedPrices, getValues, setGrandTotal]);
+  // useEffect(() => {
+  //   if (watchedPrices) {
+  //     const newGrandTotal = watchedPrices.reduce((sum, item) => {
+  //       const total = getValues(`prices.${watchedPrices.indexOf(item)}.total`);
+  //       return sum + (total || 0);
+  //     }, 0);
+  //     setGrandTotal(newGrandTotal);
+  //   }
+  // }, [watchedPrices, getValues, setGrandTotal]);
 
   const handleAddFee = () => {
     appendPrice({ label: "", unit: "01:00", price: 0, currency: "", total: 0 });

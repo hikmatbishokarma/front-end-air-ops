@@ -74,9 +74,9 @@ const QuoteCreateTest = () => {
       const cleanedPayload = {
         ...(formData.category && { category: formData.category }),
         ...(formData.aircraft && { aircraft: formData?.aircraft?.id }),
-        ...(formData.requestedBy && { requestedBy: formData.requestedBy }),
+        ...(formData.requestedBy && { requestedBy: formData.requestedBy?.id }),
         ...(formData.representative && {
-          representative: formData.representative,
+          representative: formData.representative?.id,
         }),
       };
 

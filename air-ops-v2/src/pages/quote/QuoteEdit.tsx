@@ -79,6 +79,32 @@ const QuoteEditTest = () => {
   }, [id, fetchAircrafts, fetchRepresentatives, fetchClients]); // Add functions to dependencies
 
   const handleUpdate = async (formData) => {
+    const cleanedPayload = {
+      ...(formData.category && { category: formData.category }),
+      ...(formData.aircraft && { aircraft: formData?.aircraft?.id }),
+      ...(formData.requestedBy && { requestedBy: formData.requestedBy?.id }),
+      ...(formData.representative && {
+        representative: formData.representative?.id,
+      }),
+    };
+
+    if (Array.isArray(formData.itinerary)) {
+      const cleanedItinerary = formData.itinerary.filter(
+        (item) => item.source && item.destination
+      );
+      if (cleanedItinerary.length) cleanedPayload.itinerary = cleanedItinerary;
+    }
+
+    if (Array.isArray(formData.prices)) {
+      const cleanedPrices = formData.prices.filter(
+        (item) => item.label && item.price
+      );
+      if (cleanedPrices.length) {
+        cleanedPayload.prices = cleanedPrices;
+        cleanedPayload.grandTotal = formData.grandTotal;
+      }
+    }
+
     await useGql({
       query: UPDATE_QUOTE,
       queryName: "",
@@ -86,7 +112,7 @@ const QuoteEditTest = () => {
       variables: {
         input: {
           id,
-          update: { ...formData, operatorId, providerType: "airops" },
+          update: { ...cleanedPayload, operatorId, providerType: "airops" },
         },
       },
     });

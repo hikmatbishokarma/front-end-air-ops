@@ -74,6 +74,13 @@ const ReviewStep = ({
     allFormValues.grandTotal !== null &&
     allFormValues.grandTotal !== 0;
 
+  console.log(
+    "showGrandTotal::",
+    allFormValues.grandTotal,
+    showGrandTotal,
+    showPrices
+  );
+
   const aircraft = allFormValues?.aircraft;
 
   return (
