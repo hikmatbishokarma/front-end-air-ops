@@ -71,3 +71,11 @@ export const GET_TRIP_DETAILS = gql`
     }
   }
 `;
+
+export const CREATE_TRIP = gql`
+  mutation createTrip($input: CreateTripInput!) {
+    createTrip(input: $input) {
+      id
+    }
+  }
+`;

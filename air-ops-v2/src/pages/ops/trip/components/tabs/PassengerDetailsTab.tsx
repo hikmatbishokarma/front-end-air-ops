@@ -62,7 +62,7 @@ export const PassengerDetailsTab = ({
     try {
       const data = await useGql({
         query: UPADTE_PASSANGER_DETAIL,
-        queryName: "",
+        queryName: "updatePassengerDetail",
         queryType: "mutation",
         variables: payload,
       });

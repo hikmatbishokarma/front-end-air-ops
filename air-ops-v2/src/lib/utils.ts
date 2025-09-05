@@ -21,6 +21,7 @@ export enum QuotationStatus {
   CANCELLED = "Cancelled",
   SALE_CONFIRMED = "Sale Confirmed",
   PAX_ADDED = "Pax Added",
+  TRIP_GENERATED = "Trip Generated",
 }
 
 export const removeTypename = (obj: any): any => {

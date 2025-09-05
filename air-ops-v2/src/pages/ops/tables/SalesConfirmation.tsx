@@ -30,7 +30,10 @@ import {
 } from "../../../lib/utils";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useGql from "../../../lib/graphql/gql";
-import { CREATE_TRIP_DETAILS } from "../../../lib/graphql/queries/trip-detail";
+import {
+  CREATE_TRIP,
+  CREATE_TRIP_DETAILS,
+} from "../../../lib/graphql/queries/trip-detail";
 import moment from "moment";
 
 export const SalesConfirmationList = ({
@@ -92,10 +95,50 @@ export const SalesConfirmationList = ({
     setSelectedRow(null);
   };
 
+  // const onHandelCreateTrip = async (row) => {
+  //   const data = await useGql({
+  //     query: CREATE_TRIP_DETAILS,
+  //     queryName: "createOneTripDetail",
+  //     queryType: "mutation",
+  //     variables: {
+  //       input: {
+  //         tripDetail: {
+  //           operatorId,
+  //           quotation: row.id,
+  //           quotationNo: row.quotationNo,
+  //           sectors: row.sectors.map((sector) => ({
+  //             source: sector.source,
+  //             destination: sector.destination,
+  //             depatureDate: sector.depatureDate,
+  //             depatureTime: sector.depatureTime,
+  //             arrivalTime: sector.arrivalTime,
+  //             arrivalDate: sector.arrivalDate,
+  //             pax: sector.paxNumber || 0,
+  //             flightTime: calculateFlightTime(
+  //               sector.depatureDate,
+  //               sector.depatureTime,
+  //               sector.arrivalDate,
+  //               sector.arrivalTime
+  //             ),
+  //           })),
+  //         },
+  //       },
+  //     },
+  //   });
+
+  //   if (data?.errors) {
+  //     throw new Error(data.errors[0]?.message || "Something went wrong.");
+  //   } else {
+  //     navigate(`/trip-detail/${data.id}`, { state: row });
+  //   }
+
+  //   // navigate(`/trip-detail/${row.id}`, { state: row });
+  // };
+
   const onHandelCreateTrip = async (row) => {
     const data = await useGql({
-      query: CREATE_TRIP_DETAILS,
-      queryName: "createOneTripDetail",
+      query: CREATE_TRIP,
+      queryName: "createTrip",
       queryType: "mutation",
       variables: {
         input: {
@@ -123,10 +166,7 @@ export const SalesConfirmationList = ({
       },
     });
 
-    console.log("data:::", data);
-
     if (data?.errors) {
-      // Use optional chaining for safer access
       throw new Error(data.errors[0]?.message || "Something went wrong.");
     } else {
       navigate(`/trip-detail/${data.id}`, { state: row });
@@ -188,7 +228,7 @@ export const SalesConfirmationList = ({
                   {moment(row.createdAt).format("DD-MM-YYYY HH:mm")}
                 </TableCell>
 
-                <TableCell
+                {/* <TableCell
                   align="right"
                   onClick={(event) => event.stopPropagation()}
                 >
@@ -220,6 +260,24 @@ export const SalesConfirmationList = ({
                       Generate Trip
                     </MenuItem>
                   </Menu>
+                </TableCell> */}
+
+                <TableCell onClick={(e) => e.stopPropagation()}>
+                  {/* If the quote is a charter AND it's a new quote */}
+                  {row.status === QuotationStatus.SALE_CONFIRMED && (
+                    <Button
+                      variant="outlined"
+                      onClick={() => onHandelCreateTrip(row)}
+                    >
+                      Generate Trip
+                    </Button>
+                  )}
+
+                  {row.status === QuotationStatus.TRIP_GENERATED && (
+                    <span style={{ color: "green", fontWeight: "bold" }}>
+                      {QuotationStatus.TRIP_GENERATED}
+                    </span>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

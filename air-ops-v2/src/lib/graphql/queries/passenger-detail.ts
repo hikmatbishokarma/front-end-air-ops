@@ -128,3 +128,18 @@ export const GET_PASSENGER_DETAIL_BY_ID = gql`
     }
   }
 `;
+
+export const CHECK_FOR_PASSENGER = gql`
+  query passengerDetails(
+    $filter: PassengerDetailFilter! = {}
+    $paging: OffsetPaging! = { limit: 10 }
+    $sorting: [PassengerDetailSort!]! = []
+  ) {
+    passengerDetails(filter: $filter, paging: $paging, sorting: $sorting) {
+      nodes {
+        id
+        quotationNo
+      }
+    }
+  }
+`;
