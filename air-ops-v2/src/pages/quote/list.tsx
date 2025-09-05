@@ -64,6 +64,7 @@ import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
 import { CustomDialog } from "../../components/CustomeDialog";
 import PassengerDetails from "./passanger-detail";
 import {
+  CHECK_FOR_PASSENGER,
   CREATE_PASSENGER_DETAILS,
   GET_PASSENGER_DETAIL_BY_ID,
   UPADTE_PASSANGER_DETAIL,
@@ -236,6 +237,13 @@ export const QuoteList = ({
       status: row.status,
     });
 
+    const isPaxEsit = await isPassengerExist(row.quotationNo, row.id);
+
+    if (isPaxEsit) {
+      navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
+      return;
+    }
+
     try {
       {
         const data = await useGql({
@@ -273,7 +281,7 @@ export const QuoteList = ({
           // Use optional chaining for safer access
           throw new Error(data.errors[0]?.message || "Something went wrong.");
         } else {
-          setShowPassengerDetail(true);
+          navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
         }
       }
     } catch (error) {
@@ -337,28 +345,32 @@ export const QuoteList = ({
   };
 
   const handelSaveAndPreview = async (quotationNo) => {
+    navigate(`/sales-confirmation-preview/${quotationNo}`);
+  };
+
+  const isPassengerExist = async (quotationNo, quotationId) => {
     try {
-      const data = await useGql({
-        query: PREVIEW_SALES_CONFIRMATION,
-        queryName: "previewSalesConfirmation",
-        queryType: "query-without-edge",
-        variables: { quotationNo: quotationNo },
+      const result = await useGql({
+        query: CHECK_FOR_PASSENGER,
+        variables: {
+          filter: {
+            quotationNo: { eq: quotationNo },
+            ...(quotationId ? { quotation: { eq: quotationId } } : {}),
+          },
+        },
+        queryName: "passengerDetails",
+        queryType: "query-with-count",
       });
 
-      if (!data || data?.errors) {
-        showSnackbar(
-          data?.errors?.[0]?.message || "Something went wrong",
-          "error"
-        );
-      } else {
-        setSaleConfirmationPreviewTemplate(data);
-        setShowTripConfirmationPreview(true);
-        setShowPassengerDetail(false);
+      if (result?.errors?.length) {
+        console.warn("Passenger check error:", result?.errors?.[0]?.message);
+        return false; // don’t block creation if check fails
       }
+
+      return Array.isArray(result?.data) && result?.data?.length > 0;
     } catch (error) {
-      showSnackbar(error.message || "Failed to Add!", "error");
-    } finally {
-      setRefreshKey();
+      console.error("Error checking passenger existence:", error);
+      return false; // fallback to create
     }
   };
 

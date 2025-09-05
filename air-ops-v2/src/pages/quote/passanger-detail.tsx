@@ -308,8 +308,8 @@ export default function PassengerDetails({
         query: GET_PASSENGER_DETAILS,
         variables: {
           filter: {
-            quotation: { eq: quotation },
             quotationNo: { eq: quotationNo },
+            ...(quotation != null && { quotation: { eq: quotation } }),
           },
         },
         queryName: "passengerDetails",
@@ -386,7 +386,7 @@ export default function PassengerDetails({
   // Use a useEffect hook to fetch data when the component loads or the ID changes
   useEffect(() => {
     const fetchData = async () => {
-      if (quotation && quotationNo) {
+      if (quotationNo) {
         const data = await getPassengerDetails(quotation, quotationNo);
         if (data) {
           setTripInfo(data); // Set the fetched data to a state variable
@@ -403,7 +403,7 @@ export default function PassengerDetails({
       }
     };
     fetchData();
-  }, [quotation, quotationNo, reset]);
+  }, [quotationNo, reset]);
 
   const { fields: sectorFields } = useFieldArray({
     control,

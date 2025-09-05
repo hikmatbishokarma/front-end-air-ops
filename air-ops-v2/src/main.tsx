@@ -53,6 +53,8 @@ import AviationNSOPForm from "./pages/quote/passanger-detail";
 import TripDetailPage from "./pages/ops/trip/TripDetailPage";
 import QuoteCreateTest from "./pages/quote/QuoteCreate";
 import QuoteEditTest from "./pages/quote/QuoteEdit";
+import SaleConfirmationPreviewPage from "./pages/quote/SalesConfirmationPreview";
+import PassengerEditPage from "./pages/quote/PassengerEdit";
 
 const router = createBrowserRouter(
   [
@@ -204,14 +206,22 @@ const router = createBrowserRouter(
               Component: StaffLeaveCalenderView,
             },
 
-            {
-              path: "passenger-details",
-              Component: AviationNSOPForm,
-            },
+            // {
+            //   path: "passenger-details",
+            //   Component: AviationNSOPForm,
+            // },
 
             {
               path: "trip-detail/:tripId",
               Component: TripDetailPage,
+            },
+            {
+              path: "sales-confirmation-preview/:quotationNo",
+              Component: SaleConfirmationPreviewPage,
+            },
+            {
+              path: "passenger-detail/:quotationNo",
+              Component: PassengerEditPage,
             },
           ],
         },
