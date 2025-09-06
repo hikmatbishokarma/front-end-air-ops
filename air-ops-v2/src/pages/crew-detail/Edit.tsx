@@ -61,6 +61,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
     if (crewDetail) {
       setValue("roles", crewDetail.roles);
       setValue("profile", crewDetail.profile);
+      setValue("crewId", crewDetail.crewId);
       setValue("fullName", crewDetail.fullName || "");
       setValue("displayName", crewDetail.displayName || "");
       setValue("location", crewDetail.location || "");
@@ -72,6 +73,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("phone", crewDetail?.phone);
       setValue("aadhar", crewDetail.aadhar || "");
       setValue("pan", crewDetail.pan || "");
+      setValue("pan", crewDetail.gst || "");
       setValue("passportNo", crewDetail.passportNo || "");
       setValue("gender", crewDetail.gender);
       setValue("dateOfBirth", crewDetail.dateOfBirth || "");
@@ -84,6 +86,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("bloodGroup", crewDetail.bloodGroup || "");
       setValue("certifications", crewDetail.certifications || []);
       setValue("nominees", crewDetail.nominees || []);
+      setValue("bankDetails", crewDetail.bankDetails || []);
     }
   }, [crewDetail, setValue]);
 
@@ -120,6 +123,15 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
   } = useFieldArray({
     control,
     name: "nominees",
+  });
+
+  const {
+    fields: bankDetailFields,
+    append: addbankDetail,
+    remove: removeBankDetail,
+  } = useFieldArray({
+    control,
+    name: "bankDetails",
   });
 
   const onSubmit = async (data) => {
@@ -180,6 +192,19 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
         })
       }
       removeNominee={removeNominee}
+      bankDetailsFields={bankDetailFields}
+      addBankDetail={() =>
+        addbankDetail({
+          accountPayee: "",
+          bankName: "",
+          accountNumber: "",
+          branch: "",
+          swiftCode: "",
+          ifscCode: "",
+          isDefault: false,
+        })
+      }
+      removeBankDetail={removeBankDetail}
     />
   );
 };

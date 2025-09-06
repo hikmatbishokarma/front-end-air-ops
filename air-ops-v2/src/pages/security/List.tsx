@@ -15,6 +15,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Chip,
+  TablePagination,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -35,15 +37,21 @@ import DocumentPreviewDialog from "../../components/DocumentPreviewDialog";
 import { DELETE_SECURITY } from "../../lib/graphql/queries/security";
 import { SecurityEdit } from "./Edit";
 import { SecurityCreate } from "./Create";
+
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
+import { UserAvatarCell } from "../../components/UserAvatar";
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const SecurityList = ({
   open,
   setOpen,
   list,
   loading,
-  onSearch,
-  onFilterChange,
   refreshList,
+  totalCount,
+  rowsPerPage,
+  page,
+  setPage,
+  setRowsPerPage,
 }) => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
@@ -97,16 +105,27 @@ export const SecurityList = ({
     setPreviewOpen(true);
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <>
-      <TableContainer component={Paper} className="dash-table manuals-quo-v1">
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>Uploaded By</TableCell>
+              <TableCell>Document Name</TableCell>
+              <TableCell>Type</TableCell>
               <TableCell>Department</TableCell>
-              <TableCell>Attachment</TableCell>
-
               <TableCell>Created On</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -115,19 +134,58 @@ export const SecurityList = ({
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
-                  <TableCell>{`${row.name}`.trim()}</TableCell>
-
-                  <TableCell>{row.department}</TableCell>
-
+                  <TableCell>
+                    <UserAvatarCell
+                      user={
+                        row.createdBy
+                          ? {
+                              ...row.createdBy,
+                              name:
+                                row?.createdBy?.displayName ||
+                                row.createdBy?.displayName?.fullName,
+                              profilePicUrl: `${apiBaseUrl}${row?.createdBy?.profile}`,
+                            }
+                          : null
+                      }
+                    />
+                  </TableCell>
                   <TableCell>
                     {row.attachment ? (
-                      <IconButton onClick={() => handlePreview(row.attachment)}>
-                        {/* <VisibilityIcon color="primary" /> */}
-                        <PictureAsPdfIcon color="primary" />
-                      </IconButton>
+                      <>
+                        <IconButton
+                          onClick={() => handlePreview(row.attachment)}
+                        >
+                          <PictureAsPdfIcon color="primary" />
+                        </IconButton>
+                        {`${row.name}`.trim()}
+                      </>
                     ) : (
                       "No Attachment"
                     )}
+                  </TableCell>
+
+                  <TableCell>
+                    <Box
+                      sx={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        border: "1px solid",
+                        borderColor: "#1976d2", // Dark blue border color
+                        color: "#212121", // Dark gray/black text color
+                        fontWeight: "bold",
+                        textTransform: "uppercase",
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      {`${row.type}`.trim()}
+                    </Box>
+                  </TableCell>
+
+                  <TableCell>
+                    <Chip label={row.department} />
                   </TableCell>
 
                   <TableCell align="right">
@@ -135,27 +193,47 @@ export const SecurityList = ({
                   </TableCell>
 
                   <TableCell>
+                    {/* <IconButton
+                      aria-label="view"
+                      onClick={() => handlePreview(row.attachment)}
+                      color="primary"
+                      className="ground-handlers"
+                    >
+                      <VisibilityIcon />
+                    </IconButton> */}
+
                     {/* Edit Button */}
-                    <IconButton className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="primary"
                       onClick={() => handleEdit(row.id)}
                     >
-                      <EditIcon className="edit-icon-size"/>
+                      <EditIcon className="edit-icon-size" />
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="secondary"
                       //   onClick={() => handleDelete(row.id)}
                       onClick={() => handleDeleteClick(row.id)}
                     >
-                      <DeleteIcon className="ground-handlers"/>
+                      <DeleteIcon className="ground-handlers" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={totalCount}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
       </TableContainer>
       <Dialog
         className="panel-one"
@@ -200,18 +278,13 @@ export const SecurityList = ({
         onClose={() => setPreviewOpen(false)}
       />
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this item?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
-          <Button color="error" onClick={handleDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this record? This action cannot be undone."
+      />
     </>
   );
 };

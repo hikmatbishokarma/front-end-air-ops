@@ -45,10 +45,10 @@ const RequestedByDialog = ({ subDialogOpen, handleSubDialogClose }) => {
     console.log("Form Data:", data);
 
     const { type, ...rest } = data;
-    const formData = { ...rest };
-    if (type == "COMPANY") {
-      formData["isCompany"] = true;
-    } else formData["isPerson"] = true;
+    const formData = { ...rest, type };
+    // if (type == "COMPANY") {
+    //   formData["isCompany"] = true;
+    // } else formData["isPerson"] = true;
     try {
       await createClient(formData); // Wait for API call to complete
       handleSubDialogClose(); // Close dialog only after the API call

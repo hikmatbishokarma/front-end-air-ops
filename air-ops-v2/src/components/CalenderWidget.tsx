@@ -541,7 +541,8 @@ export const FlightCalendarWidget = () => {
       </Box>
 
       {/* Right: Calendar */}
-      <Box className="month_calender"
+      <Box
+        className="month_calender"
         sx={{
           width: "55%",
           backgroundColor: "#f5f5f5",
@@ -591,6 +592,10 @@ export const FlightCalendarWidget = () => {
               if (newDate) {
                 setSelectedDate(newDate);
               }
+            }}
+            onMonthChange={(newMonth: moment.Moment) => {
+              // Fetch flight segments for the new month
+              fetchMonthlyFlightSegments(newMonth);
             }}
             slots={{
               actionBar: () => null,
@@ -655,6 +660,8 @@ export const StaffLeaveWidget = () => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar(); // Corrected usage if it's a hook
   const today = moment();
+  const { session, setSession } = useSession();
+  const operatorId = session?.user.operator?.id || null;
 
   // Use useMemo to ensure weekDays array is stable across renders
   // unless `today` somehow changes (which it won't within a component's lifecycle)
@@ -689,7 +696,7 @@ export const StaffLeaveWidget = () => {
             //   // Keep createdAt filter as per your latest code
             //   between: { lower: startOfPeriod, upper: endOfPeriod },
             // },
-
+            ...(operatorId && { operatorId: { eq: operatorId } }),
             and: [
               { fromDate: { "lte": endOfPeriod } },
               { toDate: { "gte": startOfPeriod } },

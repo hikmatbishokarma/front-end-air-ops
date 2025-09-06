@@ -28,7 +28,7 @@ import {
   QuotationStatus,
   SalesCategoryLabels,
 } from "../../lib/utils";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import DashboardBoardSection from "../../components/DashboardBoardSection";
 import { useSession } from "../../SessionContext";
 import { Controller, set, useForm, useWatch } from "react-hook-form";
@@ -46,11 +46,18 @@ import { useQuoteData } from "../../hooks/useQuoteData";
 import FilterPanel from "../quote/FilterPanel";
 import { Iclient } from "../../interfaces/quote.interface";
 import SearchIcon from "@mui/icons-material/Search";
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+
+export const singularMap = {
+  Quotes: "Quote",
+  Invoices: "Invoice",
+  tripconfirmation: "Sale Confirmation",
+};
 
 const SalesDashboard = () => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
+  const location = useLocation();
 
   const { clients } = useQuoteData();
 
@@ -327,8 +334,9 @@ const SalesDashboard = () => {
           id: quote.id,
           quotationNo: quote?.quotationNo,
           status: QuotationStatus[quote.status],
-          requester: quote.requestedBy.name,
-          requesterId: quote.requestedBy.id,
+          category: quote?.category ?? "",
+          requester: quote?.requestedBy?.name ?? "N/A",
+          requesterId: quote?.requestedBy?.id ?? "",
           version: quote.version,
           revision: quote.revision,
           itinerary: quote.itinerary
@@ -336,6 +344,7 @@ const SalesDashboard = () => {
               return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
             })
             .join(", "),
+          sectors: quote.itinerary,
           createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
           updatedAt: quote.updatedAt,
           code: quote.code,
@@ -439,6 +448,14 @@ const SalesDashboard = () => {
     setFilter(newFilter);
     getQuotes(newFilter); // pass filter directly
   };
+
+  useEffect(() => {
+    if (location.state?.refresh) {
+      setRefreshKey(Date.now()); // forces getQuotes to re-run
+      // optional: clear the refresh flag so it doesn't trigger again
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state]);
 
   return (
     <>
@@ -547,6 +564,7 @@ const SalesDashboard = () => {
         salesDashboardData={salesDashboardData}
         onCreate={handelCreate}
         onFilter={handelFilter}
+        singularMap={singularMap}
         createEnabledTabs={["Quotes", "Invoices", "Sale Confirmation"]}
       />
 
@@ -583,7 +601,11 @@ const SalesDashboard = () => {
           />
         </Box>
 
-        <Button variant="outlined" onClick={handleFilterOpen} className="filter-date-range">
+        <Button
+          variant="outlined"
+          onClick={handleFilterOpen}
+          className="filter-date-range"
+        >
           <FilterAltOutlinedIcon />
         </Button>
       </Box>

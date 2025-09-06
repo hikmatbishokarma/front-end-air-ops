@@ -10,6 +10,7 @@ import {
   FormLabel,
   RadioGroup,
   Radio,
+  MenuItem,
 } from "@mui/material";
 import { Controller, Control, SubmitHandler, useWatch } from "react-hook-form";
 import FileUpload from "../../components/fileupload";
@@ -67,6 +68,24 @@ const LibraryChildren: React.FC<ReusableFormProps> = ({
                       value={controllerField.value}
                       onUpload={(url) => controllerField.onChange(url)}
                     />
+                  );
+                } else if (field.name == "department") {
+                  return (
+                    <TextField
+                      {...controllerField}
+                      select
+                      fullWidth
+                      size="small"
+                      label={field.label}
+                      error={!!error}
+                      helperText={error?.message}
+                    >
+                      {field.options?.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   );
                 } else
                   return (

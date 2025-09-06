@@ -732,3 +732,20 @@ width: 250px;
 .AccordionSummary_flex .MuiGrid-spacing-xs-2{
     margin-left: 0px !important;
 }
+
+.add-icon-v1{
+    background-color: #001551 !important;
+    margin: 0px 5px;
+    
+}
+
+.add-icon-v1 svg{
+    color: #fff;
+}
+
+.add-icon-v1:hover{
+   background-color: #ff0202 !important;
+}
+.crew_leave_type1{
+    padding-top: 50px;
+}

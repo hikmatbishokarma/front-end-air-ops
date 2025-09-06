@@ -17,6 +17,16 @@ export interface Certification {
   validTill: string;
 }
 
+export interface BankDetail {
+  accountPayee: string;
+  bankName: string;
+  accountNumber: string;
+  branch: string;
+  swiftCode: string;
+  ifscCode: string;
+  isDefault: boolean;
+}
+
 export interface CrewDetailFormValues {
   roles: any;
   profile: string;
@@ -43,6 +53,7 @@ export interface CrewDetailFormValues {
 
   aadhar: string;
   pan: string;
+  gst: string;
   passportNo: string;
 
   currentAddress: string;
@@ -51,4 +62,7 @@ export interface CrewDetailFormValues {
   nominees: Nominee[];
 
   bloodGroup: string;
+  crewId?: string;
+
+  bankDetails: BankDetail[];
 }

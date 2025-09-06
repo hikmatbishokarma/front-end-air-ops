@@ -15,6 +15,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TablePagination,
+  Chip,
 } from "@mui/material";
 import useGql from "../../lib/graphql/gql";
 
@@ -41,15 +43,22 @@ import {
 } from "../../lib/graphql/queries/access-request";
 import AccessRequestModal from "../../components/AccessRequestModal";
 
+import { grey } from "@mui/material/colors";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
+import { UserAvatarCell } from "../../components/UserAvatar";
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export const ManualList = ({
   open,
   setOpen,
   list,
   loading,
-  onSearch,
-  onFilterChange,
   refreshList,
+  totalCount,
+  rowsPerPage,
+  page,
+  setPage,
+  setRowsPerPage,
 }) => {
   const showSnackbar = useSnackbar();
   const { session, setSession } = useSession();
@@ -178,20 +187,27 @@ export const ManualList = ({
     } else showSnackbar("Request sent successfully!", "success");
   };
 
-  console.log("Preview Open:", previewOpen);
-  console.log("Preview URL:", previewUrl);
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table manuals-quo-v1">
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>Uploaded By</TableCell>
+              <TableCell>Document Name</TableCell>
               <TableCell>Department</TableCell>
-              <TableCell>Attachment</TableCell>
-
-              <TableCell>Created On</TableCell>
+              <TableCell>Uploaded On</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -199,58 +215,54 @@ export const ManualList = ({
             {list &&
               list?.map((row, index) => (
                 <TableRow key={row.id}>
-                  <TableCell>{`${row.name}`.trim()}</TableCell>
-
-                  <TableCell>{row.department}</TableCell>
-                  {/* <TableCell>
-                    {row.attachment ? (
-                      <a
-                        href={row.attachment}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          textDecoration: "none",
-                        }}
-                      >
-                        {row.attachment.endsWith(".pdf") && (
-                          <PictureAsPdfIcon color="error" />
-                        )}
-                        {(row.attachment.endsWith(".doc") ||
-                          row.attachment.endsWith(".docx")) && (
-                          <DescriptionIcon color="primary" />
-                        )}
-                        {(row.attachment.endsWith(".png") ||
-                          row.attachment.endsWith(".jpg") ||
-                          row.attachment.endsWith(".jpeg")) && (
-                          <ImageIcon color="action" />
-                        )}
-                        <span style={{ marginLeft: "8px" }}>View Document</span>
-                      </a>
-                    ) : (
-                      "No Attachment"
-                    )}
-                  </TableCell> */}
-
+                  <TableCell>
+                    <UserAvatarCell
+                      user={
+                        row.createdBy
+                          ? {
+                              ...row.createdBy,
+                              name:
+                                row?.createdBy?.displayName ||
+                                row.createdBy?.displayName?.fullName,
+                              profilePicUrl: `${apiBaseUrl}${row?.createdBy?.profile}`,
+                            }
+                          : null
+                      }
+                    />
+                  </TableCell>
                   <TableCell>
                     {row.attachment ? (
-                      <IconButton onClick={() => handlePreview(row)}>
-                        {/* <VisibilityIcon color="primary" /> */}
-                        <PictureAsPdfIcon color="primary" />
-                      </IconButton>
+                      <>
+                        <IconButton onClick={() => handlePreview(row)}>
+                          <PictureAsPdfIcon color="primary" />
+                        </IconButton>
+                        {`${row.name}`.trim()}
+                      </>
                     ) : (
                       "No Attachment"
                     )}
                   </TableCell>
 
-                  <TableCell align="right">
+                  <TableCell>
+                    <Chip label={row.department} />
+                  </TableCell>
+
+                  <TableCell>
                     {moment(row.createdAt).format("DD-MM-YYYY")}
                   </TableCell>
 
                   <TableCell>
+                    {/* <IconButton
+                      aria-label="view"
+                      onClick={() => handlePreview(row)}
+                      color="primary"
+                      className="ground-handlers"
+                    >
+                      <VisibilityIcon />
+                    </IconButton> */}
                     {/* Edit Button */}
-                    <IconButton  className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="primary"
                       onClick={() => handleEdit(row.id)}
                     >
@@ -258,18 +270,28 @@ export const ManualList = ({
                     </IconButton>
 
                     {/* Delete Button */}
-                    <IconButton className="ground-handlers"
+                    <IconButton
+                      className="ground-handlers"
                       color="secondary"
                       //   onClick={() => handleDelete(row.id)}
                       onClick={() => handleDeleteClick(row.id)}
                     >
-                      <DeleteIcon className="edit-icon-size"/>
+                      <DeleteIcon className="edit-icon-size" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={totalCount}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
       </TableContainer>
       <Dialog
         className="panel-one"
@@ -367,19 +389,13 @@ export const ManualList = ({
         onClose={() => setPreviewOpen(false)}
       />
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this item?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
-          <Button color="error" onClick={handleDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      <ConfirmationDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this record? This action cannot be undone."
+      />
       <AccessRequestModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

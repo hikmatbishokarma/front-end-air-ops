@@ -16,6 +16,8 @@ import {
   TextField,
   TablePagination,
   IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -35,8 +37,14 @@ import { GET_INVOICES } from "../../lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
 import { SALE_CONFIRMATION } from "../../lib/graphql/queries/quote";
 import { CustomDialog } from "../../components/CustomeDialog";
-import { SalesCategoryLabels } from "../../lib/utils";
-
+import { calculateFlightTime, SalesCategoryLabels } from "../../lib/utils";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PassengerDetails from "./passanger-detail";
+import {
+  CREATE_PASSENGER_DETAILS,
+  GET_PASSENGER_DETAILS,
+  UPADTE_PASSANGER_DETAIL,
+} from "../../lib/graphql/queries/passenger-detail";
 export const InvoiceList = ({
   filter,
   isGenerated,
@@ -65,6 +73,9 @@ export const InvoiceList = ({
   const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
 
   const [totalCount, setTotalCount] = useState(0); // total count from backend
+
+  const [showPassengerDetail, setShowPassengerDetail] = useState(false);
+  const [quote, setQuote] = useState<any>();
 
   const getInvoices = async () => {
     try {
@@ -169,6 +180,139 @@ export const InvoiceList = ({
     }
   };
 
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [selectedRow, setSelectedRow] = React.useState<any>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, row: any) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRow(row); // store the row for later use
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedRow(null);
+  };
+
+  // const onAddPassenger = async (row) => {
+  //   console.log("row:::::", row);
+
+  //   const payload = {
+  //     quotation: row.quotation.id,
+  //     quotationNo: row.quotation.quotationNo,
+  //     sectors: [],
+  //   };
+  //   await handelSectorSave(payload);
+  //   setQuote(row.quotation);
+  //   setShowPassengerDetail(true);
+  // };
+
+  const onAddPassenger = async (row) => {
+    // Use try...catch to handle all potential errors in one place
+    try {
+      const passengerDetail = await getPassengerDetails(
+        row.quotation.id,
+        row.quotation.quotationNo
+      );
+
+      if (passengerDetail) {
+        setQuote({
+          aircraft: passengerDetail?.quotation?.aircraft,
+          itinerary: passengerDetail?.sectors,
+          quotationNo: passengerDetail?.quotationNo,
+          id: passengerDetail?.quotation?.id,
+        });
+        setShowPassengerDetail(true);
+      } else {
+        const data = await useGql({
+          query: CREATE_PASSENGER_DETAILS,
+          queryName: "",
+          queryType: "mutation",
+          variables: {
+            input: {
+              passengerDetail: {
+                quotation: row.quotation.id,
+                quotationNo: row.quotation.quotationNo,
+                sectors: row.sectors.map((sector) => ({
+                  source: sector.source,
+                  destination: sector.destination,
+                  depatureDate: sector.depatureDate,
+                  depatureTime: sector.depatureTime,
+                  arrivalTime: sector.arrivalTime,
+                  arrivalDate: sector.arrivalDate,
+                  pax: sector.paxNumber || 0,
+                  flightTime: calculateFlightTime(
+                    sector.depatureDate,
+                    sector.depatureTime,
+                    sector.arrivalDate,
+                    sector.arrivalTime
+                  ),
+                })),
+              },
+            },
+          },
+        });
+
+        if (data?.errors) {
+          // Use optional chaining for safer access
+          throw new Error(data.errors[0]?.message || "Something went wrong.");
+        } else {
+          setQuote(row.quotation);
+          setShowPassengerDetail(true);
+          // showSnackbar("Passenger details created successfully!", "success");
+        }
+      }
+    } catch (error) {
+      // Catch and handle all errors from API call or state updates
+      console.error("Failed to add passenger:", error);
+      showSnackbar(error.message || "Failed to add passenger!", "error");
+    }
+  };
+
+  const getPassengerDetails = async (quotation, quotationNo) => {
+    try {
+      const result = await useGql({
+        query: GET_PASSENGER_DETAILS,
+        variables: {
+          filter: {
+            quotation: { eq: quotation },
+            quotationNo: { eq: quotationNo },
+          },
+        },
+        queryName: "passengerDetails",
+        queryType: "query",
+      });
+
+      if (result?.errors) {
+        showSnackbar(
+          result?.errors?.[0]?.message || "some thing went wrong",
+          "error"
+        );
+      } else return result[0];
+    } catch (error) {
+      showSnackbar(error?.message || "some thing went wrong", "error");
+    }
+  };
+
+  const handelSectorSave = async (payload) => {
+    try {
+      const data = await useGql({
+        query: UPADTE_PASSANGER_DETAIL,
+        queryName: "",
+        queryType: "mutation",
+        variables: payload,
+      });
+
+      if (!data || data?.errors) {
+        showSnackbar(
+          data?.errors?.[0]?.message || "Something went wrong",
+          "error"
+        );
+      } else showSnackbar("Add successfully", "success");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to Add!", "error");
+    }
+  };
+
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
@@ -199,11 +343,12 @@ export const InvoiceList = ({
           <TableHead>
             <TableRow>
               <TableCell sx={headerStyle}>Quotation No</TableCell>
+              <TableCell>Aircarft</TableCell>
               <TableCell sx={headerStyle}>Proforma Invoice No</TableCell>
               <TableCell sx={headerStyle}>Tax Invoice No</TableCell>
               <TableCell sx={headerStyle}>Requester</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
-              {/* <TableCell sx={headerStyle}>Action</TableCell> */}
+              <TableCell sx={headerStyle}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -216,7 +361,7 @@ export const InvoiceList = ({
                 <TableCell component="th" scope="row">
                   {row.quotationNo}
                 </TableCell>
-
+                <TableCell> {row?.quotation?.aircraft?.code}</TableCell>
                 <TableCell align="right">{row.proformaInvoiceNo}</TableCell>
                 <TableCell align="right">
                   {row.taxInvoiceNo ? row.taxInvoiceNo : "NA"}
@@ -231,6 +376,39 @@ export const InvoiceList = ({
                     <PreviewIcon fontSize="small" />
                   </IconButton>
                 </TableCell> */}
+                <TableCell
+                  align="right"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <IconButton
+                    onClick={(e) => handleMenuOpen(e, row)}
+                    size="small"
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        handelPreview(selectedRow);
+                      }}
+                    >
+                      Preview Invoice
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        onAddPassenger(selectedRow);
+                      }}
+                    >
+                      Generate Sales Confirmation
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -260,6 +438,22 @@ export const InvoiceList = ({
           handelSaleConfirmation={handelSaleConfirmation}
         />
       </CustomDialog>
+
+      {/* <CustomDialog
+        open={showPassengerDetail}
+        onClose={() => setShowPassengerDetail(false)}
+        title="Passenger Details"
+        width="1200px"
+        maxWidth="md"
+      >
+        {quote && (
+          <PassengerDetails
+            logoColors={{ primary: "#0A58CA", accent: "#E11D48" }}
+             
+            onSaveSector={handelSectorSave}
+          />
+        )}
+      </CustomDialog> */}
     </>
   );
 };

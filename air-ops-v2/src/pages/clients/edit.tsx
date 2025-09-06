@@ -32,7 +32,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
 
   const editFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
-    { name: "name", label: "First Name", xs: 6, required: true },
+    { name: "name", label: "Name", xs: 6, required: true },
     {
       name: "lastName",
       label: "Last Name",
@@ -86,7 +86,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
     },
   ];
 
-  const { control, handleSubmit, reset, setValue, setError } =
+  const { control, handleSubmit, reset, setValue, setError, getValues } =
     useForm<FormData>({
       defaultValues: {
         type: "PERSON", // <- make sure this exists
@@ -119,7 +119,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       setValue("phone", client.phone || "");
       setValue("email", client.email || "");
       setValue("address", client.address || "");
-      setValue("type", client.isCompany ? "COMPANY" : "PERSON");
+      setValue("type", client.type || "");
       setValue("panNo", client.panNo || "");
       setValue("gstNo", client.gstNo || "");
     }
@@ -134,23 +134,23 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
         variables: { input: { id: Id, update: formData } },
       });
 
-      if (!data || data.data?.errors) {
+      if (!data || data?.errors) {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");
     } catch (error) {
-      showSnackbar(error.message || "Failed to create categories!", "error");
+      showSnackbar(error.message || "Failed to edit client!", "error");
     }
   };
 
   const onSubmit = (data: FormData) => {
     const { type, ...rest } = data;
     const formData = { ...rest };
-    if (type == "COMPANY") {
-      formData["isCompany"] = true;
-    } else formData["isPerson"] = true;
+    // if (type == "COMPANY") {
+    //   formData["isCompany"] = true;
+    // } else formData["isPerson"] = true;
 
-    UpdateClient(id, { ...formData, operatorId });
+    UpdateClient(id, { ...formData, type, operatorId });
     handleSubDialogClose();
   };
 
@@ -160,6 +160,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
       onSubmit={handleSubmit(onSubmit)}
       fields={editFields}
       setValue={setValue} // ✅ Pass it down here
+      getValues={getValues}
     />
   );
 };

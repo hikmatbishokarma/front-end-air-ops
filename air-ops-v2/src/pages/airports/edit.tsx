@@ -107,12 +107,14 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
     try {
       const data = await useGql({
         query: UPDATE_AIRPORT,
-        queryName: "",
+        queryName: "updateOneAirport",
         queryType: "mutation",
         variables: { input: { id: Id, update: formData } },
       });
 
-      if (!data || data.data?.errors) {
+      console.log("data:::", data);
+
+      if (!data || data?.errors) {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");

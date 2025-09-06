@@ -30,6 +30,7 @@ const LeaveFilters = ({
             value={filters.status}
             onChange={(e) => onChange({ ...filters, status: e.target.value })}
           >
+            <MenuItem value="ALL">All</MenuItem>
             {leaveStatus.map((opt) => (
               <MenuItem key={opt.value} value={opt.value}>
                 {opt.label}

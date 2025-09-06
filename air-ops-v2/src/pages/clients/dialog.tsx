@@ -21,7 +21,8 @@ const ClientDialog = ({
   return (
     <Dialog open={subDialogOpen} onClose={handleSubDialogClose} className="panel-one">
       <DialogTitle>
-        {isEdit ? "Edit" : "Add"} Enquiry From
+        {/* {isEdit ? "Edit" : "Add"} Enquiry From */}
+        Enquiry From
         <IconButton className="popup-quote-model"
           aria-label="close"
           onClick={handleSubDialogClose}
