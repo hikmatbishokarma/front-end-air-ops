@@ -19,6 +19,7 @@ export const GET_QUOTES = gql`
       nodes {
         id
         code
+        category
         requestedBy {
           id
           name
@@ -39,6 +40,11 @@ export const GET_QUOTES = gql`
         }
         grandTotal
         confirmationTemplate
+        operator {
+          id
+          name
+          companyName
+        }
       }
     }
   }
@@ -150,5 +156,11 @@ export const FLIGHT_SEGMENTS_FOR_CALENDER = gql`
       duration
       __typename
     }
+  }
+`;
+
+export const PREVIEW_SALES_CONFIRMATION = gql`
+  query previewSalesConfirmation($quotationNo: String!) {
+    previewSalesConfirmation(quotationNo: $quotationNo)
   }
 `;

@@ -5,7 +5,12 @@ interface gqlParams {
   query: DocumentNode;
   variables: object;
   queryName: string;
-  queryType?: "query" | "mutation" | "query-without-edge" | "query-with-count";
+  queryType?:
+    | "query"
+    | "mutation"
+    | "query-without-edge"
+    | "query-with-count"
+    | "";
 }
 
 const gqlDefaults: gqlParams = {
@@ -21,8 +26,6 @@ const useGql = async (gqlParams: gqlParams) => {
     ...gqlParams,
   };
   try {
-    console.log("🟡 Before API Call - useGql queryName:", queryName, variables);
-
     if (!variables || Object.keys(variables).length === 0) {
       console.error("❌ Variables are empty before API call!");
     }
@@ -31,6 +34,12 @@ const useGql = async (gqlParams: gqlParams) => {
       query,
       variables,
     });
+
+    // Check for a 'data.errors' object in the response
+    if (result?.errors) {
+      console.error("❌ GraphQL Errors:", result?.errors);
+      return result;
+    }
 
     if (queryType == "query-without-edge") {
       return result.data[queryName];
@@ -46,9 +55,15 @@ const useGql = async (gqlParams: gqlParams) => {
       };
     }
 
+    if (queryType == "mutation") {
+      return result.data[queryName];
+    }
+
     return result;
   } catch (error) {
-    console.error(error);
+    console.error("❌ An error occurred during the GraphQL operation:", error);
+    // Rethrow the error so it can be caught by the calling component
+    throw error;
   }
 };
 

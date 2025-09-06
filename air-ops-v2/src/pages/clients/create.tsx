@@ -4,15 +4,19 @@ import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import ClientChildren from "./children";
 import { useSession } from "../../SessionContext";
+import { useSnackbar } from "../../SnackbarContext";
+import { ClientType } from "../../lib/utils";
 
 export const CreateClient = ({ handleSubDialogClose }) => {
   const { session, setSession, loading } = useSession();
+
+  const showSnackbar = useSnackbar();
 
   const operatorId = session?.user.operator?.id || null;
 
   const createFields = [
     { name: "type", label: "Type", options: [], xs: 12, required: true },
-    { name: "name", label: "First Name", xs: 6, required: true },
+    { name: "name", label: "Name", xs: 6, required: true },
     {
       name: "lastName",
       label: "Last Name",
@@ -69,39 +73,51 @@ export const CreateClient = ({ handleSubDialogClose }) => {
     },
   ];
 
-  const { control, handleSubmit, reset, setValue } = useForm({
+  const { control, handleSubmit, reset, setValue, getValues } = useForm({
     defaultValues: {
       name: "",
       lastName: "",
       phone: "",
       email: "",
       address: "",
-      type: "PERSON",
+      type: ClientType.PERSON,
     },
   });
 
   const createClient = async (formData) => {
-    const data = await useGql({
-      query: CREATE_CLIENT,
-      queryName: "clients",
-      variables: {
-        input: {
-          client: formData,
+    try {
+      const data = await useGql({
+        query: CREATE_CLIENT,
+        queryName: "",
+        queryType: "mutation",
+        variables: {
+          input: {
+            client: formData,
+          },
         },
-      },
-    });
+      });
 
-    console.log("submitted data:", data);
+      if (!data || data?.errors) {
+        showSnackbar(
+          data?.errors?.[0]?.message || "Something went wrong",
+          "error"
+        );
+      } else showSnackbar("Added successfully", "success");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to Add Enquiry From!", "error");
+    }
   };
 
   const onSubmit = async (data) => {
     const { type, ...rest } = data;
     const formData = { ...rest };
-    if (type == "COMPANY") {
-      formData["isCompany"] = true;
-    } else formData["isPerson"] = true;
+
+    // if (type == "COMPANY") {
+    //   formData["isCompany"] = true;
+    // } else formData["isPerson"] = true;
+
     try {
-      await createClient({ ...formData, operatorId }); // Wait for API call to complete
+      await createClient({ ...formData, type, operatorId }); // Wait for API call to complete
       reset(); // Reset form after successful submission
       handleSubDialogClose(); // <-- Close dialog after creating
     } catch (error) {
@@ -116,6 +132,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
       onSubmit={handleSubmit(onSubmit)}
       fields={createFields}
       setValue={setValue} // ✅ Pass it down here
+      getValues={getValues}
     />
   );
 };

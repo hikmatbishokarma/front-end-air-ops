@@ -26,6 +26,8 @@ export default function StaffLeaveCalenderView() {
   const showSnackbar = useSnackbar();
   const { name } = session?.user || {};
 
+  const operatorId = session?.user.operator?.id || null;
+
   const [flightEvents, setFlightEvents] = useState<any>();
   const [leaveEvents, setLeaveEvents] = useState<any>();
 
@@ -37,6 +39,7 @@ export default function StaffLeaveCalenderView() {
         queryType: "query-with-count",
         variables: {
           filter: {
+            ...(operatorId && { operatorId: { eq: operatorId } }),
             and: [
               { fromDate: { "lte": endDate } },
               { toDate: { "gte": startDate } },

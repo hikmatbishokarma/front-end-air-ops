@@ -98,13 +98,13 @@ export const NAVIGATION: Navigation = [
 
   {
     segment: "crew",
-    title: "CREW",
+    title: "Crew",
     icon: <BadgeOutlinedIcon />,
   },
 
   {
     segment: "training-sales",
-    title: "Training & Sales",
+    title: "Training",
     icon: <AutoStoriesOutlinedIcon />,
   },
   {
@@ -288,8 +288,6 @@ export default function AppWithSession() {
         };
 
         const filteredNavigation = NAVIGATION.filter(filterNavigation);
-
-        console.log("filteredNavigation::", filteredNavigation);
 
         setValidNavigation([...defaultNavigation, ...filteredNavigation]);
       }

@@ -73,6 +73,15 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
     name: "nominees",
   });
 
+  const {
+    fields: bankDetailFields,
+    append: addbankDetail,
+    remove: removeBankDetail,
+  } = useFieldArray({
+    control,
+    name: "bankDetails",
+  });
+
   const onSubmit = async (data) => {
     try {
       const formattedData = {
@@ -124,6 +133,19 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
         })
       }
       removeNominee={removeNominee}
+      bankDetailsFields={bankDetailFields}
+      addBankDetail={() =>
+        addbankDetail({
+          accountPayee: "",
+          bankName: "",
+          accountNumber: "",
+          branch: "",
+          swiftCode: "",
+          ifscCode: "",
+          isDefault: false,
+        })
+      }
+      removeBankDetail={removeBankDetail}
     />
   );
 };

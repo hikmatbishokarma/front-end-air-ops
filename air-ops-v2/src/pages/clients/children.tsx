@@ -21,6 +21,7 @@ import {
 import ReactQuill from "react-quill";
 import Autocomplete from "@mui/material/Autocomplete";
 import CityAutocomplete from "../../components/city-autocomplete";
+import { ClientType } from "../../lib/utils";
 
 interface FormField {
   name: string;
@@ -34,6 +35,7 @@ interface FormField {
     message: string;
   };
   visible?: (type: string) => boolean;
+  isRequired?: (type: string) => boolean;
 }
 
 interface ReusableFormProps {
@@ -44,7 +46,14 @@ interface ReusableFormProps {
   // setValue: (name: string, value: any) => void; // ✅ Add this
   setValue: UseFormSetValue<any>;
   submitButtonName?: string;
+  getValues: (payload?: string | string[]) => any; // Add this line
 }
+
+const clientTypeLabels: Record<ClientType, string> = {
+  [ClientType.COMPANY]: "Company",
+  [ClientType.PERSON]: "Person",
+  [ClientType.OTHER]: "Other",
+};
 
 const ClientChildren: React.FC<ReusableFormProps> = ({
   control,
@@ -52,6 +61,7 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
   fields,
   setValue,
   submitButtonName = "Submit",
+  getValues,
 }) => {
   const selectedType = useWatch({ control, name: "type" });
 
@@ -60,8 +70,23 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
       if (field.visible && !field.visible(selectedType)) {
         setValue(field.name, "");
       }
+      if (field.isRequired && field.isRequired(selectedType)) {
+        field.required = true;
+      }
     });
   }, [selectedType]);
+
+  // This function performs the cross-field validation
+  const validateGstWithPan = (gstin, pan) => {
+    // Check if both fields have values. If not, don't validate yet.
+    if (!gstin || !pan) {
+      return true; // Return true to allow other validations to pass
+    }
+    // Extract the PAN part from the GSTIN (characters at index 2 to 11)
+    const panFromGst = gstin.substring(2, 12);
+    // Compare the extracted PAN with the entered PAN
+    return panFromGst === pan || "GSTIN and PAN do not match.";
+  };
 
   return (
     <Box
@@ -88,12 +113,26 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                     ? `${field.label} is required`
                     : false,
                   pattern: field.pattern,
+                  validate: (value) => {
+                    // Only run this validation for the gstNo field
+                    if (field.name === "gstNo") {
+                      const panValue = getValues("panNo");
+                      if (panValue && value) {
+                        const panFromGst = value.substring(2, 12);
+                        return (
+                          panFromGst === panValue ||
+                          "GSTIN and PAN do not match."
+                        );
+                      }
+                    }
+                    return true;
+                  },
                 }}
                 render={({ field: controllerField, fieldState: { error } }) => {
                   if (field.options) {
                     return (
                       <FormControl component="fieldset" margin="normal">
-                        <RadioGroup
+                        {/* <RadioGroup
                           row
                           value={controllerField.value}
                           onChange={controllerField.onChange}
@@ -109,6 +148,26 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                             control={<Radio />}
                             label="Person"
                           />
+                          <FormControlLabel
+                            value="OTHER"
+                            control={<Radio />}
+                            label="Other"
+                          />
+                        </RadioGroup> */}
+
+                        <RadioGroup
+                          defaultValue={ClientType.PERSON}
+                          row
+                          {...field}
+                        >
+                          {Object.values(ClientType).map((value) => (
+                            <FormControlLabel
+                              key={value}
+                              value={value}
+                              control={<Radio />}
+                              label={clientTypeLabels[value]}
+                            />
+                          ))}
                         </RadioGroup>
                       </FormControl>
                     );
@@ -120,9 +179,9 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                         // label={field.label}
                         label={
                           field.name === "name"
-                            ? selectedType === "COMPANY"
+                            ? selectedType === ClientType.COMPANY
                               ? "Company Name"
-                              : "Name"
+                              : "First Name"
                             : field.label
                         }
                         fullWidth

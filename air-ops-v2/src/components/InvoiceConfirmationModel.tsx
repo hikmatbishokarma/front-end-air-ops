@@ -21,6 +21,7 @@ import useGql from "../lib/graphql/gql";
 import ClientChildren from "../pages/clients/children";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { ClientType } from "../lib/utils";
 
 type FormData = {
   name: string;
@@ -52,7 +53,7 @@ export const ClientDetailConfirmationForm = ({
       label: "Last Name",
       xs: 6,
       required: true,
-      visible: (type: string) => type !== "COMPANY",
+      visible: (type: string) => type !== ClientType.COMPANY,
     },
     {
       name: "phone",
@@ -80,7 +81,8 @@ export const ClientDetailConfirmationForm = ({
       label: "PAN No",
       xs: 6,
       Pattern: { value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, message: "Invalid PAN" },
-      required: true,
+      required: false,
+      isRequired: (type: string) => type !== ClientType.OTHER,
     },
     {
       name: "gstNo",
@@ -90,7 +92,8 @@ export const ClientDetailConfirmationForm = ({
         value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
         message: "Invalid PAN",
       },
-      required: true,
+      required: false,
+      isRequired: (type: string) => type !== ClientType.OTHER,
     },
     {
       name: "billingAddress",
@@ -100,10 +103,10 @@ export const ClientDetailConfirmationForm = ({
     },
   ];
 
-  const { control, handleSubmit, reset, setValue, setError } =
+  const { control, handleSubmit, reset, setValue, setError, getValues } =
     useForm<FormData>({
       defaultValues: {
-        type: "PERSON", // <- make sure this exists
+        type: ClientType.PERSON,
       },
     });
 
@@ -133,7 +136,7 @@ export const ClientDetailConfirmationForm = ({
       setValue("phone", client.phone || "");
       setValue("email", client.email || "");
       setValue("address", client.address || "");
-      setValue("type", client.isCompany ? "COMPANY" : "PERSON");
+      setValue("type", client.type || "");
       setValue("panNo", client.panNo || "");
       setValue("gstNo", client.gstNo || "");
     }
@@ -162,10 +165,10 @@ export const ClientDetailConfirmationForm = ({
 
   const onSubmit = (data: FormData) => {
     const { type, ...rest } = data;
-    const formData = { ...rest };
-    if (type == "COMPANY") {
-      formData["isCompany"] = true;
-    } else formData["isPerson"] = true;
+    const formData = { ...rest, type };
+    // if (type == "COMPANY") {
+    //   formData["isCompany"] = true;
+    // } else formData["isPerson"] = true;
 
     UpdateClient(clientId, { ...formData, operatorId });
     close();
@@ -178,6 +181,7 @@ export const ClientDetailConfirmationForm = ({
       fields={editFields}
       setValue={setValue} // ✅ Pass it down here
       submitButtonName={"Confirm"}
+      getValues={getValues}
     />
   );
 };
@@ -433,7 +437,8 @@ export const InvoiceConfirmationModal = ({
         >
           {clientDetailConfirm ? "Generate Invoice " : "Confirm Client Details"}
         </Typography>
-        <IconButton className="popup-quote-model"
+        <IconButton
+          className="popup-quote-model"
           aria-label="close"
           onClick={handelOnClose}
           sx={{
@@ -443,7 +448,7 @@ export const InvoiceConfirmationModal = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon className="popup-close-panel"/>
+          <CloseIcon className="popup-close-panel" />
         </IconButton>
       </DialogTitle>
       <DialogContent className="invoice-button">

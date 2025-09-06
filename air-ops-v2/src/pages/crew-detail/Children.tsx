@@ -21,7 +21,7 @@ import { Controller, Control, SubmitHandler, useWatch } from "react-hook-form";
 import ReactQuill from "react-quill";
 import Autocomplete from "@mui/material/Autocomplete";
 import CityAutocomplete from "../../components/city-autocomplete";
-import { Certification, Nominee } from "./interface";
+import { BankDetail, Certification, Nominee } from "./interface";
 import FileUpload from "../../components/fileupload";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import moment from "moment";
@@ -62,6 +62,9 @@ interface ReusableFormProps {
   nomineeFields: any[];
   addNominee: (item: Nominee) => void;
   removeNominee: (index: number) => void;
+  bankDetailsFields: any[];
+  addBankDetail: (item: BankDetail) => void;
+  removeBankDetail: (index: number) => void;
 }
 
 const CrewDetailChildren: React.FC<ReusableFormProps> = ({
@@ -74,6 +77,9 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
   nomineeFields,
   addNominee,
   removeNominee,
+  bankDetailsFields,
+  addBankDetail,
+  removeBankDetail,
 }) => {
   const fieldOptions = useFormFieldOptions();
   const genderOptions = useGenderOptions();
@@ -663,6 +669,180 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                 alternateContact: "",
                 address: "",
                 insurance: "",
+              })
+            }
+          >
+            <Add />
+          </IconButton>
+        </Grid>
+        {/** Bank Details */}
+        <Grid item xs={12}>
+          <h3>Bank Details</h3>
+          {bankDetailsFields.map((item, index) => (
+            <>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography fontWeight="bold">
+                  Bank Details {index + 1}
+                </Typography>
+                <IconButton onClick={() => removeBankDetail(index)}>
+                  <Delete />
+                </IconButton>
+              </Box>
+              <Grid container spacing={2} key={item.id}>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`bankDetails.${index}.accountPayee`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Account Payee"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`bankDetails.${index}.bankName`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Bank Name"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`bankDetails.${index}.accountNumber`}
+                    control={control}
+                    rules={{
+                      required: "Account number is required",
+                      pattern: {
+                        value: /^[0-9]{9,18}$/, // ✅ only digits, length 9–18
+                        message: "Account number must be 9–18 digits",
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Account Number"
+                        fullWidth
+                        size="small"
+                        error={!!error}
+                        helperText={error ? error.message : ""}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Controller
+                    name={`bankDetails.${index}.branch`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Branch"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`bankDetails.${index}.swiftCode`}
+                    control={control}
+                    rules={{
+                      pattern: {
+                        value: /^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$/,
+                        message: "Invalid SWIFT code (8 or 11 characters)",
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="SWIFT Code"
+                        fullWidth
+                        size="small"
+                        inputProps={{ style: { textTransform: "uppercase" } }}
+                        error={!!error}
+                        helperText={error ? error.message : ""}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`bankDetails.${index}.ifscCode`}
+                    control={control}
+                    rules={{
+                      required: "IFSC code is required",
+                      pattern: {
+                        value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+                        message: "Invalid IFSC code (e.g., ICIC0001234)",
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="IFSC Code"
+                        fullWidth
+                        size="small"
+                        inputProps={{ style: { textTransform: "uppercase" } }} // auto-uppercase
+                        error={!!error}
+                        helperText={error ? error.message : ""}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`bankDetails.${index}.isDefault`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            {...field}
+                            checked={field.value || false} // ✅ important: Switch uses "checked"
+                            onChange={(e) => field.onChange(e.target.checked)} // ✅ map event
+                            color="primary"
+                          />
+                        }
+                        label="Default Bank Account"
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            </>
+          ))}
+
+          <IconButton
+            onClick={() =>
+              addBankDetail({
+                accountPayee: "",
+                bankName: "",
+                accountNumber: "",
+                branch: "",
+                swiftCode: "",
+                ifscCode: "",
+                isDefault: false,
               })
             }
           >
