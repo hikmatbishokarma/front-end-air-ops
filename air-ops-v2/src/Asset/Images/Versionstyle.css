@@ -749,3 +749,8 @@ width: 250px;
 .crew_leave_type1{
     padding-top: 50px;
 }
+.forgot_psd{
+    background-color: #ff0202 !important;
+     border: #ff0202 !important;
+     color: #fff !important;
+}

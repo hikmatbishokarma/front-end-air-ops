@@ -376,7 +376,7 @@ export const QuoteList = ({
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table crew-table-v1">
+      <TableContainer component={Paper} className="dash-table">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
