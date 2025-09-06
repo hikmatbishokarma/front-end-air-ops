@@ -432,8 +432,8 @@ export default function Login() {
                     />
 
                     {/* Buttons */}
-                    <Box display="flex" justifyContent="space-between" mt={2}>
-                      <Button
+                    <Box display="flex" justifyContent="space-between" mt={2} >
+                      <Button className="forgot_psd"
                         size="small"
                         variant="outlined"
                         onClick={() => setForgotPwdModelOpen(false)}
