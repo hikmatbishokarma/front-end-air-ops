@@ -7,7 +7,7 @@ import {
 } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import { Itinerary } from "../../type/trip.type";
+import { Sector } from "../../type/trip.type";
 
 // interface StepSectorInfoProps {
 //   sector: Itinerary;
@@ -196,7 +196,7 @@ import { Itinerary } from "../../type/trip.type";
 
 interface StepSectorInfoProps {
   control: Control<any>; // comes from SectorStepper
-  sector: Itinerary; // still needed for source/destination
+  sector: Sector; // still needed for source/destination
 }
 
 export default function StepSectorInfo({

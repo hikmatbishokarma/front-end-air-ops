@@ -50,8 +50,6 @@ export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
       },
     });
 
-    console.log("data:::", result);
-
     if (result?.errors) {
       throw new Error(result.errors[0]?.message || "Something went wrong.");
     } else {
