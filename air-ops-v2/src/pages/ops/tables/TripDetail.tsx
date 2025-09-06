@@ -78,6 +78,7 @@ export const TripDetailList = ({
   };
 
   const onUpdateCreateTrip = async (row) => {
+    console.log("trrrrrr::", row, row.id);
     navigate(`/trip-detail/${row.id}`, { state: row });
   };
 

@@ -79,3 +79,49 @@ export const CREATE_TRIP = gql`
     }
   }
 `;
+
+export const GET_TRIP_DETAILS_BY_ID = gql`
+  query getTripDetailById($id: ID!) {
+    tripDetail(id: $id) {
+      id
+      tripId
+      createdAt
+      quotation {
+        id
+        category
+        aircraft {
+          code
+          name
+        }
+      }
+      status
+      quotationNo
+      sectors {
+        sectorNo
+        source
+        destination
+        depatureDate
+        depatureTime
+        arrivalDate
+        arrivalTime
+        pax
+        flightTime
+        fuelRecord {
+          fuelGauge
+          fuelLoaded
+          fuelStation
+          fuelOnArrival
+        }
+        documents {
+          type
+          externalLink
+          fileUrl
+        }
+        assignedCrews {
+          designation
+          crews
+        }
+      }
+    }
+  }
+`;
