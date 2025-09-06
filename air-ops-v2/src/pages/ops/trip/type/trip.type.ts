@@ -11,6 +11,7 @@ export interface Sector {
   assignedCrews: AssignedCrewInfo[];
   fuelRecord: FuelRecordInfo; // adjust with Fuel type
   documents: DocumentInfo[];
+  baInfo: BaInfo;
 }
 
 export interface Aircraft {
@@ -62,6 +63,27 @@ export interface AssignedCrewInfo {
   crews: string[];
 }
 
+export interface BaReport {
+  name: string;
+  reading: string;
+  conductedDate: string;
+  record: string;
+  video: string;
+}
+
+export interface BaPerson {
+  name: string;
+  gender: string;
+  age: string;
+  certNo: string;
+}
+
+export interface BaInfo {
+  baMachine: string;
+  baPersons: BaPerson[];
+  baReports: BaReport[];
+}
+
 export interface SectorFormValues {
   depatureDate: string;
   depatureTime: string;
@@ -71,4 +93,5 @@ export interface SectorFormValues {
   assignedCrews: AssignedCrewInfo[];
   fuelRecord: FuelRecordInfo; // adjust with Fuel type
   documents: DocumentInfo[];
+  baInfo: BaInfo;
 }

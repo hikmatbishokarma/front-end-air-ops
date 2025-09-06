@@ -66,6 +66,22 @@ export const GET_TRIP_DETAILS = gql`
             designation
             crews
           }
+          baInfo {
+            baMachine
+            baPersons {
+              name
+              age
+              gender
+              certNo
+            }
+            baReports {
+              name
+              reading
+              record
+              conductedDate
+              video
+            }
+          }
         }
       }
     }
@@ -120,6 +136,22 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
         assignedCrews {
           designation
           crews
+        }
+        baInfo {
+          baMachine
+          baPersons {
+            name
+            age
+            gender
+            certNo
+          }
+          baReports {
+            name
+            reading
+            record
+            conductedDate
+            video
+          }
         }
       }
     }

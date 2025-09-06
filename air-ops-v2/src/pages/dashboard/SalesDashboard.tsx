@@ -565,7 +565,7 @@ const SalesDashboard = () => {
         onCreate={handelCreate}
         onFilter={handelFilter}
         singularMap={singularMap}
-        createEnabledTabs={["Quotes", "Invoices", "Sale Confirmation"]}
+        createEnabledTabs={["Quotes"]}
       />
 
       <Box

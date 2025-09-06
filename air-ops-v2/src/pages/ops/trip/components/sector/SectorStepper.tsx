@@ -18,19 +18,29 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import DescriptionIcon from "@mui/icons-material/Description";
-const steps = ["Sector Info", "Crew Selection", "Fuel Info", "Upload Docs"];
+
 import { StepIconProps } from "@mui/material/StepIcon";
 import { Sector } from "../../type/trip.type";
-
+import NoDrinksIcon from "@mui/icons-material/NoDrinks";
+import StepBADetails from "./StepBA";
 interface SectorStepperProps {
   sector: Sector;
 }
 
+const steps = [
+  "Sector Info",
+  "Crew Selection",
+  "BA Details",
+  "Fuel Info",
+  "Upload Docs",
+];
+
 const stepIcons: { [index: string]: React.ReactElement } = {
   1: <FlightTakeoffIcon />,
   2: <GroupsIcon />,
-  3: <LocalGasStationIcon />,
-  4: <DescriptionIcon />,
+  3: <NoDrinksIcon />,
+  4: <LocalGasStationIcon />,
+  5: <DescriptionIcon />,
 };
 
 function CustomStepIcon(props: StepIconProps) {
@@ -59,6 +69,7 @@ export default function SectorStepper({ sector, onSave }) {
       assignedCrews: sector.assignedCrews || [],
       fuelRecord: sector.fuelRecord || {},
       documents: sector.documents || [],
+      baInfo: sector.baInfo || {},
     },
   });
 
@@ -87,8 +98,9 @@ export default function SectorStepper({ sector, onSave }) {
             <StepSectorInfo control={control} sector={sector} />
           )}
           {activeStep === 1 && <StepCrew control={control} />}
-          {activeStep === 2 && <StepFuel control={control} />}
-          {activeStep === 3 && <StepDocuments control={control} />}
+          {activeStep === 2 && <StepBADetails control={control} />}
+          {activeStep === 3 && <StepFuel control={control} />}
+          {activeStep === 4 && <StepDocuments control={control} />}
         </Box>
 
         <Box mt={2} display="flex" justifyContent="space-between">
