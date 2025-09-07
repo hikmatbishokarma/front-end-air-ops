@@ -453,7 +453,7 @@ export const QuoteList = ({
                   {(row.status === QuotationStatus.SALE_CONFIRMED ||
                     row.status === QuotationStatus.TRIP_GENERATED) && (
                     <span style={{ color: "green", fontWeight: "bold" }}>
-                      {QuotationStatus[row.status]}
+                      {row.status}
                     </span>
                   )}
                 </TableCell>
