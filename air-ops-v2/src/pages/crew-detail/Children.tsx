@@ -485,7 +485,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
               </>
             ))}
 
-          <IconButton
+          <IconButton className="ground-handlers"
             onClick={() =>
               addCert({
                 name: "",
@@ -658,7 +658,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
             </>
           ))}
 
-          <IconButton
+          <IconButton className="ground-handlers"
             onClick={() =>
               addNominee({
                 fullName: "",
@@ -833,7 +833,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
             </>
           ))}
 
-          <IconButton
+          <IconButton className="ground-handlers"
             onClick={() =>
               addBankDetail({
                 accountPayee: "",
