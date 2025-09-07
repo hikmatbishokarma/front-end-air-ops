@@ -440,7 +440,7 @@ export default function Login() {
                       >
                         Cancel
                       </Button>
-                      <Button
+                      <Button className="forgot_rest_btn"
                         size="small"
                         variant="contained"
                         color="primary"

@@ -30,7 +30,7 @@ const LeaveSummary: React.FC<LeaveSummaryProps> = ({ data }) => {
     <Grid container spacing={2} mb={2}>
       {data.map((item) => (
         <Grid item xs={6} md={2.3} key={item.type}>
-          <Card variant="outlined">
+          <Card variant="outlined" className="leave_summary_gap">
             <CardContent>
               <Box display="flex" alignItems="center" gap={2}>
                 {iconMap[item.type] || <BeachAccessIcon />}

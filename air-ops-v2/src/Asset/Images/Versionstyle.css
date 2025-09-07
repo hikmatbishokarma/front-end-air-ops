@@ -557,6 +557,7 @@ border-top-left-radius: 50% 200px;
   
     color:#ffffff;
 }
+
 .tripcnfrm .Mui-selected{
     background-color: #001551 !important;
 }
@@ -753,4 +754,18 @@ width: 250px;
     background-color: #ff0202 !important;
      border: #ff0202 !important;
      color: #fff !important;
+}
+.forgot_rest_btn{
+      background-color: #001551 !important;
+  
+    color:#ffff !important;
+}
+.leave_summary_gap .MuiTypography-subtitle2{
+font-size: 12px;
+}
+.leave_summary_gap .MuiCardContent-root {
+    padding: 8px;
+}
+.leave_summary_gap .MuiBox-root {
+    gap: 8px;
 }
