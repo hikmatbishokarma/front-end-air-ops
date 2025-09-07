@@ -12,6 +12,11 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 import {
   LocalizationProvider,
@@ -94,7 +99,17 @@ const SectorsStep = ({ control, watch, getValues }) => {
   };
 
   return (
-    <Box sx={{ display: "flex", mt: 5 }} className="sector-map">
+    <Box sx={{ display: "flex", mt: 5 }} className="sector-map AccordionSummary_flex">
+                 <Accordion defaultExpanded className="top-border-view1">
+              <AccordionSummary className="Sector_Typography"
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <Typography className="add_sectors_size" component="span">Add Sectors</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                        <Typography>
       <Box sx={{ flex: 0.4, pr: 2 }}>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           {fields.map((item, index) => {
@@ -349,6 +364,9 @@ const SectorsStep = ({ control, watch, getValues }) => {
           })}
         </LocalizationProvider>
       </Box>
+      </Typography>
+      </AccordionDetails>
+      </Accordion>
 
       {/* Calendar Section */}
       <Box

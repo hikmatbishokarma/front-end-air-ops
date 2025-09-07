@@ -20,7 +20,7 @@ const RepresentativeDialog = ({
   isEdit = false,
 }) => {
   return (
-    <Dialog open={dialogOpen} onClose={handleDialogClose}>
+    <Dialog open={dialogOpen} onClose={handleDialogClose} className="panel-one">
       <DialogTitle>
         representative for {client?.name}
         <IconButton
@@ -33,7 +33,7 @@ const RepresentativeDialog = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon />
+          <CloseIcon className="ground-handlers"/>
         </IconButton>
       </DialogTitle>
 

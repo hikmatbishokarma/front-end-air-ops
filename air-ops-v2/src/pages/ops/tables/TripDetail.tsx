@@ -90,7 +90,7 @@ export const TripDetailList = ({
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table">
+      <TableContainer component={Paper} className="dash-table crew-table-v1">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>

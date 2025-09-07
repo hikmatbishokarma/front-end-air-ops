@@ -535,7 +535,7 @@ border-top-left-radius: 50% 200px;
     margin-top: 0px !important;
 }
 .css-23htwk .MuiStack-root{
-    margin-top: 0px !important;
+    margin-top: 12px !important;
 }
 .css-1mth41f{
     margin-top: 0px;
@@ -568,14 +568,17 @@ border-top-left-radius: 50% 200px;
     height: 100vh !important;
 }
 .calendar-right {
-    border: 1px solid #001551 !important;
+    border: 1px solid #ddd !important;
     padding: 8px !important;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
 .calendar-right .MuiTypography-h6{
-        background-color: #eee;
+        background-color: #001551;
     border-radius: 4px;
     padding: 5px;
+    color: #fff;
 }
 .price-units .MuiGrid-spacing-xs-2{
 
@@ -601,6 +604,7 @@ border-top-left-radius: 50% 200px;
 }
 .price-units .MuiGrid-item{
     padding:12px !important;
+    height: 86px;
 }
 .price-units{
         border: 1px solid #ddd;
@@ -662,7 +666,7 @@ font-size: 13px;
     background-color: #fff;
 }
 .sector-map .fromto{
-    height: 69px;
+    height: 47px;
     margin-bottom: 20px;
 }
 .month_calender .MuiDateCalendar-viewTransitionContainer{
@@ -677,9 +681,76 @@ width: 250px;
         background: transparent !important;
     color: #ff0202 !important;
 }
+.password-styles:hover{
+    background-color: transparent !important;
+    color: #001551 !important;
+}
 .library-quo-v1{
         margin-top: 22px;
 }
 .fiter-apply{
         background-color: #001551 !important;
+}
+.v1_board .pt-board{
+        position: relative;
+    bottom: 60px;
+}
+.enquirey-data-1 .MuiPaper-rounded{
+    background-color: transparent;
+    box-shadow: none !important;
+}
+.AccordionSummary_flex{
+    display: block !important;
+}
+.Sector_Typography{
+    background-color: #001551 !important;
+    border-radius: 10px !important;
+    color: #fff !important;
+    min-height: 50px !important;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.6;
+}
+.Sector_Typography .MuiAccordionSummary-content{
+    margin: 8px 0 !important;
+}
+.Sector_Typography .MuiSvgIcon-root{
+    color: #fff !important;
+}
+.top-border-view1{
+    border:1px solid #ddd;
+    border-radius: 10px;
+}
+.add_sectors_size{
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 1.25rem !important;
+    line-height: 1.6 !important;
+    letter-spacing: 0.0075em !important;
+}
+.AccordionSummary_flex .MuiGrid-spacing-xs-2{
+    margin-left: 0px !important;
+}
+
+.add-icon-v1{
+    background-color: #001551 !important;
+    margin: 0px 5px;
+    
+}
+
+.add-icon-v1 svg{
+    color: #fff;
+}
+
+.add-icon-v1:hover{
+   background-color: #ff0202 !important;
+}
+.crew_leave_type1{
+    padding-top: 50px;
+}
+.forgot_psd{
+    background-color: #ff0202 !important;
+     border: #ff0202 !important;
+     color: #fff !important;
 }

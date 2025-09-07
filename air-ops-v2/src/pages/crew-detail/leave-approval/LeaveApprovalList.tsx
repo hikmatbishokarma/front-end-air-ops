@@ -91,10 +91,10 @@ const LeaveApprovalRequestTable = ({
 
   return (
     <>
-      <Box sx={{ mt: 3, mb: 1 }}>
+      <Box sx={{ mt: 3, mb: 1 }} className="crew_leave_type1">
         <LeaveFilters filters={filters} onChange={onChange} />
       </Box>
-      <TableContainer component={Paper} className="dash-table crew-table-v1">
+      <TableContainer component={Paper} className="dash-table  ">
         <Table size="small">
           <TableHead>
             <TableRow>
