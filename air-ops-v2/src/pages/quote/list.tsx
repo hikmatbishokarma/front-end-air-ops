@@ -476,7 +476,7 @@ export const QuoteList = ({
         open={showPreview}
         onClose={() => setShowPreview(false)}
         title="Quote Preview"
-        width="100%"
+        width="950px"
         maxWidth="md"
       >
         <QuotePreview
