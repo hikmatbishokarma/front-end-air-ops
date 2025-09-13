@@ -88,7 +88,7 @@ export const CreateClient = ({ handleSubDialogClose }) => {
     try {
       const data = await useGql({
         query: CREATE_CLIENT,
-        queryName: "",
+        queryName: "createOneClient",
         queryType: "mutation",
         variables: {
           input: {

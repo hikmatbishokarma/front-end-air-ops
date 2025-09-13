@@ -42,7 +42,7 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
     if (!itinerary || !itinerary.length) return;
 
     const totalTime = calculateTotalFlightTime(itinerary);
-    console.log("totalTime:::", totalTime);
+
     const prices = [...getValues("prices")];
 
     // Ensure the first item is 'Charter Charges' and update it
@@ -80,7 +80,13 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
   // }, [watchedPrices, getValues, setGrandTotal]);
 
   const handleAddFee = () => {
-    appendPrice({ label: "", unit: "01:00", price: 0, currency: "", total: 0 });
+    appendPrice({
+      label: "",
+      unit: "01:00",
+      price: 0,
+      currency: "INR",
+      total: 0,
+    });
   };
 
   const handleUnitChange = (newValue, index) => {

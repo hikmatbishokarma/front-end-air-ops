@@ -165,7 +165,12 @@ const QuoteForm = ({
         );
       case "Sectors":
         return (
-          <SectorsStep control={control} watch={watch} getValues={getValues} />
+          <SectorsStep
+            control={control}
+            watch={watch}
+            getValues={getValues}
+            setValue={setValue}
+          />
         );
       case "Price":
         return (
