@@ -83,7 +83,7 @@
 
 // export default DocumentPreviewDialog;
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -109,6 +109,21 @@ const DocumentPreviewDialog = ({ open, url, onClose, apiBaseUrl }) => {
   console.log("url:::", url);
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+
+  // inside your DocumentPreviewDialog component
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [open]);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -168,7 +183,7 @@ const DocumentPreviewDialog = ({ open, url, onClose, apiBaseUrl }) => {
           file={`${apiBaseUrl}${url}`}
           onLoadSuccess={onDocumentLoadSuccess}
         >
-          <Page pageNumber={pageNumber} />
+          <Page pageNumber={pageNumber} width={containerWidth} />
         </Document>
       </Box>
       <Box sx={{ mt: 2, display: "flex", alignItems: "center" }}>
@@ -215,7 +230,7 @@ const DocumentPreviewDialog = ({ open, url, onClose, apiBaseUrl }) => {
   );
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
       <IconButton
         onClick={onClose}
         sx={{
@@ -237,9 +252,11 @@ const DocumentPreviewDialog = ({ open, url, onClose, apiBaseUrl }) => {
           alignItems: "center",
         }}
       >
-        {getFileType(url) === "pdf"
-          ? renderPdfContent()
-          : renderNonPdfContent()}
+        <div ref={containerRef} style={{ width: "100%" }}>
+          {getFileType(url) === "pdf"
+            ? renderPdfContent()
+            : renderNonPdfContent()}
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -94,7 +94,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
     try {
       const data = await useGql({
         query: UPDATE_CREW_DETAIL,
-        queryName: "",
+        queryName: "updateOneCrewDetail",
         queryType: "mutation",
         variables: { input: { id: Id, update: formData } },
       });

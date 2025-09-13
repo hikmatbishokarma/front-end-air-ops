@@ -879,7 +879,7 @@ export const UserProfile = () => {
 
       const data = await useGql({
         query: UPDATE_CREW_DETAIL,
-        queryName: "",
+        queryName: "updateOneCrewDetail",
         queryType: "mutation",
         variables: { input: { id: userId, update: formattedData } },
       });
