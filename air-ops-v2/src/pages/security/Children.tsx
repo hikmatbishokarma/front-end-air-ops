@@ -43,7 +43,7 @@ const SecurityChildren: React.FC<ReusableFormProps> = ({
   fields,
 }) => {
   return (
-    <Box
+    <Box 
       component="form"
       onSubmit={onSubmit}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}

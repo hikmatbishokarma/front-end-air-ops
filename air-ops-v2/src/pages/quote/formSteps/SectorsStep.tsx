@@ -677,7 +677,7 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
                     />
                   </Grid>
 
-                  <Grid
+                  <Grid className="add_delete_data"
                     item
                     xs={6}
                     sx={{
@@ -687,7 +687,7 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
                     }}
                   >
                     {index < 5 && (
-                      <Button
+                      <Button className="add_sector_data_1"
                         variant="outlined"
                         size="small"
                         sx={{
@@ -703,7 +703,7 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
                     )}
 
                     {index > 0 && (
-                      <Button
+                      <Button className="add_sector_data_2"
                         variant="outlined"
                         size="small"
                         sx={{
