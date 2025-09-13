@@ -667,7 +667,7 @@ font-size: 13px;
     background-color: #fff;
 }
 .sector-map .fromto{
-    height: 47px;
+    height: 83px;
     margin-bottom: 20px;
 }
 .month_calender .MuiDateCalendar-viewTransitionContainer{
@@ -768,4 +768,30 @@ font-size: 12px;
 }
 .leave_summary_gap .MuiBox-root {
     gap: 8px;
+}
+.fromto{
+    height: 83px;
+}
+.add_sector_data_1{
+    background-color: #001551 !important;
+    color: #fff !important;
+
+}
+.add_sector_data_1:hover{
+      background-color: #ff0202 !important;
+      border: #ff0202 !important;
+}
+.add_sector_data_2:hover{
+      background-color: #ff0202 !important;
+       border: #ff0202 !important;
+}
+.add_sector_data_2{
+    background-color: #001551 !important;
+    color: #fff !important;
+    min-width: 88px !important
+
+}
+.add_delete_data{
+    display: flex !important;
+    margin-left: auto !important;
 }
