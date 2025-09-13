@@ -51,56 +51,77 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
 
   const [expanded, setExpanded] = useState<number | false>(0); // first sector open by default
 
+  const itinerary = watch("itinerary", []);
+
   useEffect(() => {
-    const itineraryData = watch("itinerary");
-    const calendarEvents = itineraryData
-      .filter(
-        (item) =>
-          item.source &&
-          item.destination &&
-          item.depatureDate &&
-          item.depatureTime
-      )
-      .map((item, index) => {
-        const start = moment(
-          `${item.depatureDate} ${item.depatureTime}`,
-          "YYYY-MM-DD HH:mm"
-        ).toISOString();
-        const end =
-          item.arrivalDate && item.arrivalTime
-            ? moment(
-                `${item.arrivalDate} ${item.arrivalTime}`,
-                "YYYY-MM-DD HH:mm"
-              ).toISOString()
-            : null;
+    const lastIndex = itinerary.length - 1;
+    const lastItinerary = itinerary[lastIndex];
 
-        return {
-          id: index,
-          title: `Flight ${index + 1}: ${item.source} to ${item.destination}`,
-          start: start,
-          end: end,
-          color: "#007bff",
-        };
+    if (
+      lastItinerary?.source &&
+      lastItinerary?.destination &&
+      lastItinerary?.depatureDate &&
+      lastItinerary?.arrivalDate &&
+      lastItinerary?.depatureTime &&
+      lastItinerary?.arrivalTime
+    ) {
+      // Build start datetime in UTC
+      const depTimeParts = lastItinerary.depatureTime.split(":");
+      const startDateTime = moment
+        .utc(lastItinerary.depatureDate)
+        .set({
+          hour: Number(depTimeParts[0]),
+          minute: Number(depTimeParts[1]),
+          second: 0,
+          millisecond: 0,
+        })
+        .toISOString();
+
+      // Build end datetime in UTC
+      const arrTimeParts = lastItinerary.arrivalTime.split(":");
+      const endDateTime = moment
+        .utc(lastItinerary.arrivalDate)
+        .set({
+          hour: Number(arrTimeParts[0]),
+          minute: Number(arrTimeParts[1]),
+          second: 0,
+          millisecond: 0,
+        })
+        .toISOString();
+
+      setEvents((prevEvents) => {
+        const updatedEvents = prevEvents.map((event) =>
+          event.title === `${lastItinerary.source}-${lastItinerary.destination}`
+            ? {
+                ...event,
+                start: startDateTime,
+                end: endDateTime,
+              }
+            : event
+        );
+
+        const eventExists = prevEvents.some(
+          (event) =>
+            event.title ===
+            `${lastItinerary.source}-${lastItinerary.destination}`
+        );
+
+        if (!eventExists) {
+          updatedEvents.push({
+            title: `${lastItinerary.source}-${lastItinerary.destination}`,
+            start: startDateTime,
+            end: endDateTime,
+          });
+        }
+
+        return updatedEvents;
       });
-
-    setEvents(calendarEvents);
-  }, [watch]);
+    }
+  }, [JSON.stringify(itinerary)]);
 
   const handleDatesSet = (dateInfo) => {
     console.log("Calendar dates set:", dateInfo.startStr, dateInfo.endStr);
   };
-
-  // const addItinerary = () => {
-  //   append({
-  //     source: "",
-  //     destination: "",
-  //     depatureDate: moment().format("YYYY-MM-DD"),
-  //     depatureTime: "",
-  //     arrivalDate: moment().format("YYYY-MM-DD"),
-  //     arrivalTime: "",
-  //     paxNumber: 0,
-  //   });
-  // };
 
   const addItinerary = () => {
     const lastItinerary = watch("itinerary", []); // Get the current itinerary list
@@ -128,10 +149,6 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
 
     setExpanded(newIndex); // 👈 open the newly added accordion
   };
-
-  // const removeItinerary = (index) => {
-  //   remove(index);
-  // };
 
   const handleAccordionChange =
     (panel: number) => (_event: React.SyntheticEvent, isExpanded: boolean) => {

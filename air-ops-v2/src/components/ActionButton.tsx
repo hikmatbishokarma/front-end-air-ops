@@ -29,6 +29,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import { InvoiceConfirmationModal } from "./InvoiceConfirmationModel";
 import { useSession } from "../SessionContext";
+import axios from "axios";
 
 interface ActionButtonProps {
   currentId: string;
@@ -47,6 +48,8 @@ interface ActionButtonProps {
   showGenerateTI?: boolean;
   currentRecord?: any;
 }
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const ActionButton: React.FC<ActionButtonProps> = ({
   currentId,
@@ -82,6 +85,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   const [invoiceModelOpen, setInvoiceModelOpen] = useState(false);
   const [invoiceType, setInvoiceType] = useState("");
 
+  const [downloading, setDownloading] = useState(false);
+
   const handelInvoice = (type) => {
     setInvoiceModelOpen(true);
     setInvoiceType(type);
@@ -106,7 +111,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       setLoading(true);
       const result = await useGql({
         query: SEND_ACKNOWLEDGEMENT,
-        queryName: "",
+        queryName: "sendAcknowledgement",
         queryType: "mutation",
         variables: {
           input: {
@@ -156,38 +161,68 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       )
     );
 
+  // const handleDownloadPDF = async () => {
+  //   if (!htmlRef.current) return;
+  //   await loadImages(); // ✅ ensure all images are loaded
+
+  //   const canvas = await html2canvas(htmlRef.current, { scale: 2 });
+  //   const imgData = canvas.toDataURL("image/png");
+
+  //   const pdf = new jsPDF("p", "mm", "a4");
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   const pdfHeight = pdf.internal.pageSize.getHeight();
+
+  //   const imgWidth = pdfWidth;
+  //   const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  //   let heightLeft = imgHeight;
+  //   let position = 0;
+
+  //   // Add first page
+  //   pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  //   heightLeft -= pdfHeight;
+
+  //   // Add more pages if needed
+  //   while (heightLeft > 0) {
+  //     position = heightLeft - imgHeight;
+  //     pdf.addPage();
+  //     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+  //     heightLeft -= pdfHeight;
+  //   }
+
+  //   pdf.save(
+  //     `${currentRecord?.client?.name || operatorName || "Airops"}_${currentQuotation}.pdf`
+  //   );
+  // };
+
   const handleDownloadPDF = async () => {
-    if (!htmlRef.current) return;
-    await loadImages(); // ✅ ensure all images are loaded
+    try {
+      const _documentType = SalesDocumentType[documentType];
 
-    const canvas = await html2canvas(htmlRef.current, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
+      setDownloading(true); // start animation
+      const response = await axios.get(
+        `${apiBaseUrl}api/document/quote/download?quotationNo=${currentQuotation}&documentType=${_documentType}`,
+        {
+          responseType: "blob", // important for binary data
+        }
+      );
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    // Add first page
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pdfHeight;
-
-    // Add more pages if needed
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pdfHeight;
+      // Create a link and trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `${currentRecord?.client?.name || operatorName || "Airops"}_${currentQuotation}.pdf`
+      ); // file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("❌ Failed to download PDF", err);
+    } finally {
+      setDownloading(false); // stop animation
     }
-
-    pdf.save(
-      `${currentRecord?.client?.name || operatorName || "Airops"}_${currentQuotation}.pdf`
-    );
   };
 
   const handleAfterPrint = useCallback(() => {
@@ -221,7 +256,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
               <EmailIcon fontSize="small" />
             </IconButton>
 
-            <Dialog className="panel-one"
+            <Dialog
+              className="panel-one"
               open={showEmailDialog}
               onClose={() => setShowEmailDialog(false)}
               fullWidth
@@ -291,8 +327,17 @@ const ActionButton: React.FC<ActionButtonProps> = ({
         )}
 
         {showDownload && (
-          <IconButton color="secondary" onClick={handleDownloadPDF}>
-            <DownloadIcon fontSize="small" />
+          <IconButton
+            color="secondary"
+            onClick={handleDownloadPDF}
+            disabled={downloading}
+          >
+            {/* <DownloadIcon fontSize="small" /> */}
+            {downloading ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <DownloadIcon fontSize="small" />
+            )}
           </IconButton>
         )}
         {showGeneratePI && (
