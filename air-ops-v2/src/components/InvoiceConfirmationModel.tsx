@@ -146,7 +146,7 @@ export const ClientDetailConfirmationForm = ({
     try {
       const data = await useGql({
         query: UPDATE_CLIENT,
-        queryName: "",
+        queryName: "updateOneClient",
         queryType: "mutation",
         variables: { input: { id: Id, update: formData } },
       });

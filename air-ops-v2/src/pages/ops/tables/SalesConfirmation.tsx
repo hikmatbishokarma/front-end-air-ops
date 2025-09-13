@@ -224,9 +224,7 @@ export const SalesConfirmationList = ({
 
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell align="right">{row.itinerary}</TableCell>
-                <TableCell align="right">
-                  {moment(row.createdAt).format("DD-MM-YYYY HH:mm")}
-                </TableCell>
+                <TableCell align="right">{row.createdAt}</TableCell>
 
                 {/* <TableCell
                   align="right"
