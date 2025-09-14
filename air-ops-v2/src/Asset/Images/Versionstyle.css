@@ -793,9 +793,9 @@ font-size: 12px;
 
 }
 .add_delete_data{
-    display: flex !important;
+    display: grid !important;
     margin-left: auto !important;
-    margin-top: 66px !important;
+    margin-top: 0px !important;
 }
 /*security tab css*/
 .security_filter_bar{
