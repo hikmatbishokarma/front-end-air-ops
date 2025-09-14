@@ -190,14 +190,15 @@ export const QuoteList = ({
       },
     });
 
-    if (!result.data) {
+    console.log("invoiceee", result?.template, result);
+    if (result?.errors?.length) {
       showSnackbar(
         result?.errors?.[0]?.message || "Internal server error!",
         "error"
       );
     } else {
       showSnackbar("Invoice Generated Successfully!", "success");
-      setInvoicedata(result?.data?.generateInvoice);
+      setInvoicedata(result);
       setShowPreview(false);
       setShowInvoicePreview(true);
       setSelectedTab("Invoices");
@@ -422,7 +423,8 @@ export const QuoteList = ({
                   {/* If the quote is a charter AND it's a new quote */}
                   {row.category === "CHARTER" &&
                     row.status === QuotationStatus.QUOTE && (
-                      <Button className="generate_pi11"
+                      <Button
+                        className="generate_pi11"
                         variant="outlined"
                         onClick={() => onGeneratePI(row)}
                       >

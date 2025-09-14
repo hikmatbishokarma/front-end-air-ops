@@ -139,7 +139,7 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
       depatureTime: "",
       arrivalDate: "",
       arrivalTime: "",
-      paxNumber: 1,
+      paxNumber: 0,
     });
 
     // Use setValue to force update the new itinerary field
@@ -694,35 +694,34 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
                     />
                   </Grid>
 
-                   {/* PAX Number and Buttons */}
-              <Grid item xs={6} >
-              <Controller
-                   name={`itinerary.${index}.paxNumber`}
-                   control={control}
-                   rules={{
-                    
-                   min: {
-                      value: 0,
-                      message: "PAX must be at least 0",
-                    },
-                   }}
-                   render={({ field, fieldState: { error } }) => (
-                     <TextField
-                      {...field}
-                       type="number"
-                      fullWidth
-                      size="small"
-                       label="PAX"
-                     error={!!error}
-                      helperText={error?.message}
-                       inputProps={{ min: 0 }}
+                  {/* PAX Number and Buttons */}
+                  <Grid item xs={6}>
+                    <Controller
+                      name={`itinerary.${index}.paxNumber`}
+                      control={control}
+                      rules={{
+                        min: {
+                          value: 0,
+                          message: "PAX must be at least 0",
+                        },
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="number"
+                          fullWidth
+                          size="small"
+                          label="PAX"
+                          error={!!error}
+                          helperText={error?.message}
+                          inputProps={{ min: 0 }}
+                        />
+                      )}
                     />
-                   )}
-                 />
-             </Grid>
+                  </Grid>
 
-
-                  <Grid className="add_delete_data"
+                  <Grid
+                    className="add_delete_data"
                     item
                     xs={6}
                     sx={{
@@ -732,7 +731,8 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
                     }}
                   >
                     {index < 5 && (
-                      <Button className="add_sector_data_1"
+                      <Button
+                        className="add_sector_data_1"
                         variant="outlined"
                         size="small"
                         sx={{
@@ -748,7 +748,8 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
                     )}
 
                     {index > 0 && (
-                      <Button className="add_sector_data_2"
+                      <Button
+                        className="add_sector_data_2"
                         variant="outlined"
                         size="small"
                         sx={{

@@ -22,6 +22,7 @@ const defaultValues = {
       depatureTime: "",
       arrivalDate: "",
       arrivalTime: "",
+      paxNumber: 0,
     },
   ],
   prices: [
