@@ -13,7 +13,7 @@ interface InvoicePreviewProps {
 const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   htmlContent,
   currentQuotation,
-  type,
+  type = "PROFORMA_INVOICE",
   handelSaleConfirmation,
 }) => {
   useEffect(() => {
@@ -58,7 +58,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         showPrint={true}
         showDownload={true}
         showEmail={true}
-        showGenerateTripConfirmation={type == "PROFORMA_INVOICE" ? true : false}
+        // showGenerateTripConfirmation={type == "PROFORMA_INVOICE" ? true : false}
+        showGenerateTripConfirmation={false}
         handelSaleConfirmation={handelSaleConfirmation}
       />
       {/* A4 size container */}

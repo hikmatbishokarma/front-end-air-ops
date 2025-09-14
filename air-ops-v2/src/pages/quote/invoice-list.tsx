@@ -348,7 +348,7 @@ export const InvoiceList = ({
               <TableCell sx={headerStyle}>Tax Invoice No</TableCell>
               <TableCell sx={headerStyle}>Requester</TableCell>
               <TableCell sx={headerStyle}>Created On</TableCell>
-              <TableCell sx={headerStyle}>Action</TableCell>
+              {/* <TableCell sx={headerStyle}>Action</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -376,7 +376,7 @@ export const InvoiceList = ({
                     <PreviewIcon fontSize="small" />
                   </IconButton>
                 </TableCell> */}
-                <TableCell
+                {/* <TableCell
                   align="right"
                   onClick={(event) => event.stopPropagation()}
                 >
@@ -408,7 +408,7 @@ export const InvoiceList = ({
                       Generate Sales Confirmation
                     </MenuItem>
                   </Menu>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

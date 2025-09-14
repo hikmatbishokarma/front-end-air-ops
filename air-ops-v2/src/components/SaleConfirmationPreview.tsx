@@ -47,6 +47,8 @@ const SaleConfirmationPreview: React.FC<SaleConfirmationPreviewProps> = ({
 
   const componentRef = React.useRef(null);
 
+  console.log("currentQuotation:::", currentQuotation);
+
   return (
     <Box>
       {/* ActionButton positioned on the right */}
@@ -54,7 +56,7 @@ const SaleConfirmationPreview: React.FC<SaleConfirmationPreviewProps> = ({
         currentId={""}
         currentQuotation={currentQuotation}
         htmlRef={componentRef}
-        documentType="TRIP_CONFIRMATION"
+        documentType="SALE_CONFIRMATION"
         editPath=""
         showEdit={false}
         showPrint={true}

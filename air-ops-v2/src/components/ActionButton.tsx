@@ -199,6 +199,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     try {
       const _documentType = SalesDocumentType[documentType];
 
+      console.log("_documentType:::", _documentType, documentType);
+
       setDownloading(true); // start animation
       const response = await axios.get(
         `${apiBaseUrl}api/document/quote/download?quotationNo=${currentQuotation}&documentType=${_documentType}`,

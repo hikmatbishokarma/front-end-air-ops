@@ -63,7 +63,6 @@ const SaleConfirmationPreviewPage = () => {
           "error"
         );
       } else {
-        console.log("data:::", data);
         setHtmlContent(data);
       }
     } catch (error) {
