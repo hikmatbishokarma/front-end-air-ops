@@ -694,6 +694,34 @@ const SectorsStep = ({ control, watch, getValues, setValue }) => {
                     />
                   </Grid>
 
+                   {/* PAX Number and Buttons */}
+              <Grid item xs={6} >
+              <Controller
+                   name={`itinerary.${index}.paxNumber`}
+                   control={control}
+                   rules={{
+                    
+                   min: {
+                      value: 0,
+                      message: "PAX must be at least 0",
+                    },
+                   }}
+                   render={({ field, fieldState: { error } }) => (
+                     <TextField
+                      {...field}
+                       type="number"
+                      fullWidth
+                      size="small"
+                       label="PAX"
+                     error={!!error}
+                      helperText={error?.message}
+                       inputProps={{ min: 0 }}
+                    />
+                   )}
+                 />
+             </Grid>
+
+
                   <Grid className="add_delete_data"
                     item
                     xs={6}

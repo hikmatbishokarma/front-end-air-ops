@@ -422,7 +422,7 @@ export const QuoteList = ({
                   {/* If the quote is a charter AND it's a new quote */}
                   {row.category === "CHARTER" &&
                     row.status === QuotationStatus.QUOTE && (
-                      <Button
+                      <Button className="generate_pi11"
                         variant="outlined"
                         onClick={() => onGeneratePI(row)}
                       >

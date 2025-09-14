@@ -263,7 +263,7 @@ export const SalesConfirmationList = ({
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   {/* If the quote is a charter AND it's a new quote */}
                   {row.status === QuotationStatus.SALE_CONFIRMED && (
-                    <Button
+                    <Button className="generate_pi12"
                       variant="outlined"
                       onClick={() => onHandelCreateTrip(row)}
                     >

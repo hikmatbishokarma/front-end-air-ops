@@ -142,7 +142,7 @@ export const AirpotList = () => {
   return (
     <>
       <Box
-        className="search_quo1"
+        className="search_quo1 security_filter_bar"
         sx={{
           display: "flex",
           justifyContent: "space-between",

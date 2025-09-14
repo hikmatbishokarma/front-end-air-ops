@@ -238,7 +238,7 @@ const SecurityDashboard = () => {
           onTabChange={handleTabChange}
         />
 
-        <Box
+        <Box className="security_filter_bar"
           sx={{
             display: "flex",
             justifyContent: "space-between",

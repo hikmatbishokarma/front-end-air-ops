@@ -593,7 +593,7 @@ const Library = () => {
   return (
     <>
       <h3>Library</h3>
-      <Box
+      <Box className="security_filter_bar"
         sx={{
           display: "flex",
           justifyContent: "space-between",
