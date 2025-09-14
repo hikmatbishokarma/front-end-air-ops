@@ -5,7 +5,7 @@ import { Tabs, Tab, Box } from "@mui/material";
 
 const DashboardTabs = ({ tabsData, selectedTab, onTabChange }) => {
   return (
-    <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
+    <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }} className="security_tabs_filter">
       <Tabs
         value={selectedTab}
         onChange={onTabChange}

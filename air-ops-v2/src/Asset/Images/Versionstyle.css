@@ -228,7 +228,7 @@
     background-image: url(../Images/Banner-vi-demo.gif) !important;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 204px;
+    height: 150px;
     border-radius: 15px;
     background-position: center;
 }
@@ -236,7 +236,7 @@
  
     position: absolute;
     width: 100%;
-    top: 64px;
+    top: 23px;
 }
 .v1_quote_btn{
     margin-bottom: 20px !important;
@@ -440,7 +440,7 @@ border-top-left-radius: 50% 200px;
     display: none !important;
 }
 .search_quo1{
-    margin-top: 60px !important;
+    margin-top: 70px !important;
 }
 .rest-fiter-btn{
      background: #ff0202 !important;
@@ -535,7 +535,7 @@ border-top-left-radius: 50% 200px;
     margin-top: 0px !important;
 }
 .css-23htwk .MuiStack-root{
-    margin-top: 12px !important;
+    margin-top: 4px !important;
 }
 .css-1mth41f{
     margin-top: 0px;
@@ -637,6 +637,7 @@ font-size: 13px;
 .invoice-button .MuiButton-containedPrimary{
     background-color: #001551 !important;
     color: #ffffff !important;
+    width: auto;
 }
 
 .invoice-button .MuiButton-containedPrimary:hover{
@@ -694,7 +695,7 @@ width: 250px;
 }
 .v1_board .pt-board{
         position: relative;
-    bottom: 60px;
+    bottom: 16px;
 }
 .enquirey-data-1 .MuiPaper-rounded{
     background-color: transparent;
@@ -794,4 +795,48 @@ font-size: 12px;
 .add_delete_data{
     display: flex !important;
     margin-left: auto !important;
+    margin-top: 66px !important;
 }
+/*security tab css*/
+.security_filter_bar{
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 8px 8px;
+}
+.security_tabs_filter{
+    background: #fff;
+    border-radius: 8px;
+}
+.security_tabs_filter .Mui-selected{
+    color: #001551 !important;
+    font-weight: bold;
+}
+.security_tabs_filter .MuiTabs-indicator{
+    background-color: #001551;
+}
+.security_tabs_filter .MuiTab-textColorPrimary{
+    color: #000;
+    font-weight: bold;
+}
+/*quote tab css*/
+/* .generate_p2_2{
+        padding: 8px 8px !important;
+}
+.quote_generate_p1_1 {
+    padding: 0px 0px;
+} */
+ .Mui-error{
+    color: #ff0202 !important;
+ }
+ .generate_pi11{
+        width: 99px !important;
+    padding: 4px 0px !important;
+    font-size: 13px !important;
+    margin: 0px !important;
+ }
+ .generate_pi12{
+        width: 125px !important;
+    padding: 4px 0px !important;
+    font-size: 13px !important;
+    margin: 0px !important;
+ }

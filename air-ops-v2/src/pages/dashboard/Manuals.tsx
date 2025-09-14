@@ -264,7 +264,7 @@ const ManualDashboard = () => {
         createEnabledTabs={["Manuals"]}
       /> */}
       <h3>Manuals</h3>
-      <Box
+      <Box className="security_filter_bar"
         sx={{
           display: "flex",
           justifyContent: "space-between",
