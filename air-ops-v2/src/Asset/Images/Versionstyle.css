@@ -833,10 +833,36 @@ font-size: 12px;
     padding: 4px 0px !important;
     font-size: 13px !important;
     margin: 0px !important;
+     text-transform: capitalize !important;
  }
  .generate_pi12{
-        width: 125px !important;
+        width: 105px !important;
     padding: 4px 0px !important;
     font-size: 13px !important;
     margin: 0px !important;
+    text-transform: capitalize !important;
  }
+ .security_tabs_filter .Mui-disabled{
+    opacity: 1 !important;
+ }
+
+ .upload-profile-crew .MuiGrid-item{
+    min-height: 70px;
+ }
+
+  .upload-profile-crew .MuiButton-textPrimary{
+    background-color: transparent !important;
+    
+  }
+
+  .passenger_add_pax .paasenger_details_point{
+    background: #001551;
+    padding-bottom: 12px;
+    color: #fff !important;
+  }
+  .passenger_catering .{
+        height: 1.4375em !important;
+  }
+  .passenger_insturctions textarea{
+        height: 1.4375em !important;
+  }

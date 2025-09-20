@@ -589,7 +589,7 @@ export default function PassengerDetails({
   }, [savedSectors, sectorFields.length]);
 
   return (
-    <Box
+    <Box className="passenger_add_pax"
       sx={{
         p: { xs: 1.5, md: 3 },
         background:
@@ -605,7 +605,7 @@ export default function PassengerDetails({
             "linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88))",
         }}
       >
-        <CardHeader
+        <CardHeader className="paasenger_details_point"
           title={
             <Stack direction="row" alignItems="center" spacing={1.5}>
               <FlightTakeoffIcon sx={{ color: logoColors.primary }} />
@@ -639,7 +639,7 @@ export default function PassengerDetails({
             </Stack>
           }
           subheader={
-            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+            <Typography variant="body2" sx={{ opacity: 0.8 }} className="passenger_catering">
               Add passenger details, catering, and travel/cab for each sector.
               You can <b>clone</b> details from Sector 1 (fills only empty
               fields).
@@ -1234,7 +1234,7 @@ function MealList({ control, sectorIndex, logoColors }) {
                 control={control}
                 name={`sectors.${sectorIndex}.meals.${i}.instructions`}
                 render={({ field }) => (
-                  <TextField
+                  <TextField className="passenger_insturctions"
                     {...field}
                     label="Instructions"
                     placeholder="Jain / No onion garlic / Spicy"

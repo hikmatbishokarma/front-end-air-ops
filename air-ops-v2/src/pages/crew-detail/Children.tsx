@@ -427,7 +427,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                       )}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <Controller
                       name={`certifications.${index}.validTill`}
                       control={control}
