@@ -25,6 +25,9 @@ import {
   TablePagination,
   Typography,
   Autocomplete,
+  Modal,
+  Card,
+  CardContent,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -375,6 +378,145 @@ export const QuoteList = ({
     }
   };
 
+  // const SectorCell = ({ sectors }: any) => {
+  //   const [open, setOpen] = useState(false);
+
+  //   if (!sectors || sectors.length === 0) return <Typography>N/A</Typography>;
+
+  //   const start = sectors[0].source.code;
+  //   const end = sectors[sectors.length - 1].destination.code;
+
+  //   return (
+  //     <>
+  //       <Box
+  //         display="flex"
+  //         alignItems="center"
+  //         justifyContent="flex-end"
+  //         sx={{ cursor: "pointer", color: "#1976d2" }}
+  //         onClick={() => setOpen(true)}
+  //       >
+  //         <Typography variant="body2">
+  //           {start} → {end} | 👤 {sectors?.paxNumber || 0}
+  //         </Typography>
+  //       </Box>
+
+  //       <Modal open={open} onClose={() => setOpen(false)}>
+  //         <Box
+  //           sx={{
+  //             position: "absolute",
+  //             top: "50%",
+  //             left: "50%",
+  //             transform: "translate(-50%, -50%)",
+  //             bgcolor: "background.paper",
+  //             boxShadow: 24,
+  //             p: 2,
+  //             borderRadius: 2,
+  //             minWidth: 320,
+  //             maxWidth: 500,
+  //           }}
+  //         >
+  //           <FlightRouteCard sectors={sectors} />
+  //         </Box>
+  //       </Modal>
+  //     </>
+  //   );
+  // };
+
+  // const FlightRouteCard = ({ sectors }: any) => {
+  //   return (
+  //     <Card variant="outlined" sx={{ borderRadius: 2, p: 1 }}>
+  //       <CardContent sx={{ p: 1 }}>
+  //         {/* Sectors Timeline */}
+  //         <Box display="flex" flexDirection="column" gap={1}>
+  //           {sectors.map((s: any, i: number) => (
+  //             <>
+  //               <Box
+  //                 key={i}
+  //                 display="flex"
+  //                 flexDirection="column"
+  //                 sx={{
+  //                   borderBottom:
+  //                     i < sectors.length - 1 ? "1px dashed #ccc" : "none",
+  //                   pb: 1,
+  //                 }}
+  //               >
+  //                 <Typography variant="subtitle2">
+  //                   {s.source.code} → {s.destination.code}
+  //                 </Typography>
+  //                 <Typography variant="body2" color="text.secondary">
+  //                   {s.source.name} → {s.destination.name}
+  //                 </Typography>
+  //                 <Typography variant="body2" color="text.secondary">
+  //                   Dep: {s.departureDate} {s.departureTime} | Arr:{" "}
+  //                   {s.arrivalDate} {s.arrivalTime}
+  //                 </Typography>
+  //               </Box>
+
+  //               <Box display="flex" justifyContent="flex-end" mt={1}>
+  //                 <Typography variant="caption">
+  //                   👤 {s.paxNumber || 0}
+  //                 </Typography>
+  //               </Box>
+  //             </>
+  //           ))}
+  //         </Box>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // };
+
+  const SectorTooltip = ({ sectors }: any) => {
+    if (!sectors || sectors.length === 0) return <Typography>N/A</Typography>;
+
+    const start = sectors?.[0]?.source?.code;
+    const end = sectors[sectors.length - 1].destination.code;
+
+    return (
+      <Tooltip
+        title={
+          <Box>
+            {sectors.map((s: any, i: number) => (
+              <Box
+                key={i}
+                sx={{
+                  mb: i < sectors.length - 1 ? 1 : 0,
+                  p: 0.5,
+                  borderBottom:
+                    i < sectors.length - 1 ? "1px dashed #ccc" : "none",
+                }}
+              >
+                {/* First line: Source - Block Time - Destination */}
+                <Typography variant="body2" fontWeight={600}>
+                  {s.source.code} → {s.destination.code}
+                </Typography>
+
+                {/* Second line: Departure → Arrival */}
+                <Typography variant="body2" color="text.secondary">
+                  {moment(s.departureDate).format("Do MMM")} {s.depatureTime} →{" "}
+                  {moment(s.arrivalDate).format("Do MMM")} {s.arrivalTime}
+                </Typography>
+
+                {/* Pax per sector */}
+                <Typography variant="caption" color="text.secondary">
+                  👤 {s.pax || 0} Pax
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        }
+        arrow
+        placement="top"
+      >
+        <Box sx={{ cursor: "pointer", color: "#1976d2" }}>
+          <Typography variant="body2">
+            {start} → {end} | {sectors?.length}
+            {/* {sectors.reduce((acc, s) => acc + (s.pax || 0), 0)} */}
+          </Typography>
+        </Box>
+      </Tooltip>
+    );
+  };
+
   return (
     <>
       <TableContainer component={Paper} className="dash-table">
@@ -417,7 +559,13 @@ export const QuoteList = ({
                 </TableCell>
 
                 <TableCell align="right">{row?.requester ?? "N/A"}</TableCell>
-                <TableCell align="right">{row.itinerary}</TableCell>
+                {/* <TableCell align="right">{row.itinerary}</TableCell> */}
+                <TableCell
+                  align="right"
+                  // onClick={(event) => event.stopPropagation()}
+                >
+                  <SectorTooltip sectors={row.sectors} />
+                </TableCell>
                 <TableCell align="right">{row.createdAt}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   {/* If the quote is a charter AND it's a new quote */}

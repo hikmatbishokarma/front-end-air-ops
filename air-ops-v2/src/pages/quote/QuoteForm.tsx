@@ -107,6 +107,7 @@ const QuoteForm = ({
   const watchedCategory = useWatch({ control, name: "category" });
   const watchedRequestedBy = useWatch({ control, name: "requestedBy" });
   const watchedItinerary = useWatch({ control, name: "itinerary" });
+  const watchSectors = useWatch({ control, name: "sectors" });
 
   const showPriceStep = watchedCategory === "CHARTER";
 
@@ -188,6 +189,7 @@ const QuoteForm = ({
             setValue={setValue}
             getValues={getValues}
             itinerary={watchedItinerary}
+            sectors={watchSectors}
           />
         );
       case "Review":
