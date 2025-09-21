@@ -90,9 +90,11 @@ const QuoteCreateTest = () => {
       }
 
       if (Array.isArray(formData.prices)) {
-        const cleanedPrices = formData.prices.filter(
-          (item) => item.label && item.price
-        );
+        const cleanedPrices =
+          formData.category === "CHARTER"
+            ? formData.prices
+            : formData.prices.filter((item) => item.label && item.price);
+
         if (cleanedPrices.length) {
           cleanedPayload.prices = cleanedPrices;
           cleanedPayload.grandTotal = formData.grandTotal;
