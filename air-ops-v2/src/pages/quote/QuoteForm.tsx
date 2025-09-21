@@ -27,6 +27,7 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import ConnectingAirportsIcon from "@mui/icons-material/ConnectingAirports";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import PreviewIcon from "@mui/icons-material/Preview";
+import SectorsStepV2 from "./formSteps/SectorsStepv1";
 
 // const stepIcons: { [index: string]: React.ReactElement } = {
 //   1: <FlightTakeoffIcon />,
@@ -165,7 +166,14 @@ const QuoteForm = ({
         );
       case "Sectors":
         return (
-          <SectorsStep
+          // <SectorsStep
+          //   control={control}
+          //   watch={watch}
+          //   getValues={getValues}
+          //   setValue={setValue}
+          // />
+
+          <SectorsStepV2
             control={control}
             watch={watch}
             getValues={getValues}

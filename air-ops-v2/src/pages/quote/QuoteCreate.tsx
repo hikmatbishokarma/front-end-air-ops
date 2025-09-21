@@ -48,6 +48,31 @@ const defaultValues = {
       total: 0,
     },
   ],
+  sectors: [
+    {
+      source: {
+        iata_code: "",
+        name: "",
+        city: "",
+        country: "",
+        lat: "",
+        long: "",
+      },
+      destination: {
+        iata_code: "",
+        name: "",
+        city: "",
+        country: "",
+        lat: "",
+        long: "",
+      },
+      depatureDate: "",
+      depatureTime: "",
+      arrivalDate: "",
+      arrivalTime: "",
+      paxNumber: 0,
+    },
+  ],
   grandTotal: 0,
 };
 
@@ -72,6 +97,7 @@ const QuoteCreateTest = () => {
 
   const handleCreate = async (formData) => {
     try {
+      console.log("formData:::", formData);
       const cleanedPayload = {
         ...(formData.category && { category: formData.category }),
         ...(formData.aircraft && { aircraft: formData?.aircraft?.id }),
@@ -98,6 +124,8 @@ const QuoteCreateTest = () => {
           cleanedPayload.grandTotal = formData.grandTotal;
         }
       }
+
+      return;
 
       const data = await useGql({
         query: CREATE_QUOTE,
