@@ -436,7 +436,7 @@ export const QuoteList = ({
                     row.status === QuotationStatus.QUOTE) ||
                     (row.category === "CHARTER" &&
                       row.status === QuotationStatus.PROFOMA_INVOICE)) && (
-                    <Button
+                    <Button className="generate_pi11"
                       variant="outlined"
                       onClick={() => onAddPassenger(row)}
                     >
@@ -445,7 +445,7 @@ export const QuoteList = ({
                   )}
                   {/* If pax details have been added (and the user is ready to finalize) */}
                   {row.status === QuotationStatus.PAX_ADDED && (
-                    <Button
+                    <Button className="generate_pi11"
                       variant="outlined"
                       onClick={() => onGenerateSalesConfirmation(row)}
                     >
