@@ -96,9 +96,10 @@ const QuoteEditTest = () => {
     }
 
     if (Array.isArray(formData.prices)) {
-      const cleanedPrices = formData.prices.filter(
-        (item) => item.label && item.price
-      );
+      const cleanedPrices = formData.prices
+        .filter((item) => item.label && item.price)
+        .map(({ __typename, ...rest }) => rest); // remove __typename
+
       if (cleanedPrices.length) {
         cleanedPayload.prices = cleanedPrices;
         cleanedPayload.grandTotal = formData.grandTotal;

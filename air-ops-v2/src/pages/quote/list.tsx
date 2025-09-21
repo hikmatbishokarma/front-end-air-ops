@@ -420,43 +420,51 @@ export const QuoteList = ({
                 <TableCell align="right">{row.itinerary}</TableCell>
                 <TableCell align="right">{row.createdAt}</TableCell>
                 <TableCell onClick={(e) => e.stopPropagation()}>
-                  {/* If the quote is a charter AND it's a new quote */}
-                  {row.category === "CHARTER" &&
-                    row.status === QuotationStatus.QUOTE && (
-                      <Button
-                        className="generate_pi11"
-                        variant="outlined"
-                        onClick={() => onGeneratePI(row)}
-                      >
-                        Generate PI
-                      </Button>
-                    )}
-                  {/* If the quote is an in-house flight OR a charter where PI has been sent */}
-                  {((row.category !== "CHARTER" &&
-                    row.status === QuotationStatus.QUOTE) ||
-                    (row.category === "CHARTER" &&
-                      row.status === QuotationStatus.PROFOMA_INVOICE)) && (
-                    <Button className="generate_pi11"
-                      variant="outlined"
-                      onClick={() => onAddPassenger(row)}
-                    >
-                      Add Pax
-                    </Button>
-                  )}
-                  {/* If pax details have been added (and the user is ready to finalize) */}
-                  {row.status === QuotationStatus.PAX_ADDED && (
-                    <Button className="generate_pi11"
-                      variant="outlined"
-                      onClick={() => onGenerateSalesConfirmation(row)}
-                    >
-                      Generate SC
-                    </Button>
-                  )}
-                  {(row.status === QuotationStatus.SALE_CONFIRMED ||
-                    row.status === QuotationStatus.TRIP_GENERATED) && (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {row.status}
-                    </span>
+                  {row.category === "CHARTER" || row.category === "IN_HOUSE" ? (
+                    <>
+                      {/* If the quote is a charter AND it's a new quote */}
+                      {row.category === "CHARTER" &&
+                        row.status === QuotationStatus.QUOTE && (
+                          <Button
+                            className="generate_pi11"
+                            variant="outlined"
+                            onClick={() => onGeneratePI(row)}
+                          >
+                            Generate PI
+                          </Button>
+                        )}
+                      {/* If the quote is an in-house flight OR a charter where PI has been sent */}
+                      {((row.category !== "CHARTER" &&
+                        row.status === QuotationStatus.QUOTE) ||
+                        (row.category === "CHARTER" &&
+                          row.status === QuotationStatus.PROFOMA_INVOICE)) && (
+                        <Button
+                          className="generate_pi11"
+                          variant="outlined"
+                          onClick={() => onAddPassenger(row)}
+                        >
+                          Add Pax
+                        </Button>
+                      )}
+                      {/* If pax details have been added (and the user is ready to finalize) */}
+                      {row.status === QuotationStatus.PAX_ADDED && (
+                        <Button
+                          className="generate_pi11"
+                          variant="outlined"
+                          onClick={() => onGenerateSalesConfirmation(row)}
+                        >
+                          Generate SC
+                        </Button>
+                      )}
+                      {(row.status === QuotationStatus.SALE_CONFIRMED ||
+                        row.status === QuotationStatus.TRIP_GENERATED) && (
+                        <span style={{ color: "green", fontWeight: "bold" }}>
+                          {row.status}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    "N/A"
                   )}
                 </TableCell>
               </TableRow>
