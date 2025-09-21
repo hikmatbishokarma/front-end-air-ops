@@ -107,12 +107,19 @@ const QuoteCreateTest = () => {
         }),
       };
 
-      if (Array.isArray(formData.itinerary)) {
-        const cleanedItinerary = formData.itinerary.filter(
+      // if (Array.isArray(formData.itinerary)) {
+      //   const cleanedItinerary = formData.itinerary.filter(
+      //     (item) => item.source && item.destination
+      //   );
+      //   if (cleanedItinerary.length)
+      //     cleanedPayload.itinerary = cleanedItinerary;
+      // }
+
+      if (Array.isArray(formData?.sectors)) {
+        const cleanedSectors = formData.sectors.filter(
           (item) => item.source && item.destination
         );
-        if (cleanedItinerary.length)
-          cleanedPayload.itinerary = cleanedItinerary;
+        if (cleanedSectors.length) cleanedPayload.sectors = cleanedSectors;
       }
 
       if (Array.isArray(formData.prices)) {
@@ -124,8 +131,6 @@ const QuoteCreateTest = () => {
           cleanedPayload.grandTotal = formData.grandTotal;
         }
       }
-
-      return;
 
       const data = await useGql({
         query: CREATE_QUOTE,
