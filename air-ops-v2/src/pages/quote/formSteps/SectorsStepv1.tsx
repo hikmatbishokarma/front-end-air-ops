@@ -150,7 +150,14 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
             const source = watch(`sectors.${index}.source`);
             const destination = watch(`sectors.${index}.destination`);
 
-            console.log("source:::", source);
+            // Get the arrival date of the previous sector
+            const prevSectorArrivalDate =
+              index > 0 ? getValues(`sectors.${index - 1}.arrivalDate`) : null;
+
+            // Set the minimum departure date for the current sector
+            const minDepartureDate = prevSectorArrivalDate
+              ? moment(prevSectorArrivalDate)
+              : moment();
 
             return (
               <Accordion
@@ -355,7 +362,8 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                                   : ""
                               )
                             }
-                            minDate={moment()}
+                            // minDate={moment()}
+                            minDate={minDepartureDate}
                             slotProps={{
                               textField: {
                                 required: true,
@@ -523,6 +531,9 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                             error={!!error}
                             helperText={error?.message}
                             inputProps={{ min: 0 }}
+                            onChange={(e) => {
+                              field.onChange(+e.target.value);
+                            }}
                           />
                         )}
                       />
