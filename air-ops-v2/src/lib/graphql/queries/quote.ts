@@ -45,6 +45,30 @@ export const GET_QUOTES = gql`
           name
           companyName
         }
+        sectors {
+          source {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
+          destination {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
+          depatureDate
+          depatureTime
+          arrivalDate
+          arrivalTime
+
+          paxNumber
+        }
       }
     }
   }
@@ -82,6 +106,30 @@ export const GET_QUOTE_BY_ID = gql`
       representative {
         id
         name
+      }
+      sectors {
+        source {
+          code
+          name
+          lat
+          long
+          city
+          country
+        }
+        destination {
+          code
+          name
+          lat
+          long
+          city
+          country
+        }
+        depatureDate
+        depatureTime
+        arrivalDate
+        arrivalTime
+
+        paxNumber
       }
     }
   }

@@ -74,13 +74,6 @@ const ReviewStep = ({
     allFormValues.grandTotal !== null &&
     allFormValues.grandTotal !== 0;
 
-  console.log(
-    "showGrandTotal::",
-    allFormValues.grandTotal,
-    showGrandTotal,
-    showPrices
-  );
-
   const aircraft = allFormValues?.aircraft;
 
   return (
@@ -162,7 +155,7 @@ const ReviewStep = ({
               <th style={{ border: "1px solid #ccc", padding: "8px" }}>Pax</th>
             </tr>
           </thead>
-          <tbody>
+          {/* <tbody>
             {allFormValues.itinerary?.length > 0 ? (
               allFormValues.itinerary.map((item, index) => (
                 <tr key={index}>
@@ -200,6 +193,48 @@ const ReviewStep = ({
                   }}
                 >
                   No itinerary
+                </td>
+              </tr>
+            )}
+          </tbody> */}
+          <tbody>
+            {allFormValues.sectors?.length > 0 ? (
+              allFormValues.sectors.map((item, index) => (
+                <tr key={index}>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                    {`${item?.source?.name} (${item?.source?.code})`}
+                  </td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                    {`${item?.destination?.name} (${item?.destination?.code})`}
+                  </td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                    {moment(item.depatureDate).format("DD-MM-YYYY")}
+                  </td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                    {item.depatureTime}
+                  </td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                    {moment(item.arrivalDate).format("DD-MM-YYYY")}
+                  </td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                    {item.arrivalTime}
+                  </td>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
+                    {item.paxNumber}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={7}
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px",
+                    textAlign: "center",
+                  }}
+                >
+                  No sectors
                 </td>
               </tr>
             )}

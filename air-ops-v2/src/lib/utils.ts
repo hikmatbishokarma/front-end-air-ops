@@ -333,3 +333,34 @@ export const calculateTotalFlightTime = (itinerary) => {
     .toString()
     .padStart(2, "0")}`;
 };
+
+// Move your calculation function here or import it
+export const flightBlockTime = (sectors) => {
+  let totalMinutes = 0;
+  sectors.forEach((sector) => {
+    if (
+      sector.depatureDate &&
+      sector.depatureTime &&
+      sector.arrivalDate &&
+      sector.arrivalTime
+    ) {
+      const depDateTime = moment(
+        `${sector.depatureDate} ${sector.depatureTime}`,
+        "YYYY-MM-DD HH:mm"
+      );
+      const arrDateTime = moment(
+        `${sector.arrivalDate} ${sector.arrivalTime}`,
+        "YYYY-MM-DD HH:mm"
+      );
+      if (arrDateTime.isAfter(depDateTime)) {
+        totalMinutes += arrDateTime.diff(depDateTime, "minutes");
+      }
+    }
+  });
+
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, "0")} hr, ${minutes
+    .toString()
+    .padStart(2, "0")}min`;
+};
