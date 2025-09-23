@@ -44,37 +44,6 @@ const PriceStep = ({
     });
   }, [prices, setValue]);
 
-  // This is where you should keep the total flight time calculation
-  // useEffect(() => {
-  //   if (!itinerary || !itinerary.length) return;
-
-  //   const totalTime = calculateTotalFlightTime(itinerary);
-
-  //   const prices = [...getValues("prices")];
-
-  //   // Ensure the first item is 'Charter Charges' and update it
-  //   if (prices.length > 0 && prices[0].label === "Charter Charges") {
-  //     // const decimalHours =
-  //     //   parseInt(totalTime.split(":")[0]) +
-  //     //   parseInt(totalTime.split(":")[1]) / 60;
-  //     // const total = decimalHours * (Number(prices[0].price) || 0);
-  //     // const roundedTotal = Math.round(total * 100) / 100;
-
-  //     // // Use setValue to update the form state
-  //     // setValue(`prices.0.unit`, totalTime, { shouldDirty: true });
-  //     // setValue(`prices.0.total`, roundedTotal, { shouldDirty: true });
-
-  //     prices[0].unit = totalTime;
-
-  //     const decimalHours =
-  //       parseInt(totalTime.split(":")[0]) +
-  //       parseInt(totalTime.split(":")[1]) / 60;
-  //     prices[0].total = decimalHours * (Number(prices[0].price) || 0);
-
-  //     setValue("prices", prices, { shouldDirty: true });
-  //   }
-  // }, [JSON.stringify(itinerary), getValues, setValue]);
-
   useEffect(() => {
     if (!sectors || !sectors.length) return;
 
@@ -193,7 +162,7 @@ const PriceStep = ({
             </Grid>
 
             {/* Unit */}
-            <Grid item xs={1.5}>
+            {/* <Grid item xs={1.5}>
               <Controller
                 name={`prices.${index}.unit`}
                 control={control}
@@ -215,6 +184,28 @@ const PriceStep = ({
                         error: !!error,
                         helperText: error?.message,
                       },
+                    }}
+                  />
+                )}
+              />
+            </Grid> */}
+
+            {/* Unit */}
+            <Grid item xs={1.5}>
+              <Controller
+                name={`prices.${index}.unit`}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Unit (HH:mm)"
+                    size="small"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true, // Make it read-only
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
                   />
                 )}

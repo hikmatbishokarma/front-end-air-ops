@@ -97,7 +97,6 @@ const QuoteCreateTest = () => {
 
   const handleCreate = async (formData) => {
     try {
-      console.log("formData:::", formData);
       const cleanedPayload = {
         ...(formData.category && { category: formData.category }),
         ...(formData.aircraft && { aircraft: formData?.aircraft?.id }),

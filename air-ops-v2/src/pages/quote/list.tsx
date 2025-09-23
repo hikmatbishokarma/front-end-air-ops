@@ -28,6 +28,8 @@ import {
   Modal,
   Card,
   CardContent,
+  Divider,
+  styled,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
@@ -49,6 +51,7 @@ import QuotePreview from "../../components/quote-preview";
 
 import {
   calculateFlightTime,
+  flightBlockTime,
   FlightCategoryEnum,
   getEnumKeyByValue,
   QuotationStatus,
@@ -72,6 +75,8 @@ import {
   GET_PASSENGER_DETAIL_BY_ID,
   UPADTE_PASSANGER_DETAIL,
 } from "../../lib/graphql/queries/passenger-detail";
+
+import { Flight, AccessTime } from "@mui/icons-material";
 
 type currentQuotationInfo = {
   id: string;
@@ -465,55 +470,196 @@ export const QuoteList = ({
   //   );
   // };
 
+  // const SectorTooltip = ({ sectors }: any) => {
+  //   if (!sectors || sectors.length === 0) return <Typography>N/A</Typography>;
+
+  //   const start = sectors?.[0]?.source?.code;
+  //   const end = sectors[sectors.length - 1].destination.code;
+
+  //   return (
+  //     <Tooltip
+  //       title={
+  //         <Box>
+  //           {sectors.map((s: any, i: number) => (
+  //             <Box
+  //               key={i}
+  //               sx={{
+  //                 mb: i < sectors.length - 1 ? 1 : 0,
+  //                 p: 0.5,
+  //                 borderBottom:
+  //                   i < sectors.length - 1 ? "1px dashed #ccc" : "none",
+  //               }}
+  //             >
+  //               {/* First line: Source - Block Time - Destination */}
+  //               <Typography variant="body2" fontWeight={600}>
+  //                 {s.source.code} → {s.destination.code}
+  //               </Typography>
+
+  //               {/* Second line: Departure → Arrival */}
+  //               <Typography variant="body2" color="text.secondary">
+  //                 {moment(s.departureDate).format("Do MMM")} {s.depatureTime} →{" "}
+  //                 {moment(s.arrivalDate).format("Do MMM")} {s.arrivalTime}
+  //               </Typography>
+
+  //               {/* Pax per sector */}
+  //               <Typography variant="caption" color="text.secondary">
+  //                 👤 {s.pax || 0} Pax
+  //               </Typography>
+  //             </Box>
+  //           ))}
+  //         </Box>
+  //       }
+  //       arrow
+  //       placement="top"
+  //     >
+  //       <Box sx={{ cursor: "pointer", color: "#1976d2" }}>
+  //         <Typography variant="body2">
+  //           {start} → {end} | {sectors?.length}
+  //           {/* {sectors.reduce((acc, s) => acc + (s.pax || 0), 0)} */}
+  //         </Typography>
+  //       </Box>
+  //     </Tooltip>
+  //   );
+  // };
+
+  const StyledTooltip = styled(({ className, ...props }: any) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(() => ({
+    [`& .MuiTooltip-tooltip`]: {
+      backgroundColor: "#fff",
+      color: "#333",
+      maxWidth: 970,
+      borderRadius: 16,
+      boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+      padding: 0,
+    },
+  }));
+
   const SectorTooltip = ({ sectors }: any) => {
     if (!sectors || sectors.length === 0) return <Typography>N/A</Typography>;
 
-    const start = sectors?.[0]?.source?.code;
+    const start = sectors[0].source.code;
     const end = sectors[sectors.length - 1].destination.code;
+    const totalPax = sectors.reduce(
+      (acc: number, s: any) => acc + (s.paxNumber || 0),
+      0
+    );
 
     return (
-      <Tooltip
+      <StyledTooltip
         title={
-          <Box>
-            {sectors.map((s: any, i: number) => (
-              <Box
-                key={i}
-                sx={{
-                  mb: i < sectors.length - 1 ? 1 : 0,
-                  p: 0.5,
-                  borderBottom:
-                    i < sectors.length - 1 ? "1px dashed #ccc" : "none",
-                }}
-              >
-                {/* First line: Source - Block Time - Destination */}
-                <Typography variant="body2" fontWeight={600}>
-                  {s.source.code} → {s.destination.code}
-                </Typography>
+          <Card
+            variant="outlined"
+            sx={{
+              borderRadius: 3, // adjust for smoother curve (e.g., 4, 6, or 8)
+              minWidth: 400, // increase width
+              maxWidth: 970, // optional max width
+              overflow: "hidden", // ensures border-radius applies
+            }}
+          >
+            <CardContent sx={{ p: 2 }}>
+              {sectors.map((s: any, i: number) => (
+                <Box key={i} sx={{ mb: i < sectors.length - 1 ? 2 : 0 }}>
+                  {/* Route row */}
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    {/* Source */}
+                    <Box>
+                      <Typography variant="h6" fontWeight={700}>
+                        {s.source.code}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {s.source.name}
+                      </Typography>
+                      <Typography variant="body2" fontWeight={500}>
+                        {s.depatureTime}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {/* {moment(s.depatureDate).format("Do MMM, YYYY")} */}
+                        {moment(s.depatureDate).format("dddd, MMM D")}
+                      </Typography>
+                    </Box>
 
-                {/* Second line: Departure → Arrival */}
-                <Typography variant="body2" color="text.secondary">
-                  {moment(s.departureDate).format("Do MMM")} {s.depatureTime} →{" "}
-                  {moment(s.arrivalDate).format("Do MMM")} {s.arrivalTime}
-                </Typography>
+                    {/* Flight icon */}
+                    <Box textAlign="center" mx={2}>
+                      <Flight
+                        sx={{ fontSize: 20, transform: "rotate(90deg)" }}
+                      />
+                    </Box>
 
-                {/* Pax per sector */}
-                <Typography variant="caption" color="text.secondary">
-                  👤 {s.pax || 0} Pax
-                </Typography>
-              </Box>
-            ))}
-          </Box>
+                    {/* Destination */}
+                    <Box textAlign="right">
+                      <Typography variant="h6" fontWeight={700}>
+                        {s.destination.code}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {s.destination.name}
+                      </Typography>
+                      <Typography variant="body2" fontWeight={500}>
+                        {s.arrivalTime}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {/* {moment(s.arrivalDate).format("Do MMM, YYYY")} */}
+                        {moment(s.arrivalDate).format("dddd, MMM D")}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Pax + duration row */}
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mt={1}
+                  >
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                      color="text.secondary"
+                      // variant="caption"
+                      sx={{
+                        background: "#f0f0f0",
+                        px: 1,
+                        borderRadius: "6px",
+                      }}
+                    >
+                      <AccessTime fontSize="small" />
+                      <Typography variant="caption">
+                        {flightBlockTime([s])}
+                      </Typography>
+                    </Box>
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        background: "#f0f0f0",
+                        px: 1,
+                        borderRadius: "6px",
+                      }}
+                    >
+                      👤 {s.paxNumber || 0} Pax
+                    </Typography>
+                  </Box>
+
+                  {i < sectors.length - 1 && <Divider sx={{ my: 2 }} />}
+                </Box>
+              ))}
+            </CardContent>
+          </Card>
         }
         arrow
         placement="top"
       >
         <Box sx={{ cursor: "pointer", color: "#1976d2" }}>
-          <Typography variant="body2">
-            {start} → {end} | {sectors?.length}
-            {/* {sectors.reduce((acc, s) => acc + (s.pax || 0), 0)} */}
+          <Typography variant="body2" fontWeight={600}>
+            {start} → {end} | 👤 {totalPax} Pax
           </Typography>
         </Box>
-      </Tooltip>
+      </StyledTooltip>
     );
   };
 
