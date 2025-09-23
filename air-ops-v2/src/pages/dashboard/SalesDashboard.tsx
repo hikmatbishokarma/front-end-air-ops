@@ -339,12 +339,14 @@ const SalesDashboard = () => {
           requesterId: quote?.requestedBy?.id ?? "",
           version: quote.version,
           revision: quote.revision,
-          itinerary: quote.itinerary
+
+          itinerary: quote?.itinerary
             ?.map((itinerary: any) => {
               return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
             })
             .join(", "),
-          sectors: quote.itinerary,
+          // sectors: quote.itinerary,
+          sectors: quote.sectors,
           createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
           updatedAt: quote.updatedAt,
           code: quote.code,

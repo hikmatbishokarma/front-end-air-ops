@@ -13,8 +13,6 @@ import { useSnackbar } from "../../SnackbarContext";
 const PassengerEditPage = () => {
   const { quotationNo } = useParams();
 
-  console.log("quotationNo:::", quotationNo);
-
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
 

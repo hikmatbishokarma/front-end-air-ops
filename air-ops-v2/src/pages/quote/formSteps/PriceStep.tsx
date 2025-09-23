@@ -9,7 +9,14 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import { calculateTotalFlightTime } from "../../../lib/utils";
 
-const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
+const PriceStep = ({
+  control,
+  watch,
+  setValue,
+  getValues,
+  itinerary,
+  sectors,
+}) => {
   const {
     fields: priceFields,
     append: appendPrice,
@@ -37,26 +44,15 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
     });
   }, [prices, setValue]);
 
-  // This is where you should keep the total flight time calculation
   useEffect(() => {
-    if (!itinerary || !itinerary.length) return;
+    if (!sectors || !sectors.length) return;
 
-    const totalTime = calculateTotalFlightTime(itinerary);
+    const totalTime = calculateTotalFlightTime(sectors);
 
     const prices = [...getValues("prices")];
 
     // Ensure the first item is 'Charter Charges' and update it
     if (prices.length > 0 && prices[0].label === "Charter Charges") {
-      // const decimalHours =
-      //   parseInt(totalTime.split(":")[0]) +
-      //   parseInt(totalTime.split(":")[1]) / 60;
-      // const total = decimalHours * (Number(prices[0].price) || 0);
-      // const roundedTotal = Math.round(total * 100) / 100;
-
-      // // Use setValue to update the form state
-      // setValue(`prices.0.unit`, totalTime, { shouldDirty: true });
-      // setValue(`prices.0.total`, roundedTotal, { shouldDirty: true });
-
       prices[0].unit = totalTime;
 
       const decimalHours =
@@ -66,18 +62,7 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
 
       setValue("prices", prices, { shouldDirty: true });
     }
-  }, [JSON.stringify(itinerary), getValues, setValue]);
-
-  // Calculate the grand total whenever the prices array changes
-  // useEffect(() => {
-  //   if (watchedPrices) {
-  //     const newGrandTotal = watchedPrices.reduce((sum, item) => {
-  //       const total = getValues(`prices.${watchedPrices.indexOf(item)}.total`);
-  //       return sum + (total || 0);
-  //     }, 0);
-  //     setGrandTotal(newGrandTotal);
-  //   }
-  // }, [watchedPrices, getValues, setGrandTotal]);
+  }, [JSON.stringify(sectors), getValues, setValue]);
 
   const handleAddFee = () => {
     appendPrice({
@@ -177,7 +162,7 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
             </Grid>
 
             {/* Unit */}
-            <Grid item xs={1.5}>
+            {/* <Grid item xs={1.5}>
               <Controller
                 name={`prices.${index}.unit`}
                 control={control}
@@ -199,6 +184,28 @@ const PriceStep = ({ control, watch, setValue, getValues, itinerary }) => {
                         error: !!error,
                         helperText: error?.message,
                       },
+                    }}
+                  />
+                )}
+              />
+            </Grid> */}
+
+            {/* Unit */}
+            <Grid item xs={1.5}>
+              <Controller
+                name={`prices.${index}.unit`}
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Unit (HH:mm)"
+                    size="small"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true, // Make it read-only
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
                   />
                 )}
