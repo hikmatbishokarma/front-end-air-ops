@@ -237,12 +237,14 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                             name={`sectors.${index}.source.name`}
                             control={control}
                             rules={{ required: "Location is required" }}
-                            render={({ field }) => (
+                            render={({ field, fieldState: { error } }) => (
                               <TextField
                                 {...field}
                                 label="Location Name"
                                 fullWidth
                                 size="small"
+                                error={!!error}
+                                helperText={error?.message}
                                 sx={{ mb: 2 }}
                               />
                             )}
@@ -253,12 +255,14 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                                 name={`sectors.${index}.source.lat`}
                                 control={control}
                                 rules={{ required: "latitude is required" }}
-                                render={({ field }) => (
+                                render={({ field, fieldState: { error } }) => (
                                   <TextField
                                     {...field}
                                     label="Latitude"
                                     fullWidth
                                     size="small"
+                                    error={!!error}
+                                    helperText={error?.message}
                                   />
                                 )}
                               />
@@ -268,12 +272,14 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                                 name={`sectors.${index}.source.long`}
                                 rules={{ required: "longitude is required" }}
                                 control={control}
-                                render={({ field }) => (
+                                render={({ field, fieldState: { error } }) => (
                                   <TextField
                                     {...field}
                                     label="Longitude"
                                     fullWidth
                                     size="small"
+                                    error={!!error}
+                                    helperText={error?.message}
                                   />
                                 )}
                               />
@@ -304,12 +310,14 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                             name={`sectors.${index}.destination.name`}
                             control={control}
                             rules={{ required: "Location is required" }}
-                            render={({ field }) => (
+                            render={({ field, fieldState: { error } }) => (
                               <TextField
                                 {...field}
                                 label="Location Name"
                                 fullWidth
                                 size="small"
+                                error={!!error}
+                                helperText={error?.message}
                                 sx={{ mb: 2 }}
                               />
                             )}
@@ -320,12 +328,14 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                                 name={`sectors.${index}.destination.lat`}
                                 rules={{ required: "latitude is required" }}
                                 control={control}
-                                render={({ field }) => (
+                                render={({ field, fieldState: { error } }) => (
                                   <TextField
                                     {...field}
                                     label="Latitude"
                                     fullWidth
                                     size="small"
+                                    error={!!error}
+                                    helperText={error?.message}
                                   />
                                 )}
                               />
@@ -335,12 +345,14 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                                 name={`sectors.${index}.destination.long`}
                                 rules={{ required: "longitude is required" }}
                                 control={control}
-                                render={({ field }) => (
+                                render={({ field, fieldState: { error } }) => (
                                   <TextField
                                     {...field}
                                     label="Longitude"
                                     fullWidth
                                     size="small"
+                                    error={!!error}
+                                    helperText={error?.message}
                                   />
                                 )}
                               />
