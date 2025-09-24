@@ -265,22 +265,44 @@ export const QuoteList = ({
                 operatorId,
                 quotation: row.id,
                 quotationNo: row.quotationNo,
-                sectors: row.sectors.map((sector, index) => ({
-                  sectorNo: index + 1,
-                  source: sector.source,
-                  destination: sector.destination,
-                  depatureDate: sector.depatureDate,
-                  depatureTime: sector.depatureTime,
-                  arrivalTime: sector.arrivalTime,
-                  arrivalDate: sector.arrivalDate,
-                  pax: sector.paxNumber || 0,
-                  flightTime: calculateFlightTime(
-                    sector.depatureDate,
-                    sector.depatureTime,
-                    sector.arrivalDate,
-                    sector.arrivalTime
-                  ),
-                })),
+                // sectors: row.sectors.map((sector, index) => ({
+                //   sectorNo: index + 1,
+                //   source: sector.source,
+                //   destination: sector.destination,
+                //   depatureDate: sector.depatureDate,
+                //   depatureTime: sector.depatureTime,
+                //   arrivalTime: sector.arrivalTime,
+                //   arrivalDate: sector.arrivalDate,
+                //   pax: sector.paxNumber || 0,
+                //   flightTime: calculateFlightTime(
+                //     sector.depatureDate,
+                //     sector.depatureTime,
+                //     sector.arrivalDate,
+                //     sector.arrivalTime
+                //   ),
+                // })),
+                sectors: row.sectors.map((sector, index) => {
+                  const { __typename, ...source } = sector.source || {};
+                  const { __typename: __typenameDest, ...destination } =
+                    sector.destination || {};
+
+                  return {
+                    sectorNo: index + 1,
+                    source,
+                    destination,
+                    depatureDate: sector.depatureDate,
+                    depatureTime: sector.depatureTime,
+                    arrivalTime: sector.arrivalTime,
+                    arrivalDate: sector.arrivalDate,
+                    pax: sector.paxNumber || 0,
+                    flightTime: calculateFlightTime(
+                      sector.depatureDate,
+                      sector.depatureTime,
+                      sector.arrivalDate,
+                      sector.arrivalTime
+                    ),
+                  };
+                }),
               },
             },
           },
@@ -302,6 +324,7 @@ export const QuoteList = ({
 
   const onGenerateSalesConfirmation = async (rowData) => {
     try {
+      setSelectedRowData(rowData);
       const result = await useGql({
         query: SALE_CONFIRMATION,
         queryName: "saleConfirmation",
