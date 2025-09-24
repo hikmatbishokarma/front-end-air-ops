@@ -193,9 +193,9 @@ export const parseUnitToDecimal = (unitString: string): number => {
 
 export const validateArrivalTime =
   (getValues: any, index: number) => (arrivalTime: string) => {
-    const depDate = getValues(`itinerary.${index}.depatureDate`);
-    const depTime = getValues(`itinerary.${index}.depatureTime`);
-    const arrDate = getValues(`itinerary.${index}.arrivalDate`);
+    const depDate = getValues(`sectors.${index}.depatureDate`);
+    const depTime = getValues(`sectors.${index}.depatureTime`);
+    const arrDate = getValues(`sectors.${index}.arrivalDate`);
 
     if (!depDate || !depTime || !arrDate || !arrivalTime) return true;
 
