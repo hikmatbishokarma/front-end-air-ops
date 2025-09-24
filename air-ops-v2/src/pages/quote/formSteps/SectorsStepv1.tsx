@@ -236,6 +236,7 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                           <Controller
                             name={`sectors.${index}.source.name`}
                             control={control}
+                            rules={{ required: "Location is required" }}
                             render={({ field }) => (
                               <TextField
                                 {...field}
@@ -251,6 +252,7 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                               <Controller
                                 name={`sectors.${index}.source.lat`}
                                 control={control}
+                                rules={{ required: "latitude is required" }}
                                 render={({ field }) => (
                                   <TextField
                                     {...field}
@@ -264,6 +266,7 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                             <Grid item xs={6}>
                               <Controller
                                 name={`sectors.${index}.source.long`}
+                                rules={{ required: "longitude is required" }}
                                 control={control}
                                 render={({ field }) => (
                                   <TextField
@@ -300,6 +303,7 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                           <Controller
                             name={`sectors.${index}.destination.name`}
                             control={control}
+                            rules={{ required: "Location is required" }}
                             render={({ field }) => (
                               <TextField
                                 {...field}
@@ -314,6 +318,7 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                             <Grid item xs={6}>
                               <Controller
                                 name={`sectors.${index}.destination.lat`}
+                                rules={{ required: "latitude is required" }}
                                 control={control}
                                 render={({ field }) => (
                                   <TextField
@@ -328,6 +333,7 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }) => {
                             <Grid item xs={6}>
                               <Controller
                                 name={`sectors.${index}.destination.long`}
+                                rules={{ required: "longitude is required" }}
                                 control={control}
                                 render={({ field }) => (
                                   <TextField

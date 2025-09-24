@@ -124,8 +124,22 @@ export default function PassengerDetails({
     return {
       sectors: [
         {
-          source: "",
-          destination: "",
+          source: {
+            code: "",
+            name: "",
+            lat: "",
+            long: "",
+            city: "",
+            country: "",
+          },
+          destination: {
+            code: "",
+            name: "",
+            lat: "",
+            long: "",
+            city: "",
+            country: "",
+          },
           depatureDate: "",
           depatureTime: "",
           arrivalTime: "",
@@ -165,6 +179,8 @@ export default function PassengerDetails({
               passengers: s.passengers || [],
               meals: s.meals || [],
               travel: s.travel || {},
+              source: s.source || {}, // Ensure source is an object
+              destination: s.destination || {}, // Ensure destination is an object
             })),
           };
           reset(formattedData);
@@ -269,6 +285,10 @@ export default function PassengerDetails({
     // Remove __typename from nested objects
     delete cleanPayload.travel.__typename;
 
+    // New: Remove __typename from source and destination
+    delete cleanPayload.source.__typename;
+    delete cleanPayload.destination.__typename;
+
     // Check if passengers exist and remove __typename
     if (cleanPayload.passengers && Array.isArray(cleanPayload.passengers)) {
       cleanPayload.passengers.forEach((p) => delete p.__typename);
@@ -327,8 +347,22 @@ export default function PassengerDetails({
       // This is a simplified version of the logic from your original defaultValues
       return {
         id: index + 1,
-        source: s.source ?? "",
-        destination: s.destination ?? "",
+        source: {
+          code: "",
+          name: "",
+          lat: "",
+          long: "",
+          city: "",
+          country: "",
+        },
+        destination: {
+          code: "",
+          name: "",
+          lat: "",
+          long: "",
+          city: "",
+          country: "",
+        },
         depatureDate: s.depatureDate ?? "",
         depatureTime: s.depatureTime ?? "",
         arrivalTime: s.arrivalTime ?? "",
@@ -358,7 +392,8 @@ export default function PassengerDetails({
   }, [savedSectors, sectorFields.length]);
 
   return (
-    <Box className="passenger_add_pax"
+    <Box
+      className="passenger_add_pax"
       sx={{
         p: { xs: 1.5, md: 3 },
         background:
@@ -374,7 +409,8 @@ export default function PassengerDetails({
             "linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88))",
         }}
       >
-        <CardHeader className="paasenger_details_point"
+        <CardHeader
+          className="paasenger_details_point"
           title={
             <Stack direction="row" alignItems="center" spacing={1.5}>
               <FlightTakeoffIcon sx={{ color: logoColors.primary }} />
@@ -408,7 +444,11 @@ export default function PassengerDetails({
             </Stack>
           }
           subheader={
-            <Typography variant="body2" sx={{ opacity: 0.8 }} className="passenger_catering">
+            <Typography
+              variant="body2"
+              sx={{ opacity: 0.8 }}
+              className="passenger_catering"
+            >
               Add passenger details, catering, and travel/cab for each sector.
               You can <b>clone</b> details from Sector 1 (fills only empty
               fields).
@@ -455,9 +495,10 @@ export default function PassengerDetails({
                         variant="outlined"
                       />
                       {/* Route */}
-                      <Controller
+                      {/* <Controller
                         control={control}
-                        name={`sectors.${sectorIndex}.source`}
+                        // name={`sectors.${sectorIndex}.source`}
+                        name={`sectors.${sectorIndex}.source.code`}
                         render={({ field }) => (
                           <Chip
                             label={field.value || "—"}
@@ -466,7 +507,32 @@ export default function PassengerDetails({
                             sx={{ fontWeight: 700 }}
                           />
                         )}
+                      /> */}
+
+                      <Controller
+                        control={control}
+                        name={`sectors.${sectorIndex}.source`}
+                        render={({ field }) => {
+                          const code = field.value?.code || "—";
+                          const name =
+                            field.value?.city || field.value?.name || "";
+
+                          return (
+                            <>
+                              <Typography variant="body2" fontWeight={700}>
+                                {code}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {name}
+                              </Typography>
+                            </>
+                          );
+                        }}
                       />
+
                       <Typography
                         component="span"
                         fontWeight={800}
@@ -474,9 +540,10 @@ export default function PassengerDetails({
                       >
                         →
                       </Typography>
-                      <Controller
+                      {/* <Controller
                         control={control}
-                        name={`sectors.${sectorIndex}.destination`}
+                        // name={`sectors.${sectorIndex}.destination`}
+                        name={`sectors.${sectorIndex}.destination.code`}
                         render={({ field }) => (
                           <Chip
                             label={field.value || "—"}
@@ -485,7 +552,32 @@ export default function PassengerDetails({
                             sx={{ fontWeight: 700 }}
                           />
                         )}
+                      /> */}
+
+                      <Controller
+                        control={control}
+                        name={`sectors.${sectorIndex}.destination`}
+                        render={({ field }) => {
+                          const code = field.value?.code || "—";
+                          const name =
+                            field.value?.city || field.value?.name || "";
+
+                          return (
+                            <>
+                              <Typography variant="body2" fontWeight={700}>
+                                {code}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {name}
+                              </Typography>
+                            </>
+                          );
+                        }}
                       />
+
                       <Divider flexItem orientation="vertical" sx={{ mx: 1 }} />
                       {/* Times */}
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -1003,7 +1095,8 @@ function MealList({ control, sectorIndex, logoColors }) {
                 control={control}
                 name={`sectors.${sectorIndex}.meals.${i}.instructions`}
                 render={({ field }) => (
-                  <TextField className="passenger_insturctions"
+                  <TextField
+                    className="passenger_insturctions"
                     {...field}
                     label="Instructions"
                     placeholder="Jain / No onion garlic / Spicy"
