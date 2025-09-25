@@ -46,7 +46,14 @@ export const ClientDetailConfirmationForm = ({
   const operatorId = session?.user.operator?.id || null;
 
   const editFields = [
-    { name: "type", label: "Type", options: [], xs: 12, required: true },
+    {
+      name: "type",
+      label: "Type",
+      options: [],
+      xs: 12,
+      required: true,
+      isDisable: true,
+    },
     { name: "name", label: "First Name", xs: 6, required: true },
     {
       name: "lastName",
@@ -186,102 +193,11 @@ export const ClientDetailConfirmationForm = ({
   );
 };
 
-// const SuccessPage = ({ client, onGenerateInvoiceClick }) => {
-//   // Check if both GST and PAN are present
-//   const canGenerateInvoice =
-//     client &&
-//     client.gstNo &&
-//     client.gstNo.trim() !== "" &&
-//     client.panNo &&
-//     client.panNo.trim() !== "";
-
-//   return (
-//     <Box sx={{ width: 96, height: 96, mx: "auto" }}>
-//       <svg
-//         fill="none"
-//         stroke="currentColor"
-//         viewBox="0 0 24 24"
-//         xmlns="http://www.w3.org/2000/svg"
-//         style={{ width: "100%", height: "100%" }}
-//       >
-//         <path
-//           strokeLinecap="round"
-//           strokeLinejoin="round"
-//           strokeWidth="2"
-//           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-//         ></path>
-//       </svg>
-//       <Typography variant="h3" component="h2">
-//         Success!
-//       </Typography>
-//       <Typography variant="h6">
-//         Generating Invoice for <span>{client?.name}</span>
-//       </Typography>
-
-//       {/* Display client details */}
-//       <Paper elevation={2}>
-//         <Typography variant="body1" className="text-gray-800">
-//           <span className="font-medium">Email:</span> {client?.email || "N/A"}
-//         </Typography>
-//         <Typography variant="body1" className="text-gray-800">
-//           <span className="font-medium">GST Number:</span>{" "}
-//           {client?.gstNo || "Not Provided"}
-//         </Typography>
-//         <Typography variant="body1" className="text-gray-800">
-//           <span className="font-medium">PAN Number:</span>{" "}
-//           {client?.panNo || "Not Provided"}
-//         </Typography>
-//       </Paper>
-
-//       {/* Generate Invoice Button - now opens client edit modal for invoice */}
-//       <Button
-//         onClick={onGenerateInvoiceClick}
-//         disabled={!canGenerateInvoice}
-//         variant="contained"
-//         fullWidth
-//         size="large"
-//         sx={{
-//           mt: 3,
-//           fontWeight: "bold",
-//           color: "white",
-//           boxShadow: 3,
-//           transition: "all 200ms ease-in-out", // transition duration-200 ease-in-out
-
-//           // Conditional styles based on canGenerateInvoice
-//           ...(canGenerateInvoice
-//             ? {
-//                 backgroundColor: "purple.600", // bg-purple-600 (accessing theme colors)
-//                 "&:hover": {
-//                   backgroundColor: "purple.700", // hover:bg-purple-700
-//                   transform: "translateY(-4px) scale(1.05)", // transform hover:-translate-y-1 hover:scale-105 (4px is approx 1rem or 0.25rem * 16px if 1unit=4px, so 1 rem. Tailwind's -translate-y-1 is 4px)
-//                 },
-//               }
-//             : {
-//                 backgroundColor: "grey.400", // bg-gray-400
-//                 cursor: "not-allowed", // cursor-not-allowed
-//               }),
-//         }}
-//       >
-//         Generate Invoice
-//       </Button>
-
-//       {!canGenerateInvoice && (
-//         <Typography variant="body2" color="error">
-//           Please go back and add both GST and PAN numbers to enable invoice
-//           generation.
-//         </Typography>
-//       )}
-//     </Box>
-//   );
-// };
-
 const SuccessPage = ({ client, onGenerateInvoiceClick }) => {
   const canGenerateInvoice =
     client &&
-    client.gstNo &&
-    client.gstNo.trim() !== "" &&
-    client.panNo &&
-    client.panNo.trim() !== "";
+    (client.type === "OTHER" ||
+      (client.gstNo?.trim() !== "" && client.panNo?.trim() !== ""));
 
   return (
     <Box sx={{ p: 4, textAlign: "center" }}>
@@ -369,7 +285,7 @@ const SuccessPage = ({ client, onGenerateInvoiceClick }) => {
       >
         Generate Invoice
       </Button>
-      {!canGenerateInvoice && (
+      {!canGenerateInvoice && client.type !== "OTHER" && (
         <Typography variant="body2" color="error" sx={{ mt: 2 }}>
           Please go back and add both GST and PAN numbers to enable invoice
           generation.

@@ -77,6 +77,7 @@ import {
 } from "../../lib/graphql/queries/passenger-detail";
 
 import { Flight, AccessTime } from "@mui/icons-material";
+import { InvoiceConfirmationModal } from "../../components/InvoiceConfirmationModel";
 
 type currentQuotationInfo = {
   id: string;
@@ -124,6 +125,8 @@ export const QuoteList = ({
     useState(null);
 
   const [showPassengerDetail, setShowPassengerDetail] = useState(false);
+
+  const [invoiceModelOpen, setInvoiceModelOpen] = useState(false);
 
   const handelPreview = async (row) => {
     setSelectedRowData(row);
@@ -229,11 +232,20 @@ export const QuoteList = ({
     }
   };
 
-  const onGeneratePI = async (rowData) => {
-    await onGenerateInvoice({
-      type: "PROFORMA_INVOICE",
-      quotationNo: rowData.quotationNo,
+  const onGeneratePI = async (row) => {
+    setCurrentQuotationInfo({
+      id: row.id,
+      quotationNo: row.quotationNo,
+      isLatest: row.isLatest,
+      client: row.requestedBy,
+      status: row.status,
     });
+    setInvoiceModelOpen(true);
+
+    // await onGenerateInvoice({
+    //   type: "PROFORMA_INVOICE",
+    //   quotationNo: rowData.quotationNo,
+    // });
     setRefreshKey();
   };
 
@@ -849,6 +861,14 @@ export const QuoteList = ({
           />
         )}
       </CustomDialog>
+
+      <InvoiceConfirmationModal
+        open={invoiceModelOpen}
+        handelInvoiceModelClose={() => setInvoiceModelOpen(false)}
+        onGenerateInvoice={onGenerateInvoice}
+        invoiceType={"PROFORMA_INVOICE"}
+        currentRecord={currentQuotationInfo}
+      />
     </>
   );
 };
