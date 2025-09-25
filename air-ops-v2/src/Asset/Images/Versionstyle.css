@@ -866,3 +866,6 @@ font-size: 12px;
   .passenger_insturctions textarea{
         height: 1.4375em !important;
   }
+  .email_invoice_Preview table{
+    margin-top: 50px !important;
+  }
