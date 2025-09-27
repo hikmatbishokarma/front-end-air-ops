@@ -94,7 +94,7 @@ const SaleConfirmationPreviewPage = () => {
     <>
       <Box p={3} display="flex" flexDirection="column" alignItems="center">
         {/* A4 container */}
-        <Paper
+        {/* <Paper
           elevation={3}
           sx={{
             padding: 2,
@@ -102,12 +102,12 @@ const SaleConfirmationPreviewPage = () => {
             minHeight: "297mm", // A4 height
             overflow: "auto",
           }}
-        >
-          <div
-            ref={componentRef}
-            dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-          />
-        </Paper>
+        > */}
+        <div
+          ref={componentRef}
+          dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+        />
+        {/* </Paper> */}
 
         {/* Actions */}
         <Stack
