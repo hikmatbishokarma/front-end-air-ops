@@ -43,6 +43,7 @@ type FormData = {
   flightImages: [string];
   seatLayoutImage: string;
   rangeMapImage: string;
+  flightInteriorImages: [string];
 };
 
 export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
@@ -98,7 +99,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       // setValue("isActive", aircraftDetailData.isActive || false);
       setValue("name", aircraftDetailData.name || "");
       setValue("code", aircraftDetailData.code || "");
-      setValue("description", aircraftDetailData.description || "");
+      // setValue("description", aircraftDetailData.description || "");
       // setValue("category", aircraftDetailData.category.id || "");
       setValue("specifications", aircraftDetailData.specifications || []);
       setValue(
@@ -107,11 +108,14 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
           ""
       );
       setValue("noteText", aircraftDetailData.noteText || "");
-      setValue("warningText", aircraftDetailData.warningText || "");
+      // setValue("warningText", aircraftDetailData.warningText || "");
       setValue("warningImage", aircraftDetailData.warningImage || "");
       setValue("flightImages", aircraftDetailData.flightImages || null);
       setValue("seatLayoutImage", aircraftDetailData.seatLayoutImage || "");
-      setValue("rangeMapImage", aircraftDetailData.rangeMapImage || "");
+      setValue(
+        "flightInteriorImages",
+        aircraftDetailData.flightInteriorImages || []
+      );
     }
   }, [aircraftDetailData, setValue]);
 
