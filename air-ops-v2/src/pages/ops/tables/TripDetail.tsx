@@ -32,6 +32,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import useGql from "../../../lib/graphql/gql";
 import { CREATE_TRIP_DETAILS } from "../../../lib/graphql/queries/trip-detail";
 import moment from "moment";
+import SectorTooltip from "../../../components/SectorTooltip";
 
 export const TripDetailList = ({
   tripDetailList,
@@ -78,7 +79,6 @@ export const TripDetailList = ({
   };
 
   const onUpdateCreateTrip = async (row) => {
-    console.log("trrrrrr::", row, row.id);
     navigate(`/trip-detail/${row.id}`, { state: row });
   };
 
@@ -129,11 +129,13 @@ export const TripDetailList = ({
                   {`${row?.quotation?.aircraft?.name} (${row?.quotation?.aircraft?.code})`}
                 </TableCell>
 
-                <TableCell align="right">
-                  {row.sectors.map(
-                    (sector) => `${sector.source}-${sector.destination}`
-                  )}
+                <TableCell
+                  align="right"
+                  // onClick={(event) => event.stopPropagation()}
+                >
+                  <SectorTooltip sectors={row.sectors} />
                 </TableCell>
+
                 <TableCell align="right">
                   {moment(row.createdAt).format("DD-MM-YYYY HH:mm")}
                 </TableCell>

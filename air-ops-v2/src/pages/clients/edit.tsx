@@ -144,6 +144,7 @@ export const EditClient = ({ id, handleSubDialogClose }) => {
   };
 
   const onSubmit = (data: FormData) => {
+    console.log("data::::", data);
     const { type, ...rest } = data;
     const formData = { ...rest };
     // if (type == "COMPANY") {
