@@ -75,7 +75,8 @@ export default function SectorAccordion({
           />
 
           <Typography fontWeight="bold">
-            {sector.source} → {sector.destination}
+            {`${sector?.source?.name ?? ""}(${sector?.source?.code ?? ""})`} →{" "}
+            {`${sector.destination.name}(${sector.destination.code})`}
           </Typography>
           {/* <Typography variant="h6" fontWeight={700} color="text.primary">
             {aircraft?.name}

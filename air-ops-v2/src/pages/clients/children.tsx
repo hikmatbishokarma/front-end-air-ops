@@ -133,11 +133,7 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                   if (field.options) {
                     return (
                       <FormControl component="fieldset" margin="normal">
-                        <RadioGroup
-                          defaultValue={ClientType.PERSON}
-                          row
-                          {...field}
-                        >
+                        <RadioGroup {...controllerField} row>
                           {Object.values(ClientType).map((value) => (
                             <FormControlLabel
                               key={value}

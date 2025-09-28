@@ -216,7 +216,7 @@ export default function StepSectorInfo({
           <Grid item xs={6}>
             <TextField
               label="Source"
-              value={sector.source}
+              value={sector?.source?.name}
               fullWidth
               size="small"
               disabled
@@ -225,7 +225,7 @@ export default function StepSectorInfo({
           <Grid item xs={6}>
             <TextField
               label="Destination"
-              value={sector.destination}
+              value={sector.destination?.name}
               fullWidth
               size="small"
               disabled

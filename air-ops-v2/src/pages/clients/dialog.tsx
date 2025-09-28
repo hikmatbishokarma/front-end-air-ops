@@ -18,12 +18,20 @@ const ClientDialog = ({
   clientId = "",
   isEdit = false,
 }) => {
+  console.log("ClientDialog:::", isEdit, clientId);
+
+  console.log("isss", isEdit ? "this is true" : "this is false");
   return (
-    <Dialog open={subDialogOpen} onClose={handleSubDialogClose} className="panel-one">
+    <Dialog
+      open={subDialogOpen}
+      onClose={handleSubDialogClose}
+      className="panel-one"
+    >
       <DialogTitle>
         {/* {isEdit ? "Edit" : "Add"} Enquiry From */}
         Enquiry From
-        <IconButton className="popup-quote-model"
+        <IconButton
+          className="popup-quote-model"
           aria-label="close"
           onClick={handleSubDialogClose}
           sx={{
@@ -33,7 +41,7 @@ const ClientDialog = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon className="popup-close-panel"/>
+          <CloseIcon className="popup-close-panel" />
         </IconButton>
       </DialogTitle>
       <DialogContent>

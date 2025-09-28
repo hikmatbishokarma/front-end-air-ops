@@ -11,14 +11,10 @@ export default function TripDetailPage() {
 
   const { tripId } = useParams();
 
-  console.log("tripId::::", tripId);
-
   const location = useLocation();
   const row = location.state;
 
   const { data: trip, loading, error } = useTrip(tripId!);
-
-  console.log("trip::::::1", trip);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error fetching trip</div>;
@@ -32,7 +28,8 @@ export default function TripDetailPage() {
     <Box p={2}>
       <Box mb={2}>
         <h3>
-          Trip ID: 2508021 &nbsp; | &nbsp; Quotation:{trip.quotationNo} – &nbsp;
+          Trip ID: {trip?.tripId} &nbsp; | &nbsp; Quotation:{trip.quotationNo} –
+          &nbsp;
           {trip?.requestedBy?.name || trip?.quotation?.category}
         </h3>
       </Box>

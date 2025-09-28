@@ -98,6 +98,7 @@ const QuoteForm = ({
   fetchRepresentatives,
   aircraftCategories,
 }) => {
+  console.log("editttt", isEdit);
   const { control, handleSubmit, watch, reset, getValues, setValue } = useForm({
     defaultValues: initialData,
   });
@@ -116,7 +117,7 @@ const QuoteForm = ({
     useState(false);
 
   // Find the selected client based on the watched form value
-  const selectedClient = clients.find((c) => c.id === watchedRequestedBy);
+  const selectedClient = clients.find((c) => c.id === watchedRequestedBy?.id);
 
   // Reset form with new initial data when it changes (for edit mode)
   // useEffect(() => {
@@ -163,6 +164,7 @@ const QuoteForm = ({
             selectedClient={selectedClient} // Pass the derived state
             setSubDialogOpen={setSubDialogOpen} // Pass the state setters
             setRepresentativeDialogOpen={setRepresentativeDialogOpen}
+            isEdit={isEdit}
           />
         );
       case "Sectors":

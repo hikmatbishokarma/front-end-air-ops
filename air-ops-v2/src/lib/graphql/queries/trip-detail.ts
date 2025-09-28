@@ -43,8 +43,22 @@ export const GET_TRIP_DETAILS = gql`
         quotationNo
         sectors {
           sectorNo
-          source
-          destination
+          source {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
+          destination {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
           depatureDate
           depatureTime
           arrivalDate
@@ -114,8 +128,22 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
       quotationNo
       sectors {
         sectorNo
-        source
-        destination
+        source {
+          code
+          name
+          lat
+          long
+          city
+          country
+        }
+        destination {
+          code
+          name
+          lat
+          long
+          city
+          country
+        }
         depatureDate
         depatureTime
         arrivalDate
