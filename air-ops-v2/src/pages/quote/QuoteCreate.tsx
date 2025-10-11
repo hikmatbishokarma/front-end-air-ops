@@ -22,6 +22,7 @@ const defaultValues = {
       depatureTime: "",
       arrivalDate: "",
       arrivalTime: "",
+      paxNumber: 0,
     },
   ],
   prices: [
@@ -45,6 +46,31 @@ const defaultValues = {
       price: 0,
       currency: "INR",
       total: 0,
+    },
+  ],
+  sectors: [
+    {
+      source: {
+        iata_code: "",
+        name: "",
+        city: "",
+        country: "",
+        lat: "",
+        long: "",
+      },
+      destination: {
+        iata_code: "",
+        name: "",
+        city: "",
+        country: "",
+        lat: "",
+        long: "",
+      },
+      depatureDate: "",
+      depatureTime: "",
+      arrivalDate: "",
+      arrivalTime: "",
+      paxNumber: 0,
     },
   ],
   grandTotal: 0,
@@ -80,18 +106,27 @@ const QuoteCreateTest = () => {
         }),
       };
 
-      if (Array.isArray(formData.itinerary)) {
-        const cleanedItinerary = formData.itinerary.filter(
+      // if (Array.isArray(formData.itinerary)) {
+      //   const cleanedItinerary = formData.itinerary.filter(
+      //     (item) => item.source && item.destination
+      //   );
+      //   if (cleanedItinerary.length)
+      //     cleanedPayload.itinerary = cleanedItinerary;
+      // }
+
+      if (Array.isArray(formData?.sectors)) {
+        const cleanedSectors = formData.sectors.filter(
           (item) => item.source && item.destination
         );
-        if (cleanedItinerary.length)
-          cleanedPayload.itinerary = cleanedItinerary;
+        if (cleanedSectors.length) cleanedPayload.sectors = cleanedSectors;
       }
 
       if (Array.isArray(formData.prices)) {
-        const cleanedPrices = formData.prices.filter(
-          (item) => item.label && item.price
-        );
+        const cleanedPrices =
+          formData.category === "CHARTER"
+            ? formData.prices
+            : formData.prices.filter((item) => item.label && item.price);
+
         if (cleanedPrices.length) {
           cleanedPayload.prices = cleanedPrices;
           cleanedPayload.grandTotal = formData.grandTotal;

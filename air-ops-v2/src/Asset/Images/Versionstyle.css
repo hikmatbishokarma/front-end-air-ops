@@ -869,3 +869,13 @@ font-size: 12px;
   .email_invoice_Preview table{
     margin-top: 50px !important;
   }
+  .paasenger_details_point .takeofficon{
+       background-color: #fff;
+    height: 26px;
+    width: 26px;
+    border-radius: 20px;
+    padding: 6px;
+  }
+    .paasenger_details_point .chip-details{
+        background-color: #fff;
+    }

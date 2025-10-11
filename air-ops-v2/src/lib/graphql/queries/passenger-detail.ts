@@ -47,8 +47,23 @@ export const GET_PASSENGER_DETAILS = gql`
         quotationNo
         sectors {
           sectorNo
-          source
-          destination
+          source {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
+          destination {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
+
           depatureDate
           depatureTime
           arrivalDate
@@ -96,8 +111,22 @@ export const GET_PASSENGER_DETAIL_BY_ID = gql`
       quotationNo
       sectors {
         id
-        source
-        destination
+        source {
+          code
+          name
+          lat
+          long
+          city
+          country
+        }
+        destination {
+          code
+          name
+          lat
+          long
+          city
+          country
+        }
         depatureDate
         depatureTime
         arrivalDate

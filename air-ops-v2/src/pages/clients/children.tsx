@@ -36,6 +36,7 @@ interface FormField {
   };
   visible?: (type: string) => boolean;
   isRequired?: (type: string) => boolean;
+  isDisable?: boolean;
 }
 
 interface ReusableFormProps {
@@ -132,29 +133,6 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                   if (field.options) {
                     return (
                       <FormControl component="fieldset" margin="normal">
-                        {/* <RadioGroup
-                          row
-                          value={controllerField.value}
-                          onChange={controllerField.onChange}
-                          onBlur={controllerField.onBlur}
-                        >
-                          <FormControlLabel
-                            value="COMPANY"
-                            control={<Radio />}
-                            label="Company"
-                          />
-                          <FormControlLabel
-                            value="PERSON"
-                            control={<Radio />}
-                            label="Person"
-                          />
-                          <FormControlLabel
-                            value="OTHER"
-                            control={<Radio />}
-                            label="Other"
-                          />
-                        </RadioGroup> */}
-
                         <RadioGroup
                           defaultValue={ClientType.PERSON}
                           row
@@ -164,7 +142,7 @@ const ClientChildren: React.FC<ReusableFormProps> = ({
                             <FormControlLabel
                               key={value}
                               value={value}
-                              control={<Radio />}
+                              control={<Radio disabled={field.isDisable} />}
                               label={clientTypeLabels[value]}
                             />
                           ))}

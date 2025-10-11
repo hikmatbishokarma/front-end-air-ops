@@ -37,20 +37,6 @@ import useGql from "../../lib/graphql/gql";
 import { GET_PASSENGER_DETAILS } from "../../lib/graphql/queries/passenger-detail";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
-/**
- * DEMO USAGE (unchanged design):
- * <AviationNSOPForm
- *   logoColors={{ primary: "#0A58CA", accent: "#E11D48" }}
- *   passengerCount={3}
- *   sectors={[
- *     { id: "S1", from: "HYD", to: "BLR", depTime: "09:15", arrTime: "10:35" },
- *     { id: "S2", from: "BLR", to: "DEL", depTime: "12:10", arrTime: "14:40" },
- *     { id: "S3", from: "DEL", to: "HYD", depTime: "17:30", arrTime: "19:10" },
- *   ]}
- *   onSaveSector={(i, payload) => console.log("Saved", i, payload)}
- * />
- */
-
 const softCard = {
   borderRadius: "20px",
   boxShadow:
@@ -78,223 +64,6 @@ export default function PassengerDetails({
   onSaveSector = (formData) => {},
   onPreview = (allFormData) => {},
 }) {
-  // const {
-  //   aircraft,
-  //   itinerary: sectors,
-  //   quotationNo,
-  //   quotationId: quotation,
-  // } = tripInfo;
-
-  // // Build default values (Passengers replaced; add Meals & Travel)
-  // const defaultValues = useMemo(() => {
-  //   const makePassenger = () => ({
-  //     name: "",
-  //     gender: "",
-  //     age: 0,
-  //     aadharId: "",
-  //   });
-
-  //   const makeMeal = () => ({
-  //     category: "",
-  //     type: "",
-  //     portions: 0,
-  //     item: "",
-  //     instructions: "",
-  //   });
-
-  //   const makeTravel = () => ({
-  //     category: "",
-  //     type: "",
-  //     seatingCapacity: 0,
-  //     vehicleChoice: "",
-  //     dropAt: "",
-  //   });
-
-  //   return {
-  //     sectors: sectors?.map((s, index) => {
-  //       // Combine date and time into moment objects
-  //       const depDateTime = moment(
-  //         `${s.depatureDate ?? ""} ${s.depatureTime ?? ""}`,
-  //         "YYYY-MM-DD HH:mm"
-  //       );
-  //       const arrDateTime = moment(
-  //         `${s.arrivalDate ?? ""} ${s.arrivalTime ?? ""}`,
-  //         "YYYY-MM-DD HH:mm"
-  //       );
-
-  //       // Calculate duration
-  //       let flightTime = "";
-  //       if (depDateTime.isValid() && arrDateTime.isValid()) {
-  //         const totalMinutes = arrDateTime.diff(depDateTime, "minutes");
-  //         if (totalMinutes >= 0) {
-  //           const hours = Math.floor(totalMinutes / 60);
-  //           const minutes = totalMinutes % 60;
-  //           flightTime = `${hours}h ${minutes}m`;
-  //         }
-  //       }
-
-  //       return {
-  //         id: index + 1,
-  //         source: s.source ?? "",
-  //         destination: s.destination ?? "",
-  //         depatureDate: s.depatureDate ?? "",
-  //         depatureTime: s.depatureTime ?? "",
-  //         arrivalTime: s.arrivalTime ?? "",
-  //         arrivalDate: s.arrivalDate ?? "",
-  //         pax: s?.paxNumber ?? "",
-  //         flightTime, // ⬅ store calculated value here
-
-  //         passengers: Array.from({ length: s.paxNumber }, () =>
-  //           makePassenger()
-  //         ),
-  //         meals: [makeMeal()],
-  //         travel: makeTravel(),
-  //       };
-  //     }),
-  //   };
-  // }, [sectors]);
-
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   setValue,
-  //   getValues,
-  //   reset,
-  //   formState: { isSubmitting },
-  // } = useForm({
-  //   defaultValues,
-  //   mode: "onChange",
-  // });
-
-  // const { fields: sectorFields } = useFieldArray({
-  //   control,
-  //   name: "sectors",
-  // });
-
-  // useEffect(() => {
-  //   if (tripInfo) {
-  //     const newDefaultValues = {
-  //       sectors: sectors?.map((s, index) => {
-  //         // You need to replicate your logic here to make sure
-  //         // the data is in the correct format for the form.
-  //         return {
-  //           ...s, // use the existing data
-  //           passengers: s.passengers || [], // Ensure nested arrays are not null
-  //           meals: s.meals || [],
-  //           travel: s.travel || {},
-  //         };
-  //       }),
-  //     };
-  //     reset(newDefaultValues);
-  //   }
-  // }, [sectors, reset]);
-
-  // // Keep only one sector expanded at a time
-  // const [expanded, setExpanded] = useState(0);
-  // const handleAccordionChange = (index) => (event, isExpanded) => {
-  //   setExpanded(isExpanded ? index : false);
-  // };
-
-  // // Non-destructive clone helper: fills only empty targets
-  // const fillIfEmpty = (target, source) => {
-  //   if (target == null || typeof target !== "object") return source;
-  //   if (Array.isArray(target) && Array.isArray(source)) {
-  //     const out = [...target];
-  //     const max = Math.max(target.length, source.length);
-  //     for (let i = 0; i < max; i++) {
-  //       if (
-  //         target[i] == null ||
-  //         target[i] === "" ||
-  //         (typeof target[i] === "object" && Object.keys(target[i]).length === 0)
-  //       ) {
-  //         out[i] =
-  //           source[i] !== undefined
-  //             ? JSON.parse(JSON.stringify(source[i]))
-  //             : target[i];
-  //       } else if (
-  //         typeof target[i] === "object" &&
-  //         typeof source[i] === "object"
-  //       ) {
-  //         out[i] = fillIfEmpty(target[i], source[i]);
-  //       }
-  //     }
-  //     return out;
-  //   }
-  //   const out = { ...target };
-  //   for (const k of Object.keys(source ?? {})) {
-  //     if (
-  //       out[k] === "" ||
-  //       out[k] == null ||
-  //       (typeof out[k] === "object" &&
-  //         !Array.isArray(out[k]) &&
-  //         Object.keys(out[k]).length === 0)
-  //     ) {
-  //       out[k] = JSON.parse(JSON.stringify(source[k]));
-  //     } else if (typeof out[k] === "object" && typeof source[k] === "object") {
-  //       out[k] = fillIfEmpty(out[k], source[k]);
-  //     }
-  //   }
-  //   return out;
-  // };
-
-  // // Clone (from Sector 1) → fills only empty fields in target sector
-  // const cloneFromFirstSector = (targetIndex) => {
-  //   const src = getValues(`sectors.0`);
-  //   if (!src) return;
-
-  //   const tgt = getValues(`sectors.${targetIndex}`);
-
-  //   // Only clone passengers, meals, travel (never overwrite meta)
-  //   const mergedPassengers = fillIfEmpty(
-  //     tgt.passengers ?? [],
-  //     src.passengers ?? []
-  //   );
-  //   const mergedMeals = fillIfEmpty(tgt.meals ?? [], src.meals ?? []);
-  //   const mergedTravel = fillIfEmpty(tgt.travel ?? {}, src.travel ?? {});
-
-  //   setValue(`sectors.${targetIndex}.passengers`, mergedPassengers, {
-  //     shouldValidate: true,
-  //     shouldDirty: true,
-  //   });
-  //   setValue(`sectors.${targetIndex}.meals`, mergedMeals, {
-  //     shouldValidate: true,
-  //     shouldDirty: true,
-  //   });
-  //   setValue(`sectors.${targetIndex}.travel`, mergedTravel, {
-  //     shouldValidate: true,
-  //     shouldDirty: true,
-  //   });
-  // };
-
-  // const saveSector = (sectorIndex) => {
-  //   const all = getValues();
-  //   const payload = all.sectors?.[sectorIndex];
-
-  //   // Create a deep copy to avoid modifying the original form state
-  //   const cleanPayload = JSON.parse(JSON.stringify(payload));
-
-  //   // Remove __typename from objects
-  //   delete cleanPayload.__typename;
-
-  //   // Remove __typename from nested objects
-  //   delete cleanPayload.travel.__typename;
-
-  //   // Check if passengers exist and remove __typename
-  //   if (cleanPayload.passengers && Array.isArray(cleanPayload.passengers)) {
-  //     cleanPayload.passengers.forEach((p) => delete p.__typename);
-  //   }
-
-  //   // Check if meals exist and remove __typename
-  //   if (cleanPayload.meals && Array.isArray(cleanPayload.meals)) {
-  //     cleanPayload.meals.forEach((m) => delete m.__typename);
-  //   }
-
-  //   onSaveSector({
-  //     where: { quotation, quotationNo },
-  //     data: { sector: cleanPayload },
-  //   });
-  // };
-
   const showSnackbar = useSnackbar();
 
   // State to hold the fetched trip data
@@ -355,8 +124,22 @@ export default function PassengerDetails({
     return {
       sectors: [
         {
-          source: "",
-          destination: "",
+          source: {
+            code: "",
+            name: "",
+            lat: "",
+            long: "",
+            city: "",
+            country: "",
+          },
+          destination: {
+            code: "",
+            name: "",
+            lat: "",
+            long: "",
+            city: "",
+            country: "",
+          },
           depatureDate: "",
           depatureTime: "",
           arrivalTime: "",
@@ -396,6 +179,8 @@ export default function PassengerDetails({
               passengers: s.passengers || [],
               meals: s.meals || [],
               travel: s.travel || {},
+              source: s.source || {}, // Ensure source is an object
+              destination: s.destination || {}, // Ensure destination is an object
             })),
           };
           reset(formattedData);
@@ -500,6 +285,10 @@ export default function PassengerDetails({
     // Remove __typename from nested objects
     delete cleanPayload.travel.__typename;
 
+    // New: Remove __typename from source and destination
+    delete cleanPayload.source.__typename;
+    delete cleanPayload.destination.__typename;
+
     // Check if passengers exist and remove __typename
     if (cleanPayload.passengers && Array.isArray(cleanPayload.passengers)) {
       cleanPayload.passengers.forEach((p) => delete p.__typename);
@@ -558,8 +347,22 @@ export default function PassengerDetails({
       // This is a simplified version of the logic from your original defaultValues
       return {
         id: index + 1,
-        source: s.source ?? "",
-        destination: s.destination ?? "",
+        source: {
+          code: "",
+          name: "",
+          lat: "",
+          long: "",
+          city: "",
+          country: "",
+        },
+        destination: {
+          code: "",
+          name: "",
+          lat: "",
+          long: "",
+          city: "",
+          country: "",
+        },
         depatureDate: s.depatureDate ?? "",
         depatureTime: s.depatureTime ?? "",
         arrivalTime: s.arrivalTime ?? "",
@@ -589,7 +392,8 @@ export default function PassengerDetails({
   }, [savedSectors, sectorFields.length]);
 
   return (
-    <Box className="passenger_add_pax"
+    <Box
+      className="passenger_add_pax"
       sx={{
         p: { xs: 1.5, md: 3 },
         background:
@@ -605,15 +409,16 @@ export default function PassengerDetails({
             "linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88))",
         }}
       >
-        <CardHeader className="paasenger_details_point"
+        <CardHeader
+          className="paasenger_details_point"
           title={
             <Stack direction="row" alignItems="center" spacing={1.5}>
-              <FlightTakeoffIcon sx={{ color: logoColors.primary }} />
+              <FlightTakeoffIcon sx={{ color: logoColors.primary }} className="takeofficon"/>
               <Typography variant="h6" fontWeight={800}>
                 Passenger,Catering & Travel -{" "}
                 {tripInfo?.quotation?.aircraft?.name}
               </Typography>
-              <Chip
+              <Chip className="chip-details"
                 label={tripInfo?.quotation?.aircraft?.code}
                 size="small"
                 sx={{
@@ -625,7 +430,7 @@ export default function PassengerDetails({
                 }}
                 variant="outlined"
               />
-              <Chip
+              <Chip className="chip-details"
                 label={quotationNo}
                 size="small"
                 sx={{
@@ -639,7 +444,11 @@ export default function PassengerDetails({
             </Stack>
           }
           subheader={
-            <Typography variant="body2" sx={{ opacity: 0.8 }} className="passenger_catering">
+            <Typography
+              variant="body2"
+              sx={{ opacity: 0.8 }}
+              className="passenger_catering"
+            >
               Add passenger details, catering, and travel/cab for each sector.
               You can <b>clone</b> details from Sector 1 (fills only empty
               fields).
@@ -686,9 +495,10 @@ export default function PassengerDetails({
                         variant="outlined"
                       />
                       {/* Route */}
-                      <Controller
+                      {/* <Controller
                         control={control}
-                        name={`sectors.${sectorIndex}.source`}
+                        // name={`sectors.${sectorIndex}.source`}
+                        name={`sectors.${sectorIndex}.source.code`}
                         render={({ field }) => (
                           <Chip
                             label={field.value || "—"}
@@ -697,7 +507,32 @@ export default function PassengerDetails({
                             sx={{ fontWeight: 700 }}
                           />
                         )}
+                      /> */}
+
+                      <Controller
+                        control={control}
+                        name={`sectors.${sectorIndex}.source`}
+                        render={({ field }) => {
+                          const code = field.value?.code || "—";
+                          const name =
+                            field.value?.city || field.value?.name || "";
+
+                          return (
+                            <>
+                              <Typography variant="body2" fontWeight={700}>
+                                {code}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {name}
+                              </Typography>
+                            </>
+                          );
+                        }}
                       />
+
                       <Typography
                         component="span"
                         fontWeight={800}
@@ -705,9 +540,10 @@ export default function PassengerDetails({
                       >
                         →
                       </Typography>
-                      <Controller
+                      {/* <Controller
                         control={control}
-                        name={`sectors.${sectorIndex}.destination`}
+                        // name={`sectors.${sectorIndex}.destination`}
+                        name={`sectors.${sectorIndex}.destination.code`}
                         render={({ field }) => (
                           <Chip
                             label={field.value || "—"}
@@ -716,7 +552,32 @@ export default function PassengerDetails({
                             sx={{ fontWeight: 700 }}
                           />
                         )}
+                      /> */}
+
+                      <Controller
+                        control={control}
+                        name={`sectors.${sectorIndex}.destination`}
+                        render={({ field }) => {
+                          const code = field.value?.code || "—";
+                          const name =
+                            field.value?.city || field.value?.name || "";
+
+                          return (
+                            <>
+                              <Typography variant="body2" fontWeight={700}>
+                                {code}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {name}
+                              </Typography>
+                            </>
+                          );
+                        }}
                       />
+
                       <Divider flexItem orientation="vertical" sx={{ mx: 1 }} />
                       {/* Times */}
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -1234,7 +1095,8 @@ function MealList({ control, sectorIndex, logoColors }) {
                 control={control}
                 name={`sectors.${sectorIndex}.meals.${i}.instructions`}
                 render={({ field }) => (
-                  <TextField className="passenger_insturctions"
+                  <TextField
+                    className="passenger_insturctions"
                     {...field}
                     label="Instructions"
                     placeholder="Jain / No onion garlic / Spicy"
