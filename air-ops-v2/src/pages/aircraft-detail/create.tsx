@@ -22,34 +22,7 @@ import {
   TermsStep,
 } from "./children";
 import { useSession } from "../../SessionContext";
-
-interface sepcification {
-  title: string;
-  value: string;
-}
-
-interface AircraftCategory {
-  id: string;
-  name: string;
-}
-
-type FormValues = {
-  name: string;
-  code: string;
-  description: string;
-  image: string;
-  noteText: string;
-  warningText: string;
-  category: AircraftCategory | null;
-  specifications: sepcification[];
-  termsAndConditions: string;
-  isActive: boolean;
-  warningImage: string;
-  flightImages: [string];
-  seatLayoutImage: string;
-  rangeMapImage: string;
-  flightInteriorImages: [string];
-};
+import { AircraftDetailFormData, FileObject } from "./interface";
 
 export const AircraftDetailCreate = ({ onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
@@ -58,23 +31,22 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
 
   const operatorId = session?.user.operator?.id || null;
 
-  const methods = useForm<FormValues>({
+  const methods = useForm<AircraftDetailFormData>({
     mode: "onTouched",
     reValidateMode: "onChange",
     defaultValues: {
       name: "",
       code: "",
-      // description: "",
+
       noteText: "",
-      // warningText: "",
-      // category: null,
+
       specifications: [],
       termsAndConditions: "",
       isActive: true,
-      warningImage: "",
-      flightImages: undefined,
-      seatLayoutImage: "",
-      rangeMapImage: "",
+      warningImage: null,
+      flightImage: null,
+      seatLayoutImage: null,
+      rangeMapImage: null,
       flightInteriorImages: [],
     },
   });
@@ -89,11 +61,11 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
     formState: { errors },
   } = methods;
 
-  const CreateAircraftDetail = async (formData) => {
+  const CreateAircraftDetail = async (formData: any) => {
     try {
       const data = await useGql({
         query: CREATE_AIRCRAFT_DETAIL,
-        queryName: "",
+        queryName: "createOneAircraftDetail",
         queryType: "mutation",
         variables: { input: { aircraftDetail: formData } },
       });
@@ -102,18 +74,59 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
         // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
         showSnackbar(data?.errors?.[0]?.message, "error");
       } else showSnackbar("Created Successfully", "success");
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to create categories!", "error");
     }
   };
 
-  const onSubmit = async (data: FormValues) => {
-    const formattedData = {
-      ...data,
-      // termsAndConditions: data.termsAndConditions.replace(/<p><br><\/p>/g, ""),
-    };
+  const onSubmit = async (data: AircraftDetailFormData) => {
+    const cleanedDetail: any = { ...data };
 
-    await CreateAircraftDetail({ ...formattedData, operatorId });
+    const singleImageFields: (keyof AircraftDetailFormData)[] = [
+      "flightImage",
+      "warningImage",
+      "seatLayoutImage",
+      "rangeMapImage",
+    ];
+
+    singleImageFields.forEach((field) => {
+      const value = cleanedDetail[field] as FileObject | null | undefined;
+
+      if (typeof value === "object" && value && value.key) {
+        cleanedDetail[field] = value.key;
+      } else if (value === null || value === undefined) {
+        // Delete property if it was null, undefined, or an empty string from RHF state
+        delete cleanedDetail[field];
+      }
+    });
+
+    // 2. Handle Multi-Image Array Fields (Now includes flightImages)
+    const multiImageFields: (keyof AircraftDetailFormData)[] = [
+      "flightInteriorImages",
+    ];
+
+    multiImageFields.forEach((field) => {
+      const value = cleanedDetail[field];
+
+      if (Array.isArray(value)) {
+        // ⭐️ FIX 3: Explicitly cast value to S3FileObject[] to resolve array assignment issues
+        const imageArray = value as FileObject[];
+
+        const finalKeys = imageArray
+          .map((img) => img.key)
+          .filter((key) => !!key);
+
+        if (finalKeys.length > 0) {
+          cleanedDetail[field] = finalKeys; // Assigning string[] to the property
+        } else {
+          delete cleanedDetail[field];
+        }
+      } else {
+        delete cleanedDetail[field];
+      }
+    });
+
+    await CreateAircraftDetail({ ...cleanedDetail, operatorId });
     await refreshList();
     onClose();
   };

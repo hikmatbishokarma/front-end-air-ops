@@ -6,18 +6,13 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import { GET_AIRCRAFT_CATEGORIES } from "../../lib/graphql/queries/aircraft-categories";
+
 import useGql from "../../lib/graphql/gql";
 import { useSnackbar } from "../../SnackbarContext";
 import {
   GET_AIRCRAFT_DETAIL_BY_ID,
   UPDATE_AIRCRAFT_DETAIL,
 } from "../../lib/graphql/queries/aircraft-detail";
-
-import {
-  IaircraftCategory,
-  Isepcification,
-} from "../../interfaces/quote.interface";
 
 import { StepperFormLayout } from "../../components/StepperFormLayout";
 import {
@@ -27,23 +22,34 @@ import {
   TermsStep,
 } from "./children";
 import { useSession } from "../../SessionContext";
+import { AircraftDetailFormData, FileObject } from "./interface";
 
-type FormData = {
-  name: string;
-  code: string;
-  description: string;
-  image: string;
-  noteText: string;
-  warningText: string;
-  // category: any;
-  specifications: Isepcification[];
-  termsAndConditions: string;
-  isActive: boolean;
-  warningImage: string;
-  flightImages: [string];
-  seatLayoutImage: string;
-  rangeMapImage: string;
-  flightInteriorImages: [string];
+const cloudfrontBaseUrl =
+  import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/"; // Ensure it ends with a slash if needed
+
+// 2. Helper function to transform a single S3 key string into the RHF object
+const transformKeyToObject = (
+  key: string | null | undefined
+): FileObject | null => {
+  if (key) {
+    return {
+      key: key,
+      url: `${cloudfrontBaseUrl}${key}`,
+    };
+  }
+  return null;
+};
+
+// 3. Helper function to transform an array of S3 keys into an array of RHF objects
+const transformKeysArray = (
+  keysArray: string[] | null | undefined
+): FileObject[] => {
+  if (Array.isArray(keysArray)) {
+    return keysArray
+      .map((key) => transformKeyToObject(key))
+      .filter((obj) => obj !== null) as FileObject[];
+  }
+  return [];
 };
 
 export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
@@ -52,21 +58,19 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
 
   const operatorId = session?.user.operator?.id || null;
 
-  const methods = useForm<FormData>({});
+  const methods = useForm<AircraftDetailFormData>({});
 
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    getValues,
     setError,
     formState: { errors },
   } = methods;
 
-  const [aircraftDetailData, setAircraftDetailData] = useState<FormData>();
-  // const [aircraftCategories, setAircraftCategories] = useState<
-  //   IaircraftCategory[]
-  // >([]);
+  const [aircraftDetailData, setAircraftDetailData] = useState<any>();
 
   const {
     fields: specificationsField,
@@ -96,11 +100,9 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
 
   useEffect(() => {
     if (aircraftDetailData) {
-      // setValue("isActive", aircraftDetailData.isActive || false);
       setValue("name", aircraftDetailData.name || "");
       setValue("code", aircraftDetailData.code || "");
-      // setValue("description", aircraftDetailData.description || "");
-      // setValue("category", aircraftDetailData.category.id || "");
+
       setValue("specifications", aircraftDetailData.specifications || []);
       setValue(
         "termsAndConditions",
@@ -108,13 +110,22 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
           ""
       );
       setValue("noteText", aircraftDetailData.noteText || "");
-      // setValue("warningText", aircraftDetailData.warningText || "");
-      setValue("warningImage", aircraftDetailData.warningImage || "");
-      setValue("flightImages", aircraftDetailData.flightImages || null);
-      setValue("seatLayoutImage", aircraftDetailData.seatLayoutImage || "");
+
+      setValue(
+        "warningImage",
+        transformKeyToObject(aircraftDetailData.warningImage)
+      );
+      setValue(
+        "flightImage",
+        transformKeyToObject(aircraftDetailData.flightImage)
+      );
+      setValue(
+        "seatLayoutImage",
+        transformKeyToObject(aircraftDetailData.seatLayoutImage)
+      );
       setValue(
         "flightInteriorImages",
-        aircraftDetailData.flightInteriorImages || []
+        transformKeysArray(aircraftDetailData.flightInteriorImages || [])
       );
     }
   }, [aircraftDetailData, setValue]);
@@ -123,7 +134,7 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
     try {
       const data = await useGql({
         query: UPDATE_AIRCRAFT_DETAIL,
-        queryName: "",
+        queryName: "updateOneAircraftDetail",
         queryType: "mutation",
         variables: { input: { id: Id, update: formData } },
       });
@@ -139,13 +150,54 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
     }
   };
 
-  const onSubmit = (data: FormData) => {
-    const formattedData = {
-      ...data,
-      operatorId,
-    };
+  const onSubmit = (data: AircraftDetailFormData) => {
+    const cleanedDetail: any = { ...data, operatorId };
 
-    UpdateAircraftDetail(id, formattedData);
+    const singleImageFields: (keyof AircraftDetailFormData)[] = [
+      "flightImage",
+      "warningImage",
+      "seatLayoutImage",
+      "rangeMapImage",
+    ];
+
+    singleImageFields.forEach((field) => {
+      const value = cleanedDetail[field] as FileObject | null | undefined;
+
+      if (typeof value === "object" && value && value.key) {
+        cleanedDetail[field] = value.key;
+      } else if (value === null || value === undefined) {
+        // Delete property if it was null, undefined, or an empty string from RHF state
+        delete cleanedDetail[field];
+      }
+    });
+
+    // 2. Handle Multi-Image Array Fields (Now includes flightImages)
+    const multiImageFields: (keyof AircraftDetailFormData)[] = [
+      "flightInteriorImages",
+    ];
+
+    multiImageFields.forEach((field) => {
+      const value = cleanedDetail[field];
+
+      if (Array.isArray(value)) {
+        // ⭐️ FIX 3: Explicitly cast value to S3FileObject[] to resolve array assignment issues
+        const imageArray = value as FileObject[];
+
+        const finalKeys = imageArray
+          .map((img) => img.key)
+          .filter((key) => !!key);
+
+        if (finalKeys.length > 0) {
+          cleanedDetail[field] = finalKeys; // Assigning string[] to the property
+        } else {
+          delete cleanedDetail[field];
+        }
+      } else {
+        delete cleanedDetail[field];
+      }
+    });
+
+    UpdateAircraftDetail(id, cleanedDetail);
     refreshList();
     onClose();
   };
@@ -176,7 +228,13 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
           />
         )}
         {activeStep === 2 && <TermsStep control={control} />}
-        {activeStep === 3 && <MediaStep control={control} />}
+        {activeStep === 3 && (
+          <MediaStep
+            control={control}
+            setValue={setValue}
+            getValues={getValues}
+          />
+        )}
       </StepperFormLayout>
     </FormProvider>
   );
