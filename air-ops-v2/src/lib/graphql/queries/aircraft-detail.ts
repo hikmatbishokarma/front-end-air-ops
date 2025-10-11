@@ -29,7 +29,7 @@ export const GET_AIRCRAFT_DETAIL_BY_ID = gql`
       noteText
 
       warningImage
-      flightImages
+      flightImage
       seatLayoutImage
       flightInteriorImages
       termsAndConditions

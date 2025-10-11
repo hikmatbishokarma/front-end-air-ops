@@ -24,41 +24,10 @@ import MultiFileUpload from "../../components/MultiFileUploader";
 import { useSession } from "../../SessionContext";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-interface AircraftCategory {
-  id: string;
-  name: string;
-}
-
 export const BasicInfoStep = ({ control }: { control: any }) => {
-  const [aircraftCategories, setAircraftCategories] = useState<
-    AircraftCategory[]
-  >([]);
-
   const { session, setSession, loading } = useSession();
 
   const operatorId = session?.user.operator?.id || null;
-
-  const getAircraftCategories = async () => {
-    try {
-      const data = await useGql({
-        query: GET_AIRCRAFT_CATEGORIES,
-        queryName: "aircraftCategories",
-        queryType: "query",
-        variables: {
-          filter: {
-            ...(operatorId && { operatorId: { eq: operatorId } }),
-          },
-        },
-      });
-      setAircraftCategories(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  useEffect(() => {
-    getAircraftCategories();
-  }, []);
 
   return (
     <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
@@ -118,117 +87,9 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           )}
         />
       </Grid>
-      {/* <Grid item xs={12}>
-        <Controller
-          name="warningText"
-          control={control}
-          render={({ field }) => (
-            // <TextField
-            //   {...field}
-            //   multiline
-            //   size="small"
-            //   label="Warning Text"
-            //   fullWidth
-            //   InputLabelProps={{ shrink: !!field.value }}
-            // />
-            <Editor value={field.value || ""} onChange={field.onChange} />
-          )}
-        />
-      </Grid> */}
-      {/* <Grid item xs={12}>
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <Editor value={field.value || ""} onChange={field.onChange} />
-          )}
-        />
-      </Grid> */}
     </Grid>
   );
 };
-
-// export const SpecificationStep = ({
-//   control,
-//   specificationsField,
-//   removeSpecification,
-//   appendSpecification,
-// }) => (
-//   <>
-//     <Box
-//       sx={{
-//         maxWidth: 700,
-//         mx: "auto",
-//         mt: 3,
-//         p: 2,
-//         border: "2px solid #ddd",
-//         borderRadius: 2,
-//       }}
-//     >
-//       {specificationsField.map((item, index) => (
-//         <Grid
-//           container
-//           spacing={2}
-//           key={item.id}
-//           alignItems="center"
-//           sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
-//         >
-//           <Grid item xs={6}>
-//             <Controller
-//               name={`specifications.${index}.title`}
-//               control={control}
-//               render={({ field }) => (
-//                 <TextField
-//                   {...field}
-//                   size="small"
-//                   label="Title"
-//                   fullWidth
-//                   required={true}
-//                 />
-//               )}
-//             />
-//           </Grid>
-//           <Grid item xs={5}>
-//             <Controller
-//               name={`specifications.${index}.value`}
-//               control={control}
-//               render={({ field }) => (
-//                 <TextField
-//                   {...field}
-//                   size="small"
-//                   label="Value"
-//                   fullWidth
-//                   required={true}
-//                 />
-//               )}
-//             />
-//           </Grid>
-
-//           <Grid item xs={1}>
-//             <IconButton
-//               onClick={() => removeSpecification(index)}
-//               color="error"
-//             >
-//               <Delete fontSize="small" />
-//             </IconButton>
-//           </Grid>
-//         </Grid>
-//       ))}
-
-//       {/* <Button
-//         variant="outlined"
-//         startIcon={<AddIcon />}
-//         onClick={() => appendSpecification({ title: "", value: "" })}
-//       >
-//         Add Itinerary
-//       </Button> */}
-
-//       <IconButton onClick={() => appendSpecification({ title: "", value: "" })}>
-//         <AddIcon fontSize="small" />
-//       </IconButton>
-//     </Box>
-//   </>
-// );
 
 export const SpecificationStep = ({
   control,
@@ -394,12 +255,13 @@ export const MediaStep = ({
   <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
     <Grid item xs={6}>
       <Controller
-        name="flightImages"
+        name="flightImage"
         control={control}
         render={({ field }) => (
           <FileUpload
             value={field.value}
-            onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            // onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            onUpload={(fileObject) => field.onChange(fileObject)}
             label="Flight"
             category="aircraft"
           />
@@ -413,7 +275,8 @@ export const MediaStep = ({
         render={({ field }) => (
           <FileUpload
             value={field.value}
-            onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            // onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            onUpload={(fileObject) => field.onChange(fileObject)}
             label="Seat Layout"
             category="aircraft"
           />
@@ -425,9 +288,19 @@ export const MediaStep = ({
         name="warningImage"
         control={control}
         render={({ field }) => (
+          // <FileUpload
+          //   value={field.value}
+          //   onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+          //   label="Warning"
+          //   category="aircraft"
+          // />
+
           <FileUpload
+            // 1. Pass the full S3 object to the component
             value={field.value}
-            onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
+            // 2. The component calls onUpload with the OBJECT: { key, url }
+            //    We must update the form state to store this full object.
+            onUpload={(fileObject) => field.onChange(fileObject)}
             label="Warning"
             category="aircraft"
           />
@@ -448,7 +321,7 @@ export const MediaStep = ({
             category="flight_media"
             // ⭐️ Simplified: Just pass the RHF field change function
             // The MultiFileUpload component will now handle the array aggregation
-            onUpload={field.onChange} // We will change MultiFileUpload to use this differently
+            // onUpload={field.onChange} // We will change MultiFileUpload to use this differently
           />
         )}
       />

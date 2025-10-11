@@ -90,33 +90,13 @@ export const AircraftDetailList = () => {
     setCurrentRecordId(id);
   };
 
-  // const handleDelete = async (id) => {
-  //   try {
-  //     const data = await useGql({
-  //       query: DELETE_AIRCRAFT,
-  //       queryName: "",
-  //       queryType: "mutation",
-  //       variables: {
-  //         input: {
-  //           "id": id,
-  //         },
-  //       },
-  //     });
-
-  //     if (!data) showSnackbar("Failed to delete aircraft!", "error");
-  //     getAircraftDetails();
-  //   } catch (error) {
-  //     showSnackbar(error.message || "Failed to delete aircraft!", "error");
-  //   }
-  // };
-
   const handleConfirmDelete = async () => {
     setOpenConfirmDialog(false); // Close the confirmation dialog
     if (recordToDeleteId) {
       try {
         const { data, errors } = await useGql({
           query: DELETE_AIRCRAFT,
-          queryName: "", // The mutation name is often inferred, or not strictly needed if the query is just the mutation definition.
+          queryName: "deleteOneAircraftDetail", // The mutation name is often inferred, or not strictly needed if the query is just the mutation definition.
           queryType: "mutation",
           variables: {
             input: {
@@ -125,13 +105,16 @@ export const AircraftDetailList = () => {
           },
         });
 
-        if (!data) {
-          showSnackbar("Failed to delete aircraft!", "error");
+        if (!data || errors) {
+          showSnackbar(
+            errors?.[0]?.message || "Failed to delete aircraft!",
+            "error"
+          );
         } else {
           showSnackbar("Aircraft deleted successfully!", "success"); // Add a success message
           getAircraftDetails(); // Refresh the list
         }
-      } catch (error) {
+      } catch (error: any) {
         showSnackbar(error.message || "Failed to delete aircraft!", "error");
       } finally {
         setRecordToDeleteId(null); // Clear the ID after deletion attempt
@@ -187,19 +170,21 @@ export const AircraftDetailList = () => {
 
                 <TableCell>
                   {/* Edit Button */}
-                  <IconButton className="ground-handlers"
+                  <IconButton
+                    className="ground-handlers"
                     color="primary"
                     onClick={() => handleEdit(item.id)}
                   >
-                    <EditIcon  className="edit-icon-size"/>
+                    <EditIcon className="edit-icon-size" />
                   </IconButton>
 
                   {/* Delete Button */}
-                  <IconButton className="ground-handlers"
+                  <IconButton
+                    className="ground-handlers"
                     color="secondary"
                     onClick={() => confirmDelete(item.id)} // Call confirmDelete
                   >
-                    <DeleteIcon className="edit-icon-size"/>
+                    <DeleteIcon className="edit-icon-size" />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -216,7 +201,8 @@ export const AircraftDetailList = () => {
           rowsPerPageOptions={[5, 10, 20, 50]}
         />
       </TableContainer>
-      <Dialog className="panel-one"
+      <Dialog
+        className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -224,7 +210,8 @@ export const AircraftDetailList = () => {
       >
         <DialogTitle>
           {isEdit ? "Edit Aircraft Category" : "Create Aircraft Category"}
-          <IconButton className="popup-quote-model"
+          <IconButton
+            className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -234,7 +221,7 @@ export const AircraftDetailList = () => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon className="popup-close-panel"/>
+            <CloseIcon className="popup-close-panel" />
           </IconButton>
         </DialogTitle>
         <DialogContent>

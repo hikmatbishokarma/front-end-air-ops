@@ -1,145 +1,3 @@
-// import React, { useState } from "react";
-// import axios from "axios";
-// import {
-//   Box,
-//   IconButton,
-//   Typography,
-//   LinearProgress,
-//   Paper,
-// } from "@mui/material";
-// import { useDropzone } from "react-dropzone";
-// import DeleteIcon from "@mui/icons-material/Delete";
-// import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
-// const MultiFileUpload = ({
-//   value = [],
-//   onUpload,
-//   label,
-//   category = "others",
-//   onChange,
-// }) => {
-//   const [uploading, setUploading] = useState(false);
-//   const [progress, setProgress] = useState(0);
-
-//   const onDrop = async (acceptedFiles) => {
-//     for (const file of acceptedFiles) {
-//       await handleFileUpload(file);
-//     }
-//   };
-
-//   const handleFileUpload = async (file) => {
-//     const formData = new FormData();
-//     formData.append("file", file);
-//     setUploading(true);
-
-//     try {
-//       const response = await axios.post(
-//         `http://localhost:3000/api/media/uploads/${category}`,
-//         formData,
-//         {
-//           headers: { "Content-Type": "multipart/form-data" },
-
-//           onUploadProgress: (event: any) => {
-//             if (event.lengthComputable) {
-//               const percent = Math.round((event.loaded * 100) / event.total);
-//               setProgress(percent);
-//             }
-//           },
-//         }
-//       );
-
-//       const uploadedImageUrl = response.data.filePath;
-//       onUpload(uploadedImageUrl); // Add image to form field
-//     } catch (error) {
-//       console.error("Upload error:", error);
-//     } finally {
-//       setUploading(false);
-//     }
-//   };
-
-//   const handleDelete = async (url) => {
-//     const filename = url.split("/").pop();
-
-//     try {
-//       await axios.delete(`http://localhost:3000/api/media/delete/${category}`, {
-//         params: { filename },
-//       });
-
-//       const updatedValue = value.filter((v) => v !== url);
-//       onChange(updatedValue); // Update form field
-//     } catch (error) {
-//       console.error("Delete error:", error);
-//     }
-//   };
-
-//   const { getRootProps, getInputProps } = useDropzone({
-//     onDrop,
-//     multiple: true,
-//     accept: { "image/*": [] },
-//   });
-
-//   return (
-//     <Box>
-//       <Typography variant="h6" gutterBottom>
-//         Upload {label}
-//       </Typography>
-
-//       <Paper
-//         {...getRootProps()}
-//         sx={{
-//           padding: 3,
-//           border: "2px dashed #1976d2",
-//           backgroundColor: "#f9f9f9",
-//           cursor: "pointer",
-//           textAlign: "center",
-//           borderRadius: 2,
-//         }}
-//       >
-//         <input {...getInputProps()} />
-//         <CloudUploadIcon color="primary" fontSize="large" />
-//         <Typography variant="body2" color="text.secondary">
-//           Drag & Drop or Click to Upload
-//         </Typography>
-//       </Paper>
-
-//       {uploading && (
-//         <Box sx={{ mt: 2 }}>
-//           <Typography variant="caption" color="text.secondary">
-//             Uploading: {progress}%
-//           </Typography>
-//           <LinearProgress
-//             variant="determinate"
-//             value={progress}
-//             sx={{ mt: 1 }}
-//           />
-//         </Box>
-//       )}
-
-//       <Box display="flex" gap={2} flexWrap="wrap" mt={2}>
-//         {value?.map((img, index) => (
-//           <Box key={index} position="relative">
-//             <img
-//               src={`http://localhost:3000/${img}`}
-//               alt=""
-//               width={100}
-//               style={{ borderRadius: 8 }}
-//             />
-//             <IconButton
-//               size="small"
-//               sx={{ position: "absolute", top: 0, right: 0 }}
-//               onClick={() => handleDelete(img)}
-//             >
-//               <DeleteIcon fontSize="small" />
-//             </IconButton>
-//           </Box>
-//         ))}
-//       </Box>
-//     </Box>
-//   );
-// };
-
-// export default MultiFileUpload;
-
 import React, { useState } from "react";
 import axios from "axios";
 import {
@@ -159,9 +17,25 @@ const MAX_FILES = 10;
 const MAX_SIZE_MB = 5;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
-const MultiFileUpload = ({
+const apiBaseUrl =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/"; // Ensure it ends with a slash if needed
+
+// Define the structure of the S3 object stored in your RHF form
+interface S3FileObject {
+  key: string;
+  url: string; // The signed S3 URL
+}
+
+// Define the component's props interface
+interface MultiFileUploadProps {
+  value?: S3FileObject[]; // Array of S3 objects
+  onChange: (value: S3FileObject[]) => void; // Function that updates the form with the new array
+  label?: string;
+  category?: string;
+}
+
+const MultiFileUpload: React.FC<MultiFileUploadProps> = ({
   value = [], // Array of image URLs
-  onUpload, // Adds new URL to RHF state
   onChange, // Updates RHF state after deletion
   label, // e.g., "Media" or "Bus Images"
   category = "others", // API upload category
@@ -169,73 +43,37 @@ const MultiFileUpload = ({
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // --- API Handlers ---
-
-  const handleFileUpload = async (file) => {
-    if (value.length >= MAX_FILES) {
-      console.warn(`Upload limit reached (${MAX_FILES} images).`);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    setUploading(true);
+  const handleFileDelete = async (fileObject: S3FileObject) => {
+    const { key } = fileObject;
+    if (!key) return;
 
     try {
-      const response = await axios.post(
-        `http://localhost:3000/api/media/uploads/${category}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: (event) => {
-            if (event.lengthComputable) {
-              const percent = Math.round((event.loaded * 100) / event.total);
-              setProgress(percent);
-            }
-          },
-        }
-      );
-
-      const uploadedImageUrl = response.data.filePath;
-      onUpload(uploadedImageUrl); // Call parent handler to update RHF state
-    } catch (error) {
-      console.error("Upload error:", error);
-    } finally {
-      setUploading(false);
-      setProgress(0);
-    }
-  };
-
-  const handleDelete = async (url) => {
-    const filename = url.split("/").pop();
-
-    try {
-      await axios.delete(`http://localhost:3000/api/media/delete/${category}`, {
-        params: { filename },
+      // 1. Backend API call to delete the file
+      await axios.delete(`${apiBaseUrl}api/media/delete`, {
+        params: { key }, // Pass the full key as a query parameter
       });
 
-      const updatedValue = value.filter((v) => v !== url);
-      onChange(updatedValue); // Call parent handler to update RHF state
+      // 2. CRITICAL FIX: Filter the current 'value' array to remove the deleted file
+      const updatedValue = value.filter((v) => v.key !== key);
+
+      // 3. CRITICAL FIX: Use the 'onChange' prop to update the RHF field with the new array
+      onChange(updatedValue);
     } catch (error) {
       console.error("Delete error:", error);
+
+      // If the API fails but we want the preview to disappear anyway:
+      // const updatedValue = value.filter((v) => v.key !== key);
+      // onChange(updatedValue);
+      // For safety, you might choose to only update on success.
     }
   };
 
-  // const onDrop = async (acceptedFiles, fileRejections) => {
-  //   if (fileRejections.length > 0) {
-  //     console.error("File rejection details:", fileRejections);
-  //   }
-  //   for (const file of acceptedFiles) {
-  //     await handleFileUpload(file);
-  //   }
-  // };
-
-  const onDrop = async (acceptedFiles) => {
+  const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
     await handleBatchFileUpload(acceptedFiles); // Call a new batch handler
   };
 
-  const handleBatchFileUpload = async (files) => {
+  const handleBatchFileUpload = async (files: File[]) => {
     if (value.length + files.length > MAX_FILES) {
       console.warn(`Cannot upload. Exceeds limit of ${MAX_FILES} images.`);
       return;
@@ -251,7 +89,7 @@ const MultiFileUpload = ({
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/media/uploads/${category}`,
+        `${apiBaseUrl}api/media/uploads/${category}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -264,22 +102,13 @@ const MultiFileUpload = ({
         }
       );
 
-      // ⭐️ Key Change: Server should return an array of paths: { filePaths: ['path1', 'path2'] }
+      const uploadedFileObjects = response.data.files.map((file: any) => ({
+        key: file.key,
+        url: file.previewUrl, // Map the backend's 'previewUrl' to 'url'
+      }));
 
-      // console.log("response.data:::", response.data);
-      // const uploadedImageUrls = response.data.filePaths;
-
-      // console.log("uploadedImageUrls:::", uploadedImageUrls);
-
-      // // Call parent handler (onUpload) for EACH uploaded URL
-      // uploadedImageUrls.forEach((url) => onUpload(url));
-
-      // Server returns: { filePaths: ['path1', 'path2'] }
-      const uploadedImageUrls = response.data.filePaths;
-
-      // ⭐️ Key Fix: Aggregate the new array with the existing value prop
-      // The value prop is guaranteed to be an array (due to value = [])
-      const updatedFormValue = [...value, ...uploadedImageUrls];
+      // Aggregate the new objects with the existing array of objects
+      const updatedFormValue = [...value, ...uploadedFileObjects];
 
       // ⭐️ Final Fix: Call the RHF update function ONCE with the full array
       onChange(updatedFormValue);
@@ -351,172 +180,7 @@ const MultiFileUpload = ({
     </Box>
   );
 
-  // const renderImageThumbnail = (url, index, isMain = false) => (
-  //   <Grid
-  //     item
-  //     xs={12}
-  //     sm={4}
-  //     md={3}
-  //     lg={2}
-  //     key={`uploaded-${index}`}
-  //     sx={{ minWidth: 120 }}
-  //   >
-  //     <Box
-  //       position="relative"
-  //       sx={{
-  //         width: "100%",
-  //         pt: "66.66%", // Aspect ratio 3:2
-  //         overflow: "hidden",
-  //         borderRadius: 2,
-  //         boxShadow: isMain ? "0 4px 10px rgba(0,0,0,0.1)" : "none",
-  //         border: isMain ? "2px solid #3f51b5" : "1px solid #ddd",
-  //       }}
-  //     >
-  //       <img
-  //         src={`http://localhost:3000/${url}`}
-  //         alt={`Uploaded image ${index + 1}`}
-  //         style={{
-  //           position: "absolute",
-  //           top: 0,
-  //           left: 0,
-  //           width: "100%",
-  //           height: "100%",
-  //           objectFit: "cover",
-  //         }}
-  //       />
-  //       {/* Delete Button */}
-  //       <IconButton
-  //         size="small"
-  //         sx={{
-  //           position: "absolute",
-  //           top: 4,
-  //           right: 4,
-  //           backgroundColor: "rgba(255, 255, 255, 0.7)",
-  //           "&:hover": { backgroundColor: "white" },
-  //           p: 0.5,
-  //         }}
-  //         onClick={(e) => {
-  //           e.stopPropagation();
-  //           handleDelete(url);
-  //         }}
-  //       >
-  //         <CloseIcon fontSize="small" sx={{ color: "#F7893B" }} />
-  //       </IconButton>
-
-  //       {/* Main Image Label */}
-  //       {isMain && (
-  //         <Box
-  //           sx={{
-  //             position: "absolute",
-  //             bottom: 8,
-  //             left: 8,
-  //             backgroundColor: "white",
-  //             borderRadius: 1,
-  //             px: 1,
-  //             py: 0.5,
-  //             fontSize: "0.75rem",
-  //             fontWeight: 600,
-  //           }}
-  //         >
-  //           Main image
-  //         </Box>
-  //       )}
-  //     </Box>
-  //     {/* Generic Label */}
-  //     <Typography
-  //       variant="caption"
-  //       align="center"
-  //       display="block"
-  //       sx={{ mt: 1, fontWeight: 600 }}
-  //     >
-  //       {`Image ${index + 1}`}
-  //     </Typography>
-  //   </Grid>
-  // );
-
-  // const renderImageThumbnail = (url, index, isMain = false) => (
-  //   <Grid
-  //     item
-  //     xs={12}
-  //     sm={4}
-  //     md={3}
-  //     lg={2}
-  //     key={`uploaded-${index}`}
-  //     sx={{ minWidth: 120 }}
-  //   >
-  //     <Box
-  //       position="relative"
-  //       sx={{
-  //         width: "100%",
-  //         pt: "66.66%", // Aspect ratio 3:2 (or adjust to 1:1 if preferred)
-  //         overflow: "hidden",
-  //         borderRadius: 2, // Rounded corners for the thumbnail box
-
-  //         // ⭐️ KEY CHANGE: Consistent, subtle styling for ALL images
-  //         boxShadow: "0 2px 5px rgba(0,0,0,0.1)", // Soft shadow
-  //         border: "1px solid #ddd", // Subtle border
-
-  //         // Remove the specific blue border logic:
-  //         // border: isMain ? "2px solid #3f51b5" : "1px solid #ddd",
-  //       }}
-  //     >
-  //       <img
-  //         src={`http://localhost:3000/${url}`}
-  //         alt={`Uploaded image ${index + 1}`}
-  //         style={{
-  //           position: "absolute",
-  //           top: 0,
-  //           left: 0,
-  //           width: "100%",
-  //           height: "100%",
-  //           objectFit: "cover",
-  //           borderRadius: 2, // Match border radius
-  //         }}
-  //       />
-
-  //       {/* Delete Button (Retained) */}
-  //       <IconButton
-  //         size="small"
-  //         sx={{
-  //           position: "absolute",
-  //           top: 4,
-  //           right: 4,
-  //           backgroundColor: "rgba(255, 255, 255, 0.7)",
-  //           "&:hover": { backgroundColor: "white" },
-  //           p: 0.5,
-  //           zIndex: 10,
-  //         }}
-  //         onClick={(e) => {
-  //           e.stopPropagation();
-  //           handleDelete(url);
-  //         }}
-  //       >
-  //         <CloseIcon fontSize="small" sx={{ color: "#F7893B" }} />
-  //       </IconButton>
-
-  //       {/* 🛑 'Main Image Label' REMOVED completely as requested */}
-
-  //       {/* If you want the label (like "Living room") overlaid on the image,
-  //     you would move the <Typography> here and apply appropriate background/text styles.
-  //     For now, we keep the simple style from Screenshot 2 (label below the image).
-  //     */}
-  //     </Box>
-  //     {/* Generic Label (Image 1, Image 2, etc.) */}
-  //     <Typography
-  //       variant="caption"
-  //       align="center"
-  //       display="block"
-  //       sx={{ mt: 1, fontWeight: 600 }}
-  //     >
-  //       {`Image ${index + 1}`}
-  //     </Typography>
-  //   </Grid>
-  // );
-
-  const renderImageThumbnail = (
-    url,
-    index // Removed isMain as it's not used
-  ) => (
+  const renderImageThumbnail = (fileObject: S3FileObject, index: number) => (
     <Grid
       item
       xs={12}
@@ -524,7 +188,7 @@ const MultiFileUpload = ({
       md={3}
       lg={2}
       key={`uploaded-${index}`}
-      sx={{ minWidth: 120, position: "relative" }} // Ensure grid item is relative for positioning overlays
+      sx={{ minWidth: 120, position: "relative" }}
     >
       <Box
         position="relative"
@@ -538,7 +202,7 @@ const MultiFileUpload = ({
         }}
       >
         <img
-          src={`http://localhost:3000/${url}`}
+          src={fileObject.url}
           alt={`Uploaded image ${index + 1}`}
           style={{
             position: "absolute",
@@ -566,7 +230,8 @@ const MultiFileUpload = ({
           }}
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete(url);
+            // 🔑 Pass the full object to handleDelete
+            handleFileDelete(fileObject);
           }}
         >
           <CloseIcon fontSize="small" sx={{ color: "#F7893B" }} />
@@ -596,17 +261,6 @@ const MultiFileUpload = ({
           </Typography>
         </Box>
       </Box>
-      {/* 🛑 REMOVE the Typography that was below the image box */}
-      {/*
-    <Typography
-      variant="caption"
-      align="center"
-      display="block"
-      sx={{ mt: 1, fontWeight: 600 }}
-    >
-      {`Image ${index + 1}`}
-    </Typography>
-    */}
     </Grid>
   );
 
@@ -645,19 +299,15 @@ const MultiFileUpload = ({
         </Box>
       )}
 
-      {/* --- Image Gallery/Thumbnail Display --- */}
       <Grid container spacing={2}>
-        {/* Render uploaded images */}
-        {value?.map((img, index) => {
-          const isMain = index === 0;
-          return renderImageThumbnail(img, index, isMain);
-        })}
+        {/* Render uploaded image objects */}
+        {value?.map((fileObject, index) => {
+          // We already removed the isMain logic, but if you keep it, this is how you'd pass it
+          // const isMain = index === 0;
 
-        {/*
-          No explicit placeholders are needed since the labels are generic ("Image X").
-          The display focuses only on the actual uploaded images.
-          If you wanted the placeholder boxes to appear empty up to 7 slots, we could add that back.
-        */}
+          // Pass the entire fileObject (e.g., { key: '...', url: '...' })
+          return renderImageThumbnail(fileObject, index);
+        })}
       </Grid>
     </Box>
   );

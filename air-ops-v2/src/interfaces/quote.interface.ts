@@ -31,8 +31,3 @@ export interface Irepresentative {
   email: string;
   address: string;
 }
-
-export interface Isepcification {
-  title: string;
-  value: string;
-}
