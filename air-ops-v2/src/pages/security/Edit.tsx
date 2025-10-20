@@ -5,14 +5,19 @@ import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import { useSession } from "../../SessionContext";
 import { useSnackbar } from "../../SnackbarContext";
 import { securityFormFields } from "./formField";
-import { ISecurity } from "./interfaces";
+import { ISecurity, SecurityEditProps } from "./interfaces";
 import {
   GET_SECURITY_BY_ID,
   UPDATE_SECURITY,
 } from "../../lib/graphql/queries/security";
 import SecurityChildren from "./Children";
+import { transformKeyToObject } from "../../lib/utils";
 
-export const SecurityEdit = ({ id, onClose, refreshList }) => {
+export const SecurityEdit = ({
+  id,
+  onClose,
+  refreshList,
+}: SecurityEditProps) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
@@ -23,13 +28,13 @@ export const SecurityEdit = ({ id, onClose, refreshList }) => {
       type: "",
       name: "",
       department: "",
-      attachment: "",
+      attachment: null,
     },
   });
 
-  const [security, setManula] = useState<ISecurity>();
+  const [security, setManula] = useState<any>();
 
-  const fetchSecurityById = async (Id) => {
+  const fetchSecurityById = async (Id: string | number) => {
     const response = await useGql({
       query: GET_SECURITY_BY_ID,
       queryName: "security",
@@ -53,11 +58,11 @@ export const SecurityEdit = ({ id, onClose, refreshList }) => {
       setValue("type", security.type || "");
       setValue("name", security.name || "");
       setValue("department", security.department || "");
-      setValue("attachment", security.attachment || "");
+      setValue("attachment", transformKeyToObject(security.attachment));
     }
   }, [security, setValue]);
 
-  const updateSecurity = async (Id, formData) => {
+  const updateSecurity = async (Id: string | number, formData: any) => {
     try {
       const data = await useGql({
         query: UPDATE_SECURITY,
@@ -69,16 +74,17 @@ export const SecurityEdit = ({ id, onClose, refreshList }) => {
       if (!data || data.data?.errors) {
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to edit Security!", "error");
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: ISecurity) => {
     try {
       await updateSecurity(id, {
         ...data,
         operatorId,
+        attachment: data?.attachment?.key,
       });
       reset();
       refreshList();

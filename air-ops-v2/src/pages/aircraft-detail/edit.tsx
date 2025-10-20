@@ -23,34 +23,7 @@ import {
 } from "./children";
 import { useSession } from "../../SessionContext";
 import { AircraftDetailFormData, FileObject } from "./interface";
-
-const cloudfrontBaseUrl =
-  import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/"; // Ensure it ends with a slash if needed
-
-// 2. Helper function to transform a single S3 key string into the RHF object
-const transformKeyToObject = (
-  key: string | null | undefined
-): FileObject | null => {
-  if (key) {
-    return {
-      key: key,
-      url: `${cloudfrontBaseUrl}${key}`,
-    };
-  }
-  return null;
-};
-
-// 3. Helper function to transform an array of S3 keys into an array of RHF objects
-const transformKeysArray = (
-  keysArray: string[] | null | undefined
-): FileObject[] => {
-  if (Array.isArray(keysArray)) {
-    return keysArray
-      .map((key) => transformKeyToObject(key))
-      .filter((obj) => obj !== null) as FileObject[];
-  }
-  return [];
-};
+import { transformKeysArray, transformKeyToObject } from "../../lib/utils";
 
 export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
@@ -180,7 +153,6 @@ export const AircraftDetailEdit = ({ id, onClose, refreshList }) => {
       const value = cleanedDetail[field];
 
       if (Array.isArray(value)) {
-        // ⭐️ FIX 3: Explicitly cast value to S3FileObject[] to resolve array assignment issues
         const imageArray = value as FileObject[];
 
         const finalKeys = imageArray

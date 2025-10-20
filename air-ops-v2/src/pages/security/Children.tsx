@@ -15,25 +15,12 @@ import {
 import { Controller, Control, SubmitHandler, useWatch } from "react-hook-form";
 import FileUpload from "../../components/fileupload";
 import MediaUpload from "../../components/MediaUpload";
-
-interface FormField {
-  name: string;
-  label: string;
-  type?: string;
-  xs?: number;
-  options?: any[];
-  required?: boolean;
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-  optionsKey?: string;
-}
+import { FormFieldProps } from "../../interfaces/common.interface";
 
 interface ReusableFormProps {
   control: Control<any>;
   onSubmit: SubmitHandler<any>;
-  fields: FormField[];
+  fields: FormFieldProps[];
   defaultValues?: any;
 }
 
@@ -43,7 +30,7 @@ const SecurityChildren: React.FC<ReusableFormProps> = ({
   fields,
 }) => {
   return (
-    <Box 
+    <Box
       component="form"
       onSubmit={onSubmit}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
@@ -65,8 +52,12 @@ const SecurityChildren: React.FC<ReusableFormProps> = ({
                       size="medium"
                       category="securities"
                       accept=".pdf,.doc,.docx"
+                      // value={controllerField.value}
+                      // onUpload={(url) => controllerField.onChange(url)}
                       value={controllerField.value}
-                      onUpload={(url) => controllerField.onChange(url)}
+                      onUpload={(fileObject) =>
+                        controllerField.onChange(fileObject)
+                      }
                     />
                   );
                 } else if (field.name == "type" || field.name == "department") {

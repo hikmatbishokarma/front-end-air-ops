@@ -10,15 +10,16 @@ import {
   UPDATE_CREW_DETAIL,
 } from "../../lib/graphql/queries/crew-detail";
 import { useSnackbar } from "../../SnackbarContext";
-import { IManual } from "./interfaces";
+import { IManual, ManualEditProps } from "./interfaces";
 import {
   GET_MANUAL_BY_ID,
   UPDATE_MANUAL,
 } from "../../lib/graphql/queries/manual";
 import { manualFormFields } from "./formField";
 import ManualChildren from "./Children";
+import { transformKeyToObject } from "../../lib/utils";
 
-export const ManualEdit = ({ id, onClose, refreshList }) => {
+export const ManualEdit = ({ id, onClose, refreshList }: ManualEditProps) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
@@ -28,13 +29,13 @@ export const ManualEdit = ({ id, onClose, refreshList }) => {
     defaultValues: {
       name: "",
       department: "",
-      attachment: "",
+      attachment: null,
     },
   });
 
-  const [manual, setManula] = useState<IManual>();
+  const [manual, setManula] = useState<any>();
 
-  const fetchManualById = async (Id) => {
+  const fetchManualById = async (Id: string | number) => {
     const response = await useGql({
       query: GET_MANUAL_BY_ID,
       queryName: "manual",
@@ -57,11 +58,11 @@ export const ManualEdit = ({ id, onClose, refreshList }) => {
     if (manual) {
       setValue("name", manual.name || "");
       setValue("department", manual.department || "");
-      setValue("attachment", manual.attachment || "");
+      setValue("attachment", transformKeyToObject(manual.attachment));
     }
   }, [manual, setValue]);
 
-  const updateManual = async (Id, formData) => {
+  const updateManual = async (Id: string | number, formData: any) => {
     try {
       const data = await useGql({
         query: UPDATE_MANUAL,
@@ -73,16 +74,17 @@ export const ManualEdit = ({ id, onClose, refreshList }) => {
       if (!data || data.data?.errors) {
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to edit Manual!", "error");
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: IManual) => {
     try {
       await updateManual(id, {
         ...data,
         operatorId,
+        attachment: data?.attachment?.key,
       });
       reset();
       refreshList();

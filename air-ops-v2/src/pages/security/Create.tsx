@@ -11,16 +11,19 @@ import { useSnackbar } from "../../SnackbarContext";
 
 import { CREATE_SECURITY } from "../../lib/graphql/queries/security";
 import SecurityChildren from "./Children";
-import { ISecurity } from "./interfaces";
+import { ISecurity, SecurityCreateProps } from "./interfaces";
 import { securityFormFields } from "./formField";
 
-export const SecurityCreate = ({ onClose, refreshList }) => {
+export const SecurityCreate = ({
+  onClose,
+  refreshList,
+}: SecurityCreateProps) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
   const operatorId = session?.user.operator?.id || null;
 
-  const createSecurity = async (formData) => {
+  const createSecurity = async (formData: any) => {
     const result = await useGql({
       query: CREATE_SECURITY,
       queryName: "",
@@ -44,13 +47,17 @@ export const SecurityCreate = ({ onClose, refreshList }) => {
       type: "",
       name: "",
       department: "",
-      attachment: "",
+      attachment: null,
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: ISecurity) => {
     try {
-      await createSecurity({ ...data, operatorId }); // Wait for API call to complete
+      await createSecurity({
+        ...data,
+        operatorId,
+        attachment: data?.attachment?.key,
+      }); // Wait for API call to complete
       reset(); // Reset form after successful submission
       refreshList();
       onClose(); // <-- Close dialog after creating

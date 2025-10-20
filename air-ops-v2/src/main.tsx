@@ -4,19 +4,10 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import App from "./App";
 import Layout from "./layouts/dashboard";
 import DashboardPage from "./pages";
-import OrdersPage from "./pages/orders";
-import Category from "./pages/category";
-import SignInPage from "./pages/sign-in";
-import FlightRequestForm from "./pages/test";
-import QuoteList from "./pages/quote/list";
-import QuoteEdit from "./pages/quote/edit";
-import PriceCreate from "./pages/price/Create";
-import PriceList from "./pages/price/list";
-import PriceEdit from "./pages/price/edit";
+
 import RoleList from "./pages/role/list";
 import RoleCreate from "./pages/role/create";
-import SignUp from "./pages/sign-up";
-import SignIn from "./pages/sign-in";
+
 import UserList from "./pages/user/list";
 import { UserProfile } from "./pages/settings/profile";
 import RoleEdit from "./pages/role/edit";
@@ -25,8 +16,7 @@ import { AircraftCategoryList } from "./pages/aircraft-category/list";
 import { AircraftDetailList } from "./pages/aircraft-detail/list";
 import { AirpotList } from "./pages/airports/list";
 import Login from "./pages/login";
-import DashboardIndex from "./pages/dashboard";
-import QuoteCreate from "./pages/quote/create";
+
 import GenerateInvoice from "./pages/quote/generate-invoice";
 import OpsDashboard from "./pages/dashboard/OpsDashboard";
 import SecurityDashboard from "./pages/dashboard/Security";
@@ -37,24 +27,24 @@ import TrainingDashboard from "./pages/dashboard/Trainingsales";
 import ManualsDashboard from "./pages/dashboard/Manuals";
 import AccountsDashboard from "./pages/dashboard/Accounts";
 import AuditDashboard from "./pages/dashboard/Audit";
-import UserCreate from "./pages/user/create";
-import AgentCreate from "./pages/operator/create";
+
 import { OperatorList } from "./pages/operator/list";
-import SalesDashboard from "./pages/dashboard/SalesDashboard";
-//import "../src/index.css";
-// import "../dist/assets/styleview.css";
+
 import "../src/Asset/Images/Versionstyle.css";
 import { LeaveRequest } from "./pages/leave/LeaveRequestPage";
-import LibraryDashboard from "./pages/dashboard/Library";
+
 import TripConfirmationCalenderView from "./pages/full-calender-view/TripConfirmation";
 import StaffLeaveCalenderView from "./pages/full-calender-view/LeaveCalender";
 import Library from "./pages/library/List";
-import AviationNSOPForm from "./pages/quote/passanger-detail";
-import TripDetailPage from "./pages/ops/trip/TripDetailPage";
-import QuoteCreateTest from "./pages/quote/QuoteCreate";
-import QuoteEditTest from "./pages/quote/QuoteEdit";
-import SaleConfirmationPreviewPage from "./pages/quote/SalesConfirmationPreview";
-import PassengerEditPage from "./pages/quote/PassengerEdit";
+
+import TripDetailPage from "./features/ops/trip/TripDetailPage";
+
+import PassengerEditPage from "./shared/components/passenger/PassengerEdit";
+import QuoteControllerPage from "./pages/QuoteControllerPage";
+import QuoteEdit from "./features/quotes/pages/QuoteEdit";
+import QuoteCreate from "./features/quotes/pages/QuoteCreate";
+import SaleConfirmationPreviewPage from "./features/quotes/pages/SalesConfirmationPreview";
+import OpsControllerPage from "./pages/OpsControllerPage";
 
 const router = createBrowserRouter(
   [
@@ -73,13 +63,14 @@ const router = createBrowserRouter(
 
             {
               path: "quotes",
-              Component: SalesDashboard,
-              //Component: DashboardIndex,
+              // Component: SalesDashboard,
+              Component: QuoteControllerPage,
             },
 
             {
               path: "operations",
-              Component: OpsDashboard,
+              // Component: OpsDashboard,
+              Component: OpsControllerPage,
             },
             {
               path: "security",
@@ -140,14 +131,12 @@ const router = createBrowserRouter(
             // },
             {
               path: "quotes/edit/:id",
-              // Component: QuoteEdit,
-              Component: QuoteEditTest,
+              Component: QuoteEdit,
             },
             {
               path: "quotes/create",
-              // Component: QuoteCreate,
 
-              Component: QuoteCreateTest,
+              Component: QuoteCreate,
             },
             // {
             //   path: "prices",

@@ -20,7 +20,7 @@ import {
   Autocomplete,
   InputAdornment,
 } from "@mui/material";
-import QuoteList from "../quote/list";
+import QuoteList from "../../features/quotes/pages/List";
 import useGql from "../../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import {
@@ -36,14 +36,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { GENERATE_INVOICE } from "../../lib/graphql/queries/invoice";
 import { useSnackbar } from "../../SnackbarContext";
 import InvoicePreview from "../../components/invoice-preview";
-import InvoiceList from "../quote/invoice-list";
+import InvoiceList from "../../features/invoices/pages/List";
 import { GET_QUOTES, SALE_CONFIRMATION } from "../../lib/graphql/queries/quote";
 import SaleConfirmationPreview from "../../components/SaleConfirmationPreview";
 
 import moment from "moment";
 import { CustomDialog } from "../../components/CustomeDialog";
-import { useQuoteData } from "../../hooks/useQuoteData";
-import FilterPanel from "../quote/FilterPanel";
+import { useQuoteData } from "../../features/quotes/hooks/useQuoteData";
+import FilterPanel from "../../features/quotes/components/FilterPanel";
 import { Iclient } from "../../interfaces/quote.interface";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
@@ -69,14 +69,14 @@ const SalesDashboard = () => {
   const operatorId = session?.user.operator?.id || null;
 
   const [filter, setFilter] = useState({});
-  const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
+  // const [openInvoiceDialog, setOpenInvoiceDialog] = useState(false);
   const [isInvoiceGenerated, setIsInvoiceGenerated] = useState(false);
 
   const [showInvoicePreview, setShowInvoicePreview] = useState(false);
 
   const [salesDashboardData, setSalesDashboardData] = useState<any>();
 
-  const [tripConfirmationOpen, setTripConfirmationOpen] = useState(false);
+  // const [tripConfirmationOpen, setTripConfirmationOpen] = useState(false);
 
   const fethSalesDashboardData = async ({ activeFromDate, activeToDate }) => {
     try {
@@ -154,106 +154,108 @@ const SalesDashboard = () => {
     { status: [""], name: SalesCategoryLabels.REPORTS, countLabel: "reports" },
   ];
 
-  const handelCreate = (selectedTab) => {
+  const handelCreate = (selectedTab: string) => {
     if (selectedTab === "Quotes") {
       navigate("/quotes/create");
-    } else if (selectedTab === "Invoices") {
-      setOpenInvoiceDialog(true); // Open modal
-    } else if (selectedTab === "Sale Confirmation") {
-      setTripConfirmationOpen(true); // Open modal
     }
+    // else if (selectedTab === "Invoices") {
+
+    //   setOpenInvoiceDialog(true); // Open modal
+    // } else if (selectedTab === "Sale Confirmation") {
+    //   setTripConfirmationOpen(true); // Open modal
+    // }
   };
 
-  const {
-    control: tripControl,
-    handleSubmit: handleTripSubmit,
-    reset: resetTripForm,
-  } = useForm({
-    defaultValues: {
-      quotationNo: "",
-    },
-  });
+  // const {
+  //   control: tripControl,
+  //   handleSubmit: handleTripSubmit,
+  //   reset: resetTripForm,
+  // } = useForm({
+  //   defaultValues: {
+  //     quotationNo: "",
+  //   },
+  // });
 
-  // For Proforma Invoice Dialog
-  const {
-    control: proformaControl,
-    handleSubmit: handleProformaSubmit,
-    reset: resetProformaForm,
-  } = useForm({
-    defaultValues: {
-      type: "PROFORMA_INVOICE",
-      quotationNo: "",
-      proformaInvoiceNo: "",
-    },
-  });
+  // // For Proforma Invoice Dialog
+  // const {
+  //   control: proformaControl,
+  //   handleSubmit: handleProformaSubmit,
+  //   reset: resetProformaForm,
+  // } = useForm({
+  //   defaultValues: {
+  //     type: "PROFORMA_INVOICE",
+  //     quotationNo: "",
+  //     proformaInvoiceNo: "",
+  //   },
+  // });
 
-  const invoiceType = useWatch({ control: proformaControl, name: "type" });
+  // const invoiceType = useWatch({ control: proformaControl, name: "type" });
 
-  const [invoiceData, setInvoicedata] = useState<any>(null);
+  const [invoiceData, setInvoiceData] = useState<any>(null);
   const [saleConfirmationData, setSaleConfirmationData] = useState<any>(null);
   const [showTripConfirmationPreview, setShowTripConfirmationPreview] =
     useState(false);
   const [isTripConfirmed, setIsTripConfirmed] = useState(false);
 
-  const onGenerateInvoice = async ({
-    type,
-    quotationNo,
-    proformaInvoiceNo,
-  }) => {
-    setOpenInvoiceDialog(false);
+  // const onGenerateInvoice = async ({
+  //   type,
+  //   quotationNo,
+  //   proformaInvoiceNo,
+  // }) => {
+  //   setOpenInvoiceDialog(false);
 
-    const result = await useGql({
-      query: GENERATE_INVOICE,
-      queryName: "generateInvoice",
-      queryType: "mutation",
-      variables: {
-        args: {
-          type,
-          quotationNo,
-          proformaInvoiceNo,
-          ...(operatorId && { operatorId }),
-        },
-      },
-    });
+  //   const result = await useGql({
+  //     query: GENERATE_INVOICE,
+  //     queryName: "generateInvoice",
+  //     queryType: "mutation",
+  //     variables: {
+  //       args: {
+  //         type,
+  //         quotationNo,
+  //         proformaInvoiceNo,
+  //         ...(operatorId && { operatorId }),
+  //       },
+  //     },
+  //   });
 
-    if (!result.data) {
-      showSnackbar(
-        result?.errors?.[0]?.message || "Internal server error!",
-        "error"
-      );
-    } else {
-      setInvoicedata(result?.data?.generateInvoice);
-      setShowInvoicePreview(true);
-      setIsInvoiceGenerated(true);
-    }
-  };
+  //   if (!result.data) {
+  //     showSnackbar(
+  //       result?.errors?.[0]?.message || "Internal server error!",
+  //       "error"
+  //     );
+  //   } else {
+  //     setInvoiceData(result?.data?.generateInvoice);
+  //     setShowInvoicePreview(true);
+  //     setIsInvoiceGenerated(true);
+  //   }
+  // };
 
-  const handelTripConfirmation = async ({ quotationNo }) => {
-    setTripConfirmationOpen(false);
+  // const handelTripConfirmation = async ({ quotationNo }) => {
+  //   setTripConfirmationOpen(false);
 
-    const result = await useGql({
-      query: SALE_CONFIRMATION,
-      queryName: "saleConfirmation",
-      queryType: "mutation",
-      variables: {
-        args: {
-          quotationNo,
-          ...(operatorId && { operatorId }),
-        },
-      },
-    });
+  //   const result = await useGql({
+  //     query: SALE_CONFIRMATION,
+  //     queryName: "saleConfirmation",
+  //     queryType: "mutation",
+  //     variables: {
+  //       args: {
+  //         quotationNo,
+  //         ...(operatorId && { operatorId }),
+  //       },
+  //     },
+  //   });
 
-    if (!result.data) {
-      showSnackbar(
-        result?.errors?.[0]?.message || "Internal server error!",
-        "error"
-      );
-    } else {
-      setSaleConfirmationData(result?.data?.saleConfirmation);
-      setShowTripConfirmationPreview(true);
-      setIsTripConfirmed(true);
-    }
-  };
+  //   if (!result.data) {
+  //     showSnackbar(
+  //       result?.errors?.[0]?.message || "Internal server error!",
+  //       "error"
+  //     );
+  //   } else {
+  //     setSaleConfirmationData(result?.data?.saleConfirmation);
+  //     setShowTripConfirmationPreview(true);
+  //     setIsTripConfirmed(true);
+  //   }
+  // };
 
   // --- DATE FILTER STATES ---
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -300,79 +302,77 @@ const SalesDashboard = () => {
 
   /** API CALL */
 
-  const [quoteList, setQuoteList] = useState<any[]>([]);
+  // const [quoteList, setQuoteList] = useState<any[]>([]);
 
-  const [page, setPage] = useState(0); // page number starting at 0
-  const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
+  // const [page, setPage] = useState(0); // page number starting at 0
+  // const [rowsPerPage, setRowsPerPage] = useState(10); // default 10
 
-  const [totalCount, setTotalCount] = useState(0); // total count from backend
+  // const [totalCount, setTotalCount] = useState(0); // total count from backend
 
-  const getQuotes = async (customFilter?: any) => {
-    const finalFilter = customFilter || {
-      ...filter,
-      ...(operatorId && { operatorId: { eq: operatorId } }),
-    };
+  // const getQuotes = async (customFilter?: any) => {
+  //   const finalFilter = customFilter || {
+  //     ...filter,
+  //     ...(operatorId && { operatorId: { eq: operatorId } }),
+  //   };
 
-    try {
-      const data = await useGql({
-        query: GET_QUOTES,
-        queryName: "quotes",
-        queryType: "query-with-count",
-        variables: {
-          filter: finalFilter,
-          "paging": {
-            "offset": page * rowsPerPage,
-            "limit": rowsPerPage,
-          },
-          "sorting": [{ "field": "createdAt", "direction": "DESC" }],
-        },
-      });
+  //   try {
+  //     const data = await useGql({
+  //       query: GET_QUOTES,
+  //       queryName: "quotes",
+  //       queryType: "query-with-count",
+  //       variables: {
+  //         filter: finalFilter,
+  //         "paging": {
+  //           "offset": page * rowsPerPage,
+  //           "limit": rowsPerPage,
+  //         },
+  //         "sorting": [{ "field": "createdAt", "direction": "DESC" }],
+  //       },
+  //     });
 
-      const result = data?.data?.map((quote: any) => {
-        return {
-          ...quote,
-          id: quote.id,
-          quotationNo: quote?.quotationNo,
-          status: QuotationStatus[quote.status],
-          category: quote?.category ?? "",
-          requester: quote?.requestedBy?.name ?? "N/A",
-          requesterId: quote?.requestedBy?.id ?? "",
-          version: quote.version,
-          revision: quote.revision,
+  //     const result = data?.data?.map((quote: any) => {
+  //       return {
+  //         ...quote,
+  //         id: quote.id,
+  //         quotationNo: quote?.quotationNo,
+  //         status: QuotationStatus[quote.status],
+  //         category: quote?.category ?? "",
+  //         requester: quote?.requestedBy?.name ?? "N/A",
+  //         requesterId: quote?.requestedBy?.id ?? "",
+  //         version: quote.version,
+  //         revision: quote.revision,
 
-          itinerary: quote?.itinerary
-            ?.map((itinerary: any) => {
-              return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
-            })
-            .join(", "),
-          // sectors: quote.itinerary,
-          sectors: quote.sectors,
-          createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
-          updatedAt: quote.updatedAt,
-          code: quote.code,
-        };
-      });
+  //         itinerary: quote?.itinerary
+  //           ?.map((itinerary: any) => {
+  //             return `${itinerary.source} - ${itinerary.destination} PAX ${itinerary.paxNumber}`;
+  //           })
+  //           .join(", "),
+  //         // sectors: quote.itinerary,
+  //         sectors: quote.sectors,
+  //         createdAt: moment(quote.createdAt).format("DD-MM-YYYY HH:mm"),
+  //         updatedAt: quote.updatedAt,
+  //         code: quote.code,
+  //       };
+  //     });
 
-      setTotalCount(data?.totalCount || 0);
-      setQuoteList(result);
-      // Extract unique requesters for dropdown
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //     setTotalCount(data?.totalCount || 0);
+  //     setQuoteList(result);
+  //     // Extract unique requesters for dropdown
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getQuotes();
-  }, [filter, selectedRequester, page, rowsPerPage, refreshKey]);
+  // useEffect(() => {
+  //   getQuotes();
+  // }, [filter, selectedRequester, page, rowsPerPage, refreshKey]);
 
-  const filteredRows = quoteList?.filter((row) =>
-    row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
-  );
+  // const filteredRows = quoteList?.filter((row) =>
+  //   row.quotationNo?.toLowerCase()?.includes(searchTerm?.toLowerCase())
+  // );
 
   const handelOnApply = () => {
     const today = new Date();
-    // Helper to format Date objects to YYYY-MM-DD strings
-    const formatDate = (date) => date.toISOString().split("T")[0];
 
     let from: string | null = null;
     let to: string | null = null;
@@ -448,7 +448,7 @@ const SalesDashboard = () => {
     };
 
     setFilter(newFilter);
-    getQuotes(newFilter); // pass filter directly
+    // getQuotes(newFilter); // pass filter directly
   };
 
   useEffect(() => {
@@ -461,7 +461,7 @@ const SalesDashboard = () => {
 
   return (
     <>
-      <CustomDialog
+      {/* <CustomDialog
         open={openInvoiceDialog}
         onClose={() => setOpenInvoiceDialog(false)}
         title="Generate Invoice"
@@ -525,9 +525,9 @@ const SalesDashboard = () => {
             />
           )}
         </form>
-      </CustomDialog>
+      </CustomDialog> */}
 
-      <CustomDialog
+      {/* <CustomDialog
         open={tripConfirmationOpen}
         onClose={() => setTripConfirmationOpen(false)}
         title="Sale Confirmation"
@@ -558,7 +558,7 @@ const SalesDashboard = () => {
             </Button>
           </DialogActions>
         </Box>
-      </CustomDialog>
+      </CustomDialog> */}
 
       <DashboardBoardSection
         selectedTab={selectedTab}
@@ -623,13 +623,13 @@ const SalesDashboard = () => {
             setRefreshKey={() => setRefreshKey(Date.now())}
             setFilter={setFilter}
             setShowInvoicePreview={setShowInvoicePreview}
-            setInvoicedata={setInvoicedata}
-            quoteList={filteredRows}
-            totalCount={totalCount}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            setPage={setPage}
-            setRowsPerPage={setRowsPerPage}
+            setInvoiceData={setInvoiceData}
+            // quoteList={filteredRows}
+            // totalCount={totalCount}
+            // rowsPerPage={rowsPerPage}
+            // page={page}
+            // setPage={setPage}
+            // setRowsPerPage={setRowsPerPage}
             selectedTab={selectedTab}
           />
         </Box>

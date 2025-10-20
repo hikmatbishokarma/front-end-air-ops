@@ -5,15 +5,16 @@ import useGql from "../../lib/graphql/gql";
 import { useSession } from "../../SessionContext";
 import { useSnackbar } from "../../SnackbarContext";
 
-import { ILibrary } from "./interfaces";
+import { ILibrary, LibraryEditProps } from "./interfaces";
 import {
   GET_LIBRARY_BY_ID,
   UPDATE_LIBRARY,
 } from "../../lib/graphql/queries/library";
 import LibraryChildren from "./Children";
 import { libraryFormFields } from "./formField";
+import { transformKeyToObject } from "../../lib/utils";
 
-export const LibraryEdit = ({ id, onClose, refreshList }) => {
+export const LibraryEdit = ({ id, onClose, refreshList }: LibraryEditProps) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
@@ -23,13 +24,13 @@ export const LibraryEdit = ({ id, onClose, refreshList }) => {
     defaultValues: {
       name: "",
       department: "",
-      attachment: "",
+      attachment: null,
     },
   });
 
-  const [library, setManula] = useState<ILibrary>();
+  const [library, setManula] = useState<any>();
 
-  const fetchLibraryById = async (Id) => {
+  const fetchLibraryById = async (Id: string | number) => {
     const response = await useGql({
       query: GET_LIBRARY_BY_ID,
       queryName: "library",
@@ -52,11 +53,11 @@ export const LibraryEdit = ({ id, onClose, refreshList }) => {
     if (library) {
       setValue("name", library.name || "");
       setValue("department", library.department || "");
-      setValue("attachment", library.attachment || "");
+      setValue("attachment", transformKeyToObject(library.attachment));
     }
   }, [library, setValue]);
 
-  const updateLibrary = async (Id, formData) => {
+  const updateLibrary = async (Id: string | number, formData: any) => {
     try {
       const data = await useGql({
         query: UPDATE_LIBRARY,
@@ -68,16 +69,17 @@ export const LibraryEdit = ({ id, onClose, refreshList }) => {
       if (!data || data.data?.errors) {
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to edit Library!", "error");
     }
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: ILibrary) => {
     try {
       await updateLibrary(id, {
         ...data,
         operatorId,
+        attachment: data?.attachment?.key,
       });
       reset();
       refreshList();

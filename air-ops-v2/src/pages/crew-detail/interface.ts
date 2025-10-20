@@ -1,19 +1,21 @@
+import { FileObject } from "../../interfaces/common.interface";
+
 export interface Nominee {
   fullName: string;
   gender: string;
   relation: string;
-  idProof: string;
+  idProof: FileObject | null;
   mobileNumber: string;
   alternateContact: string;
   address: string;
-  insurance: string;
+  insurance: FileObject | null;
 }
 
 export interface Certification {
   name: string;
   licenceNo: string;
   dateOfIssue: string;
-  issuedBy: string;
+  issuedBy: FileObject | null;
   validTill: string;
 }
 
@@ -29,7 +31,7 @@ export interface BankDetail {
 
 export interface CrewDetailFormValues {
   roles: any;
-  profile: string;
+  profile: FileObject | null;
   location: string;
   designation: string;
 
@@ -65,4 +67,22 @@ export interface CrewDetailFormValues {
   crewId?: string;
 
   bankDetails: BankDetail[];
+}
+
+export interface CrewDetailEditProps {
+  id: string | number; // Use the actual type of your ID (string is common for UUIDs, number for integers)
+
+  /** Function to call to close the edit modal or form. */
+  onClose: () => void;
+
+  /** Function to call to refresh the list/table data after a successful save/update. */
+  refreshList: () => void;
+}
+
+export interface CrewDetailCreateProps {
+  /** Function to call to close the edit modal or form. */
+  onClose: () => void;
+
+  /** Function to call to refresh the list/table data after a successful save/update. */
+  refreshList: () => void;
 }

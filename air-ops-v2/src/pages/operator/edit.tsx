@@ -7,13 +7,19 @@ import { useSnackbar } from "../../SnackbarContext";
 
 import { OperatorFormValues } from "./type";
 import OperatorChildren from "./children";
-import { operatorFormFields } from "./formfields";
+import { operatorFormFields } from "./formFields";
 import {
   GET_OPERATOR_BY_ID,
   UPDATE_OPERATOR,
 } from "../../lib/graphql/queries/operator";
+import { OperatorEditProps } from "./interface";
+import { transformKeyToObject } from "../../lib/utils";
 
-export const OperatorEdit = ({ id, onClose, refreshList }) => {
+export const OperatorEdit = ({
+  id,
+  onClose,
+  refreshList,
+}: OperatorEditProps) => {
   const showSnackbar = useSnackbar();
 
   const {
@@ -25,9 +31,9 @@ export const OperatorEdit = ({ id, onClose, refreshList }) => {
     formState: { errors },
   } = useForm<OperatorFormValues>();
 
-  const [operator, setOperator] = useState<OperatorFormValues>();
+  const [operator, setOperator] = useState<any>();
 
-  const fetchOperator = async (Id) => {
+  const fetchOperator = async (Id: string | number) => {
     const response = await useGql({
       query: GET_OPERATOR_BY_ID,
       queryName: "operator",
@@ -50,7 +56,7 @@ export const OperatorEdit = ({ id, onClose, refreshList }) => {
       setValue("email", operator.email || "");
       setValue("phone", operator.phone || "");
       setValue("companyName", operator.companyName || "");
-      setValue("companyLogo", operator.companyLogo || "");
+      setValue("companyLogo", transformKeyToObject(operator.companyLogo));
       setValue("address", operator.address || "");
       setValue("city", operator.city || "");
       // setValue("country", operator.country || "");
@@ -60,7 +66,7 @@ export const OperatorEdit = ({ id, onClose, refreshList }) => {
     }
   }, [operator, setValue]);
 
-  const UpdateOperator = async (Id, formData) => {
+  const UpdateOperator = async (Id: string | number, formData: any) => {
     try {
       const data = await useGql({
         query: UPDATE_OPERATOR,
@@ -75,7 +81,7 @@ export const OperatorEdit = ({ id, onClose, refreshList }) => {
       } else showSnackbar("Updated successfully", "success");
       refreshList();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to create categories!", "error");
     }
   };
@@ -83,6 +89,7 @@ export const OperatorEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: OperatorFormValues) => {
     const formattedData = {
       ...data,
+      companyLogo: data?.companyLogo?.key,
     };
 
     UpdateOperator(id, formattedData);

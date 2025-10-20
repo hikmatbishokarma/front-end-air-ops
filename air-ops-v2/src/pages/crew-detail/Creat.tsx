@@ -4,35 +4,27 @@ import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import { useSession } from "../../SessionContext";
 import CrewDetailChildren from "./Children";
-import { CrewDetailFormValues } from "./interface";
+import { CrewDetailCreateProps, CrewDetailFormValues } from "./interface";
 import {
   crewDetailFormFields,
   nomineeFormFields,
   certificationFormFields,
-} from "./FormFields";
+} from "./formFields";
 import {
   CREATE_CREW,
   CREATE_CREW_DETAIL,
 } from "../../lib/graphql/queries/crew-detail";
 import { useSnackbar } from "../../SnackbarContext";
 
-export const CrewDetailCreate = ({ onClose, refreshList }) => {
+export const CrewDetailCreate = ({
+  onClose,
+  refreshList,
+}: CrewDetailCreateProps) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
   const operatorId = session?.user.operator?.id || null;
 
-  const createCrewDetail = async (formData) => {
-    // const data = await useGql({
-    //   query: CREATE_CREW_DETAIL,
-    //   queryName: "",
-    //   queryType: "mutation",
-    //   variables: {
-    //     input: {
-    //       crewDetail: formData,
-    //     },
-    //   },
-    // });
-
+  const createCrewDetail = async (formData: any) => {
     const result = await useGql({
       query: CREATE_CREW,
       queryName: "",
@@ -82,11 +74,24 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
     name: "bankDetails",
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (formValue: CrewDetailFormValues) => {
     try {
+      let { certifications, nominees, profile, ...rest } = formValue;
+
       const formattedData = {
-        ...data,
+        ...rest,
+        certifications: certifications.map(({ ...rest }) => ({
+          ...rest,
+          issuedBy: rest?.issuedBy?.key,
+        })),
+
+        nominees: nominees.map(({ ...rest }) => ({
+          ...rest,
+          idProof: rest?.idProof?.key,
+          insurance: rest?.insurance?.key,
+        })),
         operatorId,
+        profile: profile?.key,
       };
 
       if (formattedData.roles) {
@@ -114,7 +119,7 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
           name: "",
           licenceNo: "",
           dateOfIssue: "",
-          issuedBy: "",
+          issuedBy: null,
           validTill: "",
         })
       }
@@ -125,11 +130,11 @@ export const CrewDetailCreate = ({ onClose, refreshList }) => {
           fullName: "",
           gender: "",
           relation: "",
-          idProof: "",
+          idProof: null,
           mobileNumber: "",
           alternateContact: "",
           address: "",
-          insurance: "",
+          insurance: null,
         })
       }
       removeNominee={removeNominee}

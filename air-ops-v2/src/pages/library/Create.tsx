@@ -8,16 +8,16 @@ import { useSnackbar } from "../../SnackbarContext";
 
 import { CREATE_LIBRARY } from "../../lib/graphql/queries/library";
 import LibraryChildren from "./Children";
-import { ILibrary } from "./interfaces";
+import { ILibrary, LibraryCreateProps } from "./interfaces";
 import { libraryFormFields } from "./formField";
 
-export const LibraryCreate = ({ onClose, refreshList }) => {
+export const LibraryCreate = ({ onClose, refreshList }: LibraryCreateProps) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
   const operatorId = session?.user.operator?.id || null;
 
-  const createLibrary = async (formData) => {
+  const createLibrary = async (formData: any) => {
     const result = await useGql({
       query: CREATE_LIBRARY,
       queryName: "",
@@ -40,13 +40,17 @@ export const LibraryCreate = ({ onClose, refreshList }) => {
     defaultValues: {
       name: "",
       department: "",
-      attachment: "",
+      attachment: null,
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: ILibrary) => {
     try {
-      await createLibrary({ ...data, operatorId }); // Wait for API call to complete
+      await createLibrary({
+        ...data,
+        operatorId,
+        attachment: data?.attachment?.key,
+      }); // Wait for API call to complete
       reset(); // Reset form after successful submission
       refreshList();
       onClose(); // <-- Close dialog after creating

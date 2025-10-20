@@ -52,7 +52,7 @@ export const OperatorList = () => {
 
       if (!data) showSnackbar("Failed to fetch categories!", "error");
       setoperators(data);
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to fetch categories!", "error");
     }
   };
@@ -61,15 +61,15 @@ export const OperatorList = () => {
     getoperators();
   }, []);
 
-  const handleEdit = (id) => {
+  const handleEdit = (id: string) => {
     setIsEdit(true);
     setOpen(true);
     setCurrentRecordId(id);
   };
 
-  const handleDelete = (id) => {
-    //TODO
-  };
+  // const handleDelete = (id) => {
+  //   //TODO
+  // };
 
   const handleClose = () => setOpen(false);
 
@@ -116,11 +116,12 @@ export const OperatorList = () => {
 
                 <TableCell>
                   {/* Edit Button */}
-                  <IconButton className="ground-handlers"
+                  <IconButton
+                    className="ground-handlers"
                     color="primary"
                     onClick={() => handleEdit(item.id)}
                   >
-                    <EditIcon className="edit-icon-size"/>
+                    <EditIcon className="edit-icon-size" />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -128,7 +129,8 @@ export const OperatorList = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog className="panel-one"
+      <Dialog
+        className="panel-one"
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
@@ -136,7 +138,8 @@ export const OperatorList = () => {
       >
         <DialogTitle>
           {isEdit ? "Edit operator" : "Create operator"}
-          <IconButton className="popup-quote-model"
+          <IconButton
+            className="popup-quote-model"
             aria-label="close"
             onClick={() => setOpen(false)}
             sx={{
@@ -146,7 +149,7 @@ export const OperatorList = () => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon className="popup-close-panel"/>
+            <CloseIcon className="popup-close-panel" />
           </IconButton>
         </DialogTitle>
         <DialogContent>

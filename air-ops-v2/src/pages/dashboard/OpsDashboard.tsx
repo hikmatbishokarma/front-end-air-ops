@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import QuoteList from "../quote/list";
+import QuoteList from "../../features/quotes/pages/List";
 import useGql from "../../lib/graphql/gql";
 import { GET_SALES_DASHBOARD } from "../../lib/graphql/queries/dashboard";
 import {

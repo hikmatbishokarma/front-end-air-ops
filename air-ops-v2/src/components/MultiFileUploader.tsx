@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios, { AxiosProgressEvent } from "axios";
 import {
   Box,
   IconButton,
@@ -12,6 +12,7 @@ import {
 import { useDropzone } from "react-dropzone";
 import ImageIcon from "@mui/icons-material/Image";
 import CloseIcon from "@mui/icons-material/Close";
+import { FileObject } from "../interfaces/common.interface";
 
 const MAX_FILES = 10;
 const MAX_SIZE_MB = 5;
@@ -20,16 +21,10 @@ const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/"; // Ensure it ends with a slash if needed
 
-// Define the structure of the S3 object stored in your RHF form
-interface S3FileObject {
-  key: string;
-  url: string; // The signed S3 URL
-}
-
 // Define the component's props interface
 interface MultiFileUploadProps {
-  value?: S3FileObject[]; // Array of S3 objects
-  onChange: (value: S3FileObject[]) => void; // Function that updates the form with the new array
+  value?: FileObject[]; // Array of S3 objects
+  onChange: (value: FileObject[]) => void; // Function that updates the form with the new array
   label?: string;
   category?: string;
 }
@@ -43,7 +38,7 @@ const MultiFileUpload: React.FC<MultiFileUploadProps> = ({
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const handleFileDelete = async (fileObject: S3FileObject) => {
+  const handleFileDelete = async (fileObject: FileObject) => {
     const { key } = fileObject;
     if (!key) return;
 
@@ -93,8 +88,8 @@ const MultiFileUpload: React.FC<MultiFileUploadProps> = ({
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: (event) => {
-            if (event.lengthComputable) {
+          onUploadProgress: (event: AxiosProgressEvent) => {
+            if (event.total) {
               const percent = Math.round((event.loaded * 100) / event.total);
               setProgress(percent);
             }
@@ -180,7 +175,7 @@ const MultiFileUpload: React.FC<MultiFileUploadProps> = ({
     </Box>
   );
 
-  const renderImageThumbnail = (fileObject: S3FileObject, index: number) => (
+  const renderImageThumbnail = (fileObject: FileObject, index: number) => (
     <Grid
       item
       xs={12}

@@ -1,7 +1,4 @@
-export interface FileObject {
-  key: string;
-  url: string; // The signed S3 URL (for the frontend)
-}
+import { FileObject } from "../../interfaces/common.interface";
 
 export interface sepcification {
   title: string;

@@ -13,6 +13,10 @@
 // }
 
 import moment from "moment";
+import { FileObject } from "../interfaces/common.interface";
+
+const cloudfrontBaseUrl =
+  import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/"; // Ensure it ends with a slash if needed
 
 export enum QuotationStatus {
   QUOTE = "Quote",
@@ -363,4 +367,41 @@ export const flightBlockTime = (sectors) => {
   return `${hours.toString().padStart(2, "0")} hr, ${minutes
     .toString()
     .padStart(2, "0")}min`;
+};
+
+// 2. Helper function to transform a single S3 key string into the RHF object
+export const transformKeyToObject = (
+  key: string | null | undefined
+): FileObject | null => {
+  if (key) {
+    return {
+      key: key,
+      url: `${cloudfrontBaseUrl}${key}`,
+    };
+  }
+  return null;
+};
+
+// 3. Helper function to transform an array of S3 keys into an array of RHF objects
+export const transformKeysArray = (
+  keysArray: string[] | null | undefined
+): FileObject[] => {
+  if (Array.isArray(keysArray)) {
+    return keysArray
+      .map((key) => transformKeyToObject(key))
+      .filter((obj) => obj !== null) as FileObject[];
+  }
+  return [];
+};
+
+export type FlightCategoryKey = keyof typeof FlightCategoryEnum;
+
+export const QuotationStatusMap: Record<string, QuotationStatus> = {
+  QUOTE: QuotationStatus.QUOTE,
+  PROFOMA_INVOICE: QuotationStatus.PROFOMA_INVOICE,
+  TAX_INVOICE: QuotationStatus.TAX_INVOICE,
+  CANCELLED: QuotationStatus.CANCELLED,
+  SALE_CONFIRMED: QuotationStatus.SALE_CONFIRMED,
+  PAX_ADDED: QuotationStatus.PAX_ADDED,
+  TRIP_GENERATED: QuotationStatus.TRIP_GENERATED,
 };

@@ -1,3 +1,5 @@
+import { FileObject } from "../../interfaces/common.interface";
+
 export type OperatorFormValues = {
   name: string;
   email: string;
@@ -12,7 +14,7 @@ export type OperatorFormValues = {
   companyEmail: string;
   companyPhone: string;
   branch: string;
-  companyLogo: string;
+  companyLogo: FileObject | null;
   supportEmail: string;
   ticketFooterNote: string;
   websiteUrl: string;

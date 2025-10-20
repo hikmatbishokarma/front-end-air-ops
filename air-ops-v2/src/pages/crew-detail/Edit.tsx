@@ -4,19 +4,29 @@ import useGql from "../../lib/graphql/gql";
 import { CREATE_CLIENT } from "../../lib/graphql/queries/clients";
 import { useSession } from "../../SessionContext";
 import CrewDetailChildren from "./Children";
-import { CrewDetailFormValues } from "./interface";
+import {
+  Certification,
+  CrewDetailEditProps,
+  CrewDetailFormValues,
+  Nominee,
+} from "./interface";
 import {
   crewDetailFormFields,
   nomineeFormFields,
   certificationFormFields,
-} from "./FormFields";
+} from "./formFields";
 import {
   GET_CREW_DETAIL_BY_ID,
   UPDATE_CREW_DETAIL,
 } from "../../lib/graphql/queries/crew-detail";
 import { useSnackbar } from "../../SnackbarContext";
+import { removeTypename, transformKeyToObject } from "../../lib/utils";
 
-export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
+export const CrewDetailEdit = ({
+  id,
+  onClose,
+  refreshList,
+}: CrewDetailEditProps) => {
   const { session, setSession, loading } = useSession();
   const showSnackbar = useSnackbar();
 
@@ -36,9 +46,9 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       },
     });
 
-  const [crewDetail, setCrewDetail] = useState<CrewDetailFormValues>();
+  const [crewDetail, setCrewDetail] = useState<any>();
 
-  const fetchCreDetailById = async (Id) => {
+  const fetchCreDetailById = async (Id: string | number) => {
     const response = await useGql({
       query: GET_CREW_DETAIL_BY_ID,
       queryName: "crewDetail",
@@ -60,7 +70,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
   useEffect(() => {
     if (crewDetail) {
       setValue("roles", crewDetail.roles);
-      setValue("profile", crewDetail.profile);
+      setValue("profile", transformKeyToObject(crewDetail.profile));
       setValue("crewId", crewDetail.crewId);
       setValue("fullName", crewDetail.fullName || "");
       setValue("displayName", crewDetail.displayName || "");
@@ -84,13 +94,26 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       setValue("currentAddress", crewDetail.currentAddress || "");
       setValue("permanentAddress", crewDetail.permanentAddress || "");
       setValue("bloodGroup", crewDetail.bloodGroup || "");
-      setValue("certifications", crewDetail.certifications || []);
-      setValue("nominees", crewDetail.nominees || []);
+      setValue(
+        "certifications",
+        crewDetail.certifications.map((item: any) => ({
+          ...item,
+          issuedBy: transformKeyToObject(item.issuedBy),
+        })) || []
+      );
+      setValue(
+        "nominees",
+        crewDetail?.nominees.map((item: any) => ({
+          ...item,
+          insurance: transformKeyToObject(item.insurance),
+          idProof: transformKeyToObject(item.idProof),
+        })) || []
+      );
       setValue("bankDetails", crewDetail.bankDetails || []);
     }
   }, [crewDetail, setValue]);
 
-  const updateCrewDetail = async (Id, formData) => {
+  const updateCrewDetail = async (Id: string | number, formData: any) => {
     try {
       const data = await useGql({
         query: UPDATE_CREW_DETAIL,
@@ -102,7 +125,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
       if (!data || data.data?.errors) {
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to edit Crew Detail!", "error");
     }
   };
@@ -134,19 +157,26 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
     name: "bankDetails",
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     try {
-      let { certifications, nominees, ...rest } = data;
+      let { certifications, nominees, profile, ...rest } = data;
 
-      certifications = certifications.map(({ __typename, ...rest }) => rest);
-      nominees = nominees.map(({ __typename, ...rest }) => rest);
+      certifications = certifications.map((item: Certification) => ({
+        issuedBy: item?.issuedBy?.key,
+      }));
+      nominees = nominees.map((item: Nominee) => ({
+        ...item,
+        idProof: item?.idProof?.key,
+        insurance: item?.insurance?.key,
+      }));
 
-      const formattedData = {
+      const formattedData = removeTypename({
         ...rest,
         certifications,
         nominees,
         operatorId,
-      };
+        profile: profile?.key,
+      });
 
       if (formattedData.roles) {
         formattedData.roles = formattedData.roles.map((role: any) => role.id); // Assuming each role has an `id`
@@ -173,7 +203,7 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
           name: "",
           licenceNo: "",
           dateOfIssue: "",
-          issuedBy: "",
+          issuedBy: null,
           validTill: "",
         })
       }
@@ -184,11 +214,11 @@ export const CrewDetailEdit = ({ id, onClose, refreshList }) => {
           fullName: "",
           gender: "",
           relation: "",
-          idProof: "",
+          idProof: null,
           mobileNumber: "",
           alternateContact: "",
           address: "",
-          insurance: "",
+          insurance: null,
         })
       }
       removeNominee={removeNominee}

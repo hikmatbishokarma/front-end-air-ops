@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 
 import { useForm } from "react-hook-form";
-import { Pattern } from "@mui/icons-material";
-import { FormControl, FormLabel, RadioGroup, Select } from "@mui/material";
+
 import useGql from "../../lib/graphql/gql";
 
 import { useSnackbar } from "../../SnackbarContext";
 import { OperatorFormValues } from "./type";
-import { operatorFormFields } from "./formfields";
+
 import OperatorChildren from "./children";
 import { CREATE_OPERATOR } from "../../lib/graphql/queries/operator";
+import { OperatorCreateProps } from "./interface";
+import { operatorFormFields } from "./formFields";
 
-const OperatorCreate = ({ onClose, refreshList }) => {
+const OperatorCreate = ({ onClose, refreshList }: OperatorCreateProps) => {
   const showSnackbar = useSnackbar();
 
   const {
@@ -23,7 +24,7 @@ const OperatorCreate = ({ onClose, refreshList }) => {
     formState: { errors },
   } = useForm<OperatorFormValues>();
 
-  const CreateOperator = async (formData) => {
+  const CreateOperator = async (formData: any) => {
     try {
       const data = await useGql({
         query: CREATE_OPERATOR,
@@ -35,15 +36,15 @@ const OperatorCreate = ({ onClose, refreshList }) => {
       if (!data || data.errors) {
         showSnackbar(data?.errors?.[0]?.message, "error");
       } else showSnackbar("Created Successfully", "success");
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to create categories!", "error");
     }
   };
 
   const onSubmit = async (data: OperatorFormValues) => {
-    console.log("Calling mutation with:", data); // Add this
     const formattedData = {
       ...data,
+      companyLogo: data?.companyLogo?.key,
     };
     await CreateOperator(formattedData); // ✅ Wait for completion
     await refreshList(); // ✅ Now refresh data

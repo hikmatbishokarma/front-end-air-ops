@@ -37,7 +37,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import AirportsAutocomplete from "../../components/airport-autocommplete";
 
-import { useQuoteData } from "../../hooks/useQuoteData";
+import { useQuoteData } from "../../features/quotes/hooks/useQuoteData";
 import {
   IaircraftCategory,
   Iclient,
@@ -61,7 +61,7 @@ import {
   validateDepartureTime,
 } from "../../lib/utils";
 import { useSession } from "../../SessionContext";
-const QuoteEdit = () => {
+const QuoteEdit1 = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { control, handleSubmit, setValue, watch, register, getValues } =
@@ -1647,4 +1647,4 @@ const QuoteEdit = () => {
   );
 };
 
-export default QuoteEdit;
+export default QuoteEdit1;

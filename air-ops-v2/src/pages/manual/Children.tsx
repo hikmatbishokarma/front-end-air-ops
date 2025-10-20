@@ -64,8 +64,12 @@ const ManualChildren: React.FC<ReusableFormProps> = ({
                       size="medium"
                       category="securities"
                       accept=".pdf,.doc,.docx"
+                      // value={controllerField.value}
+                      // onUpload={(url) => controllerField.onChange(url)}
                       value={controllerField.value}
-                      onUpload={(url) => controllerField.onChange(url)}
+                      onUpload={(fileObject) =>
+                        controllerField.onChange(fileObject)
+                      }
                     />
                   );
                 } else

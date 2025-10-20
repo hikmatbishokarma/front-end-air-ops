@@ -14,24 +14,12 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CityAutocomplete from "../../components/city-autocomplete";
 import FileUpload from "../../components/fileupload";
 import MediaUpload from "../../components/MediaUpload";
-
-interface FormField {
-  name: string;
-  label: string;
-  type?: string;
-  xs?: number;
-  options?: any[];
-  required?: boolean;
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-}
+import { FormFieldProps } from "../../interfaces/common.interface";
 
 interface ReusableFormProps {
   control: Control<any>;
   onSubmit: SubmitHandler<any>;
-  fields: FormField[];
+  fields: FormFieldProps[];
   defaultValues?: any;
 }
 
@@ -77,8 +65,12 @@ const OperatorChildren: React.FC<ReusableFormProps> = ({
                       <MediaUpload
                         size="small" // Essential for the avatar style
                         accept="image/*"
+                        // value={controllerField.value}
+                        // onUpload={(url) => controllerField.onChange(url)} // Update form value with uploaded URL
                         value={controllerField.value}
-                        onUpload={(url) => controllerField.onChange(url)} // Update form value with uploaded URL
+                        onUpload={(fileObject) =>
+                          controllerField.onChange(fileObject)
+                        }
                         label={field.label}
                         category="profile"
                       />

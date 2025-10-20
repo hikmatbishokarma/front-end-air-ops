@@ -38,24 +38,12 @@ import { RoleType } from "../role/create";
 import MultiSelectAutoComplete from "../../components/MultiSelectAutoComplete";
 import MediaUpload from "../../components/MediaUpload";
 import { Add, Delete } from "@mui/icons-material";
-interface FormField {
-  name: string;
-  label: string;
-  type?: string;
-  xs?: number;
-  options?: any[];
-  required?: boolean;
-  pattern?: {
-    value: RegExp;
-    message: string;
-  };
-  optionsKey?: string;
-}
+import { FormFieldProps } from "../../interfaces/common.interface";
 
 interface ReusableFormProps {
   control: Control<any>;
   onSubmit: SubmitHandler<any>;
-  fields: FormField[];
+  fields: FormFieldProps[];
   certFields: any[];
   addCert: (item: Certification) => void;
   removeCert: (index: number) => void;
@@ -114,60 +102,6 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
     >
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        {/* <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-          <Grid item xs={4}>
-            <Controller
-              name="profile"
-              control={control}
-              render={({ field }) => (
-                <FileUpload
-                  value={field.value}
-                  onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
-                  label="Profile"
-                  category="profile"
-                />
-              )}
-            />
-          </Grid>
-
-          <Grid item xs={4}>
-            <Controller
-              name="location"
-              control={control}
-              render={({ field }) => (
-                <CityAutocomplete {...field} label="Work Location" />
-              )}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Controller
-              name="designation"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <FormControl className="crew-type-v1"
-                  fullWidth
-                  margin="normal"
-                  size="small"
-                  error={!!error}
-                >
-                  <InputLabel  id="type-label">Crew Type</InputLabel>
-                  <Select labelId="type-label" label="Crew Type" {...field}>
-                    {designation.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {error && <FormHelperText>{error.message}</FormHelperText>}
-                </FormControl>
-              )}
-            />
-          </Grid>
-        </Grid> */}
-
         <Grid container spacing={1} alignItems="flex-start" sx={{ mb: 3 }}>
           {/* Profile Upload on the left */}
           <Grid item xs={4}>
@@ -290,7 +224,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                             label={label}
                             {...controllerField}
                           >
-                            {options.map((option) => (
+                            {options.map((option: any) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -470,8 +404,10 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                           label="Issued By"
                           category="Issued By"
                           accept=".pdf,.doc,.docx"
+                          // value={field.value}
+                          // onUpload={(url) => field.onChange(url)}
                           value={field.value}
-                          onUpload={(url) => field.onChange(url)}
+                          onUpload={(fileObject) => field.onChange(fileObject)}
                         />
                       )}
                     />
@@ -485,13 +421,14 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
               </>
             ))}
 
-          <IconButton className="ground-handlers"
+          <IconButton
+            className="ground-handlers"
             onClick={() =>
               addCert({
                 name: "",
                 licenceNo: "",
                 dateOfIssue: "",
-                issuedBy: "",
+                issuedBy: null,
                 validTill: "",
               })
             }
@@ -632,8 +569,10 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                         size="medium"
                         category="idProof"
                         accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        // value={field.value}
+                        // onUpload={(url) => field.onChange(url)}
                         value={field.value}
-                        onUpload={(url) => field.onChange(url)}
+                        onUpload={(fileObject) => field.onChange(fileObject)}
                       />
                     )}
                   />
@@ -648,8 +587,10 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                         size="medium"
                         category="idProof"
                         accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        // value={field.value}
+                        // onUpload={(url) => field.onChange(url)}
                         value={field.value}
-                        onUpload={(url) => field.onChange(url)}
+                        onUpload={(fileObject) => field.onChange(fileObject)}
                       />
                     )}
                   />
@@ -658,17 +599,18 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
             </>
           ))}
 
-          <IconButton className="ground-handlers"
+          <IconButton
+            className="ground-handlers"
             onClick={() =>
               addNominee({
                 fullName: "",
                 gender: "",
                 relation: "",
-                idProof: "",
+                idProof: null,
                 mobileNumber: "",
                 alternateContact: "",
                 address: "",
-                insurance: "",
+                insurance: null,
               })
             }
           >
@@ -833,7 +775,8 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
             </>
           ))}
 
-          <IconButton className="ground-handlers"
+          <IconButton
+            className="ground-handlers"
             onClick={() =>
               addBankDetail({
                 accountPayee: "",

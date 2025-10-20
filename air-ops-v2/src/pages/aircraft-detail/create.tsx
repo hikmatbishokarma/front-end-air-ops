@@ -22,7 +22,8 @@ import {
   TermsStep,
 } from "./children";
 import { useSession } from "../../SessionContext";
-import { AircraftDetailFormData, FileObject } from "./interface";
+import { AircraftDetailFormData } from "./interface";
+import { FileObject } from "../../interfaces/common.interface";
 
 export const AircraftDetailCreate = ({ onClose, refreshList }) => {
   const showSnackbar = useSnackbar();
@@ -109,7 +110,6 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       const value = cleanedDetail[field];
 
       if (Array.isArray(value)) {
-        // ⭐️ FIX 3: Explicitly cast value to S3FileObject[] to resolve array assignment issues
         const imageArray = value as FileObject[];
 
         const finalKeys = imageArray
