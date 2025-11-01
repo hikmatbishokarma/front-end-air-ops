@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router";
 import PassengerDetails from "./passanger-detail";
 import useGql from "../../../lib/graphql/gql";
 import { UPADTE_PASSANGER_DETAIL } from "../../../lib/graphql/queries/passenger-detail";
-import { useSnackbar } from "../../../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 
 const PassengerEditPage = () => {
   const { quotationNo } = useParams();

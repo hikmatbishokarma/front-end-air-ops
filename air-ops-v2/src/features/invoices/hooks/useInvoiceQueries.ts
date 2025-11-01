@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import moment from "moment";
 // 💡 Adjust paths to your GQL utility, queries, and session context
-import useGql from "../../../lib/graphql/gql";
-import { GET_INVOICES } from "../../../lib/graphql/queries/invoice";
-import { useSession } from "../../../SessionContext";
+import useGql from "@/lib/graphql/gql";
+import { GET_INVOICES } from "@/lib/graphql/queries/invoice";
+import { useSession } from "@/app/providers";
 
 interface InvoiceListQueryArgs {
   filter: any;

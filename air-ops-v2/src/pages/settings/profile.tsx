@@ -34,14 +34,14 @@ import {
   Certification,
   CrewDetailFormValues,
   Nominee,
-} from "../crew-detail/interface";
-import { useSnackbar } from "../../SnackbarContext";
-import { useSession } from "../../SessionContext";
+} from "@/features/crew-detail/types/interface";
+import { useSnackbar } from "@/app/providers";
+import { useSession } from "@/app/providers";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { Add, Delete } from "@mui/icons-material";
 import MediaUpload from "../../components/MediaUpload";
-import { removeTypename, transformKeyToObject } from "../../lib/utils";
+import { removeTypename, transformKeyToObject } from "../../shared/utils";
 
 export const UserProfile = () => {
   const showSnackbar = useSnackbar();

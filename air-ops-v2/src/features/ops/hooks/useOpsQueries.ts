@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSession } from "../../../SessionContext";
+import { useSession } from "@/app/providers";
 import useGql from "../../../lib/graphql/gql";
 import { GET_TRIP_DETAILS } from "../../../lib/graphql/queries/trip-detail";
 

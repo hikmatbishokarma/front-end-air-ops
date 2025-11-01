@@ -2,20 +2,20 @@ import { useMutation, gql } from "@apollo/client";
 import { useNavigate } from "react-router";
 
 import { useCallback, useState } from "react";
-import useGql from "../../../lib/graphql/gql";
-import { useSnackbar } from "../../../SnackbarContext";
-import { useSession } from "../../../SessionContext";
+import useGql from "@/lib/graphql/gql";
+import { useSnackbar } from "@/app/providers";
+import { useSession } from "@/app/providers";
 import {
   CREATE_QUOTE,
   SALE_CONFIRMATION,
   UPDATE_QUOTE,
-} from "../../../lib/graphql/queries/quote";
-import { calculateFlightTime } from "../../../lib/utils";
+} from "@/lib/graphql/queries/quote";
+import { calculateFlightTime } from "@/shared/utils";
 import {
   CREATE_PASSENGER_DETAILS,
   UPADTE_PASSANGER_DETAIL,
-} from "../../../lib/graphql/queries/passenger-detail";
-import { useGqlMutation } from "../../../shared/hooks/useGqlMutation";
+} from "@/lib/graphql/queries/passenger-detail";
+import { useGqlMutation } from "@/shared/hooks/useGqlMutation";
 
 /**
  * Interface for mutation options, allowing the component to control side-effects.

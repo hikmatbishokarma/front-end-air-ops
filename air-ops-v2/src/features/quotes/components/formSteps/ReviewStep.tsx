@@ -2,7 +2,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import moment from "moment";
-import { FlightCategoryEnum, FlightCategoryKey } from "../../../../lib/utils";
+import { FlightCategoryEnum, FlightCategoryKey } from "@/shared/utils";
 
 const ReviewStep = ({ allFormValues }: { allFormValues: any }) => {
   const showEnquiry = allFormValues.requestedBy || allFormValues.representative;

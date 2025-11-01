@@ -11,7 +11,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Control, Controller, useFieldArray } from "react-hook-form";
-import MediaUpload from "../../../../../components/MediaUpload";
+import MediaUpload from "@/components/MediaUpload";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";

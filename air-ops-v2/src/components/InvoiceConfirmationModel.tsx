@@ -9,19 +9,18 @@ import {
   Typography,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { useSnackbar } from "../SnackbarContext";
-import { useSession } from "../SessionContext";
+import { useSnackbar, useSession } from "@/app/providers";
 import { useEffect, useState } from "react";
-import { Iclient } from "../interfaces/quote.interface";
+import { Iclient } from "@/features/quotes/types/interfaces";
 import {
   GET_CLIENT_BY_ID,
   UPDATE_CLIENT,
 } from "../lib/graphql/queries/clients";
 import useGql from "../lib/graphql/gql";
-import ClientChildren from "../pages/clients/children";
+import ClientChildren from "../features/clients/components/children";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { ClientType } from "../lib/utils";
+import { ClientType } from "../shared/utils";
 
 type FormData = {
   name: string;

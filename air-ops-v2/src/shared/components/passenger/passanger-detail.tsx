@@ -32,7 +32,7 @@ import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatRecline
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import moment from "moment";
-import { useSnackbar } from "../../../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 import useGql from "../../../lib/graphql/gql";
 import { GET_PASSENGER_DETAILS } from "../../../lib/graphql/queries/passenger-detail";
 import VisibilityIcon from "@mui/icons-material/Visibility";

@@ -9,14 +9,14 @@ import {
   IconButton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { ClientType } from "../../../../lib/utils";
+import { ClientType } from "@/shared/utils";
 import EditIcon from "@mui/icons-material/Edit";
 import {
   Iaircraft,
   Iclient,
   Irepresentative,
-} from "../../../../interfaces/quote.interface";
-import { Setter } from "../../../../interfaces/common.interface";
+} from "@/features/quotes/types/interfaces";
+import { Setter } from "@/shared/types/common";
 
 const EnquiryStep = ({
   control,

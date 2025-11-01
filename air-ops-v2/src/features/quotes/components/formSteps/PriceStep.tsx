@@ -7,7 +7,7 @@ import Delete from "@mui/icons-material/Delete";
 import { LocalizationProvider, TimeField } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import { calculateTotalFlightTime } from "../../../../lib/utils";
+import { calculateTotalFlightTime } from "@/shared/utils";
 
 const PriceStep = ({
   control,

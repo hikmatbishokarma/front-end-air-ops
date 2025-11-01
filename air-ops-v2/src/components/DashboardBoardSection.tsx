@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, Typography, Button, Card, CardContent } from "@mui/material";
 import cardflightview from "../Asset/Images/ATS-F-1.png";
-import { IStatCard } from "../interfaces/common.interface";
+import { IStatCard } from "@/shared/types/common";
 
 interface StatCardProps {
   selectedTab: string;

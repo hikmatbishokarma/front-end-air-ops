@@ -17,7 +17,7 @@ import {
   Sector,
 } from "../../type/trip.type";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { logoColors } from "../../../../../lib/utils";
+import { logoColors } from "@/shared/utils";
 
 // export interface SectorFormData extends Sector {
 //   assignedCrews: AssignedCrewInfo[];

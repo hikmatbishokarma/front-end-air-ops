@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 // 💡 Adjust the path to your useGql utility and GraphQL query
-import useGql from "../../../lib/graphql/gql";
-import { GET_SALES_DASHBOARD } from "../../../lib/graphql/queries/dashboard";
-import { useSession } from "../../../SessionContext";
+import useGql from "@/lib/graphql/gql";
+import { GET_SALES_DASHBOARD } from "@/lib/graphql/queries/dashboard";
+import { useSession } from "@/app/providers";
 
 /**
  * Fetches and manages the quote/sales summary data (metrics).

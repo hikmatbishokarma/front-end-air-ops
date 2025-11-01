@@ -26,8 +26,8 @@ import {
   validateArrivalAfterDeparture,
   validateArrivalTime,
   validateDepartureTime,
-} from "../../../../lib/utils";
-import LocationAutocomplete from "../../../../components/LocationAutocomplete";
+} from "@/shared/utils";
+import LocationAutocomplete from "@/components/LocationAutocomplete";
 
 const SectorsStepV2 = ({ control, watch, getValues, setValue }: any) => {
   const {

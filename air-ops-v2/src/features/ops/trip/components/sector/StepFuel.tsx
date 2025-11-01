@@ -1,7 +1,7 @@
 import { Box, TextField, Typography, Button, Grid } from "@mui/material";
 import { useForm, Controller, Control } from "react-hook-form";
 import { FuelRecordInfo } from "../../type/trip.type";
-import MediaUpload from "../../../../../components/MediaUpload";
+import MediaUpload from "@/components/MediaUpload";
 import {
   LocalizationProvider,
   DatePicker,

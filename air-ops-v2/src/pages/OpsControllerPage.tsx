@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import StatCard from "../components/DashboardBoardSection";
-import { IStatCard } from "../interfaces/common.interface";
+import StatCard from "@/components/DashboardBoardSection";
+import { IStatCard } from "@/shared/types/common";
 import { useNavigate } from "react-router";
-import { useSession } from "../SessionContext";
+import { useSession } from "@/app/providers";
 import { Box, Button, InputAdornment, TextField } from "@mui/material";
-import SalesConfirmationList from "../features/ops/tables/SalesConfirmation";
-import TripDetailList from "../features/ops/tables/TripDetail";
-import ReusableFilterPanel from "../components/ReusableFilterPanel";
+import SalesConfirmationList from "@/features/ops/tables/SalesConfirmation";
+import TripDetailList from "@/features/ops/tables/TripDetail";
+import ReusableFilterPanel from "@/components/ReusableFilterPanel";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import moment from "moment";
-import { SalesCategoryLabels } from "../lib/utils";
-import { IBaseFilter, useAppFilter } from "../hooks/useAppFilter";
+import { SalesCategoryLabels } from "@/shared/utils";
+import { IBaseFilter, useAppFilter } from "@/hooks/useAppFilter";
 
 const OpsControllerPage = () => {
   const { session } = useSession();

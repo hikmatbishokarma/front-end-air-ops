@@ -28,13 +28,13 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import moment from "moment";
-import AirportsAutocomplete from "../../../../components/airport-autocommplete";
+import AirportsAutocomplete from "@/components/airport-autocommplete";
 import {
   getMinDepartureTime,
   validateArrivalAfterDeparture,
   validateArrivalTime,
   validateDepartureTime,
-} from "../../../../lib/utils";
+} from "@/shared/utils";
 
 const SectorsStep = ({
   control,

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import useGql from "../../../lib/graphql/gql"; // Your custom API utility
-import { useSnackbar } from "../../../SnackbarContext";
+import useGql from "@/lib/graphql/gql"; // Your custom API utility
+import { useSnackbar } from "@/app/providers";
 import { useQuoteData } from "./useQuoteData";
-import { GET_QUOTE_BY_ID } from "../../../lib/graphql/queries/quote";
+import { GET_QUOTE_BY_ID } from "@/lib/graphql/queries/quote";
 
 export const useQuoteEditorData = (id: string) => {
   const showSnackbar = useSnackbar();

@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import DOMPurify from "dompurify";
 import { useNavigate, useParams } from "react-router";
-import useGql from "../../../lib/graphql/gql";
-import { PREVIEW_SALES_CONFIRMATION } from "../../../lib/graphql/queries/quote";
-import { useSnackbar } from "../../../SnackbarContext";
+import useGql from "@/lib/graphql/gql";
+import { PREVIEW_SALES_CONFIRMATION } from "@/lib/graphql/queries/quote";
+import { useSnackbar } from "@/app/providers";
 
 const SaleConfirmationPreviewPage = () => {
   const navigate = useNavigate();

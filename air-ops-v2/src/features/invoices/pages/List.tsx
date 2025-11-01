@@ -21,33 +21,34 @@ import {
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
-import useGql from "../../../lib/graphql/gql";
+import useGql from "@/lib/graphql/gql";
 
 import { useNavigate } from "react-router";
 
-import { useSnackbar } from "../../../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 
 import SearchIcon from "@mui/icons-material/Search";
 
-import { useSession } from "../../../SessionContext";
+import { useSession } from "@/app/providers";
 
 import moment from "moment";
-import InvoicePreview from "../../../components/invoice-preview";
-import { GET_INVOICES } from "../../../lib/graphql/queries/invoice";
+import InvoicePreview from "../components/InvoicePreview";
+import { GET_INVOICES } from "@/lib/graphql/queries/invoice";
 import CloseIcon from "@mui/icons-material/Close";
-import { SALE_CONFIRMATION } from "../../../lib/graphql/queries/quote";
-import { CustomDialog } from "../../../components/CustomeDialog";
-import { calculateFlightTime, SalesCategoryLabels } from "../../../lib/utils";
+import { SALE_CONFIRMATION } from "@/lib/graphql/queries/quote";
+import { CustomDialog } from "@/components/CustomeDialog";
+import { calculateFlightTime, SalesCategoryLabels } from "@/shared/utils";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PassengerDetails from "../../../shared/components/passenger/passanger-detail";
+import PassengerDetails from "@/shared/components/passenger/passanger-detail";
 import {
   CREATE_PASSENGER_DETAILS,
   GET_PASSENGER_DETAILS,
   UPADTE_PASSANGER_DETAIL,
-} from "../../../lib/graphql/queries/passenger-detail";
+} from "@/lib/graphql/queries/passenger-detail";
 import { useInvoiceListData } from "../hooks/useInvoiceQueries";
 import { useConfirmSale } from "../../quotes/hooks/useQuoteMutations";
-import { QuoteFilter, Setter } from "../../../interfaces/common.interface";
+import { QuoteFilter } from "@/features/quotes/types/interfaces";
+import { Setter } from "@/shared/types/common";
 
 // 3. Interface for InvoiceList Props
 interface InvoiceListProps {

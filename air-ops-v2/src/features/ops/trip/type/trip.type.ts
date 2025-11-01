@@ -1,5 +1,5 @@
-import { FileObject } from "../../../../interfaces/common.interface";
-import { SectorLocation } from "../../../../shared/types/location";
+import { FileObject } from "@/shared/types/common";
+import { SectorLocation } from "@/shared/types/location";
 
 export interface Sector {
   sectorNo?: number;

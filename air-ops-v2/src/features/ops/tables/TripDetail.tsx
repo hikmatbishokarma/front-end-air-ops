@@ -17,9 +17,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { useSession } from "../../../SessionContext";
+import { useSession } from "@/app/providers";
 import { useNavigate } from "react-router";
-import { useSnackbar } from "../../../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 

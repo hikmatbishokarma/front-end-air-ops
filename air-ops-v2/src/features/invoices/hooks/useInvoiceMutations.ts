@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { useSnackbar } from "../../../SnackbarContext";
-import { useSession } from "../../../SessionContext";
-import { GENERATE_INVOICE } from "../../../lib/graphql/queries/invoice";
-import { useGqlMutation } from "../../../shared/hooks/useGqlMutation";
+import { useSnackbar } from "@/app/providers";
+import { useSession } from "@/app/providers";
+import { GENERATE_INVOICE } from "@/lib/graphql/queries/invoice";
+import { useGqlMutation } from "@/shared/hooks/useGqlMutation";
 
 // Define the arguments the hook will accept for managing list state
 interface InvoiceMutationOptions {

@@ -12,7 +12,7 @@ import {
 import { useDropzone } from "react-dropzone";
 import ImageIcon from "@mui/icons-material/Image";
 import CloseIcon from "@mui/icons-material/Close";
-import { FileObject } from "../interfaces/common.interface";
+import { FileObject } from "@/shared/types/common";
 
 const MAX_FILES = 10;
 const MAX_SIZE_MB = 5;

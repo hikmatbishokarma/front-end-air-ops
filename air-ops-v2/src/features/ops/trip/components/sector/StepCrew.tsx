@@ -28,7 +28,7 @@ const mockCrew: CrewMember[] = [
 ];
 
 import { Control, Controller } from "react-hook-form";
-import { logoColors } from "../../../../../lib/utils";
+import { logoColors } from "@/shared/utils";
 
 interface StepCrewProps {
   control: Control<SectorFormValues>;

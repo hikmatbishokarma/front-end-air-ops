@@ -33,21 +33,21 @@ import {
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 
-import useGql from "../../../lib/graphql/gql";
+import useGql from "@/lib/graphql/gql";
 import {
   GET_QUOTES,
   PREVIEW_SALES_CONFIRMATION,
   SALE_CONFIRMATION,
   SHOW_PREVIEW,
   UPDATE_QUOTE_STATUS,
-} from "../../../lib/graphql/queries/quote";
+} from "@/lib/graphql/queries/quote";
 
 import { Outlet, useNavigate } from "react-router";
 
-import { useSnackbar } from "../../../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 
 import PreviewIcon from "@mui/icons-material/Preview";
-import QuotePreview from "../../../components/quote-preview";
+import QuotePreview from "../components/QuotePreview";
 
 import {
   calculateFlightTime,
@@ -57,29 +57,18 @@ import {
   QuotationStatus,
   QuotationStatusMap,
   SalesCategoryLabels,
-} from "../../../lib/utils";
+} from "@/shared/utils";
 
-import QuotationCancellationConfirmation from "../../../pages/quote/quotation-cancellation";
-import SearchIcon from "@mui/icons-material/Search";
-import { useQuoteData } from "../hooks/useQuoteData";
-import { useSession } from "../../../SessionContext";
-import { Iclient } from "../../../interfaces/quote.interface";
+import { useSession } from "@/app/providers";
+
 import moment from "moment";
-import SaleConfirmationPreview from "../../../components/SaleConfirmationPreview";
-import CloseIcon from "@mui/icons-material/Close";
-import { GENERATE_INVOICE } from "../../../lib/graphql/queries/invoice";
-import { CustomDialog } from "../../../components/CustomeDialog";
-import PassengerDetails from "../../../shared/components/passenger/passanger-detail";
-import {
-  CHECK_FOR_PASSENGER,
-  CREATE_PASSENGER_DETAILS,
-  GET_PASSENGER_DETAIL_BY_ID,
-  UPADTE_PASSANGER_DETAIL,
-} from "../../../lib/graphql/queries/passenger-detail";
+import SaleConfirmationPreview from "../components/SaleConfirmationPreview";
 
-import { Flight, AccessTime } from "@mui/icons-material";
-import { InvoiceConfirmationModal } from "../../../components/InvoiceConfirmationModel";
-import SectorTooltip from "../../../components/SectorTooltip";
+import { CustomDialog } from "@/components/CustomeDialog";
+import PassengerDetails from "@/shared/components/passenger/passanger-detail";
+
+import { InvoiceConfirmationModal } from "@/components/InvoiceConfirmationModel";
+import SectorTooltip from "@/components/SectorTooltip";
 import {
   usePassengerExistenceCheck,
   useQuoteListData,
@@ -90,8 +79,9 @@ import {
   useCreateInitialPassengerDetails,
   useUpdatePassengerDetails,
 } from "../hooks/useQuoteMutations";
-import { useGenerateInvoice } from "../../invoices/hooks/useInvoiceMutations";
-import { QuoteFilter, Setter } from "../../../interfaces/common.interface";
+import { useGenerateInvoice } from "@/features/invoices/hooks/useInvoiceMutations";
+import { QuoteFilter } from "@/features/quotes/types/interfaces";
+import { Setter } from "@/shared/types/common";
 
 type currentQuotationInfo = {
   id: string;

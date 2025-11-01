@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import PassengerDetails from "../../../../../shared/components/passenger/passanger-detail";
-import { useSnackbar } from "../../../../../SnackbarContext";
-import useGql from "../../../../../lib/graphql/gql";
+import PassengerDetails from "@/shared/components/passenger/passanger-detail";
+import { useSnackbar } from "@/app/providers";
+import useGql from "@/lib/graphql/gql";
 import {
   GET_PASSENGER_DETAILS,
   UPADTE_PASSANGER_DETAIL,
-} from "../../../../../lib/graphql/queries/passenger-detail";
+} from "@/lib/graphql/queries/passenger-detail";
 
 interface PassengerDetailProps {
   quotation: any | undefined;

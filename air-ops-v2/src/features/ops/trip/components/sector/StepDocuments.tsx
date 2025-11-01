@@ -12,7 +12,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { DocumentInfo, SectorFormValues } from "../../type/trip.type";
 import { Control, Controller, useFieldArray } from "react-hook-form";
 
-import MediaUpload from "../../../../../components/MediaUpload";
+import MediaUpload from "@/components/MediaUpload";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 

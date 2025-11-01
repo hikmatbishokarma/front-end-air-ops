@@ -11,25 +11,26 @@ import moment from "moment";
 import { useLocation, useNavigate } from "react-router";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import { useQuoteSummaryData } from "../features/quotes/hooks/useQuoteSummaryData";
-import { useQuoteData } from "../features/quotes/hooks/useQuoteData";
-import { useSession } from "../SessionContext";
-import { Iclient } from "../interfaces/quote.interface";
-import DashboardBoardSection from "../components/DashboardBoardSection";
+import { useQuoteSummaryData } from "@/features/quotes/hooks/useQuoteSummaryData";
+import { useQuoteData } from "@/features/quotes/hooks/useQuoteData";
+import { useSession } from "@/app/providers";
+import { Iclient } from "@/features/quotes/types/interfaces";
+import DashboardBoardSection from "@/components/DashboardBoardSection";
 import {
   getEnumKeyByValue,
   QuotationStatus,
   SalesCategoryLabels,
-} from "../lib/utils";
-import QuoteList from "../features/quotes/pages/List";
-import { CustomDialog } from "../components/CustomeDialog";
-import InvoicePreview from "../components/invoice-preview";
-import SaleConfirmationPreview from "../components/SaleConfirmationPreview";
-import FilterPanel from "../features/quotes/components/FilterPanel";
-import InvoiceList from "../features/invoices/pages/List";
-import { useDateRangeFilter } from "../hooks/useDateRangeFilter";
-import { IStatCard, QuoteFilter } from "../interfaces/common.interface";
-import StatCard from "../components/DashboardBoardSection";
+} from "@/shared/utils";
+import QuoteList from "@/features/quotes/pages/List";
+import { CustomDialog } from "@/components/CustomeDialog";
+import InvoicePreview from "@/features/invoices/components/InvoicePreview";
+import SaleConfirmationPreview from "@/features/quotes/components/SaleConfirmationPreview";
+import FilterPanel from "@/features/quotes/components/FilterPanel";
+import InvoiceList from "@/features/invoices/pages/List";
+import { useDateRangeFilter } from "@/hooks/useDateRangeFilter";
+import { IStatCard } from "@/shared/types/common";
+import { QuoteFilter } from "@/features/quotes/types/interfaces";
+import StatCard from "@/components/DashboardBoardSection";
 
 export const singularMap = {
   Quotes: "Quote",

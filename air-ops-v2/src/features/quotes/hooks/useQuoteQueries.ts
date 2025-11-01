@@ -6,11 +6,11 @@ import {
   useState,
 } from "react";
 // 💡 ASSUMPTION: Update paths to your shared utilities and GQL definitions
-import useGql from "../../../lib/graphql/gql";
-import { CHECK_FOR_PASSENGER } from "../../../lib/graphql/queries/passenger-detail";
-import { useSnackbar } from "../../../SnackbarContext";
-import { QuotationStatus, SalesCategoryLabels } from "../../../lib/utils";
-import { GET_QUOTES, SHOW_PREVIEW } from "../../../lib/graphql/queries/quote";
+import useGql from "@/lib/graphql/gql";
+import { CHECK_FOR_PASSENGER } from "@/lib/graphql/queries/passenger-detail";
+import { useSnackbar } from "@/app/providers";
+import { QuotationStatus, SalesCategoryLabels } from "@/shared/utils";
+import { GET_QUOTES, SHOW_PREVIEW } from "@/lib/graphql/queries/quote";
 
 /**
  * Hook to check the existence of a Passenger Details record for a given quotation.

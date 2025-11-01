@@ -17,17 +17,17 @@ import {
   MenuItem,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { useSession } from "../../../SessionContext";
+import { useSession } from "@/app/providers";
 import { useNavigate } from "react-router";
-import { useSnackbar } from "../../../SnackbarContext";
-import SaleConfirmationPreview from "../../../components/SaleConfirmationPreview";
+import { useSnackbar } from "@/app/providers";
+import SaleConfirmationPreview from "../../quotes/components/SaleConfirmationPreview";
 import { CustomDialog } from "../../../components/CustomeDialog";
 import {
   FlightCategoryEnum,
   FlightCategoryKey,
   QuotationStatus,
   SalesCategoryLabels,
-} from "../../../lib/utils";
+} from "../../../shared/utils";
 
 import SectorTooltip from "../../../components/SectorTooltip";
 import { useQuoteListData } from "../../quotes/hooks/useQuoteQueries";

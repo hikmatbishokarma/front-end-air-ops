@@ -20,7 +20,7 @@ import {
 } from "@mui/icons-material";
 import logoPhn from "./Asset/images/logo_phn.png";
 
-import { useSession } from "./SessionContext"; // import your hook
+import { useSession } from "./app/providers"; // import your hook
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 import AirplaneTicketOutlineIcon from "@mui/icons-material/AirplaneTicketOutlined";

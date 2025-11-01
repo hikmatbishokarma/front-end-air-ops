@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete"; // ⬅️ New Import
-import { FileObject } from "../interfaces/common.interface";
+import { FileObject } from "@/shared/types/common";
 
 // Example: replace this with your actual API base URL
 const apiBaseUrl =
@@ -231,7 +231,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<number>(0);
-  const fileInputRef = useRef(null); // Type assertion removed for simplicity in this context
+  const fileInputRef = useRef(null);
 
   // --- Upload Handlers ---
 

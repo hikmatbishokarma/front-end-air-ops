@@ -16,7 +16,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { Moment } from "moment";
-import { Iclient } from "../../../interfaces/quote.interface";
+import { Iclient } from "@/features/quotes/types/interfaces";
 
 // 2. Props Interface for FilterPanel
 interface FilterPanelProps {

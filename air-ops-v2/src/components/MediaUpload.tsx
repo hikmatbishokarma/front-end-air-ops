@@ -21,7 +21,7 @@ import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import DownloadIcon from "@mui/icons-material/Download";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit"; // For "Change" button icon
-import { FileObject } from "../interfaces/common.interface";
+import { FileObject } from "@/shared/types/common";
 
 // Example: replace this with your actual API base URL
 const apiBaseUrl =

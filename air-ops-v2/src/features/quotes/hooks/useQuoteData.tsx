@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
-import useGql from "../../../lib/graphql/gql";
-import { GET_AIRCRAFT_CATEGORIES } from "../../../lib/graphql/queries/aircraft-categories";
-import { GET_AIRCRAFT } from "../../../lib/graphql/queries/aircraft-detail";
-import { GET_REPRESENTATIVES } from "../../../lib/graphql/queries/representative";
-import { GET_CLIENTS } from "../../../lib/graphql/queries/clients";
+import useGql from "@/lib/graphql/gql";
+import { GET_AIRCRAFT_CATEGORIES } from "@/lib/graphql/queries/aircraft-categories";
+import { GET_AIRCRAFT } from "@/lib/graphql/queries/aircraft-detail";
+import { GET_REPRESENTATIVES } from "@/lib/graphql/queries/representative";
+import { GET_CLIENTS } from "@/lib/graphql/queries/clients";
 import {
   Iaircraft,
   IaircraftCategory,
   Iclient,
   Irepresentative,
-} from "../../../interfaces/quote.interface";
-import { useSession } from "../../../SessionContext";
+} from "@/features/quotes/types/interfaces";
+import { useSession } from "@/app/providers";
 
 export const useQuoteData = () => {
   const { session, loading } = useSession();

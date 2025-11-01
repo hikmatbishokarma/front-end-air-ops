@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
-import { useSnackbar } from "../../../SnackbarContext";
-import { useSession } from "../../../SessionContext";
+import { useSnackbar } from "@/app/providers";
+import { useSession } from "@/app/providers";
 import { useGqlMutation } from "../../../shared/hooks/useGqlMutation";
-import { calculateFlightTime } from "../../../lib/utils";
+import { calculateFlightTime } from "../../../shared/utils";
 import { CREATE_TRIP } from "../../../lib/graphql/queries/trip-detail";
 
 export const useCreateTripMutation = () => {

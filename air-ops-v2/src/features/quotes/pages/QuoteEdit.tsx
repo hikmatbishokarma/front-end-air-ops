@@ -1,17 +1,14 @@
 // src/pages/quotes/QuoteEdit.tsx
 import React, { useEffect, useState } from "react";
 
-import {
-  GET_QUOTE_BY_ID,
-  UPDATE_QUOTE,
-} from "../../../lib/graphql/queries/quote";
-import useGql from "../../../lib/graphql/gql";
-import { useSession } from "../../../SessionContext";
+import { GET_QUOTE_BY_ID, UPDATE_QUOTE } from "@/lib/graphql/queries/quote";
+import useGql from "@/lib/graphql/gql";
+import { useSession } from "@/app/providers";
 import { useNavigate, useParams } from "react-router";
 import { Typography } from "@mui/material";
 
 import { useQuoteData } from "../hooks/useQuoteData";
-import { useSnackbar } from "../../../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 import { useUpdateQuote } from "../hooks/useQuoteMutations";
 import QuoteForm from "../components/QuoteForm";
 import { useQuoteEditorData } from "../hooks/useQuoteEditorData";

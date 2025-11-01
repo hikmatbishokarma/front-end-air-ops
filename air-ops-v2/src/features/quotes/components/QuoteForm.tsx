@@ -25,14 +25,14 @@ import ConnectingAirportsIcon from "@mui/icons-material/ConnectingAirports";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import PreviewIcon from "@mui/icons-material/Preview";
 import SectorsStepV2 from "./formSteps/SectorsStepv1";
-import ClientDialog from "../../../pages/clients/dialog";
-import RepresentativeDialog from "../../../pages/representative/dialog";
-import { categoryOptions } from "../../../lib/utils";
+import ClientDialog from "../../clients/pages/dialog";
+import RepresentativeDialog from "./representative/dialog";
+import { categoryOptions } from "@/shared/utils";
 import {
   Iaircraft,
   Iclient,
   Irepresentative,
-} from "../../../interfaces/quote.interface";
+} from "@/features/quotes/types/interfaces";
 
 interface CustomStepIconProps extends StepIconProps {
   label: string;
