@@ -1,7 +1,15 @@
+export interface SectorLocation {
+  code: string;
+  name: string;
+  city: string;
+  country: string;
+  lat: string;
+  long: string;
+}
 export interface Sector {
   sectorNo?: number;
-  source: string;
-  destination: string;
+  source: SectorLocation;
+  destination: SectorLocation;
   depatureDate: string;
   depatureTime: string;
   arrivalDate: string;

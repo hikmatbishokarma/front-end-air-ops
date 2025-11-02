@@ -55,6 +55,7 @@ import QuoteCreateTest from "./pages/quote/QuoteCreate";
 import QuoteEditTest from "./pages/quote/QuoteEdit";
 import SaleConfirmationPreviewPage from "./pages/quote/SalesConfirmationPreview";
 import PassengerEditPage from "./pages/quote/PassengerEdit";
+import Landingpage from "./pages/landingpage/landingpage";
 
 const router = createBrowserRouter(
   [
@@ -85,6 +86,7 @@ const router = createBrowserRouter(
               path: "security",
               Component: SecurityDashboard,
             },
+             
             {
               path: "library",
               // Component: LibraryDashboard,
@@ -102,6 +104,8 @@ const router = createBrowserRouter(
               path: "crew",
               Component: CrewDashboard,
             },
+
+        
             {
               path: "training-sales",
               Component: TrainingDashboard,
@@ -240,6 +244,10 @@ const router = createBrowserRouter(
           // Component: Login,
           Component: Login,
         },
+        {
+              path: "landingpage",
+              Component: Landingpage,
+            },
       ],
     },
   ],

@@ -1043,7 +1043,7 @@ function MealList({ control, sectorIndex, logoColors }) {
                   >
                     <MenuItem value="Veg">Veg</MenuItem>
                     <MenuItem value="Non-Veg">Non-Veg</MenuItem>
-                    <MenuItem value="NA">NA</MenuItem>
+                    <MenuItem value="Both">Both</MenuItem>
                   </TextField>
                 )}
               />

@@ -35,6 +35,7 @@ import {
   CREATE_TRIP_DETAILS,
 } from "../../../lib/graphql/queries/trip-detail";
 import moment from "moment";
+import SectorTooltip from "../../../components/SectorTooltip";
 
 export const SalesConfirmationList = ({
   quoteList,
@@ -82,59 +83,6 @@ export const SalesConfirmationList = ({
     }
   };
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  const [selectedRow, setSelectedRow] = React.useState<any>(null);
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, row: any) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRow(row); // store the row for later use
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedRow(null);
-  };
-
-  // const onHandelCreateTrip = async (row) => {
-  //   const data = await useGql({
-  //     query: CREATE_TRIP_DETAILS,
-  //     queryName: "createOneTripDetail",
-  //     queryType: "mutation",
-  //     variables: {
-  //       input: {
-  //         tripDetail: {
-  //           operatorId,
-  //           quotation: row.id,
-  //           quotationNo: row.quotationNo,
-  //           sectors: row.sectors.map((sector) => ({
-  //             source: sector.source,
-  //             destination: sector.destination,
-  //             depatureDate: sector.depatureDate,
-  //             depatureTime: sector.depatureTime,
-  //             arrivalTime: sector.arrivalTime,
-  //             arrivalDate: sector.arrivalDate,
-  //             pax: sector.paxNumber || 0,
-  //             flightTime: calculateFlightTime(
-  //               sector.depatureDate,
-  //               sector.depatureTime,
-  //               sector.arrivalDate,
-  //               sector.arrivalTime
-  //             ),
-  //           })),
-  //         },
-  //       },
-  //     },
-  //   });
-
-  //   if (data?.errors) {
-  //     throw new Error(data.errors[0]?.message || "Something went wrong.");
-  //   } else {
-  //     navigate(`/trip-detail/${data.id}`, { state: row });
-  //   }
-
-  //   // navigate(`/trip-detail/${row.id}`, { state: row });
-  // };
-
   const onHandelCreateTrip = async (row) => {
     const data = await useGql({
       query: CREATE_TRIP,
@@ -146,21 +94,45 @@ export const SalesConfirmationList = ({
             operatorId,
             quotation: row.id,
             quotationNo: row.quotationNo,
-            sectors: row.sectors.map((sector) => ({
-              source: sector.source,
-              destination: sector.destination,
-              depatureDate: sector.depatureDate,
-              depatureTime: sector.depatureTime,
-              arrivalTime: sector.arrivalTime,
-              arrivalDate: sector.arrivalDate,
-              pax: sector.paxNumber || 0,
-              flightTime: calculateFlightTime(
-                sector.depatureDate,
-                sector.depatureTime,
-                sector.arrivalDate,
-                sector.arrivalTime
-              ),
-            })),
+            // sectors: row.sectors.map((sector) => ({
+            //   source: sector.source,
+            //   destination: sector.destination,
+            //   depatureDate: sector.depatureDate,
+            //   depatureTime: sector.depatureTime,
+            //   arrivalTime: sector.arrivalTime,
+            //   arrivalDate: sector.arrivalDate,
+            //   pax: sector.paxNumber || 0,
+            //   flightTime: calculateFlightTime(
+            //     sector.depatureDate,
+            //     sector.depatureTime,
+            //     sector.arrivalDate,
+            //     sector.arrivalTime
+            //   ),
+            // })),
+            sectors: row.sectors.map((sector) => {
+              // Destructure to separate __typename from the rest of the object properties
+              // The 'restOfSource' and 'restOfDestination' variables now contain all properties EXCEPT __typename
+              const { __typename: sourceTypename, ...restOfSource } =
+                sector.source;
+              const { __typename: destinationTypename, ...restOfDestination } =
+                sector.destination;
+
+              return {
+                source: restOfSource, // This is the object without __typename
+                destination: restOfDestination, // This is the object without __typename
+                depatureDate: sector.depatureDate,
+                depatureTime: sector.depatureTime,
+                arrivalTime: sector.arrivalTime,
+                arrivalDate: sector.arrivalDate,
+                pax: sector.paxNumber || 0,
+                flightTime: calculateFlightTime(
+                  sector.depatureDate,
+                  sector.depatureTime,
+                  sector.arrivalDate,
+                  sector.arrivalTime
+                ),
+              };
+            }),
           },
         },
       },
@@ -223,7 +195,12 @@ export const SalesConfirmationList = ({
                 </TableCell>
 
                 <TableCell align="right">{row.requester}</TableCell>
-                <TableCell align="right">{row.itinerary}</TableCell>
+                <TableCell
+                  align="right"
+                  // onClick={(event) => event.stopPropagation()}
+                >
+                  <SectorTooltip sectors={row.sectors} />
+                </TableCell>
                 <TableCell align="right">{row.createdAt}</TableCell>
 
                 {/* <TableCell
@@ -263,7 +240,8 @@ export const SalesConfirmationList = ({
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   {/* If the quote is a charter AND it's a new quote */}
                   {row.status === QuotationStatus.SALE_CONFIRMED && (
-                    <Button className="generate_pi12"
+                    <Button
+                      className="generate_pi12"
                       variant="outlined"
                       onClick={() => onHandelCreateTrip(row)}
                     >

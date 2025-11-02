@@ -340,7 +340,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             )}
           </IconButton>
         )}
-        {showGeneratePI && (
+        {/* {showGeneratePI && (
           <Tooltip
             title={`Generate Proforma Invoice for QuotationNo: ${currentQuotation}`}
             arrow
@@ -385,7 +385,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
               <AddCircleOutlineIcon />
             </IconButton>
           </Tooltip>
-        )}
+        )} */}
       </Box>
 
       <InvoiceConfirmationModal

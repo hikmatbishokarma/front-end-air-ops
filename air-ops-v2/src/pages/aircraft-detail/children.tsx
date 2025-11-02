@@ -8,6 +8,9 @@ import {
   Switch,
   TextField,
   IconButton,
+  Stack,
+  Divider,
+  Typography,
 } from "@mui/material";
 import { Controller, Control, SubmitHandler } from "react-hook-form";
 import useGql from "../../lib/graphql/gql";
@@ -19,6 +22,7 @@ import FileUpload from "../../components/fileupload";
 import Editor from "../../components/Editor";
 import MultiFileUpload from "../../components/MultiFileUploader";
 import { useSession } from "../../SessionContext";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface AircraftCategory {
   id: string;
@@ -105,6 +109,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
       </Grid>
 
       <Grid item xs={12}>
+        <Typography>Note:</Typography>
         <Controller
           name="noteText"
           control={control}
@@ -113,7 +118,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           )}
         />
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <Controller
           name="warningText"
           control={control}
@@ -129,8 +134,8 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
             <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
-      </Grid>
-      <Grid item xs={12}>
+      </Grid> */}
+      {/* <Grid item xs={12}>
         <Controller
           name="description"
           control={control}
@@ -138,79 +143,229 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
             <Editor value={field.value || ""} onChange={field.onChange} />
           )}
         />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };
+
+// export const SpecificationStep = ({
+//   control,
+//   specificationsField,
+//   removeSpecification,
+//   appendSpecification,
+// }) => (
+//   <>
+//     <Box
+//       sx={{
+//         maxWidth: 700,
+//         mx: "auto",
+//         mt: 3,
+//         p: 2,
+//         border: "2px solid #ddd",
+//         borderRadius: 2,
+//       }}
+//     >
+//       {specificationsField.map((item, index) => (
+//         <Grid
+//           container
+//           spacing={2}
+//           key={item.id}
+//           alignItems="center"
+//           sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
+//         >
+//           <Grid item xs={6}>
+//             <Controller
+//               name={`specifications.${index}.title`}
+//               control={control}
+//               render={({ field }) => (
+//                 <TextField
+//                   {...field}
+//                   size="small"
+//                   label="Title"
+//                   fullWidth
+//                   required={true}
+//                 />
+//               )}
+//             />
+//           </Grid>
+//           <Grid item xs={5}>
+//             <Controller
+//               name={`specifications.${index}.value`}
+//               control={control}
+//               render={({ field }) => (
+//                 <TextField
+//                   {...field}
+//                   size="small"
+//                   label="Value"
+//                   fullWidth
+//                   required={true}
+//                 />
+//               )}
+//             />
+//           </Grid>
+
+//           <Grid item xs={1}>
+//             <IconButton
+//               onClick={() => removeSpecification(index)}
+//               color="error"
+//             >
+//               <Delete fontSize="small" />
+//             </IconButton>
+//           </Grid>
+//         </Grid>
+//       ))}
+
+//       {/* <Button
+//         variant="outlined"
+//         startIcon={<AddIcon />}
+//         onClick={() => appendSpecification({ title: "", value: "" })}
+//       >
+//         Add Itinerary
+//       </Button> */}
+
+//       <IconButton onClick={() => appendSpecification({ title: "", value: "" })}>
+//         <AddIcon fontSize="small" />
+//       </IconButton>
+//     </Box>
+//   </>
+// );
 
 export const SpecificationStep = ({
   control,
   specificationsField,
   removeSpecification,
   appendSpecification,
-}) => (
-  <>
-    <Box sx={{ flex: 0.4, pr: 2 }}>
-      {specificationsField.map((item, index) => (
-        <Grid
-          container
-          spacing={2}
-          key={item.id}
-          alignItems="center"
-          sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
-        >
-          <Grid item xs={6}>
-            <Controller
-              name={`specifications.${index}.title`}
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  size="small"
-                  label="Title"
-                  fullWidth
-                  required={true}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={5}>
-            <Controller
-              name={`specifications.${index}.value`}
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  size="small"
-                  label="Value"
-                  fullWidth
-                  required={true}
-                />
-              )}
-            />
-          </Grid>
+}) => {
+  // Check if the list is empty
+  const isListEmpty = specificationsField.length === 0;
 
-          <Grid item xs={1}>
-            <IconButton
-              onClick={() => removeSpecification(index)}
-              color="error"
+  // Common function for the append action
+  const handleAppend = () => appendSpecification({ title: "", value: "" });
+
+  // --- Component JSX ---
+
+  return (
+    <Box
+    // sx={{
+    //   maxWidth: 700,
+    //   mx: "auto",
+    //   mt: 3,
+    //   p: 2,
+    //   border: "2px solid #ddd",
+    //   borderRadius: 2,
+    // }}
+    >
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Define the key specifications (e.g., performance, dimensions, capacity)
+        for this aircraft category.
+      </Typography>
+
+      {/* List of Specifications (Renders only if items exist) */}
+      {!isListEmpty && (
+        <Stack spacing={1.5} sx={{ mb: 3 }}>
+          {specificationsField.map((item, index) => (
+            <Grid
+              container
+              spacing={2}
+              key={item.id}
+              alignItems="center"
+              sx={{ mt: 2, borderBottom: "1px solid #ddd", pb: 2 }}
             >
-              <Delete fontSize="small" />
-            </IconButton>
-          </Grid>
-        </Grid>
-      ))}
+              {/* Title Field */}
+              <Grid item xs={5.5}>
+                <Controller
+                  name={`specifications.${index}.title`}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      size="small"
+                      placeholder="Title"
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
 
-      <Button
-        variant="outlined"
-        startIcon={<AddIcon />}
-        onClick={() => appendSpecification({ title: "", value: "" })}
-      >
-        Add Itinerary
-      </Button>
+              {/* Value Field */}
+              <Grid item xs={5.5}>
+                <Controller
+                  name={`specifications.${index}.value`}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      size="small"
+                      placeholder="Value"
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+
+              {/* Delete Button */}
+              <Grid item xs={1}>
+                <IconButton
+                  onClick={() => removeSpecification(index)}
+                  color="error"
+                  size="small"
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Grid>
+            </Grid>
+          ))}
+        </Stack>
+      )}
+
+      {/* ⭐️ Dynamic Action Area ⭐️ */}
+      {isListEmpty ? (
+        // --- 1. EMPTY STATE: Centered Full-Width Action ---
+        <Box
+          onClick={handleAppend}
+          sx={{
+            p: 4,
+            border: "2px dashed #bbb", // Prominent dashed border
+            borderRadius: 1,
+            textAlign: "center",
+            backgroundColor: "#fafafa",
+            cursor: "pointer",
+            // Optional: Add icon/text vertically centered
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <AddIcon color="primary" sx={{ fontSize: 40, mb: 1 }} />
+          <Typography
+            variant="subtitle1"
+            color="primary"
+            sx={{ fontWeight: 600 }}
+          >
+            Add Aircraft Specification
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            Click here to start defining specifications.
+          </Typography>
+        </Box>
+      ) : (
+        // --- 2. POPULATED STATE: Left-Aligned Text Button ---
+
+        <Box sx={{ mt: 2, textAlign: "left" }}>
+          <IconButton
+            onClick={() => appendSpecification({ title: "", value: "" })}
+            size="small"
+            color="primary"
+            aria-label="add specification" // Still good for accessibility
+          >
+            <AddIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      )}
     </Box>
-  </>
-);
+  );
+};
 
 export const TermsStep = ({ control }: { control: any }) => (
   <>
@@ -227,7 +382,15 @@ export const TermsStep = ({ control }: { control: any }) => (
 );
 
 // components/steps/MediaStep.tsx
-export const MediaStep = ({ control }: { control: any }) => (
+export const MediaStep = ({
+  control,
+  setValue,
+  getValues,
+}: {
+  control: any;
+  setValue: any;
+  getValues: any;
+}) => (
   <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
     <Grid item xs={6}>
       <Controller
@@ -237,17 +400,9 @@ export const MediaStep = ({ control }: { control: any }) => (
           <FileUpload
             value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
-            label="Flight Images"
+            label="Flight"
             category="aircraft"
           />
-
-          // <MultiFileUpload
-          //   value={field.value || []}
-          //   onUpload={(url) => field.onChange([...(field.value || []), url])}
-          //   onChange={field.onChange} // Pass for deletion handling
-          //   label="Flight Images"
-          //   category="aircraft"
-          // />
         )}
       />
     </Grid>
@@ -259,27 +414,12 @@ export const MediaStep = ({ control }: { control: any }) => (
           <FileUpload
             value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
-            label="Seat Layout Image"
+            label="Seat Layout"
             category="aircraft"
           />
         )}
       />
     </Grid>
-    <Grid item xs={6}>
-      <Controller
-        name="rangeMapImage"
-        control={control}
-        render={({ field }) => (
-          <FileUpload
-            value={field.value}
-            onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
-            label="Range Map Image"
-            category="aircraft"
-          />
-        )}
-      />
-    </Grid>
-
     <Grid item xs={6}>
       <Controller
         name="warningImage"
@@ -288,8 +428,27 @@ export const MediaStep = ({ control }: { control: any }) => (
           <FileUpload
             value={field.value}
             onUpload={(url) => field.onChange(url)} // Update form value with uploaded URL
-            label="Warning Image"
+            label="Warning"
             category="aircraft"
+          />
+        )}
+      />
+    </Grid>
+
+    <Grid item xs={6}>
+      <Controller
+        name="flightInteriorImages"
+        control={control}
+        render={({ field }) => (
+          <MultiFileUpload
+            value={field.value || []}
+            // field.onChange handles deletions (single value is array after filtering)
+            onChange={field.onChange}
+            label="Flight Interior"
+            category="flight_media"
+            // ⭐️ Simplified: Just pass the RHF field change function
+            // The MultiFileUpload component will now handle the array aggregation
+            onUpload={field.onChange} // We will change MultiFileUpload to use this differently
           />
         )}
       />

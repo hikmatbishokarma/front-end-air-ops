@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { ClientType } from "../../../lib/utils";
+import EditIcon from "@mui/icons-material/Edit";
 
 const EnquiryStep = ({
   control,
@@ -21,6 +22,7 @@ const EnquiryStep = ({
   selectedClient,
   setSubDialogOpen,
   setRepresentativeDialogOpen,
+  isEdit = { isEdit },
 }) => {
   console.log("aircrafts:::", aircrafts);
   return (
@@ -156,7 +158,7 @@ const EnquiryStep = ({
               color="primary"
               onClick={() => setSubDialogOpen(true)}
             >
-              <AddIcon />
+              {isEdit ? <EditIcon /> : <AddIcon />}
             </IconButton>
           </Grid>
 
@@ -210,7 +212,7 @@ const EnquiryStep = ({
                   color="primary"
                   onClick={() => setRepresentativeDialogOpen(true)}
                 >
-                  <AddIcon />
+                  {isEdit ? <EditIcon /> : <AddIcon />}
                 </IconButton>
               </Grid>
             </>

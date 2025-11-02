@@ -48,6 +48,7 @@ type FormValues = {
   flightImages: [string];
   seatLayoutImage: string;
   rangeMapImage: string;
+  flightInteriorImages: [string];
 };
 
 export const AircraftDetailCreate = ({ onClose, refreshList }) => {
@@ -57,67 +58,15 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
 
   const operatorId = session?.user.operator?.id || null;
 
-  // const methods = useForm<FormValues>({
-  //   mode: "onTouched", // or "onSubmit"
-  //   reValidateMode: "onChange",
-  // });
-
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   watch,
-  //   setValue,
-  //   setError,
-  //   formState: { errors },
-  // } = useForm<FormValues>({
-  //   defaultValues: {
-  //     name: "",
-  //     code: "",
-  //     description: "",
-  //     noteText: "",
-  //     warningText: "",
-  //     category: {},
-  //     specifications: [],
-  //     termsAndConditions: "",
-  //     isActive: true,
-  //     warningImage: "",
-  //     flightImages: undefined,
-  //     seatLayoutImage: "",
-  //     rangeMapImage: "",
-  //   },
-  // });
-
-  // const [aircraftCategories, setAircraftCategories] = useState<
-  //   AircraftCategory[]
-  // >([]);
-
-  // const getAircraftCategories = async () => {
-  //   try {
-  //     const data = await useGql({
-  //       query: GET_AIRCRAFT_CATEGORIES,
-  //       queryName: "aircraftCategories",
-  //       queryType: "query",
-  //       variables: {},
-  //     });
-  //     setAircraftCategories(data);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getAircraftCategories();
-  // }, []);
-
   const methods = useForm<FormValues>({
     mode: "onTouched",
     reValidateMode: "onChange",
     defaultValues: {
       name: "",
       code: "",
-      description: "",
+      // description: "",
       noteText: "",
-      warningText: "",
+      // warningText: "",
       // category: null,
       specifications: [],
       termsAndConditions: "",
@@ -126,6 +75,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
       flightImages: undefined,
       seatLayoutImage: "",
       rangeMapImage: "",
+      flightInteriorImages: [],
     },
   });
 
@@ -135,6 +85,7 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
     watch,
     setValue,
     setError,
+    getValues,
     formState: { errors },
   } = methods;
 
@@ -213,7 +164,13 @@ export const AircraftDetailCreate = ({ onClose, refreshList }) => {
           />
         )}
         {activeStep === 2 && <TermsStep control={control} />}
-        {activeStep === 3 && <MediaStep control={control} />}
+        {activeStep === 3 && (
+          <MediaStep
+            control={control}
+            setValue={setValue}
+            getValues={getValues}
+          />
+        )}
       </StepperFormLayout>
     </FormProvider>
   );

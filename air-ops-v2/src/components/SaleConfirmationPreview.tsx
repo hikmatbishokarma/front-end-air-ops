@@ -66,7 +66,7 @@ const SaleConfirmationPreview: React.FC<SaleConfirmationPreviewProps> = ({
         onGenerateInvoice={onGenerateInvoice}
       />
       {/* A4 size container */}
-      <Paper
+      {/* <Paper
         elevation={3}
         sx={{
           padding: 2,
@@ -75,13 +75,18 @@ const SaleConfirmationPreview: React.FC<SaleConfirmationPreviewProps> = ({
           overflow: "auto",
           position: "relative",
         }}
-      >
-        {/* Invoice content */}
-        <div
-          ref={componentRef}
-          dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-        />
-      </Paper>
+      > */}
+      {/* Invoice content */}
+      <div
+        // style={{
+        //   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)", // Example shadow
+        //   padding: "15px",
+        //   backgroundColor: "white",
+        // }}
+        ref={componentRef}
+        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+      />
+      {/* </Paper> */}
     </Box>
   );
 };

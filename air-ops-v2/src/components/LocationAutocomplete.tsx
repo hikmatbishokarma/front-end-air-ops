@@ -1,96 +1,3 @@
-// import { useEffect, useState } from "react";
-// import useGql from "../lib/graphql/gql";
-// import { GET_AIRPORTS } from "../lib/graphql/queries/airports";
-// import { Autocomplete, TextField } from "@mui/material";
-
-// type Airport = {
-//   id: string;
-//   iata_code: string;
-//   icao_code: string;
-//   name: string;
-//   city: string;
-// };
-
-// const LocationAutocomplete = ({
-//   value,
-//   onChange,
-//   label,
-//   isRequired = false,
-//   error = null,
-// }: any) => {
-//   const [inputValue, setInputValue] = useState("");
-//   const [options, setOptions] = useState<Airport[]>([]);
-//   const [loading, setLoading] = useState(false);
-
-//   // Fetch airports dynamically
-//   useEffect(() => {
-//     const fetchAirports = async () => {
-//       if (!inputValue) return;
-//       setLoading(true);
-
-//       try {
-//         const response = await useGql({
-//           query: GET_AIRPORTS,
-//           queryName: "airports",
-//           queryType: "query",
-//           variables: {
-//             filter: {
-//               or: [
-//                 { name: { iLike: inputValue } },
-//                 { city: { iLike: inputValue } },
-//                 { iata_code: { iLike: inputValue } },
-//                 { icao_code: { iLike: inputValue } },
-//               ],
-//             },
-//           },
-//         });
-
-//         setOptions(response || []);
-//       } catch (error) {
-//         console.error("Error fetching airports:", error);
-//         setOptions([]);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     const debounce = setTimeout(fetchAirports, 300);
-//     return () => clearTimeout(debounce);
-//   }, [inputValue]);
-
-//   return (
-//     <Autocomplete
-//       getOptionLabel={(option) =>
-//         option ? `${option.iata_code}, ${option.city}` : ""
-//       }
-//       options={options}
-//       value={value || null} // now value is the full airport object
-//       onInputChange={(_, newValue) => setInputValue(newValue)}
-//       onChange={(_, selectedOption) => {
-//         onChange(selectedOption); // return full object
-//       }}
-//       renderOption={(props, option) => (
-//         <li {...props} style={{ display: "flex", flexDirection: "column" }}>
-//           <span style={{ fontWeight: "bold" }}>{option.iata_code}</span>
-//           <span>{`${option.city}, ${option.name}`}</span>
-//         </li>
-//       )}
-//       renderInput={(params) => (
-//         <TextField
-//           {...params}
-//           label={label}
-//           fullWidth
-//           placeholder={label}
-//           required={isRequired}
-//           size="small"
-//           error={!!error}
-//           helperText={error?.message}
-//         />
-//       )}
-//     />
-//   );
-// };
-
 import React, { useState, useEffect } from "react";
 import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import useGql from "../lib/graphql/gql";
@@ -174,9 +81,9 @@ const LocationAutocomplete = ({
         ...options,
       ]}
       getOptionLabel={(option) =>
-        option.iata_code === "ZZZZ"
+        option.icao_code === "ZZZZ"
           ? "ZZZZ - Heliport"
-          : `${option.iata_code}, ${option.city} (${option.name})`
+          : `${option.icao_code}, ${option.city} (${option.name})`
       }
       filterOptions={(opts, params) => {
         const input = params.inputValue.toLowerCase();
@@ -191,9 +98,9 @@ const LocationAutocomplete = ({
       value={
         value?.code
           ? value.code === "ZZZZ"
-            ? { iata_code: "ZZZZ", name: "Heliport", city: "" }
+            ? { icao_code: "ZZZZ", name: "Heliport", city: "" }
             : {
-                iata_code: value.code,
+                icao_code: value.code,
                 name: value.name,
                 city: value.city,
               }
@@ -206,11 +113,11 @@ const LocationAutocomplete = ({
           return;
         }
 
-        if (selected.iata_code === "ZZZZ") {
+        if (selected.icao_code === "ZZZZ") {
           onChange({ code: "ZZZZ" }); // custom card will handle name/lat/long
         } else {
           onChange({
-            code: selected.iata_code,
+            code: selected.icao_code,
             name: selected.name,
             city: selected.city,
             country: selected.country,
