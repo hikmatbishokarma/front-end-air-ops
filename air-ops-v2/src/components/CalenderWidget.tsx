@@ -25,15 +25,15 @@ import CircleIcon from "@mui/icons-material/Circle";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import useGql from "../lib/graphql/gql";
 import { GET_LEAVES } from "../lib/graphql/queries/leave";
-import { useSnackbar } from "../SnackbarContext";
-import { LeaveType } from "../lib/utils";
+import { useSnackbar } from "@/app/providers";
+import { LeaveType } from "../shared/utils";
 import { FLIGHT_SEGMENTS_FOR_CALENDER } from "../lib/graphql/queries/quote";
 import NoScheduleFound from "./NoScheduleFound";
 import { useNavigate } from "react-router";
 
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
-import { useSession } from "../SessionContext";
+import { useSession } from "@/app/providers";
 
 // export const FlightCalendarWidget = () => {
 //   const [flightEvents, setFlightEvents] = useState<any[]>([]);

@@ -1,0 +1,266 @@
+import React, { useEffect, useState } from "react";
+
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+
+import useGql from "../../../lib/graphql/gql";
+import { useSnackbar } from "@/app/providers";
+
+import AirportChildren from "../components/children";
+import { CREATE_AIRPORT } from "../../../lib/graphql/queries/airports";
+
+type FormValues = {
+  type: string;
+  name: string;
+  iata_code: string;
+  icao_code: string;
+  city: string;
+  latitude: string;
+  longitude: string;
+  country: string;
+  state: string;
+  openHrs: string;
+  closeHrs: string;
+  contactNumber: string;
+  email: string;
+  elevation: number;
+  approaches: string;
+  longestPrimaryRunway: string;
+  runwaySurface: string;
+  airportLightIntensity: string;
+  airportOfEntry: string;
+  fireCategory: number;
+  slotsRequired: string;
+  handlingMandatory: string;
+  groundHandlersInfo: any[];
+  fuelSuppliers: any[];
+};
+
+export const AirportCreate = ({ onClose, refreshList }) => {
+  const showSnackbar = useSnackbar();
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    setError,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      type: "",
+      name: "",
+      iata_code: "",
+      icao_code: "",
+      city: "",
+      latitude: "",
+      longitude: "",
+      country: "",
+      state: "",
+      contactNumber: "",
+      email: "",
+      elevation: 0,
+      approaches: "",
+      longestPrimaryRunway: "",
+      runwaySurface: "",
+      airportLightIntensity: "",
+      airportOfEntry: "",
+      fireCategory: 0,
+      slotsRequired: "",
+      handlingMandatory: "",
+      groundHandlersInfo: [],
+      fuelSuppliers: [],
+    },
+  });
+
+  const {
+    fields: groundHandlersInfo,
+    append: addGroundHandler,
+    remove: removeGroundHandler,
+  } = useFieldArray({
+    control,
+    name: "groundHandlersInfo",
+  });
+
+  const {
+    fields: fuelSuppliers,
+    append: addFuelSupplier,
+    remove: removeFuelSupplier,
+  } = useFieldArray({
+    control,
+    name: "fuelSuppliers",
+  });
+
+  const createFields = [
+    {
+      name: "type",
+      label: "Airport Type",
+      required: true,
+      options: [
+        { key: "Civil", value: "Civil" },
+        { key: "Heliport", value: "Heliport" },
+        { key: "Air Strip", value: "Air Strip" },
+        { key: "Joint Civil / Military", value: "Joint Civil / Military" },
+        { key: "Military", value: "Military" },
+      ],
+    },
+    { name: "name", label: "Airport Name", required: true },
+    { name: "iata_code", label: "IATA Code", required: true },
+    { name: "icao_code", label: "ICAO Code", xs: 6, required: true },
+    { name: "country", label: "Country", xs: 6, options: [], required: true },
+    { name: "state", label: "State", xs: 6, options: [], required: false },
+    { name: "city", label: "City", xs: 6, options: [], required: true },
+    {
+      name: "latitude",
+      label: "Latitude",
+      xs: 6,
+      required: true,
+    },
+    {
+      name: "longitude",
+      label: "Longitude",
+      xs: 6,
+      required: true,
+    },
+    { name: "openHrs", label: "Open Hrs", xs: 3, required: true, type: "time" },
+    {
+      name: "closeHrs",
+      label: "Close Hrs",
+      xs: 3,
+      required: true,
+      type: "time",
+    },
+    {
+      name: "elevation",
+      label: "Elevation",
+      xs: 6,
+      required: false,
+      type: "number",
+    },
+    {
+      name: "approaches",
+      label: "Approaches",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "longestPrimaryRunway",
+      label: "Longest Primary Runway",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "runwaySurface",
+      label: "Runway Surface",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "airportLightIntensity",
+      label: "Airport Light Intensity",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "airportOfEntry",
+      label: "Airport Of Entry",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "fireCategory",
+      label: "Fire Category",
+      xs: 6,
+      required: false,
+      type: "number",
+    },
+    {
+      name: "slotsRequired",
+      label: "Slots Required",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "handlingMandatory",
+      label: "Handling Mandatory",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "contactNumber",
+      label: "Contact Number",
+
+      pattern: {
+        value: /^[0-9]{10}$/,
+        message: "Phone number must be 10 digits",
+      },
+      required: true,
+    },
+    {
+      name: "email",
+      label: "Email",
+
+      pattern: {
+        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        message: "Invalid email address",
+      },
+      required: true,
+    },
+  ];
+
+  const CreateAirport = async (formData) => {
+    try {
+      const data = await useGql({
+        query: CREATE_AIRPORT,
+        queryName: "createOneAirport",
+        queryType: "mutation",
+        variables: { input: { airport: formData } },
+      });
+
+      if (!data || data?.errors) {
+        // throw new Error(data?.errors?.[0]?.message || "Something went wrong");
+        showSnackbar(data?.errors?.[0]?.message, "error");
+      } else showSnackbar("Created Successfully", "success");
+    } catch (error) {
+      showSnackbar(error.message || "Failed to create categories!", "error");
+    }
+  };
+
+  const onSubmit = (data: FormValues) => {
+    const formattedData = {
+      ...data,
+    };
+
+    CreateAirport(formattedData);
+    refreshList();
+    onClose();
+  };
+
+  return (
+    <AirportChildren
+      control={control}
+      onSubmit={handleSubmit(onSubmit)}
+      fields={createFields}
+      groundHandlerInfoFields={groundHandlersInfo}
+      addGroundHandler={() =>
+        addGroundHandler({
+          fullName: "",
+          companyName: "",
+          contactNumber: "",
+          alternateContactNumber: "",
+          email: "",
+        })
+      }
+      removeGroundHandler={removeGroundHandler}
+      fuelSuppliersFields={fuelSuppliers}
+      addFuelSupplier={() =>
+        addFuelSupplier({
+          companyName: "",
+          contactNumber: "",
+          alternateContactNumber: "",
+          email: "",
+        })
+      }
+      removeFuelSupplier={removeFuelSupplier}
+    />
+  );
+};

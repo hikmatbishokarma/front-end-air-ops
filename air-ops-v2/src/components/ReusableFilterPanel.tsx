@@ -27,7 +27,7 @@ export default function ReusableFilterPanel({
   children, // custom fields like requester/client/project etc.
   onApply,
   onReset,
-}) {
+}: any) {
   const handleQuickDateSelect = (type) => {
     onDateFilterChange?.(type);
     if (type !== "custom") {

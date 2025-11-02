@@ -4,247 +4,216 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import App from "./App";
 import Layout from "./layouts/dashboard";
 import DashboardPage from "./pages";
-import OrdersPage from "./pages/orders";
-import Category from "./pages/category";
-import SignInPage from "./pages/sign-in";
-import FlightRequestForm from "./pages/test";
-import QuoteList from "./pages/quote/list";
-import QuoteEdit from "./pages/quote/edit";
-import PriceCreate from "./pages/price/Create";
-import PriceList from "./pages/price/list";
-import PriceEdit from "./pages/price/edit";
-import RoleList from "./pages/role/list";
-import RoleCreate from "./pages/role/create";
-import SignUp from "./pages/sign-up";
-import SignIn from "./pages/sign-in";
-import UserList from "./pages/user/list";
-import { UserProfile } from "./pages/settings/profile";
-import RoleEdit from "./pages/role/edit";
-import ChangePassword from "./pages/settings/change-password";
-import { AircraftCategoryList } from "./pages/aircraft-category/list";
-import { AircraftDetailList } from "./pages/aircraft-detail/list";
-import { AirpotList } from "./pages/airports/list";
-import Login from "./pages/login";
-import DashboardIndex from "./pages/dashboard";
-import QuoteCreate from "./pages/quote/create";
-import GenerateInvoice from "./pages/quote/generate-invoice";
-import OpsDashboard from "./pages/dashboard/OpsDashboard";
-import SecurityDashboard from "./pages/dashboard/Security";
-import CamoDashboard from "./pages/dashboard/Camo";
-import EngineeringDashboard from "./pages/dashboard/Engineering";
-import CrewDashboard from "./pages/dashboard/Crew";
-import TrainingDashboard from "./pages/dashboard/Trainingsales";
-import ManualsDashboard from "./pages/dashboard/Manuals";
-import AccountsDashboard from "./pages/dashboard/Accounts";
-import AuditDashboard from "./pages/dashboard/Audit";
-import UserCreate from "./pages/user/create";
-import AgentCreate from "./pages/operator/create";
-import { OperatorList } from "./pages/operator/list";
-import SalesDashboard from "./pages/dashboard/SalesDashboard";
-//import "../src/index.css";
-// import "../dist/assets/styleview.css";
+
+import RoleControllerPage from "@/pages/RoleControllerPage";
+
+import UserControllerPage from "@/pages/UserControllerPage";
+import { UserProfile } from "@/pages/settings/profile";
+import ChangePassword from "@/pages/settings/change-password";
+
+import AircraftControllerPage from "@/pages/AircraftControllerPage";
+import AirportControllerPage from "@/pages/AirportControllerPage";
+import Login from "@/pages/login";
+
+import SecurityControllerPage from "@/pages/SecurityControllerPage";
+import CrewControllerPage from "@/pages/CrewControllerPage";
+import AccountControllerPage from "@/pages/AccountControllerPage";
+import AuditControllerPage from "@/pages/AuditControllerPage";
+import CamoControllerPage from "@/pages/CamoControllerPage";
+import EngineeringControllerPage from "@/pages/EngineeringControllerPage";
+import TrainingControllerPage from "@/pages/TrainingControllerPage";
+
+import OperatorControllerPage from "@/pages/OperatorControllerPage";
+
 import "../src/Asset/Images/Versionstyle.css";
-import { LeaveRequest } from "./pages/leave/LeaveRequestPage";
-import LibraryDashboard from "./pages/dashboard/Library";
-import TripConfirmationCalenderView from "./pages/full-calender-view/TripConfirmation";
-import StaffLeaveCalenderView from "./pages/full-calender-view/LeaveCalender";
-import Library from "./pages/library/List";
-import AviationNSOPForm from "./pages/quote/passanger-detail";
-import TripDetailPage from "./pages/ops/trip/TripDetailPage";
-import QuoteCreateTest from "./pages/quote/QuoteCreate";
-import QuoteEditTest from "./pages/quote/QuoteEdit";
-import SaleConfirmationPreviewPage from "./pages/quote/SalesConfirmationPreview";
-import PassengerEditPage from "./pages/quote/PassengerEdit";
+import { LeaveRequest } from "@/features/leave/pages/LeaveRequestPage";
 
-const router = createBrowserRouter(
-  [
-    {
-      Component: App,
-      children: [
-        {
-          path: "/",
-          Component: Layout,
-          children: [
-            {
-              path: "",
-              Component: DashboardPage,
-              //Component: DashboardIndex,
-            },
+import TripConfirmationCalenderView from "@/features/ops/calendar/TripConfirmation";
+import StaffLeaveCalenderView from "@/features/ops/calendar/LeaveCalender";
+import { LibraryControllerPage } from "@/pages/LibraryControllerPage";
 
-            {
-              path: "quotes",
-              Component: SalesDashboard,
-              //Component: DashboardIndex,
-            },
+import TripDetailPage from "@/features/ops/trip/TripDetailPage";
 
-            {
-              path: "operations",
-              Component: OpsDashboard,
-            },
-            {
-              path: "security",
-              Component: SecurityDashboard,
-            },
-            {
-              path: "library",
-              // Component: LibraryDashboard,
-              Component: Library,
-            },
-            {
-              path: "camo",
-              Component: CamoDashboard,
-            },
-            {
-              path: "engineering",
-              Component: EngineeringDashboard,
-            },
-            {
-              path: "crew",
-              Component: CrewDashboard,
-            },
-            {
-              path: "training-sales",
-              Component: TrainingDashboard,
-            },
-            {
-              path: "manuals",
-              Component: ManualsDashboard,
-            },
-            {
-              path: "accounts",
-              Component: AccountsDashboard,
-            },
-            {
-              path: "audit",
-              Component: AuditDashboard,
-            },
-            // {
-            //   path: "admin/category",
-            //   Component: AircraftCategoryList,
-            // },
-            {
-              path: "admin/aircraft",
-              Component: AircraftDetailList,
-            },
-            {
-              path: "admin/airports",
-              Component: AirpotList,
-            },
-            // {
-            //   path: "flight-form",
-            //   Component: PriceCreate,
-            // },
-            // {
-            //   path: "quotes",
-            //   Component: QuoteList,
-            // },
-            {
-              path: "quotes/edit/:id",
-              // Component: QuoteEdit,
-              Component: QuoteEditTest,
-            },
-            {
-              path: "quotes/create",
-              // Component: QuoteCreate,
+import PassengerEditPage from "@/shared/components/passenger/PassengerEdit";
+import QuoteControllerPage from "@/pages/QuoteControllerPage";
+import {
+  QuoteEdit,
+  QuoteCreate,
+  SalesConfirmationPreview,
+} from "@/features/quotes";
+import SaleConfirmationPreviewPage from "@/features/quotes/pages/SalesConfirmationPreview";
+import OpsControllerPage from "@/pages/OpsControllerPage";
+import ManualControllerPage from "@/pages/ManualControllerPage";
 
-              Component: QuoteCreateTest,
-            },
-            // {
-            //   path: "prices",
-            //   Component: PriceList,
-            // },
-            // {
-            //   path: "prices/edit/:id",
-            //   Component: PriceEdit,
-            // },
-            {
-              path: "admin/roles",
-              Component: RoleList,
-            },
-            {
-              path: "admin/roles/create",
-              Component: RoleCreate,
-            },
-            {
-              path: "admin/roles/edit/:id",
-              Component: RoleEdit,
-            },
-            {
-              path: "admin/users",
-              Component: UserList,
-            },
-            // {
-            //   path: "admin/users/create",
-            //   Component: UserCreate,
-            // },
-            {
-              path: "admin/operators",
-              Component: OperatorList,
-            },
-            {
-              path: "settings/profile",
-              Component: UserProfile,
-            },
-            {
-              path: "settings/leave",
-              Component: LeaveRequest,
-            },
-            {
-              path: "settings/change-password",
-              Component: ChangePassword,
-            },
-            {
-              path: "invoices/preview",
-              Component: GenerateInvoice,
-            },
-            {
-              path: "trip-confirmation/calender",
-              Component: TripConfirmationCalenderView,
-            },
-            {
-              path: "staff-leave/calender",
-              Component: StaffLeaveCalenderView,
-            },
+const router = createBrowserRouter([
+  {
+    Component: App,
+    children: [
+      {
+        path: "/",
+        Component: Layout,
+        children: [
+          {
+            path: "",
+            Component: DashboardPage,
+            //Component: DashboardIndex,
+          },
 
-            // {
-            //   path: "passenger-details",
-            //   Component: AviationNSOPForm,
-            // },
+          {
+            path: "quotes",
+            // Component: SalesDashboard,
+            Component: QuoteControllerPage,
+          },
 
-            {
-              path: "trip-detail/:tripId",
-              Component: TripDetailPage,
-            },
-            {
-              path: "sales-confirmation-preview/:quotationNo",
-              Component: SaleConfirmationPreviewPage,
-            },
-            {
-              path: "passenger-detail/:quotationNo",
-              Component: PassengerEditPage,
-            },
-          ],
-        },
-        // {
-        //   path: "/sign-in",
-        //   Component: SignIn,
-        // },
+          {
+            path: "operations",
+            // Component: OpsDashboard,
+            Component: OpsControllerPage,
+          },
+          {
+            path: "security",
+            Component: SecurityControllerPage,
+          },
+          {
+            path: "library",
+            // Component: LibraryDashboard,
+            Component: LibraryControllerPage,
+          },
+          {
+            path: "camo",
+            Component: CamoControllerPage,
+          },
+          {
+            path: "engineering",
+            Component: EngineeringControllerPage,
+          },
+          {
+            path: "crew",
+            Component: CrewControllerPage,
+          },
+          {
+            path: "training-sales",
+            Component: TrainingControllerPage,
+          },
+          {
+            path: "manuals",
+            // Component: ManualsDashboard,
+            Component: ManualControllerPage,
+          },
+          {
+            path: "accounts",
+            Component: AccountControllerPage,
+          },
+          {
+            path: "audit",
+            Component: AuditControllerPage,
+          },
+          // {
+          //   path: "admin/category",
+          //   Component: AircraftCategoryList,
+          // },
+          {
+            path: "admin/aircraft",
+            Component: AircraftControllerPage,
+          },
+          {
+            path: "admin/airports",
+            Component: AirportControllerPage,
+          },
+          // {
+          //   path: "flight-form",
+          //   Component: PriceCreate,
+          // },
+          // {
+          //   path: "quotes",
+          //   Component: QuoteList,
+          // },
+          {
+            path: "quotes/edit/:id",
+            Component: QuoteEdit,
+          },
+          {
+            path: "quotes/create",
 
-        // {
-        //   path: "/sign-up",
-        //   // Component: Login,
-        //   Component: SignUp,
-        // },
-        {
-          path: "/login",
-          // Component: Login,
-          Component: Login,
-        },
-      ],
-    },
-  ],
-  { basename: "/test" } // ✅ Add this
-);
+            Component: QuoteCreate,
+          },
+          // {
+          //   path: "prices",
+          //   Component: PriceList,
+          // },
+          // {
+          //   path: "prices/edit/:id",
+          //   Component: PriceEdit,
+          // },
+          {
+            path: "admin/roles",
+            Component: RoleControllerPage,
+          },
+          {
+            path: "admin/users",
+            Component: UserControllerPage,
+          },
+          // {
+          //   path: "admin/users/create",
+          //   Component: UserCreate,
+          // },
+          {
+            path: "admin/operators",
+            Component: OperatorControllerPage,
+          },
+          {
+            path: "settings/profile",
+            Component: UserProfile,
+          },
+          {
+            path: "settings/leave",
+            Component: LeaveRequest,
+          },
+          {
+            path: "settings/change-password",
+            Component: ChangePassword,
+          },
+          // {
+          //   path: "invoices/preview",
+          //   Component: GenerateInvoice,
+          // },
+          {
+            path: "trip-confirmation/calender",
+            Component: TripConfirmationCalenderView,
+          },
+          {
+            path: "staff-leave/calender",
+            Component: StaffLeaveCalenderView,
+          },
+
+          // {
+          //   path: "passenger-details",
+          //   Component: AviationNSOPForm,
+          // },
+
+          {
+            path: "trip-detail/:tripId",
+            Component: TripDetailPage,
+          },
+          {
+            path: "sales-confirmation-preview/:quotationNo",
+            Component: SaleConfirmationPreviewPage,
+          },
+          {
+            path: "passenger-detail/:quotationNo",
+            Component: PassengerEditPage,
+          },
+        ],
+      },
+
+      {
+        path: "/login",
+        // Component: Login,
+        Component: Login,
+      },
+    ],
+  },
+]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

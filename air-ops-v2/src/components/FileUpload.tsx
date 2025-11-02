@@ -11,23 +11,17 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete"; // ⬅️ New Import
+import { FileObject } from "@/shared/types/common";
 
 // Example: replace this with your actual API base URL
 const apiBaseUrl =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/"; // Ensure it ends with a slash if needed
 
-// Define the structure of the S3 object stored in your RHF form
-interface S3FileObject {
-  key: string;
-  url: string; // The signed S3 URL (for the frontend)
-}
-
 // Define the component's props interface
 interface FileUploadProps {
-  // RHF value is the S3FileObject or null/undefined
-  value?: S3FileObject | null;
-  // Function to update RHF with the new object or null (for delete)
-  onUpload: (value: S3FileObject | null) => void;
+  value?: FileObject | null;
+
+  onUpload: (value: FileObject | null) => void;
   label?: string;
   category?: string;
   size?: "small" | "medium" | "large" | "banner";
@@ -237,7 +231,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<number>(0);
-  const fileInputRef = useRef(null); // Type assertion removed for simplicity in this context
+  const fileInputRef = useRef(null);
 
   // --- Upload Handlers ---
 
@@ -269,7 +263,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  const handleFileDelete = async (fileObject: S3FileObject) => {
+  const handleFileDelete = async (fileObject: FileObject) => {
     const { key } = fileObject;
     if (!key) return;
 
