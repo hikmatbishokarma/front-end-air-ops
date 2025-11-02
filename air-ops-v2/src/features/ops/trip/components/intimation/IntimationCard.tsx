@@ -36,13 +36,13 @@ export default function IntimationCard({
       </Box>
 
       <Stack direction="row" spacing={1} mt={2}>
-        <Button variant="contained" size="small">
+        <Button variant="contained" size="small" className="resnd_btn">
           Send
         </Button>
-        <Button variant="outlined" size="small">
+        <Button variant="outlined" size="small" className="resnd_btn">
           Resend
         </Button>
-        <Button variant="outlined" color="success" size="small">
+        <Button variant="outlined" color="success" size="small" className="resnd_btn">
           Mark as Confirmed
         </Button>
       </Stack>

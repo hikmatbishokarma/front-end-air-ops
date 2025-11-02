@@ -44,6 +44,7 @@ import {
 import SaleConfirmationPreviewPage from "@/features/quotes/pages/SalesConfirmationPreview";
 import OpsControllerPage from "@/pages/OpsControllerPage";
 import ManualControllerPage from "@/pages/ManualControllerPage";
+import Landingpage from "./pages/landingpage/landingpage";
 
 const router = createBrowserRouter([
   {
@@ -210,6 +211,10 @@ const router = createBrowserRouter([
         path: "/login",
         // Component: Login,
         Component: Login,
+      },
+      {
+        path: "landingpage",
+        Component: Landingpage,
       },
     ],
   },

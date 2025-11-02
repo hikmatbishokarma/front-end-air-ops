@@ -431,12 +431,12 @@ export default function PassengerDetails({
           className="paasenger_details_point"
           title={
             <Stack direction="row" alignItems="center" spacing={1.5}>
-              <FlightTakeoffIcon sx={{ color: logoColors.primary }} />
+              <FlightTakeoffIcon sx={{ color: logoColors.primary }} className="takeofficon"/>
               <Typography variant="h6" fontWeight={800}>
                 Passenger,Catering & Travel -{" "}
                 {tripInfo?.quotation?.aircraft?.name}
               </Typography>
-              <Chip
+              <Chip className="chip-details"
                 label={tripInfo?.quotation?.aircraft?.code}
                 size="small"
                 sx={{
@@ -448,7 +448,7 @@ export default function PassengerDetails({
                 }}
                 variant="outlined"
               />
-              <Chip
+              <Chip className="chip-details"
                 label={quotationNo}
                 size="small"
                 sx={{
