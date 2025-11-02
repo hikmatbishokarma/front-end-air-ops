@@ -14,6 +14,8 @@ import { Controller, Control, SubmitHandler } from "react-hook-form";
 import ReactQuill from "react-quill";
 import Autocomplete from "@mui/material/Autocomplete";
 import CityAutocomplete from "../../../components/city-autocomplete";
+import StateAutocomplete from "../../../components/state-autocomplete";
+import CountryAutocomplete from "../../../components/country-autocomplete";
 import { LocalizationProvider, TimeField } from "@mui/x-date-pickers";
 import moment from "moment";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -83,6 +85,20 @@ const AirportChildren: React.FC<ReusableFormProps> = ({
                     if (field.name === "city") {
                       return (
                         <CityAutocomplete
+                          {...controllerField}
+                          label={field.label}
+                        />
+                      );
+                    } else if (field.name === "state") {
+                      return (
+                        <StateAutocomplete
+                          {...controllerField}
+                          label={field.label}
+                        />
+                      );
+                    } else if (field.name === "country") {
+                      return (
+                        <CountryAutocomplete
                           {...controllerField}
                           label={field.label}
                         />

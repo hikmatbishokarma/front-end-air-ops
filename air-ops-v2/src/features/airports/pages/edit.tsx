@@ -26,12 +26,22 @@ type FormData = {
   icao_code: string;
   city: string;
   country: string;
-  latitude: number;
-  longitude: number;
+  state: string;
+  latitude: string;
+  longitude: string;
   contactNumber: string;
   openHrs: string;
   closeHrs: string;
   email: string;
+  elevation: number;
+  approaches: string;
+  longestPrimaryRunway: string;
+  runwaySurface: string;
+  airportLightIntensity: string;
+  airportOfEntry: string;
+  fireCategory: number;
+  slotsRequired: string;
+  handlingMandatory: string;
   groundHandlersInfo: any[];
   fuelSuppliers: any[];
 };
@@ -55,11 +65,21 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       city: "",
       openHrs: "",
       closeHrs: "",
-      latitude: 0,
-      longitude: 0,
+      latitude: "",
+      longitude: "",
       country: "",
+      state: "",
       contactNumber: "",
       email: "",
+      elevation: 0,
+      approaches: "",
+      longestPrimaryRunway: "",
+      runwaySurface: "",
+      airportLightIntensity: "",
+      airportOfEntry: "",
+      fireCategory: 0,
+      slotsRequired: "",
+      handlingMandatory: "",
       groundHandlersInfo: [],
       fuelSuppliers: [],
     },
@@ -92,12 +112,22 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       setValue("iata_code", airport.iata_code || "");
       setValue("icao_code", airport.icao_code || "");
       setValue("country", airport.country || "");
+      setValue("state", airport.state || "");
       setValue("openHrs", airport.openHrs || "");
       setValue("closeHrs", airport.closeHrs || "");
-      setValue("latitude", airport.latitude || 0);
-      setValue("longitude", airport.longitude || 0);
+      setValue("latitude", airport.latitude || "");
+      setValue("longitude", airport.longitude || "");
       setValue("contactNumber", airport.contactNumber || "");
       setValue("email", airport.email || "");
+      setValue("elevation", airport.elevation || 0);
+      setValue("approaches", airport.approaches || "");
+      setValue("longestPrimaryRunway", airport.longestPrimaryRunway || "");
+      setValue("runwaySurface", airport.runwaySurface || "");
+      setValue("airportLightIntensity", airport.airportLightIntensity || "");
+      setValue("airportOfEntry", airport.airportOfEntry || "");
+      setValue("fireCategory", airport.fireCategory || 0);
+      setValue("slotsRequired", airport.slotsRequired || "");
+      setValue("handlingMandatory", airport.handlingMandatory || "");
       setValue("groundHandlersInfo", airport.groundHandlersInfo || []);
       setValue("fuelSuppliers", airport.fuelSuppliers || []);
     }
@@ -128,8 +158,6 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
   const onSubmit = (data: FormData) => {
     const formattedData = {
       ...data,
-      latitude: Number(data.latitude),
-      longitude: Number(data.longitude),
       groundHandlersInfo: data?.groundHandlersInfo?.map(
         ({ __typename, ...rest }) => rest
       ),
@@ -167,17 +195,31 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       label: "Airport Type",
       required: true,
       options: [
-        { key: "CIVIL", value: "Civil Airport" },
-        { key: "HELIPORT", value: "Heliport" },
-        { key: "AIR_STRIP", value: "Air Strip" },
-        { key: "DEFENCE", value: "Defence Airport" },
+        { key: "Civil", value: "Civil" },
+        { key: "Heliport", value: "Heliport" },
+        { key: "Air Strip", value: "Air Strip" },
+        { key: "Joint Civil / Military", value: "Joint Civil / Military" },
+        { key: "Military", value: "Military" },
       ],
     },
     { name: "name", label: "Airport Name", xs: 6, required: true },
     { name: "iata_code", label: "IATA Code", xs: 6, required: true },
     { name: "icao_code", label: "ICAO Code", xs: 6, required: true },
+    { name: "country", label: "Country", xs: 6, options: [], required: true },
+    { name: "state", label: "State", xs: 6, options: [], required: false },
     { name: "city", label: "City", xs: 6, options: [], required: true },
-    { name: "country", label: "Country", xs: 6, required: true },
+    {
+      name: "latitude",
+      label: "Latitude",
+      xs: 6,
+      required: true,
+    },
+    {
+      name: "longitude",
+      label: "Longitude",
+      xs: 6,
+      required: true,
+    },
     { name: "openHrs", label: "Open Hrs", xs: 3, required: true, type: "time" },
     {
       name: "closeHrs",
@@ -187,14 +229,60 @@ export const AirportEdit = ({ id, onClose, refreshList }) => {
       type: "time",
     },
     {
-      name: "latitude",
-      label: "Latitude",
-      required: true,
+      name: "elevation",
+      label: "Elevation",
+      xs: 6,
+      required: false,
+      type: "number",
     },
     {
-      name: "longitude",
-      label: "Longitude",
-      required: true,
+      name: "approaches",
+      label: "Approaches",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "longestPrimaryRunway",
+      label: "Longest Primary Runway",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "runwaySurface",
+      label: "Runway Surface",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "airportLightIntensity",
+      label: "Airport Light Intensity",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "airportOfEntry",
+      label: "Airport Of Entry",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "fireCategory",
+      label: "Fire Category",
+      xs: 6,
+      required: false,
+      type: "number",
+    },
+    {
+      name: "slotsRequired",
+      label: "Slots Required",
+      xs: 6,
+      required: false,
+    },
+    {
+      name: "handlingMandatory",
+      label: "Handling Mandatory",
+      xs: 6,
+      required: false,
     },
     {
       name: "contactNumber",

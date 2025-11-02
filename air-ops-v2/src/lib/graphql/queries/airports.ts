@@ -44,6 +44,7 @@ export const GET_AIRPORT_BY_ID = gql`
       name
       city
       country
+      state
       iata_code
       icao_code
       latitude
@@ -53,6 +54,15 @@ export const GET_AIRPORT_BY_ID = gql`
       openHrs
       closeHrs
       type
+      elevation
+      approaches
+      longestPrimaryRunway
+      runwaySurface
+      airportLightIntensity
+      airportOfEntry
+      fireCategory
+      slotsRequired
+      handlingMandatory
       groundHandlersInfo {
         fullName
         companyName
