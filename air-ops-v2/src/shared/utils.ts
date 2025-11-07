@@ -405,3 +405,5 @@ export const QuotationStatusMap: Record<string, QuotationStatus> = {
   PAX_ADDED: QuotationStatus.PAX_ADDED,
   TRIP_GENERATED: QuotationStatus.TRIP_GENERATED,
 };
+
+export const fmtDate = (iso: string) => moment(iso).format("dddd, MMM D");

@@ -523,6 +523,8 @@ export default function Layout() {
     }
   }, [session, handleNewNotification, fetchNotifications]); // Dependencies: session (for user data), and callbacks
 
+  // Note: Authentication and permission checks are now handled by ProtectedRoute
+  // This component assumes user is already authenticated and authorized
   if (loading) {
     return (
       <div style={{ width: "100%" }}>
@@ -531,6 +533,8 @@ export default function Layout() {
     );
   }
 
+  // Additional safety check - should not reach here if not authenticated
+  // (ProtectedRoute handles redirect)
   if (!session) {
     const redirectTo = `/login?callbackUrl=${encodeURIComponent(location.pathname)}`;
     return <Navigate to={redirectTo} replace />;

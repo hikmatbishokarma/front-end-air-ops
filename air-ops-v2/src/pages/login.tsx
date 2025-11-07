@@ -167,7 +167,7 @@ export default function Login() {
 
         if (session) {
           setSession(session);
-          navigate("/", { replace: true });
+          navigate("/app", { replace: true });
         }
       } else {
         const result = await signUp(data);

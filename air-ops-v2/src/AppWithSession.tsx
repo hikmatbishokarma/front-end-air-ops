@@ -44,7 +44,7 @@ import AdminPanelSettingsOutlined from "@mui/icons-material/AdminPanelSettingsOu
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import BeachAccessOutlinedIcon from "@mui/icons-material/BeachAccessOutlined";
 import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
-
+import LuggageOutlinedIcon from "@mui/icons-material/LuggageOutlined";
 // Email: srikar_13@yahoo.co.uk
 // Temporary Password: 5v11FUQE
 
@@ -53,14 +53,14 @@ export const NAVIGATION: Navigation = [
     kind: "header",
     title: "Main items",
   },
-  {
-    title: "Dashboard",
-    segment: "",
-    icon: <LaptopMacOutlinedIcon />,
-  },
+  // {
+  //   title: "Dashboard",
+  //   segment: "app",
+  //   icon: <LaptopMacOutlinedIcon />,
+  // },
   {
     title: "Quotations",
-    segment: "quotes",
+    segment: "app/quotes",
     icon: <AirplaneTicketOutlineIcon />,
   },
   // {
@@ -70,57 +70,62 @@ export const NAVIGATION: Navigation = [
   // },
 
   {
-    segment: "operations",
+    segment: "app/operations",
     title: "Ops",
     icon: <FactCheckOutlineIcon />,
   },
   {
-    segment: "security",
+    segment: "app/my-trips",
+    title: "Trips",
+    icon: <LuggageOutlinedIcon />,
+  },
+  {
+    segment: "app/security",
     title: "Security",
     icon: <PrivacyTipOutlinedIcon />,
   },
   {
-    segment: "library",
+    segment: "app/library",
     title: "Library",
     icon: <LocalLibraryOutlinedIcon />,
   },
   {
-    segment: "camo",
+    segment: "app/camo",
     title: "CAMO",
     icon: <AirlinesOutlinedIcon />,
   },
 
   {
-    segment: "engineering",
+    segment: "app/engineering",
     title: "Engineering",
     icon: <EngineeringOutlinedIcon />,
   },
 
   {
-    segment: "crew",
+    segment: "app/crew",
     title: "Crew",
     icon: <BadgeOutlinedIcon />,
   },
 
   {
-    segment: "training-sales",
+    segment: "app/training-sales",
     title: "Training",
     icon: <AutoStoriesOutlinedIcon />,
   },
   {
-    segment: "manuals",
+    segment: "app/manuals",
     title: "Manuals",
     icon: <SourceOutlinedIcon />,
   },
 
   {
-    segment: "accounts",
+    segment: "app/accounts",
     title: "Accounts",
     icon: <ExposureOutlinedIcon />,
   },
 
   {
-    segment: "audit",
+    segment: "app/audit",
     title: "Audit",
     icon: <QueryStatsOutlinedIcon />,
   },
@@ -132,60 +137,60 @@ export const NAVIGATION: Navigation = [
   // },
 
   {
-    segment: "admin",
+    segment: "app/admin",
     title: "Admin",
     icon: <AdminPanelSettingsOutlined />,
     children: [
       {
-        segment: "roles",
+        segment: "app/admin/roles",
         title: "Role",
         icon: <ManageAccounts />,
       },
 
       // {
-      //   segment: "category",
+      //   segment: "app/admin/category",
       //   title: "Category",
       //   icon: <ShoppingCartIcon />,
       // },
       {
-        segment: "aircraft",
+        segment: "app/admin/aircraft",
         title: "Aircraft Detail",
         icon: <RocketLaunchRoundedIcon />,
       },
       {
-        segment: "airports",
+        segment: "app/admin/airports",
         title: "Airports",
         icon: <LocalAirportIcon />,
       },
       {
-        segment: "users",
+        segment: "app/admin/users",
         title: "Users",
         icon: <Person />,
       },
       {
-        segment: "operators",
+        segment: "app/admin/operators",
         title: "Operators",
         icon: <SensorOccupiedOutlinedIcon />,
       },
     ],
   },
   {
-    segment: "settings",
+    segment: "app/settings",
     title: "Settings",
     icon: <SettingsOutlinedIcon />,
     children: [
       {
-        segment: "profile",
+        segment: "app/settings/profile",
         title: "Profile",
         icon: <AccountCircleOutlinedIcon />,
       },
       {
-        segment: "leave",
+        segment: "app/settings/leave",
         title: "Leave",
         icon: <BeachAccessOutlinedIcon />,
       },
       {
-        segment: "change-password",
+        segment: "app/settings/change-password",
         title: "Change Password",
         icon: <PasswordOutlinedIcon />,
       },
@@ -196,7 +201,7 @@ export const NAVIGATION: Navigation = [
 const defaultNavigation: Navigation = [
   {
     title: "Dashboard",
-    segment: "",
+    segment: "app",
     icon: <LaptopMacOutlinedIcon />,
   },
 ];
@@ -236,7 +241,7 @@ export default function AppWithSession() {
       setBranding(updatedBranding);
 
       const accessResources = session.user?.permissions?.map(
-        (item) => item.resource
+        (item: any) => item.resource
       );
 
       if (accessResources && accessResources.length > 0) {
@@ -267,14 +272,48 @@ export default function AppWithSession() {
             return true;
           }
 
+          // Extract resource from segment for permission checking
+          // Segments are now like "app/quotes", "app/admin/aircraft", etc.
+          let segmentForPermission = item.segment || "";
+          if (segmentForPermission.startsWith("app/")) {
+            segmentForPermission = segmentForPermission.replace("app/", "");
+          }
+          if (segmentForPermission === "app") {
+            segmentForPermission = ""; // Dashboard
+          }
+
+          // For parent segments like "admin" or "settings", check parent permission
+          // For child segments like "admin/aircraft", extract the child resource
+          const parts = segmentForPermission.split("/");
+          let resourceToCheck = segmentForPermission;
+
+          if (parts.length > 1) {
+            // For nested routes like "admin/aircraft", check the child resource "aircraft"
+            resourceToCheck = parts[parts.length - 1];
+          }
+
           // Check if the main item's segment matches
-          const hasDirectAccess = accessResources.includes(item.segment);
+          const hasDirectAccess =
+            segmentForPermission === ""
+              ? true // Dashboard is accessible to all logged-in users
+              : accessResources.includes(resourceToCheck);
 
           // If the item has children, recursively filter them
           if (item.children && item.children.length > 0) {
-            const filteredChildren = item.children.filter((child: any) =>
-              accessResources.includes(child.segment)
-            );
+            const filteredChildren = item.children.filter((child: any) => {
+              // Extract resource from child segment
+              let childSegment = child.segment || "";
+              if (childSegment.startsWith("app/")) {
+                childSegment = childSegment.replace("app/", "");
+              }
+              // For nested routes like "app/admin/aircraft", extract "aircraft"
+              const childParts = childSegment.split("/");
+              const resource =
+                childParts.length > 1
+                  ? childParts[childParts.length - 1]
+                  : childSegment;
+              return accessResources.includes(resource);
+            });
 
             // If there are any valid children, update the item's children and include the parent
             if (filteredChildren.length > 0) {

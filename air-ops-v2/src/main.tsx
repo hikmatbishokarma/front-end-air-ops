@@ -45,6 +45,9 @@ import SaleConfirmationPreviewPage from "@/features/quotes/pages/SalesConfirmati
 import OpsControllerPage from "@/pages/OpsControllerPage";
 import ManualControllerPage from "@/pages/ManualControllerPage";
 import Landingpage from "./pages/landingpage/landingpage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import MyTripsPage from "./features/my-trips/pages/MyTrip";
+import ViewTripDetailsPage from "./features/my-trips/pages/ViewTripDetails";
 
 const router = createBrowserRouter([
   {
@@ -52,62 +55,114 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        Component: Landingpage,
+      },
+      {
+        path: "/login",
+        Component: Login,
+      },
+
+      {
+        path: "/app",
         Component: Layout,
         children: [
           {
             path: "",
-            Component: DashboardPage,
-            //Component: DashboardIndex,
+            element: (
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            ),
           },
 
           {
             path: "quotes",
-            // Component: SalesDashboard,
-            Component: QuoteControllerPage,
+            element: (
+              <ProtectedRoute>
+                <QuoteControllerPage />
+              </ProtectedRoute>
+            ),
           },
 
           {
             path: "operations",
-            // Component: OpsDashboard,
-            Component: OpsControllerPage,
+            element: (
+              <ProtectedRoute>
+                <OpsControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "security",
-            Component: SecurityControllerPage,
+            element: (
+              <ProtectedRoute>
+                <SecurityControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "library",
-            // Component: LibraryDashboard,
-            Component: LibraryControllerPage,
+            element: (
+              <ProtectedRoute>
+                <LibraryControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "camo",
-            Component: CamoControllerPage,
+            element: (
+              <ProtectedRoute>
+                <CamoControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "engineering",
-            Component: EngineeringControllerPage,
+            element: (
+              <ProtectedRoute>
+                <EngineeringControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "crew",
-            Component: CrewControllerPage,
+            element: (
+              <ProtectedRoute>
+                <CrewControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "training-sales",
-            Component: TrainingControllerPage,
+            element: (
+              <ProtectedRoute>
+                <TrainingControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "manuals",
-            // Component: ManualsDashboard,
-            Component: ManualControllerPage,
+            element: (
+              <ProtectedRoute>
+                <ManualControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "accounts",
-            Component: AccountControllerPage,
+            element: (
+              <ProtectedRoute>
+                <AccountControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "audit",
-            Component: AuditControllerPage,
+            element: (
+              <ProtectedRoute>
+                <AuditControllerPage />
+              </ProtectedRoute>
+            ),
           },
           // {
           //   path: "admin/category",
@@ -115,11 +170,19 @@ const router = createBrowserRouter([
           // },
           {
             path: "admin/aircraft",
-            Component: AircraftControllerPage,
+            element: (
+              <ProtectedRoute>
+                <AircraftControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "admin/airports",
-            Component: AirportControllerPage,
+            element: (
+              <ProtectedRoute>
+                <AirportControllerPage />
+              </ProtectedRoute>
+            ),
           },
           // {
           //   path: "flight-form",
@@ -131,12 +194,19 @@ const router = createBrowserRouter([
           // },
           {
             path: "quotes/edit/:id",
-            Component: QuoteEdit,
+            element: (
+              <ProtectedRoute>
+                <QuoteEdit />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "quotes/create",
-
-            Component: QuoteCreate,
+            element: (
+              <ProtectedRoute>
+                <QuoteCreate />
+              </ProtectedRoute>
+            ),
           },
           // {
           //   path: "prices",
@@ -148,31 +218,51 @@ const router = createBrowserRouter([
           // },
           {
             path: "admin/roles",
-            Component: RoleControllerPage,
+            element: (
+              <ProtectedRoute>
+                <RoleControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "admin/users",
-            Component: UserControllerPage,
+            element: (
+              <ProtectedRoute>
+                <UserControllerPage />
+              </ProtectedRoute>
+            ),
           },
-          // {
-          //   path: "admin/users/create",
-          //   Component: UserCreate,
-          // },
           {
             path: "admin/operators",
-            Component: OperatorControllerPage,
+            element: (
+              <ProtectedRoute>
+                <OperatorControllerPage />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "settings/profile",
-            Component: UserProfile,
+            element: (
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "settings/leave",
-            Component: LeaveRequest,
+            element: (
+              <ProtectedRoute>
+                <LeaveRequest />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "settings/change-password",
-            Component: ChangePassword,
+            element: (
+              <ProtectedRoute>
+                <ChangePassword />
+              </ProtectedRoute>
+            ),
           },
           // {
           //   path: "invoices/preview",
@@ -180,41 +270,58 @@ const router = createBrowserRouter([
           // },
           {
             path: "trip-confirmation/calender",
-            Component: TripConfirmationCalenderView,
+            element: (
+              <ProtectedRoute>
+                <TripConfirmationCalenderView />
+              </ProtectedRoute>
+            ),
           },
           {
             path: "staff-leave/calender",
-            Component: StaffLeaveCalenderView,
+            element: (
+              <ProtectedRoute>
+                <StaffLeaveCalenderView />
+              </ProtectedRoute>
+            ),
           },
-
-          // {
-          //   path: "passenger-details",
-          //   Component: AviationNSOPForm,
-          // },
-
           {
             path: "trip-detail/:tripId",
+            // element: (
+            //   <ProtectedRoute>
+            //     <TripDetailPage />
+            //   </ProtectedRoute>
+            // ),
             Component: TripDetailPage,
           },
           {
             path: "sales-confirmation-preview/:quotationNo",
+            // element: (
+            //   <ProtectedRoute>
+            //     <SaleConfirmationPreviewPage />
+            //   </ProtectedRoute>
+            // ),
             Component: SaleConfirmationPreviewPage,
           },
           {
             path: "passenger-detail/:quotationNo",
+            // element: (
+            //   <ProtectedRoute>
+            //     <PassengerEditPage />
+            //   </ProtectedRoute>
+            // ),
             Component: PassengerEditPage,
           },
-        ],
-      },
 
-      {
-        path: "/login",
-        // Component: Login,
-        Component: Login,
-      },
-      {
-        path: "landingpage",
-        Component: Landingpage,
+          {
+            path: "my-trips",
+            // Component: MyTripsPage,
+            element: (
+              <ProtectedRoute>
+                <MyTripsPage />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
     ],
   },
