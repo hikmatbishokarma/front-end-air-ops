@@ -38,6 +38,7 @@ import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import WindowIcon from '@mui/icons-material/Window';
 import { LocationOn, Email, Phone } from "@mui/icons-material";
+import LanguageIcon from '@mui/icons-material/Language';
 
 const pages = ["Home", "About", "Modules", "Contact"];
 const Landingpage = () => {
@@ -187,7 +188,7 @@ return (
         >
           {/* ===== LEFT: TEXT ===== */}
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
+            <Typography variant="h4" fontWeight="bold" gutterBottom className="manin-lg-page-hd">
              Why Airops
             </Typography>
             <p>
@@ -277,7 +278,7 @@ return (
           </Grid>
 
                 <Grid item xs={12} md={6}>
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
+            <Typography variant="h4" fontWeight="bold" gutterBottom className="manin-lg-page-hd">
             Our Mission
             </Typography>
             <p>
@@ -324,7 +325,7 @@ return (
         >
           {/* ===== LEFT: TEXT ===== */}
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
+            <Typography variant="h4" fontWeight="bold" gutterBottom className="manin-lg-page-hd">
              Smooth Operations
             </Typography>
             <p>
@@ -370,7 +371,7 @@ return (
           variant="h4"
           align="center"
           fontWeight="bold"
-          gutterBottom
+          gutterBottom className="manin-lg-page-hd"
         >
        Modules
         </Typography>
@@ -672,7 +673,7 @@ return (
         >
            <Grid item xs={12} md={12}>
                <div className="map-ld-page">
-        <h2 >
+        <h2 className="manin-lg-page-hd">
           Contact Us
         </h2>
         <p>
@@ -682,28 +683,46 @@ return (
 
            </Grid>
           {/* ===== LEFT: TEXT ===== */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={4} className="contact_map_view">
       <Stack spacing={3}>
+       
           <Stack direction="row" spacing={2} alignItems="center">
-            <LocationOn />
-            <Typography>
-              123 Business Street, Suite 45<br />
-              New York, NY 10001
-            </Typography>
+            <LocationOn className="contact_landing_page"/>
+            <div>
+            <p>Address</p>
+            PV AERO PVT LTD
+Begumpet Airport
+Hyderabad
+            </div>
           </Stack>
 
           <Stack direction="row" spacing={2} alignItems="center">
-            <Phone />
-            <Link href="tel:+1234567890" color="inherit" underline="hover">
-              +1 (234) 567-890
+            <Phone className="contact_landing_page" /> &nbsp;
+            <div>
+           <p>Call Us</p>
+            +91 9676767 457
+            </div>
+          </Stack>
+
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Email  className="contact_landing_page"/>
+           
+            <Link href="mailto:sales@pvaero.com" color="inherit" underline="hover">
+            <div>
+             <p>Email Us</p>
+              sales@pvaero.com
+              </div>
             </Link>
           </Stack>
 
           <Stack direction="row" spacing={2} alignItems="center">
-            <Email />
-            <Link href="mailto:info@example.com" color="inherit" underline="hover">
-              info@example.com
+            <LanguageIcon className="contact_landing_page"/>
+            <div>
+            <p>Corp Site</p>
+            <Link href="https://www.pvaero.com/" target="_blank" color="inherit" underline="hover">
+              www.pvaero.com
             </Link>
+            </div>
           </Stack>
         </Stack>
           </Grid>
