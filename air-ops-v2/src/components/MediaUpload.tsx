@@ -1,6 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, ChangeEvent } from "react";
 import axios from "axios";
-import { useDropzone } from "react-dropzone";
+import {
+  Accept,
+  DropzoneOptions,
+  FileRejection,
+  useDropzone,
+} from "react-dropzone";
 import {
   Box,
   Typography,
@@ -16,6 +21,7 @@ import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import DownloadIcon from "@mui/icons-material/Download";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit"; // For "Change" button icon
+import { FileObject } from "@/shared/types/common";
 
 // Example: replace this with your actual API base URL
 const apiBaseUrl =
@@ -28,6 +34,11 @@ const CompactUploadPlaceholder = ({
   handleFileChange, // This handleFileChange is for the internal input if used, or for dropzone
   accept,
   sx = {}, // Allow custom styles
+}: {
+  label: any;
+  handleFileChange: any;
+  accept: any;
+  sx?: {} | undefined;
 }) => {
   const isImageOnly = accept.includes("image/");
   const isDocumentOnly =
@@ -106,7 +117,13 @@ const CompactUploadPlaceholder = ({
 };
 
 // --- Upload Progress ---
-const UploadProgress = ({ progress, sx = {} }) => (
+const UploadProgress = ({
+  progress,
+  sx = {},
+}: {
+  progress: any;
+  sx?: {} | undefined;
+}) => (
   <Box sx={{ width: "100%", mt: 0.5, ...sx }}>
     <LinearProgress
       variant="determinate"
@@ -132,12 +149,28 @@ const CompactUploadedPreview = ({
   onRemoveFile,
   fileType = "document",
   sx = {},
+}: {
+  value: any;
+  label: any;
+  onChangeFile: any;
+  onRemoveFile: any;
+  fileType?: string | undefined;
+  sx?: {} | undefined;
 }) => {
-  const fileName = value ? value.split("/").pop() : "";
+  // const fileName = value ? value.split("/").pop() : "";
 
-  const handleDownload = (e) => {
+  // ⭐️ CHANGE 2: Get key from value for filename
+  const fileName = value?.key ? value.key.split("/").pop() : "";
+
+  const handleDownload = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
+  ) => {
     e.stopPropagation();
-    window.open(`${apiBaseUrl}${value}`, "_blank");
+    // window.open(`${apiBaseUrl}${value}`, "_blank");
+    // ⭐️ CHANGE 3: Use value.url directly for download
+    if (value?.url) {
+      window.open(value.url, "_blank");
+    }
   };
 
   return (
@@ -232,6 +265,13 @@ const MediaUpload = ({
   category = "others",
   size = "medium", // 'small' for avatar, 'medium' for compact form fields, 'large' for full component
   accept = ".pdf,.doc,.docx,.png,.jpg,.jpeg",
+}: {
+  onUpload: (fileObject: FileObject | null) => void;
+  value: FileObject | null | undefined; // New type
+  label?: string;
+  category?: string;
+  size?: "small" | "medium" | "large";
+  accept?: string;
 }) => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -249,21 +289,35 @@ const MediaUpload = ({
     accept.includes(".gif");
   const fileType = isImageAccept ? "image" : "document";
 
-  const onDrop = (acceptedFiles) => {
+  // const onDrop = (acceptedFiles) => {
+  //   const selectedFile = acceptedFiles[0];
+  //   if (selectedFile) handleFileUpload(selectedFile);
+  // };
+
+  const onDrop: DropzoneOptions["onDrop"] = (acceptedFiles, fileRejections) => {
+    // Note: We often omit the 'event' parameter here since it's rarely used
+    // and simplifies the signature. TypeScript will still match it correctly
+    // because the resulting function type is derived from DropzoneOptions.
+
     const selectedFile = acceptedFiles[0];
     if (selectedFile) handleFileUpload(selectedFile);
+
+    // You can handle file rejections here if needed
+    if (fileRejections.length > 0) {
+      console.error("File rejected:", fileRejections[0].errors);
+    }
   };
 
   // This handleFileChange is primarily for the hidden input onChange
-  const handleFileChange = async (event) => {
-    const selectedFile = event.target.files[0];
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target?.files?.[0];
     if (selectedFile) handleFileUpload(selectedFile);
     if (fileInputRef.current) {
       fileInputRef.current.value = ""; // Clear input for re-upload
     }
   };
 
-  const handleFileUpload = async (file) => {
+  const handleFileUpload = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
     setUploading(true);
@@ -275,15 +329,22 @@ const MediaUpload = ({
         {
           headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: (progressEvent) => {
-            const percent = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setProgress(percent);
+            const total = progressEvent.total ?? 0; // fallback if undefined
+            if (total > 0) {
+              const percent = Math.round((progressEvent.loaded * 100) / total);
+              setProgress(percent);
+            } else {
+              // Handle unknown total size (optional)
+              setProgress(0); // or keep previous progress
+            }
           },
         }
       );
-      const uploadedFilePath = response.data.filePath;
-      onUpload(uploadedFilePath);
+      // const uploadedFilePath = response.data.filePath;
+      // onUpload(uploadedFilePath);
+
+      const uploadedFileObject: FileObject = response.data;
+      onUpload(uploadedFileObject);
     } catch (error) {
       console.error("Upload error:", error);
       // You might show a snackbar here
@@ -306,33 +367,38 @@ const MediaUpload = ({
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: false,
-    // Dynamically build accept object for dropzone
-    accept: accept.split(",").reduce((acc, type) => {
-      const mime = type.trim();
-      if (mime.startsWith(".")) {
-        // Map common extensions to MIME types
-        if (mime === ".pdf") acc["application/pdf"] = [];
-        else if (mime === ".doc") acc["application/msword"] = [];
-        else if (mime === ".docx")
-          acc[
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          ] = [];
-        else if (mime === ".png") acc["image/png"] = [];
-        else if (mime === ".jpg" || mime === ".jpeg") acc["image/jpeg"] = [];
-        else if (mime === ".gif") acc["image/gif"] = [];
-      } else if (mime === "image/*") {
-        // Handle generic image wildcard
-        acc["image/png"] = [];
-        acc["image/jpeg"] = [];
-        acc["image/gif"] = [];
-        acc["image/bmp"] = [];
-        acc["image/webp"] = [];
-      } else {
-        // Add other MIME types directly
-        acc[mime] = [];
-      }
-      return acc;
-    }, {}),
+
+    accept: accept.split(",").reduce<Accept>(
+      (acc, type) => {
+        const mime = type.trim();
+
+        if (!mime) return acc; // skip empty
+
+        if (mime.startsWith(".")) {
+          // Map extensions to MIME
+          if (mime === ".pdf") acc["application/pdf"] = [];
+          else if (mime === ".doc") acc["application/msword"] = [];
+          else if (mime === ".docx")
+            acc[
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ] = [];
+          else if (mime === ".png") acc["image/png"] = [];
+          else if (mime === ".jpg" || mime === ".jpeg") acc["image/jpeg"] = [];
+          else if (mime === ".gif") acc["image/gif"] = [];
+        } else if (mime === "image/*") {
+          acc["image/png"] = [];
+          acc["image/jpeg"] = [];
+          acc["image/gif"] = [];
+          acc["image/bmp"] = [];
+          acc["image/webp"] = [];
+        } else {
+          acc[mime] = [];
+        }
+
+        return acc;
+      },
+      {} // ✅ initial value prevents 'undefined'
+    ),
   });
 
   // --- Render based on size prop ---
@@ -403,7 +469,8 @@ const MediaUpload = ({
           {value && !uploading && (
             <>
               <img
-                src={`${apiBaseUrl}${value}`}
+                // src={`${apiBaseUrl}${value}`}
+                src={value.url}
                 alt="Profile"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
@@ -449,7 +516,8 @@ const MediaUpload = ({
           {uploading && <UploadProgress progress={progress} />}
           {value && !uploading && (
             <CompactUploadedPreview
-              value={value}
+              // value={value}
+              value={value.url}
               label={label}
               onChangeFile={triggerFileInput} // Pass triggerFileInput to "Change" icon
               onRemoveFile={handleRemoveFile}
@@ -512,15 +580,19 @@ const MediaUpload = ({
           {value && !uploading && (
             <Box sx={{ mt: 2, textAlign: "center" }}>
               {(() => {
-                const fileName = value ? value.split("/").pop() : "";
-                const handleDownload = (e) => {
+                const fileName = value ? value?.key.split("/").pop() : "";
+                const handleDownload = (
+                  e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
+                ) => {
                   e.stopPropagation();
-                  window.open(`${apiBaseUrl}${value}`, "_blank");
+                  // window.open(`${apiBaseUrl}${value}`, "_blank");
+                  if (value?.url) window.open(value.url, "_blank");
                 };
 
                 return fileType === "image" ? (
                   <img
-                    src={`${apiBaseUrl}${value}`}
+                    // src={`${apiBaseUrl}${value}`}
+                    src={value.url}
                     alt="Uploaded"
                     style={{
                       width: 150,

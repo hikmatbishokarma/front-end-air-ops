@@ -1,317 +1,3 @@
-// import {
-//   Alert,
-//   Snackbar,
-//   Avatar,
-//   Box,
-//   Button,
-//   Card,
-//   CardContent,
-//   Grid,
-//   MenuItem,
-//   TextField,
-//   Typography,
-//   AlertColor,
-//   Select,
-// } from "@mui/material";
-// import React, { useEffect, useState } from "react";
-// import { Controller, useForm } from "react-hook-form";
-// import useGql from "../../lib/graphql/gql";
-// import { GET_USER_BY_ID, UPDATE_USER } from "../../lib/graphql/queries/user";
-// import { useSession } from "../../SessionContext";
-// import "../main.css";
-// import { useSnackbar } from "../../SnackbarContext";
-// import CityAutocomplete from "../../components/city-autocomplete";
-// import FileUpload from "../../components/fileupload";
-
-// interface FormData {
-//   name: string;
-//   email: string;
-//   phone: string;
-//   address: string;
-//   city: string;
-//   pinCode: string;
-//   image: string;
-//   dob: string;
-//   gender: string;
-// }
-
-// export const UserProfile = () => {
-//   const { session } = useSession();
-//   const showSnackbar = useSnackbar();
-
-//   const userId = session?.user?.id;
-//   const [userInfo, setUserInfo] = useState<any>();
-
-//   const [imageUrl, setImageUrl] = useState<string>("");
-
-//   const handelOnProfileUpload = async (url: string) => {
-//     setImageUrl(url);
-//     await updateUserProfile(userId, { image: url });
-//   };
-
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//     setValue,
-//     control,
-//     reset,
-//   } = useForm<FormData>();
-
-//   const userById = async (userId) => {
-//     const response = await useGql({
-//       query: GET_USER_BY_ID,
-//       queryName: "user",
-//       queryType: "query-without-edge",
-//       variables: { id: userId },
-//     });
-
-//     if (response) {
-//       setValue("name", response.name);
-//       setValue("email", response.email);
-//       setValue("phone", response.phone);
-//       setValue("dob", response.dob);
-//       setValue("gender", response.gender);
-//       setValue("address", response.address);
-//       setValue("city", response.city);
-//       setValue("pinCode", response.pinCode);
-
-//       reset({ gender: response.gender });
-//       setUserInfo(response);
-//       setImageUrl(response.image);
-//     }
-//   };
-
-//   useEffect(() => {
-//     userById(userId);
-//   }, [userId, reset]);
-
-//   const updateUserProfile = async (id, data) => {
-//     try {
-//       const result = await useGql({
-//         query: UPDATE_USER,
-//         queryType: "mutation",
-//         queryName: "",
-//         variables: { input: { id, update: data } },
-//       });
-
-//       if (result.data) {
-//         showSnackbar("User Info updated successfully!", "success");
-//       } else {
-//         showSnackbar("Failed to update!", "error");
-//       }
-//     } catch (error) {
-//       showSnackbar(error.message, "error");
-//     }
-//   };
-//   const onSubmit = (data: FormData) => {
-//     const formattedData = {
-//       ...data,
-//       image: imageUrl || "",
-//     };
-//     updateUserProfile(userId, formattedData);
-//   };
-
-//   return (
-//     <div
-//       className="profile_pge"
-//       style={{ display: "flex", justifyContent: "space-between" }}
-//     >
-//       <div className="leftSide">
-//         <Card
-//           sx={{ maxWidth: 780, borderRadius: 3, boxShadow: 3, padding: "20px" }}
-//         >
-//           <h2>General information</h2>
-//           <form onSubmit={handleSubmit(onSubmit)}>
-//             <Grid container spacing={2}>
-//               <Grid item xs={6}>
-//                 <label htmlFor="Name">Name</label>
-//                 <TextField
-//                   fullWidth
-//                   size="small"
-//                   variant="outlined"
-//                   {...register("name", { required: "name is required" })}
-//                 />
-//               </Grid>
-//               {/* <Grid item xs={6}>
-//               <label htmlFor="Last Name">Last Name</label>
-//               <TextField
-//                 fullWidth
-//                  size="small"
-//                 variant="outlined"
-//                 {...register("lastName", { required: "Last name is required" })}
-//               />
-//             </Grid> */}
-//               <Grid item xs={6}>
-//                 <label htmlFor="Email">Email</label>
-//                 <TextField
-//                   fullWidth
-//                   disabled
-//                   size="small"
-//                   variant="outlined"
-//                   type="email"
-//                   {...register("email", {
-//                     required: "Email is required",
-//                     pattern: {
-//                       value: /^\S+@\S+\.\S+$/,
-//                       message: "Invalid email format",
-//                     },
-//                   })}
-//                   error={!!errors.email}
-//                   helperText={errors.email?.message}
-//                 />
-//               </Grid>
-//               <Grid item xs={6}>
-//                 <label htmlFor="Phone">Phone</label>
-//                 <TextField
-//                   fullWidth
-//                   size="small"
-//                   variant="outlined"
-//                   type="tel"
-//                   {...register("phone", {
-//                     pattern: {
-//                       value: /^[0-9]{10}$/,
-//                       message: "Invalid phone number",
-//                     },
-//                   })}
-//                   error={!!errors.phone}
-//                   helperText={errors.phone?.message}
-//                 />
-//               </Grid>
-//               <Grid item xs={6}>
-//                 <label htmlFor="Birthday">Birthday</label>
-//                 <TextField
-//                   fullWidth
-//                   size="small"
-//                   variant="outlined"
-//                   type="date"
-//                   InputLabelProps={{ shrink: true }}
-//                   {...register("dob")}
-//                 />
-//               </Grid>
-//               <Grid item xs={6}>
-//                 <label htmlFor="Gender">Gender</label>
-
-//                 <Controller
-//                   name="gender"
-//                   control={control}
-//                   render={({ field }) => (
-//                     <Select {...field} fullWidth size="small">
-//                       <MenuItem value="MALE">Male</MenuItem>
-//                       <MenuItem value="FEMALE">Female</MenuItem>
-//                       <MenuItem value="OTHER">Other</MenuItem>
-//                     </Select>
-//                   )}
-//                 />
-//               </Grid>
-
-//               <Grid item xs={12}>
-//                 <h2>Address</h2>
-//               </Grid>
-//               <Grid item xs={10}>
-//                 <label htmlFor="Address">Address</label>
-//                 <TextField
-//                   fullWidth
-//                   size="small"
-//                   variant="outlined"
-//                   type="address"
-//                   {...register("address")}
-//                 />
-//               </Grid>
-//               <Grid item xs={2}>
-//                 <label htmlFor="ZIP">ZIP</label>
-//                 <TextField
-//                   fullWidth
-//                   variant="outlined"
-//                   size="small"
-//                   type="zip"
-//                   {...register("pinCode", {
-//                     pattern: {
-//                       value: /^[0-9]{5,6}$/,
-//                       message: "Invalid ZIP code",
-//                     },
-//                   })}
-//                   error={!!errors.pinCode}
-//                   helperText={errors.pinCode?.message}
-//                 />
-//               </Grid>
-//               <Grid item xs={6}>
-//                 <label htmlFor="City">City</label>
-//                 {/* <TextField
-//                   fullWidth
-//                   variant="outlined"
-//                   size="small"
-//                   type="city"
-//                   {...register("city")}
-//                 /> */}
-//                 <Controller
-//                   name="city"
-//                   control={control}
-//                   render={({ field }) => (
-//                     <CityAutocomplete {...field} label="City" />
-//                   )}
-//                 />
-//               </Grid>
-//             </Grid>
-//             <Button
-//               variant="contained"
-//               color="primary"
-//               type="submit"
-//               style={{ marginTop: "20px" }}
-//             >
-//               Save All
-//             </Button>
-//           </form>
-//         </Card>
-//       </div>
-//       <div className="rightSide">
-//         <Card
-//           sx={{
-//             maxWidth: 350,
-//             textAlign: "center",
-//             borderRadius: 3,
-//             boxShadow: 3,
-//           }}
-//         >
-//           <Box
-//             sx={{
-//               backgroundImage: "url(https://source.unsplash.com/random)",
-//               height: 100,
-//               backgroundSize: "cover",
-//             }}
-//           />
-//           {/* <Avatar
-//             src="https://source.unsplash.com/100x100/?portrait"
-//             sx={{
-//               width: 80,
-//               height: 80,
-//               margin: "-40px auto 10px",
-//               border: "4px solid white",
-//             }}
-//           /> */}
-//           <FileUpload
-//             value={imageUrl}
-//             onUpload={(url) => handelOnProfileUpload(url)}
-//             label=""
-//             category="profile"
-//           />
-//           <CardContent>
-//             <Typography variant="h6" fontWeight="bold">
-//               {userInfo?.role?.name}
-//             </Typography>
-//             <Typography variant="body2" color="text.secondary">
-//               {userInfo?.email}
-//             </Typography>
-//             <Typography variant="body2" color="text.secondary">
-//               {userInfo?.city}
-//             </Typography>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     </div>
-//   );
-// };
-
 import React, { useEffect, useState } from "react";
 import {
   Avatar,
@@ -344,14 +30,18 @@ import {
   GET_CREW_DETAIL_BY_ID,
   UPDATE_CREW_DETAIL,
 } from "../../lib/graphql/queries/crew-detail";
-import { CrewDetailFormValues } from "../crew-detail/interface";
-import { useSnackbar } from "../../SnackbarContext";
-import { useSession } from "../../SessionContext";
+import {
+  Certification,
+  CrewDetailFormValues,
+  Nominee,
+} from "@/features/crew-detail/types/interface";
+import { useSnackbar } from "@/app/providers";
+import { useSession } from "@/app/providers";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { Add, Delete } from "@mui/icons-material";
-import FileUpload from "../../components/fileupload";
 import MediaUpload from "../../components/MediaUpload";
+import { removeTypename, transformKeyToObject } from "../../shared/utils";
 
 export const UserProfile = () => {
   const showSnackbar = useSnackbar();
@@ -398,7 +88,7 @@ export const UserProfile = () => {
   const fieldOptions = useFormFieldOptions();
   const genderOptions = useGenderOptions();
 
-  const fetchCreDetailById = async (Id) => {
+  const fetchCreDetailById = async (Id: string | null | undefined) => {
     const response = await useGql({
       query: GET_CREW_DETAIL_BY_ID,
       queryName: "crewDetail",
@@ -408,7 +98,21 @@ export const UserProfile = () => {
 
     if (response) {
       // setProfilePicUrl(response.profile || null);
-      setCrewDetail(response);
+
+      const formData = {
+        ...response,
+        profile: transformKeyToObject(response.profile),
+        nominees: response?.nominees.map((item: any) => ({
+          ...item,
+          insurance: transformKeyToObject(item.insurance),
+          idProof: transformKeyToObject(item.idProof),
+        })),
+        certifications: response.certifications.map((item: any) => ({
+          ...item,
+          issuedBy: transformKeyToObject(item.issuedBy),
+        })),
+      };
+      setCrewDetail(formData);
     } else {
       showSnackbar("Failed to Edit Crew Detail!", "error");
     }
@@ -424,30 +128,9 @@ export const UserProfile = () => {
     }
   }, [crewDetail, reset]);
 
-  // const renderField = (name, label, disabled = false) => (
-  //   <Grid item xs={12} sm={6} md={4}>
-  //     <Controller
-  //       name={name}
-  //       control={control}
-  //       render={({ field }) => (
-  //         <TextField
-  //           {...field}
-  //           label={label}
-  //           fullWidth
-  //           size="small"
-  //           disabled={disabled}
-  //           InputLabelProps={{
-  //             shrink: !!field.value,
-  //           }}
-  //         />
-  //       )}
-  //     />
-  //   </Grid>
-  // );
-
   const renderField = (
-    name,
-    label,
+    name: any,
+    label: any,
     disabled = false,
     options?: { label: string; value: string }[]
   ) => (
@@ -677,8 +360,10 @@ export const UserProfile = () => {
                     size="medium"
                     category="idProof"
                     accept=".pdf,.doc,.docx"
+                    // value={field.value}
+                    // onUpload={(url) => field.onChange(url)}
                     value={field.value}
-                    onUpload={(url) => field.onChange(url)}
+                    onUpload={(fileObject) => field.onChange(fileObject)}
                   />
                 )}
               />
@@ -693,8 +378,10 @@ export const UserProfile = () => {
                     size="medium"
                     category="idProof"
                     accept=".pdf,.doc,.docx"
+                    // value={field.value}
+                    // onUpload={(url) => field.onChange(url)}
                     value={field.value}
-                    onUpload={(url) => field.onChange(url)}
+                    onUpload={(fileObject) => field.onChange(fileObject)}
                   />
                 )}
               />
@@ -709,11 +396,11 @@ export const UserProfile = () => {
             fullName: "",
             gender: "",
             relation: "",
-            idProof: "",
+            idProof: null,
             mobileNumber: "",
             alternateContact: "",
             address: "",
-            insurance: "",
+            insurance: null,
           })
         }
       >
@@ -832,8 +519,11 @@ export const UserProfile = () => {
                       label="Issued By"
                       category="Issued By"
                       accept=".pdf,.doc,.docx"
+                      // value={field.value}
+                      // onUpload={(url) => field.onChange(url)}
+
                       value={field.value}
-                      onUpload={(url) => field.onChange(url)}
+                      onUpload={(fileObject) => field.onChange(fileObject)}
                     />
                   )}
                 />
@@ -848,7 +538,7 @@ export const UserProfile = () => {
             name: "",
             licenceNo: "",
             dateOfIssue: "",
-            issuedBy: "",
+            issuedBy: null,
             validTill: "",
           })
         }
@@ -858,20 +548,26 @@ export const UserProfile = () => {
     </Box>
   );
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData: any) => {
     try {
-      let { __typename, certifications, nominees, ...rest } = formData;
+      let { __typename, certifications, nominees, profile, ...rest } = formData;
 
-      certifications = certifications.map(({ __typename, ...rest }) => rest);
-      nominees = nominees.map(({ __typename, ...rest }) => rest);
+      certifications = certifications.map((item: Certification) => ({
+        issuedBy: item?.issuedBy?.key,
+      }));
+      nominees = nominees.map((item: Nominee) => ({
+        ...item,
+        idProof: item?.idProof?.key,
+        insurance: item?.insurance?.key,
+      }));
 
-      const formattedData = {
+      const formattedData = removeTypename({
         ...rest,
         certifications,
         nominees,
         operatorId,
-        // profile: profilePicUrl,
-      };
+        profile: profile?.key,
+      });
 
       if (formattedData.roles) {
         formattedData.roles = formattedData.roles.map((role: any) => role.id); // Assuming each role has an `id`
@@ -887,7 +583,7 @@ export const UserProfile = () => {
       if (!data || data.data?.errors) {
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");
-    } catch (error) {
+    } catch (error: any) {
       showSnackbar(error.message || "Failed to edit Crew Detail!", "error");
     }
   };
@@ -898,14 +594,6 @@ export const UserProfile = () => {
         <Grid item xs={12} sm={4} md={3}>
           <Card sx={{ p: 2 }}>
             <Box display="flex" flexDirection="column" alignItems="center">
-              {/* <MediaUpload
-                label="Profile" // You might not want this label to show visually here if space is tight
-                category="profile"
-                size="small" // Essential for the avatar style
-                accept="image/*"
-                value={profilePicUrl} // Use the dedicated state for profile picture
-                onUpload={setProfilePicUrl} // Update the dedicated state on upload
-              /> */}
               +{" "}
               <Controller
                 name="profile"
@@ -916,8 +604,10 @@ export const UserProfile = () => {
                     category="profile"
                     size="small"
                     accept="image/*"
+                    // value={field.value}
+                    // onUpload={(url) => field.onChange(url)}
                     value={field.value}
-                    onUpload={(url) => field.onChange(url)}
+                    onUpload={(fileObject) => field.onChange(fileObject)}
                   />
                 )}
               />

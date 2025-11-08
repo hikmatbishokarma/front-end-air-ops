@@ -27,7 +27,7 @@ import {
   Person,
   CheckCircle,
 } from "@mui/icons-material";
-import { ISession, useSession } from "../SessionContext";
+import { ISession, useSession } from "@/app/providers";
 import { useNavigate } from "react-router";
 import { FORGOT_PASSWORD, SIGN_IN, SIGN_UP } from "../lib/graphql/queries/auth";
 import useGql from "../lib/graphql/gql";
@@ -35,7 +35,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import bgtwo from "../Asset/Images/backimg.jpeg";
 import pfIMG from "../Asset/Images/profile_view.png";
 import leftLogo from "../Asset/Images/Left-side-logo.png";
-import { useSnackbar } from "../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export default function Login() {
@@ -167,7 +167,7 @@ export default function Login() {
 
         if (session) {
           setSession(session);
-          navigate("/", { replace: true });
+          navigate("/app", { replace: true });
         }
       } else {
         const result = await signUp(data);
@@ -432,15 +432,17 @@ export default function Login() {
                     />
 
                     {/* Buttons */}
-                    <Box display="flex" justifyContent="space-between" mt={2} >
-                      <Button className="forgot_psd"
+                    <Box display="flex" justifyContent="space-between" mt={2}>
+                      <Button
+                        className="forgot_psd"
                         size="small"
                         variant="outlined"
                         onClick={() => setForgotPwdModelOpen(false)}
                       >
                         Cancel
                       </Button>
-                      <Button className="forgot_rest_btn"
+                      <Button
+                        className="forgot_rest_btn"
                         size="small"
                         variant="contained"
                         color="primary"

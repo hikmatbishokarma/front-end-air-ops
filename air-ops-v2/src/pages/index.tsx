@@ -10,7 +10,7 @@ import {
   Container,
   Avatar,
 } from "@mui/material";
-import { useSession } from "../SessionContext";
+import { useSession } from "@/app/providers";
 import ClockDisplay from "../components/Clock";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -20,8 +20,8 @@ import { FLIGHT_SEGMENTS_FOR_CALENDER } from "../lib/graphql/queries/quote";
 import useGql from "../lib/graphql/gql";
 import moment from "moment";
 import { GET_LEAVES } from "../lib/graphql/queries/leave";
-import { useSnackbar } from "../SnackbarContext";
-import { LeaveType } from "../lib/utils";
+import { useSnackbar } from "@/app/providers";
+import { LeaveType } from "../shared/utils";
 import FlightMap from "../components/Map";
 import WorldFlightMap from "../components/WorldMap";
 import DynamicFlightMap from "../components/DynamicFlightMap";

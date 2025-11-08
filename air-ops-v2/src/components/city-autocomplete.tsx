@@ -4,6 +4,12 @@ import { TextField, CircularProgress, Autocomplete } from "@mui/material";
 import useGql from "../lib/graphql/gql";
 import { GET_CITIES } from "../lib/graphql/queries/city";
 
+export type ICity = {
+  id: string;
+  name: string;
+  state: string;
+};
+
 const CityAutocomplete = ({
   value,
   onChange,

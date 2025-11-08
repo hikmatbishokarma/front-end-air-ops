@@ -1,28 +1,24 @@
 import React from "react";
 import { Grid, Typography, Button, Card, CardContent } from "@mui/material";
 import cardflightview from "../Asset/Images/ATS-F-1.png";
+import { IStatCard } from "@/shared/types/common";
 
-interface Category {
-  name: string;
-  countLabel: string;
-}
-
-interface DashboardBoardSectionProps {
+interface StatCardProps {
   selectedTab: string;
-  categories: Category[];
-  salesDashboardData: any;
+  categories: IStatCard[];
+  statData: any;
   onCreate?: (tab: string) => void;
-  onFilter?: (item: Category) => void;
+  handleStatCardSelect?: (item: IStatCard) => void;
   createEnabledTabs?: string[];
   singularMap?: { [key: string]: string }; // Make this prop optional
 }
 
-const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
+const StatCard: React.FC<StatCardProps> = ({
   selectedTab,
   categories,
-  salesDashboardData,
+  statData,
   onCreate = () => {}, // Provide an empty default function
-  onFilter = () => {}, // Provide an empty default function
+  handleStatCardSelect = () => {}, // Provide an empty default function
   createEnabledTabs = [],
   singularMap = {}, // Provide an empty default object
 }) => {
@@ -32,7 +28,8 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
 
       <div style={{ padding: 20 }} className="v1_board">
         {/* Table Header Section */}
-        <Grid className="pt-board"
+        <Grid
+          className="pt-board"
           container
           justifyContent="space-between"
           alignItems="center"
@@ -58,7 +55,7 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
           {categories.map((item) => (
             <Grid item xs={3} key={item.name}>
               <Card
-                onClick={() => onFilter(item)}
+                onClick={() => handleStatCardSelect(item)}
                 style={{
                   cursor: "pointer",
                   backgroundColor:
@@ -73,7 +70,7 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
                       {item.name.toUpperCase()}
                     </Typography>
                     <Typography variant="body1">
-                      {salesDashboardData?.summary?.[item.countLabel] ?? 0}
+                      {statData?.summary?.[item.countLabel] ?? 0}
                     </Typography>
                     <div className="img-flight-label">
                       <img src={cardflightview} alt="Company Logo" width={75} />
@@ -89,4 +86,4 @@ const DashboardBoardSection: React.FC<DashboardBoardSectionProps> = ({
   );
 };
 
-export default DashboardBoardSection;
+export default StatCard;

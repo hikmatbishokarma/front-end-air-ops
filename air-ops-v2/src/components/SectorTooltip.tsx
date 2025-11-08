@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Flight, AccessTime } from "@mui/icons-material"; // Assuming these are from @mui/icons-material
 import moment from "moment"; // Assuming moment.js is available in your project
-import { flightBlockTime } from "../lib/utils";
+import { flightBlockTime } from "../shared/utils";
 
 // IMPORTANT: Define the type for the individual sector object
 interface Sector {

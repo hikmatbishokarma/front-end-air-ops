@@ -29,12 +29,12 @@ import { styled } from "@mui/system";
 // import socket from "../lib/socket";
 // import { GET_NOTIFICATIONS } from "../lib/graphql/queries/notifications";
 // import useGql from "../lib/graphql/gql";
-// import { useSnackbar } from "../SnackbarContext";
+// import { useSnackbar } from "@/app/providers";
 
 import DocumentPreviewDialog from "./DocumentPreviewDialog"; // Ensure this path is correct
 import useGql from "../lib/graphql/gql";
 import { HANDEL_ACCESS_REQUEST_STATUS } from "../lib/graphql/queries/notifications";
-import { useSnackbar } from "../SnackbarContext";
+import { useSnackbar } from "@/app/providers";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 

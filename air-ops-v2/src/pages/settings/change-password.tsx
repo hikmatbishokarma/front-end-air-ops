@@ -16,8 +16,8 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useGql from "../../lib/graphql/gql";
 import { RESET_PASSWORD } from "../../lib/graphql/queries/auth";
-import { useSession } from "../../SessionContext";
-import { useSnackbar } from "../../SnackbarContext";
+import { useSession } from "@/app/providers";
+import { useSnackbar } from "@/app/providers";
 
 // Validation Schema
 const schema = yup.object({

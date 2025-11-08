@@ -4,7 +4,7 @@
 // import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 // import { PageContainer } from "@toolpad/core/PageContainer";
 // import { Account, SignOutButton } from "@toolpad/core/Account";
-// import { useSession } from "../SessionContext";
+// import { useSession } from "@/app/providers";
 // import {
 //   Avatar,
 //   Badge,
@@ -232,7 +232,7 @@ import { Outlet, Navigate, useLocation, useNavigate } from "react-router";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import { Account, SignOutButton } from "@toolpad/core/Account";
-import { useSession } from "../SessionContext";
+import { useSession } from "@/app/providers";
 import {
   Avatar,
   Badge,
@@ -261,7 +261,7 @@ import {
   MARK_NOTIFICATIO_AS_READ,
 } from "../lib/graphql/queries/notifications"; // Your GraphQL query
 import useGql from "../lib/graphql/gql"; // Your GraphQL hook
-import { useSnackbar } from "../SnackbarContext"; // Your Snackbar context
+import { useSnackbar } from "@/app/providers"; // Your Snackbar context
 
 // const NOTIFICATION_SOUND_URL =
 //   "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAAA";
@@ -523,6 +523,8 @@ export default function Layout() {
     }
   }, [session, handleNewNotification, fetchNotifications]); // Dependencies: session (for user data), and callbacks
 
+  // Note: Authentication and permission checks are now handled by ProtectedRoute
+  // This component assumes user is already authenticated and authorized
   if (loading) {
     return (
       <div style={{ width: "100%" }}>
@@ -531,6 +533,8 @@ export default function Layout() {
     );
   }
 
+  // Additional safety check - should not reach here if not authenticated
+  // (ProtectedRoute handles redirect)
   if (!session) {
     const redirectTo = `/login?callbackUrl=${encodeURIComponent(location.pathname)}`;
     return <Navigate to={redirectTo} replace />;

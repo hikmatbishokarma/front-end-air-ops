@@ -23,12 +23,12 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import useGql from "../lib/graphql/gql";
 import { SEND_ACKNOWLEDGEMENT } from "../lib/graphql/queries/quote";
-import { useSnackbar } from "../SnackbarContext";
-import { getEnumKeyByValue, SalesDocumentType } from "../lib/utils";
+import { useSnackbar } from "@/app/providers";
+import { getEnumKeyByValue, SalesDocumentType } from "../shared/utils";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import { InvoiceConfirmationModal } from "./InvoiceConfirmationModel";
-import { useSession } from "../SessionContext";
+import { useSession } from "@/app/providers";
 import axios from "axios";
 
 interface ActionButtonProps {
