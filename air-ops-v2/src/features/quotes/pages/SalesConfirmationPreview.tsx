@@ -121,7 +121,7 @@ const SaleConfirmationPreviewPage = () => {
             color="primary"
             onClick={() =>
               navigate(
-                `/passenger-detail/${encodeURIComponent(quotationNo || "")}`
+                `/app/passenger-detail/${encodeURIComponent(quotationNo || "")}`
               )
             }
           >

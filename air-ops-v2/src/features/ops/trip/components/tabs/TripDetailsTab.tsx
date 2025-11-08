@@ -11,10 +11,11 @@ import SectorAccordion from "../sector/SectorAccordion";
 
 import { useState } from "react";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { logoColors } from "@/shared/utils";
-import { Trip } from "../../type/trip.type";
+import { logoColors, removeTypename } from "@/shared/utils";
+import { Trip, Sector } from "../../type/trip.type";
 import useGql from "@/lib/graphql/gql";
 import { UPDATE_TRIP_DETAILS } from "@/lib/graphql/queries/trip-detail";
+import { useSnackbar } from "@/app/providers";
 
 // Props for TripDetailsTab
 
@@ -34,26 +35,46 @@ interface TripDetailsTabProps {
 
 export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
   const [expanded, setExpanded] = useState(0);
+  const showSnackbar = useSnackbar();
 
-  const updateTripDetail = async (sectorNo, data) => {
-    delete data.__typename;
+  const updateTripDetail = async (sectorNo: number, data: Sector) => {
+    try {
+      // Remove __typename if it exists (GraphQL adds this at runtime)
+      const dataAsAny = data as any;
+      if (dataAsAny.__typename) {
+        delete dataAsAny.__typename;
+      }
 
-    const result = await useGql({
-      query: UPDATE_TRIP_DETAILS,
-      queryName: "updateOneTripDetail",
-      queryType: "mutation",
-      variables: {
-        where: {
-          _id: trip.id,
+      const formattedData = removeTypename(dataAsAny);
+
+      const result = await useGql({
+        query: UPDATE_TRIP_DETAILS,
+        queryName: "updateOneTripDetail",
+        queryType: "mutation",
+        variables: {
+          where: {
+            _id: trip.id,
+          },
+          data: { sector: formattedData },
         },
-        data: { sector: data },
-      },
-    });
+      });
 
-    if (result?.errors) {
-      throw new Error(result.errors[0]?.message || "Something went wrong.");
-    } else {
-      // navigate(`/trip-detail/${data.id}`, { state: row });
+      if (result?.errors) {
+        throw new Error(result.errors[0]?.message || "Something went wrong.");
+      } else {
+        // Show success message
+        showSnackbar("Trip details updated successfully!", "success");
+        // Close the accordion that was just saved (sectorNo is 1-based, index is 0-based)
+        const accordionIndex = sectorNo - 1;
+        // Close the saved accordion if it's currently expanded
+        if (accordionIndex === expanded) {
+          setExpanded(-1);
+        }
+      }
+    } catch (error: any) {
+      // Show error message
+      showSnackbar(error.message || "Failed to update trip details!", "error");
+      throw error; // Re-throw to let the caller handle it if needed
     }
   };
 

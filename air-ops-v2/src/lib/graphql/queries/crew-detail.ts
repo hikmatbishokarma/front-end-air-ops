@@ -29,6 +29,7 @@ export const GET_CREW_DETAILS = gql`
         displayName
         email
         phone
+        designation
         createdAt
         updatedAt
         isActive

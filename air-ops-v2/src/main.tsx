@@ -47,7 +47,6 @@ import ManualControllerPage from "@/pages/ManualControllerPage";
 import Landingpage from "./pages/landingpage/landingpage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import MyTripsPage from "./features/my-trips/pages/MyTrip";
-import ViewTripDetailsPage from "./features/my-trips/pages/ViewTripDetails";
 
 const router = createBrowserRouter([
   {

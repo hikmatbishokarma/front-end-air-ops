@@ -102,6 +102,174 @@ export const GET_TRIP_DETAILS = gql`
   }
 `;
 
+export const GET_CREW_DOC_UPLODED_FOR_TRIP = gql`
+  query getCrewDocUplodedForTrip(
+    $filter: TripDetailFilter! = {}
+    $paging: OffsetPaging! = { limit: 10 }
+    $sorting: [TripDetailSort!]! = []
+  ) {
+    tripDetails(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
+      nodes {
+        id
+        tripId
+        createdAt
+        quotation {
+          id
+          category
+          aircraft {
+            code
+            name
+          }
+        }
+        status
+        quotationNo
+        sectors {
+          sectorNo
+          source {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
+          destination {
+            code
+            name
+            lat
+            long
+            city
+            country
+          }
+          depatureDate
+          depatureTime
+          arrivalDate
+          arrivalTime
+          pax
+          flightTime
+          fuelRecord {
+            fuelGauge
+            fuelLoaded
+            fuelStation
+            fuelOnArrival
+          }
+          documents {
+            type
+            externalLink
+            fileUrl
+          }
+          assignedCrews {
+            designation
+            crews
+          }
+          baInfo {
+            baMachine
+            baPersons {
+              name
+              age
+              gender
+              certNo
+            }
+            baReports {
+              name
+              reading
+              record
+              conductedDate
+              video
+            }
+          }
+          crewTripUploadedDoc {
+            name
+            url
+            type
+            crewDetails {
+              id
+              fullName
+              designation
+              profile
+              email
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_TRIP_ASSIGNED_FOR_CREW = gql`
+  query tripAssignedForCrew(
+    $filter: TripFilterForCrewInput!
+    $paging: PagingInput!
+    $sort: SortInput
+  ) {
+    tripAssignedForCrew(filter: $filter, paging: $paging, sort: $sort) {
+      totalCount
+      result {
+        tripId
+        quotationNo
+        quotation {
+          id
+          quotationNo
+          aircraft {
+            name
+            code
+            specifications
+          }
+        }
+        sector {
+          source {
+            name
+            code
+            country
+            iata_code
+          }
+          destination {
+            name
+            code
+            country
+            iata_code
+          }
+          tripDocByCrew {
+            type
+            name
+            url
+            crewDetails {
+              id
+              fullName
+              email
+              profile
+              phone
+              designation
+            }
+          }
+          crewGroup {
+            designation
+            crews {
+              id
+              fullName
+              email
+              profile
+              phone
+              designation
+            }
+          }
+          documents {
+            fileUrl
+            type
+            externalLink
+          }
+          flightTime
+          depatureDate
+          depatureTime
+          arrivalDate
+          arrivalTime
+        }
+      }
+    }
+  }
+`;
+
 export const CREATE_TRIP = gql`
   mutation createTrip($input: CreateTripInput!) {
     createTrip(input: $input) {
@@ -182,6 +350,17 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
           }
         }
       }
+    }
+  }
+`;
+
+export const UPLOAD_TRIP_DOC_BY_CREW = gql`
+  mutation uploadTripDocByCrew(
+    $data: tripDocByCrewInput!
+    $where: TripDocByCrewWhereInput!
+  ) {
+    uploadTripDocByCrew(data: $data, where: $where) {
+      id
     }
   }
 `;

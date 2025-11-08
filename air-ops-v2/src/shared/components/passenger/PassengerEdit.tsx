@@ -37,7 +37,9 @@ const PassengerEditPage = () => {
   };
 
   const handelSaveAndPreview = async (quotationNo: string) => {
-    navigate(`/sales-confirmation-preview/${encodeURIComponent(quotationNo)}`);
+    navigate(
+      `/app/sales-confirmation-preview/${encodeURIComponent(quotationNo)}`
+    );
   };
 
   return (

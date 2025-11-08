@@ -77,7 +77,7 @@ export const useCreateTripMutation = () => {
           );
 
           // Navigate to the new trip detail page, passing the original quote row data as state
-          navigate(`/trip-detail/${newTripId}`, { state: row });
+          navigate(`/app/trip-detail/${newTripId}`, { state: row });
 
           return { success: true, newTripId };
         }

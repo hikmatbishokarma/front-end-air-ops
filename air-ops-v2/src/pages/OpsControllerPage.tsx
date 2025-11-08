@@ -13,6 +13,7 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import moment from "moment";
 import { SalesCategoryLabels } from "@/shared/utils";
 import { IBaseFilter, useAppFilter } from "@/hooks/useAppFilter";
+import CrewTripList from "@/features/ops/tables/CrewTrip";
 
 const OpsControllerPage = () => {
   const { session } = useSession();
@@ -55,6 +56,11 @@ const OpsControllerPage = () => {
       status: ["DRAFT", "PUBLISHED"],
       name: "Trip Details",
       countLabel: "tripDetails",
+    },
+    {
+      status: [""],
+      name: "Crew Trips",
+      countLabel: "crewTrips",
     },
     { status: [""], name: SalesCategoryLabels.REPORTS, countLabel: "reports" },
   ];
@@ -201,6 +207,9 @@ const OpsControllerPage = () => {
         )}
         {selectedTab == "Trip Details" && (
           <TripDetailList filter={tripDetailsFilter} refreshKey={refreshKey} />
+        )}
+        {selectedTab == "Crew Trips" && (
+          <CrewTripList filter={tripDetailsFilter} refreshKey={refreshKey} />
         )}
       </Box>
 

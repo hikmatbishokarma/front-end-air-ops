@@ -303,7 +303,9 @@ export const useCreateInitialPassengerDetails = (
       const isPaxExist = await isPassengerExist(row.quotationNo, row.id);
 
       if (isPaxExist) {
-        navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
+        navigate(
+          `/app/passenger-detail/${encodeURIComponent(row.quotationNo)}`
+        );
         return { success: true };
       }
 
@@ -354,7 +356,9 @@ export const useCreateInitialPassengerDetails = (
 
         // 4. Success Handling (Navigation/Snackbar)
         if (result.success) {
-          navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
+          navigate(
+            `/app/passenger-detail/${encodeURIComponent(row.quotationNo)}`
+          );
         } else {
           showSnackbar(
             result.error?.message || "Failed to add passenger!",

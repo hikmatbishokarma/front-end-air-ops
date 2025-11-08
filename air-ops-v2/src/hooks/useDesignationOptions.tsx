@@ -11,7 +11,7 @@ export const useDesignationOptions = () => {
     { label: "SECURITY MANAGER", value: "SECURITY_MANAGER" },
     { label: "ENGINEER", value: "ENGINEER" },
     { label: "CAMO", value: "CAMO" },
-    { lavel: "PILOT", value: "PILOT" },
+    { label: "PILOT", value: "PILOT" },
 
     { label: "CABIN CREW", value: "CABIN_CREW" },
     { label: "DOCTOR", value: "DOCTOR" },

@@ -62,7 +62,7 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
   };
 
   const onUpdateCreateTrip = async (row: any) => {
-    navigate(`/trip-detail/${row.id}`, { state: row });
+    navigate(`/app/trip-detail/${row.id}`, { state: row });
   };
 
   const { tripDetailList, tripDetailTotalCount } = useTripDetailData({

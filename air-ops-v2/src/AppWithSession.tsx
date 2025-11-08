@@ -142,7 +142,7 @@ export const NAVIGATION: Navigation = [
     icon: <AdminPanelSettingsOutlined />,
     children: [
       {
-        segment: "app/admin/roles",
+        segment: "roles",
         title: "Role",
         icon: <ManageAccounts />,
       },
@@ -153,22 +153,22 @@ export const NAVIGATION: Navigation = [
       //   icon: <ShoppingCartIcon />,
       // },
       {
-        segment: "app/admin/aircraft",
+        segment: "aircraft",
         title: "Aircraft Detail",
         icon: <RocketLaunchRoundedIcon />,
       },
       {
-        segment: "app/admin/airports",
+        segment: "airports",
         title: "Airports",
         icon: <LocalAirportIcon />,
       },
       {
-        segment: "app/admin/users",
+        segment: "users",
         title: "Users",
         icon: <Person />,
       },
       {
-        segment: "app/admin/operators",
+        segment: "operators",
         title: "Operators",
         icon: <SensorOccupiedOutlinedIcon />,
       },
@@ -180,17 +180,17 @@ export const NAVIGATION: Navigation = [
     icon: <SettingsOutlinedIcon />,
     children: [
       {
-        segment: "app/settings/profile",
+        segment: "profile",
         title: "Profile",
         icon: <AccountCircleOutlinedIcon />,
       },
       {
-        segment: "app/settings/leave",
+        segment: "leave",
         title: "Leave",
         icon: <BeachAccessOutlinedIcon />,
       },
       {
-        segment: "app/settings/change-password",
+        segment: "change-password",
         title: "Change Password",
         icon: <PasswordOutlinedIcon />,
       },
