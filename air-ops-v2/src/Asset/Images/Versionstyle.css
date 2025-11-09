@@ -1186,3 +1186,51 @@ ease-in-out;
     display: block;
 }
 }
+.img-flight-label img{
+  transition: transform 0.9s ease-in-out;
+}
+
+.img-flight-label img:hover{
+  transform: scale(1.5);
+
+}
+.calen_master{
+    width: 21%;
+    height: 100px;
+    display: inline-block;
+    margin-top: 20px;
+    
+    margin: 9px;
+    text-align: center;
+  
+}
+.calen_master p{
+text-align: center;
+    font-size: 18px;
+    font-weight: 700 !important;
+    margin-bottom: 6px;
+    margin-top: 3px;
+    color: #ff0202;
+}
+.bbvbvbvb{
+  background-color: grey;
+  height: 20px;
+  width: 100%;
+}
+.bbvbvbvb1{
+  background-color: grey;
+  height: 20px;
+  width: 100%;
+}
+.calen_master svg{
+  display: block;
+  margin: 0 auto;
+  color: #001551;
+}
+.alert_master_theme{
+  background-color: transparent !important;
+  margin-top: 10px;
+}
+.warning_view{
+  background-color: #ff0202 !important;
+}
