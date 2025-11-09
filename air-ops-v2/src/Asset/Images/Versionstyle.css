@@ -1141,3 +1141,48 @@ text-align: left;
   background-color: #1a0460 !important;
   font-size: 14px;
 }
+.footer-page-ld{
+    color: #fff  !important;;
+    background-color: #1a0460 !important;
+    font-size: 14px;
+
+}
+.manin-lg-page-hd{
+    color: #cb1338;
+    font-size: 30px;
+}
+.contact_landing_page{
+    color: #cb1338;
+    background: #cb133870;
+    font-size: 20px;
+    width: 44px !important;
+    height: 44px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    transition: all 0.3s 
+ease-in-out;
+    margin-right: 15px;
+    padding: 10px;
+}
+.contact_map_view p{
+    color: #cb1338;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding: 0;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+     
+}
+@media screen and (max-width: 768px) {
+.left-side-logo {
+
+    width: 150px;
+    height: 150px;
+    margin-top: 50px;
+    margin: 0 auto;
+    display: block;
+}
+}
