@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Button, Stack, CircularProgress } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import FileUpload from "@/components/FileUpload";
 import DocumentsList from "./DocumentList";
 import { Sector } from "../../types/sector";
@@ -24,7 +24,6 @@ const UploadTab = ({
   const showSnackbar = useSnackbar();
   const currentUserId = session?.user?.id || null;
   const [uploadType, setUploadType] = useState<"pre" | "post">("pre");
-  const [uploading, setUploading] = useState(false);
 
   // Load existing crew uploaded documents from sector
   useEffect(() => {
@@ -59,7 +58,13 @@ const UploadTab = ({
     }
 
     try {
-      setUploading(true);
+      // Extract source and destination codes (handle both string and object formats)
+      const sourceCode =
+        typeof sector.source === "object" ? sector.source.code : sector.source;
+      const destinationCode =
+        typeof sector.destination === "object"
+          ? sector.destination.code
+          : sector.destination;
 
       // Upload document via API
       const result = await useGql({
@@ -69,15 +74,15 @@ const UploadTab = ({
         variables: {
           data: {
             name:
-              fileObject.key.split("/").pop() || fileObject.name || "document",
-            url: fileObject.url,
+              fileObject.key?.split("/").pop() || fileObject.name || "document",
+            url: fileObject.url || fileObject.previewUrl,
             type: uploadType,
             crewId: currentUserId,
           },
           where: {
             tripId: { eq: sector.tripId },
-            sectorSource: { eq: sector.source },
-            sectorDestination: { eq: sector.destination },
+            sectorSource: { eq: sourceCode },
+            sectorDestination: { eq: destinationCode },
             depatureDate: { eq: sector.depatureDate },
           },
         },
@@ -90,9 +95,9 @@ const UploadTab = ({
       }
 
       const newDoc = {
-        name: fileObject.key.split("/").pop() || fileObject.name || "document",
-        url: fileObject.url,
-        key: fileObject.url,
+        name: fileObject.key?.split("/").pop() || fileObject.name || "document",
+        url: fileObject.url || fileObject.previewUrl,
+        key: fileObject.key || fileObject.url || fileObject.previewUrl,
         uploadedAt: new Date().toISOString(),
         type: uploadType,
       };
@@ -113,8 +118,6 @@ const UploadTab = ({
     } catch (error: any) {
       console.error("Error uploading document:", error);
       showSnackbar(error.message || "Failed to upload document", "error");
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -142,7 +145,6 @@ const UploadTab = ({
         <Button
           variant={uploadType === "pre" ? "contained" : "outlined"}
           onClick={() => setUploadType("pre")}
-          disabled={uploading}
           sx={{ textTransform: "none", borderRadius: 3 }}
         >
           Pre-Flight
@@ -150,7 +152,6 @@ const UploadTab = ({
         <Button
           variant={uploadType === "post" ? "contained" : "outlined"}
           onClick={() => setUploadType("post")}
-          disabled={uploading}
           sx={{ textTransform: "none", borderRadius: 3 }}
         >
           Post-Flight
@@ -158,17 +159,12 @@ const UploadTab = ({
       </Stack>
 
       {/* Upload Component */}
-      {uploading ? (
-        <Box display="flex" justifyContent="center" py={3}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <FileUpload
-          onUpload={handleUpload}
-          accept=".pdf,.png,.jpg,.jpeg"
-          label="Upload Document"
-        />
-      )}
+      <FileUpload
+        onUpload={handleUpload}
+        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+        label="Upload Document"
+        category="Trip Detail Docs"
+      />
 
       {/* Combined List */}
       <DocumentsList
