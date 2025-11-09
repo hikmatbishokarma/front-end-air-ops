@@ -615,7 +615,7 @@ export const UserProfile = () => {
                 {crewDetail?.fullName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {crewDetail?.roles[0].name}
+                {crewDetail?.roles?.[0]?.type || crewDetail?.roles?.[0]?.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {crewDetail?.email}

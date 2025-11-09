@@ -103,12 +103,16 @@ export const GET_TRIP_DETAILS = gql`
 `;
 
 export const GET_CREW_DOC_UPLODED_FOR_TRIP = gql`
-  query getCrewDocUplodedForTrip(
+  query tripDetailsWithCrewDocuments(
     $filter: TripDetailFilter! = {}
     $paging: OffsetPaging! = { limit: 10 }
     $sorting: [TripDetailSort!]! = []
   ) {
-    tripDetails(filter: $filter, paging: $paging, sorting: $sorting) {
+    tripDetailsWithCrewDocuments(
+      filter: $filter
+      paging: $paging
+      sorting: $sorting
+    ) {
       totalCount
       nodes {
         id
@@ -148,38 +152,11 @@ export const GET_CREW_DOC_UPLODED_FOR_TRIP = gql`
           arrivalTime
           pax
           flightTime
-          fuelRecord {
-            fuelGauge
-            fuelLoaded
-            fuelStation
-            fuelOnArrival
-          }
-          documents {
-            type
-            externalLink
-            fileUrl
-          }
           assignedCrews {
             designation
             crews
           }
-          baInfo {
-            baMachine
-            baPersons {
-              name
-              age
-              gender
-              certNo
-            }
-            baReports {
-              name
-              reading
-              record
-              conductedDate
-              video
-            }
-          }
-          crewTripUploadedDoc {
+          tripDocByCrew {
             name
             url
             type

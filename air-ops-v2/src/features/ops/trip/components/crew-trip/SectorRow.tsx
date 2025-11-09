@@ -30,8 +30,10 @@ export const SectorRow = ({ sector }) => {
             alignItems="center"
           >
             <Typography fontWeight={600} fontSize={14}>
-              Sector {sector.sectorNo}: {sector.source.code} →{" "}
+              Sector {sector.sectorNo}: {sector.source.code}
+              {sector.source.name && ` (${sector.source.name})`} →{" "}
               {sector.destination.code}
+              {sector.destination.name && ` (${sector.destination.name})`}
               &nbsp; ({sector.depatureTime} → {sector.arrivalTime})
             </Typography>
 

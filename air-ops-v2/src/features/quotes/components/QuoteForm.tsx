@@ -1,5 +1,5 @@
 // src/components/QuoteForm.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -86,7 +86,7 @@ const QuoteForm = ({
   fetchRepresentatives: (clientId: string | undefined) => Promise<void>;
 }) => {
   const { control, handleSubmit, watch, reset, getValues, setValue } = useForm({
-    defaultValues: initialData,
+    defaultValues: initialData || {},
   });
 
   const [activeStep, setActiveStep] = useState(0);
@@ -105,31 +105,83 @@ const QuoteForm = ({
   // Find the selected client based on the watched form value
   const selectedClient = clients.find((c) => c.id === watchedRequestedBy?.id);
 
-  // Reset form with new initial data when it changes (for edit mode)
-  // useEffect(() => {
-  //   reset(initialData);
-  // }, [initialData, reset]);
+  // Track the last reset ID to prevent unnecessary resets
+  const lastResetIdRef = useRef<string | null>(null);
 
+  // Reset form with new initial data when it changes (for edit mode)
   useEffect(() => {
-    // Check if both the quote data and all lookup lists are available
-    if (initialData && aircrafts.length > 0 && clients.length > 0) {
-      // Set the aircraft field
-      const selectedAircraft = aircrafts.find(
-        (a) => a.id === initialData.aircraft
-      );
-      if (selectedAircraft) {
-        setValue("aircraft", selectedAircraft);
+    if (
+      initialData &&
+      isEdit &&
+      initialData.id &&
+      initialData.id !== lastResetIdRef.current
+    ) {
+      // Mark that we've reset for this quote ID
+      lastResetIdRef.current = initialData.id;
+
+      // Transform the API response to match form structure
+      const transformedData = {
+        ...initialData,
+        // aircraft is already an object from API, but we need to find it in the list
+        aircraft: initialData.aircraft
+          ? aircrafts.find((a) => a.id === initialData.aircraft?.id) ||
+            initialData.aircraft
+          : null,
+        // requestedBy is already an object from API, but we need to find it in the list
+        requestedBy: initialData.requestedBy
+          ? clients.find((c) => c.id === initialData.requestedBy?.id) ||
+            initialData.requestedBy
+          : null,
+        // representative is already an object from API, but we need to find it in the list
+        representative: initialData.representative
+          ? representatives.find(
+              (r) => r.id === initialData.representative?.id
+            ) || initialData.representative
+          : null,
+        // Ensure sectors and prices are arrays
+        sectors: initialData.sectors || [],
+        prices: initialData.prices || [],
+      };
+      reset(transformedData);
+    }
+  }, [initialData, aircrafts, clients, representatives, isEdit, reset]);
+
+  // Update aircraft, requestedBy, and representative when lookup lists are loaded
+  useEffect(() => {
+    if (initialData && isEdit && aircrafts.length > 0 && clients.length > 0) {
+      // Set the aircraft field if it exists in the list
+      if (initialData.aircraft?.id) {
+        const selectedAircraft = aircrafts.find(
+          (a) => a.id === initialData.aircraft.id
+        );
+        if (selectedAircraft) {
+          setValue("aircraft", selectedAircraft, { shouldDirty: false });
+        }
       }
 
-      // Set the client field
-      const selectedClient = clients.find(
-        (c) => c.id === initialData.requestedBy
-      );
-      if (selectedClient) {
-        setValue("requestedBy", selectedClient);
+      // Set the client field if it exists in the list
+      if (initialData.requestedBy?.id) {
+        const selectedClient = clients.find(
+          (c) => c.id === initialData.requestedBy.id
+        );
+        if (selectedClient) {
+          setValue("requestedBy", selectedClient, { shouldDirty: false });
+        }
+      }
+
+      // Set the representative field if it exists in the list
+      if (initialData.representative?.id && representatives.length > 0) {
+        const selectedRepresentative = representatives.find(
+          (r) => r.id === initialData.representative.id
+        );
+        if (selectedRepresentative) {
+          setValue("representative", selectedRepresentative, {
+            shouldDirty: false,
+          });
+        }
       }
     }
-  }, [initialData, aircrafts, clients, setValue]);
+  }, [initialData, aircrafts, clients, representatives, isEdit, setValue]);
 
   const dynamicSteps = showPriceStep
     ? ["Flight Plan", "Sectors", "Price", "Review"]

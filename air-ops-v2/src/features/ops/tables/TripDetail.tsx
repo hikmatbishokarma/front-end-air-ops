@@ -65,6 +65,10 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
     navigate(`/app/trip-detail/${row.id}`, { state: row });
   };
 
+  const handleRowClick = (row: any) => {
+    navigate(`/app/trip-detail/${row.id}`, { state: row });
+  };
+
   const { tripDetailList, tripDetailTotalCount } = useTripDetailData({
     filter,
     page,
@@ -98,10 +102,12 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
                 key={row.id}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
-                  backgroundColor: !row.isLatest ? "#f9f9f9" : "inherit",
-                  opacity: !row.isLatest ? 0.6 : 1,
                   cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
                 }}
+                // onClick={() => handleRowClick(row)}
               >
                 <TableCell component="th" scope="row">
                   {row.operator?.companyName ?? "AirOps"}

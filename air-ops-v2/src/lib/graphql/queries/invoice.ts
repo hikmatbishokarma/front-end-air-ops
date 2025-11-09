@@ -40,7 +40,30 @@ export const GET_INVOICES = gql`
             name
             code
           }
-          itinerary
+          sectors {
+            source {
+              code
+              name
+              lat
+              long
+              city
+              country
+            }
+            destination {
+              code
+              name
+              lat
+              long
+              city
+              country
+            }
+            depatureDate
+            depatureTime
+            arrivalDate
+            arrivalTime
+
+            paxNumber
+          }
         }
       }
     }

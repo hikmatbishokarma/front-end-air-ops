@@ -82,7 +82,7 @@ const SaleConfirmationPreviewPage = () => {
 
   const handleConfirmSave = async () => {
     try {
-      navigate("/quotes"); // ✅ redirect after confirmation
+      navigate("/app/quotes", { state: { refresh: true } }); // ✅ redirect after confirmation
     } catch (error: any) {
       showSnackbar(error.message || "Failed to save!", "error");
     } finally {

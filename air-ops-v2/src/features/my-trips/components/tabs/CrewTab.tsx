@@ -12,31 +12,13 @@ import {
 } from "@mui/material";
 import { Sector } from "../../types/sector";
 
-const getCrewDetails = (id: string) => {
-  return {
-    name:
-      {
-        c1: "Capt. Arjun Mehta",
-        c3: "Lara Sharma",
-        c4: "Ravi Kumar",
-        c6: "Manoj Pillai",
-        c7: "Vivek Rao",
-      }[id] ?? id,
-    email: {
-      c1: "arjun.mehta@airops.in",
-      c3: "lara.sharma@airops.in",
-      c4: "ravi.kumar@airops.in",
-      c6: "manoj.pillai@airops.in",
-      c7: "vivek.rao@airops.in",
-    }[id],
-    photo: null,
-  };
-};
-
 const CrewTab: React.FC<{ sector: Sector; currentUserId: string }> = ({
   sector,
   currentUserId,
 }) => {
+  // Get crew details from sector.crewDetails or fallback to empty object
+  const crewDetails = sector.crewDetails || {};
+
   return (
     <Box sx={{ maxWidth: 520, pl: 1 }}>
       {sector.assignedCrews.map((group) => {
@@ -61,27 +43,61 @@ const CrewTab: React.FC<{ sector: Sector; currentUserId: string }> = ({
 
             <List disablePadding>
               {group.crews.map((crewId, i) => {
-                const user = getCrewDetails(crewId);
+                const user = crewDetails[crewId];
+
+                // Fallback if crew details not found
+                if (!user) {
+                  return (
+                    <Stack key={crewId}>
+                      <ListItem sx={{ px: 0, py: 0.8 }}>
+                        <ListItemText
+                          primary={
+                            <Typography fontWeight={600} fontSize={15}>
+                              {crewId}
+                              {crewId === currentUserId && (
+                                <Typography
+                                  component="span"
+                                  fontWeight={400}
+                                  fontSize={13}
+                                  color="#777"
+                                >
+                                  {" "}
+                                  (You)
+                                </Typography>
+                              )}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                      {i < group.crews.length - 1 && (
+                        <Divider sx={{ ml: 6, my: 0.5 }} />
+                      )}
+                    </Stack>
+                  );
+                }
+
                 const initials = user.name
                   .split(" ")
                   .map((p) => p[0])
-                  .join("");
+                  .join("")
+                  .toUpperCase()
+                  .slice(0, 2);
 
                 return (
                   <Stack key={crewId}>
                     <ListItem sx={{ px: 0, py: 0.8 }}>
                       <ListItemAvatar>
                         <Avatar
-                          src={user.photo || undefined}
+                          src={user.profile || undefined}
                           sx={{
-                            bgcolor: user.photo ? undefined : "#7C8CE0",
+                            bgcolor: user.profile ? undefined : "#7C8CE0",
                             width: 38,
                             height: 38,
                             fontSize: 14,
                             fontWeight: 600,
                           }}
                         >
-                          {!user.photo && initials}
+                          {!user.profile && initials}
                         </Avatar>
                       </ListItemAvatar>
 

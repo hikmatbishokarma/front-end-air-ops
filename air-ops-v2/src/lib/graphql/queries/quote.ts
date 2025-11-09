@@ -26,7 +26,6 @@ export const GET_QUOTES = gql`
         }
         status
         isLatest
-        itinerary
         providerType
         updatedAt
         createdAt
@@ -90,7 +89,6 @@ export const GET_QUOTE_BY_ID = gql`
         code
       }
       status
-      itinerary
       providerType
       updatedAt
       quotationNo

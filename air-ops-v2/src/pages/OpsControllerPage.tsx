@@ -59,8 +59,8 @@ const OpsControllerPage = () => {
     },
     {
       status: [""],
-      name: "Crew Trips",
-      countLabel: "crewTrips",
+      name: "Crew Trips Doc",
+      countLabel: "crewTripsDoc",
     },
     { status: [""], name: SalesCategoryLabels.REPORTS, countLabel: "reports" },
   ];
@@ -208,7 +208,7 @@ const OpsControllerPage = () => {
         {selectedTab == "Trip Details" && (
           <TripDetailList filter={tripDetailsFilter} refreshKey={refreshKey} />
         )}
-        {selectedTab == "Crew Trips" && (
+        {selectedTab == "Crew Trips Doc" && (
           <CrewTripList filter={tripDetailsFilter} refreshKey={refreshKey} />
         )}
       </Box>

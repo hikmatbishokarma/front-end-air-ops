@@ -1,5 +1,5 @@
 // /pages/MyProfileSectors.tsx
-import React, { useMemo, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Grid,
@@ -8,103 +8,74 @@ import {
   Stack,
   Typography,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { Sector } from "../types/sector";
-
+import { useSession, useSnackbar } from "@/app/providers";
+import useGql from "@/lib/graphql/gql";
+import { GET_TRIP_ASSIGNED_FOR_CREW } from "@/lib/graphql/queries/trip-detail";
 import SectorDrawer from "../components/sectors/SectorDrawer";
 import SectorCard from "../components/sectors/SectorCard";
-
-const MOCK_SECTORS: Sector[] = [
-  {
-    _id: "68bbe3de539403cb1e214224",
-    sectorNo: 1,
-    source: "VOHK",
-    destination: "VOYK",
-    depatureDate: "2025-11-06T00:00:00.000Z",
-    depatureTime: "16:00",
-    arrivalDate: "2025-11-06T00:00:00.000Z",
-    arrivalTime: "17:00",
-    pax: 1,
-    flightTime: "01 hr, 00 min",
-    assignedCrews: [
-      { designation: "PILOT", crews: ["c1"] },
-      { designation: "CABIN_CREW", crews: ["c3"] },
-      { designation: "ENGINEER", crews: ["c4"] },
-      { designation: "OPERATIONS", crews: ["c6"] },
-      { designation: "CAMO", crews: ["c7"] },
-    ],
-    documents: [
-      {
-        type: "Flight Plan",
-        externalLink: "https://example.com/flightplan.pdf",
-      },
-      {
-        type: "Weight & Balance (CG)",
-        externalLink: "https://example.com/wb.pdf",
-      },
-      { type: "Tripkit", externalLink: "https://example.com/tripkit.pdf" },
-      { type: "Manifest" },
-      { type: "Weather Briefing" },
-      { type: "NOTAMS" },
-    ],
-    fuelRecord: {
-      fuelStation: "HP Aviation",
-      uploadedDate: "2025-11-06T10:15:00.000Z",
-      fuelOnArrival: "1200kg",
-      fuelGauge: "3/4",
-    },
-  },
-  {
-    _id: "68bbe3de539403cb1e214224",
-    sectorNo: 1,
-    source: "VOHK",
-    destination: "VOYK",
-    depatureDate: "2025-11-06T00:00:00.000Z",
-    depatureTime: "16:00",
-    arrivalDate: "2025-11-06T00:00:00.000Z",
-    arrivalTime: "17:00",
-    pax: 1,
-    flightTime: "01 hr, 00 min",
-    assignedCrews: [
-      { designation: "PILOT", crews: ["c1"] },
-      { designation: "CABIN_CREW", crews: ["c3"] },
-      { designation: "ENGINEER", crews: ["c4"] },
-      { designation: "OPERATIONS", crews: ["c6"] },
-      { designation: "CAMO", crews: ["c7"] },
-    ],
-    documents: [
-      {
-        type: "Flight Plan",
-        externalLink: "https://example.com/flightplan.pdf",
-      },
-      {
-        type: "Weight & Balance (CG)",
-        externalLink: "https://example.com/wb.pdf",
-      },
-      { type: "Tripkit", externalLink: "https://example.com/tripkit.pdf" },
-      { type: "Manifest" },
-      { type: "Weather Briefing" },
-      { type: "NOTAMS" },
-    ],
-    fuelRecord: {
-      fuelStation: "HP Aviation",
-      uploadedDate: "2025-11-06T10:15:00.000Z",
-      fuelOnArrival: "1200kg",
-      fuelGauge: "3/4",
-    },
-  },
-  // add more sectors to simulate Upcoming/Active/Past
-];
+import { transformApiDataToSectors } from "../utils/transform";
 
 const MyProfileSectors: React.FC = () => {
+  const { session } = useSession();
+  const showSnackbar = useSnackbar();
+  const currentUserId = session?.user?.id || null;
+
   const [tab, setTab] = useState<"upcoming" | "active" | "past">("upcoming");
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Sector | null>(null);
   const [activeInnerTab, setActiveInnerTab] = useState<
     "overview" | "crew" | "documents" | "upload"
   >("overview");
+  const [sectors, setSectors] = useState<Sector[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const currentUserId = "c1"; // pilot logged in
+  const fetchTrips = useCallback(async () => {
+    if (!currentUserId) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const result = await useGql({
+        query: GET_TRIP_ASSIGNED_FOR_CREW,
+        queryName: "tripAssignedForCrew",
+        queryType: "query-without-edge",
+        variables: {
+          filter: {
+            crewId: currentUserId,
+            type: tab, // Pass the selected tab type to backend filter
+          },
+          paging: {
+            limit: 10,
+            offset: 0,
+          },
+          "sort": { "updatedAt": "desc" },
+        },
+      });
+
+      // result is the tripAssignedForCrew object with { totalCount, result: [...] }
+      if (result?.result && Array.isArray(result.result)) {
+        const transformedSectors = transformApiDataToSectors(result.result);
+        setSectors(transformedSectors);
+      } else {
+        setSectors([]);
+      }
+    } catch (error: any) {
+      console.error("Error fetching trips:", error);
+      showSnackbar(error.message || "Failed to fetch trips", "error");
+      setSectors([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentUserId, tab, showSnackbar]);
+
+  useEffect(() => {
+    fetchTrips();
+  }, [fetchTrips]);
 
   const openDrawer = (
     sector: Sector,
@@ -115,8 +86,21 @@ const MyProfileSectors: React.FC = () => {
     setOpen(true);
   };
 
-  // For now, all mock sectors appear in Upcoming
-  const sectorsToShow = useMemo(() => MOCK_SECTORS, [tab]);
+  // Get unique trip data for each sector
+  const getTripDataForSector = (sector: Sector) => {
+    return {
+      tripId: sector.tripId || "",
+      aircraft: sector.aircraft,
+    };
+  };
+
+  if (loading) {
+    return (
+      <Container sx={{ py: 3, display: "flex", justifyContent: "center" }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container sx={{ py: 3 }}>
@@ -124,7 +108,7 @@ const MyProfileSectors: React.FC = () => {
         <Tabs
           value={tab}
           onChange={(_, v) => setTab(v)}
-          TabIndicatorProps={{ style: { display: "none" } }} // remove underline
+          TabIndicatorProps={{ style: { display: "none" } }}
           sx={{
             "& .MuiTab-root": {
               textTransform: "none",
@@ -144,33 +128,29 @@ const MyProfileSectors: React.FC = () => {
           <Tab value="past" label="Past" />
         </Tabs>
       </Box>
-      {/* </Stack> */}
 
-      {/* <Grid container spacing={2}>
-        {sectorsToShow.map((s) => (
-          <Grid item xs={8} key={s._id}>
-            <SectorCard
-              sector={s}
-              currentUserId={currentUserId}
-              onOpen={(which) => openDrawer(s, which)}
-            />
-          </Grid>
-        ))}
-      </Grid> */}
-
-      <Grid container spacing={2}>
-        {sectorsToShow.map((s) => (
-          <Grid item xs={12} key={s._id}>
-            <SectorCard
-              sector={s}
-              tripId={"4536235TYYT"}
-              aircraftName={"Hacker 350"}
-              currentUserId={currentUserId}
-              onOpen={(which) => openDrawer(s, which)}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      {sectors.length === 0 ? (
+        <Box textAlign="center" py={4}>
+          <Typography color="text.secondary">No {tab} trips found.</Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={2}>
+          {sectors.map((s) => {
+            const tripData = getTripDataForSector(s);
+            return (
+              <Grid item xs={12} key={s._id}>
+                <SectorCard
+                  sector={s}
+                  tripId={tripData.tripId}
+                  aircraft={tripData.aircraft}
+                  currentUserId={currentUserId || ""}
+                  onOpen={(which) => openDrawer(s, which)}
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
 
       {selected && (
         <SectorDrawer
@@ -178,8 +158,8 @@ const MyProfileSectors: React.FC = () => {
           onClose={() => setOpen(false)}
           sector={selected}
           initialTab={activeInnerTab}
-          currentUserId={currentUserId}
-          aircraftName={"Hacker 350"}
+          currentUserId={currentUserId || ""}
+          aircraft={getTripDataForSector(selected).aircraft}
         />
       )}
     </Container>

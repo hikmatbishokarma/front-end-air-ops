@@ -35,7 +35,7 @@ interface accessPermission {
 }
 interface FormData {
   type: string;
-  name: string;
+  // name: string;
   description: string;
   accessPermissions: accessPermission[];
 }
@@ -48,15 +48,29 @@ interface FormData {
 // }, []);
 
 const resources = NAVIGATION.reduce((acc: any[], item: any) => {
+  // Helper function to strip /app prefix and extract resource name
+  const extractResource = (segment: string): string => {
+    if (!segment) return "";
+    // Remove /app prefix if present
+    let resource = segment.startsWith("app/")
+      ? segment.replace("app/", "")
+      : segment;
+    // For nested routes like "app/admin/aircraft", extract the last part
+    const parts = resource.split("/");
+    return parts.length > 1 ? parts[parts.length - 1] : resource;
+  };
+
   if (item.segment && item?.children?.length > 0) {
     item.children.forEach((child: any) => {
       if (child.segment) {
-        acc.push({ label: child.title, id: child.segment });
+        const resourceId = extractResource(child.segment);
+        acc.push({ label: child.title, id: resourceId });
       }
     });
   }
   if (item.segment) {
-    acc.push({ label: item.title, id: item.segment });
+    const resourceId = extractResource(item.segment);
+    acc.push({ label: item.title, id: resourceId });
   }
   return acc;
 }, []);
@@ -107,11 +121,23 @@ const RoleEdit = () => {
   useEffect(() => {
     if (roleData) {
       setValue("type", roleData.type || "");
-      setValue("name", roleData.name || "");
-      setValue(
-        "accessPermissions",
+      // setValue("name", roleData.name || "");
+
+      // Normalize accessPermissions: strip /app prefix from resources if present
+      const normalizedPermissions = (
         removeTypename(roleData.accessPermissions) || []
-      );
+      ).map((perm: any) => {
+        if (perm.resource && perm.resource.startsWith("app/")) {
+          // Remove /app prefix and extract resource name
+          let resource = perm.resource.replace("app/", "");
+          const parts = resource.split("/");
+          resource = parts.length > 1 ? parts[parts.length - 1] : resource;
+          return { ...perm, resource };
+        }
+        return perm;
+      });
+
+      setValue("accessPermissions", normalizedPermissions);
     }
   }, [roleData, setValue]);
 
@@ -120,10 +146,11 @@ const RoleEdit = () => {
       const result = await useGql({
         query: UPDATE_ROLE,
         queryType: "mutation",
-        queryName: "",
+        queryName: "updateOneRole",
         variables: { input: { id: roleId, update: data } },
       });
 
+      console.log("result::::", result);
       if (result.data) {
         showSnackbar("Role updated successfully!", "success");
       } else {
@@ -140,7 +167,7 @@ const RoleEdit = () => {
       operatorId,
     };
     updateRole(id, formattedData);
-    navigate("/admin/roles");
+    navigate("/app/admin/roles");
   };
 
   const addAccessPermissionRow = () => {
@@ -171,7 +198,7 @@ const RoleEdit = () => {
                     value={field.value || ""} // Ensure the value is set
                     onChange={(event) => field.onChange(event.target.value)}
                     displayEmpty
-                    label="Type"
+                    label="Role"
                   >
                     <MenuItem value="" disabled>
                       Select Role
@@ -186,7 +213,7 @@ const RoleEdit = () => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={5}>
+          {/* <Grid item xs={5}>
             <Controller
               name="name"
               control={control}
@@ -201,7 +228,7 @@ const RoleEdit = () => {
                 />
               )}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
 
         {/* Access Permission Rows */}

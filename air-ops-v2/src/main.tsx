@@ -6,6 +6,7 @@ import Layout from "./layouts/dashboard";
 import DashboardPage from "./pages";
 
 import RoleControllerPage from "@/pages/RoleControllerPage";
+import { RoleEdit } from "@/features/role";
 
 import UserControllerPage from "@/pages/UserControllerPage";
 import { UserProfile } from "@/pages/settings/profile";
@@ -220,6 +221,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <RoleControllerPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "admin/roles/edit/:id",
+            element: (
+              <ProtectedRoute>
+                <RoleEdit />
               </ProtectedRoute>
             ),
           },

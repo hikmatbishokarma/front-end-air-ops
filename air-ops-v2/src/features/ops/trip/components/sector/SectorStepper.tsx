@@ -63,12 +63,19 @@ function CustomStepIcon(props: StepIconProps) {
 export default function SectorStepper({ sector, onSave }: any) {
   const [activeStep, setActiveStep] = useState(0);
 
+  // Transform documents from backend format (fileUrl as string) to form format
+  const transformedDocuments = (sector.documents || []).map((doc: any) => ({
+    ...doc,
+    // Keep fileUrl as string (key) - MediaUpload will handle conversion for display
+    fileUrl: doc.fileUrl || null,
+  }));
+
   const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       ...sector,
       assignedCrews: sector.assignedCrews || [],
       fuelRecord: sector.fuelRecord || {},
-      documents: sector.documents || [],
+      documents: transformedDocuments,
       baInfo: sector.baInfo || {},
     },
   });
@@ -90,8 +97,20 @@ export default function SectorStepper({ sector, onSave }: any) {
   };
 
   const submitSector = (data: any) => {
-    console.log("Saving sector:", sector.sectorNo, data);
-    onSave?.(sector.sectorNo, data);
+    // Transform documents to ensure fileUrl is a string (key) not an object
+    const transformedData = {
+      ...data,
+      documents:
+        data.documents?.map((doc: any) => ({
+          ...doc,
+          fileUrl:
+            typeof doc.fileUrl === "object" && doc.fileUrl?.key
+              ? doc.fileUrl.key // Extract key string from object
+              : doc.fileUrl || null, // Keep as string or null
+        })) || [],
+    };
+    console.log("Saving sector:", sector.sectorNo, transformedData);
+    onSave?.(sector.sectorNo, transformedData);
   };
 
   // Prevent form submission unless we're on the last step
