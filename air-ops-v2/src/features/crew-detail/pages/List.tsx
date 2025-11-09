@@ -103,7 +103,7 @@ export const CrewDetailList = ({
 
   return (
     <>
-      <TableContainer component={Paper} className="dash-table crew-table-v1">
+      <TableContainer component={Paper} className="dash-table">
         <Table>
           <TableHead>
             <TableRow>
