@@ -76,7 +76,7 @@ export const useCrewTripData = ({
     try {
       const result = await useGql({
         query: GET_CREW_DOC_UPLODED_FOR_TRIP,
-        queryName: "tripDetails",
+        queryName: "tripDetailsWithCrewDocuments",
         queryType: "query-with-count",
         variables: {
           filter: finalFilter,
