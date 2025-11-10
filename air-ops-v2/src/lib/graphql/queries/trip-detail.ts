@@ -338,7 +338,7 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
 
 export const UPLOAD_TRIP_DOC_BY_CREW = gql`
   mutation uploadTripDocByCrew(
-    $data: tripDocByCrewInput!
+    $data: TripDocByCrewDataInput!
     $where: TripDocByCrewWhereInput!
   ) {
     uploadTripDocByCrew(data: $data, where: $where) {

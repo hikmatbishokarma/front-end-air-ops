@@ -108,6 +108,14 @@ export default function SectorStepper({ sector, onSave }: any) {
               ? doc.fileUrl.key // Extract key string from object
               : doc.fileUrl || null, // Keep as string or null
         })) || [],
+      fuelRecord: {
+        ...data.fuelRecord,
+        fuelReceipt:
+          typeof data.fuelRecord?.fuelReceipt === "object" &&
+          data.fuelRecord?.fuelReceipt?.key
+            ? data.fuelRecord.fuelReceipt.key // Extract key string from object
+            : data.fuelRecord?.fuelReceipt || null, // Keep as string or null
+      },
     };
     console.log("Saving sector:", sector.sectorNo, transformedData);
     onSave?.(sector.sectorNo, transformedData);

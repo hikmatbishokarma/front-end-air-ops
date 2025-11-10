@@ -58,6 +58,31 @@ const UploadTab = ({
     }
 
     try {
+      // Extract filename from key, removing timestamp prefix if present
+      // Key format: "Trip Detail Docs/1762673796889-Airops-AOQT-25-0060-1.pdf"
+      // We want: "Airops-AOQT-25-0060-1.pdf"
+      const getFileName = (fileObj: any): string => {
+        if (!fileObj) return "document";
+
+        if (fileObj.key) {
+          const fullPath = fileObj.key;
+          const fileName = fullPath.split("/").pop() || "";
+          // Remove timestamp prefix if present (format: timestamp-filename)
+          const match = fileName.match(/^\d+-(.+)$/);
+          return match ? match[1] : fileName;
+        }
+
+        if (fileObj.name) {
+          return fileObj.name;
+        }
+
+        return "document";
+      };
+
+      const fileName = getFileName(fileObject);
+      const fileKey = fileObject.key || null;
+      const typeValue = uploadType === "pre" ? "preFlight" : "postFlight";
+
       // Upload document via API
       const result = await useGql({
         query: UPLOAD_TRIP_DOC_BY_CREW,
@@ -65,11 +90,10 @@ const UploadTab = ({
         queryType: "mutation",
         variables: {
           data: {
-            name:
-              fileObject.key?.split("/").pop() || fileObject.name || "document",
-            url: fileObject.url || fileObject.previewUrl,
-            type: uploadType,
-            crewId: currentUserId,
+            name: fileName,
+            url: fileKey,
+            type: typeValue,
+            crew: currentUserId,
           },
           where: {
             tripId: sector.tripId,
