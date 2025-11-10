@@ -58,14 +58,6 @@ const UploadTab = ({
     }
 
     try {
-      // Extract source and destination codes (handle both string and object formats)
-      const sourceCode =
-        typeof sector.source === "object" ? sector.source.code : sector.source;
-      const destinationCode =
-        typeof sector.destination === "object"
-          ? sector.destination.code
-          : sector.destination;
-
       // Upload document via API
       const result = await useGql({
         query: UPLOAD_TRIP_DOC_BY_CREW,
@@ -80,10 +72,8 @@ const UploadTab = ({
             crewId: currentUserId,
           },
           where: {
-            tripId: { eq: sector.tripId },
-            sectorSource: { eq: sourceCode },
-            sectorDestination: { eq: destinationCode },
-            depatureDate: { eq: sector.depatureDate },
+            tripId: sector.tripId,
+            sectorNo: sector.sectorNo,
           },
         },
       });

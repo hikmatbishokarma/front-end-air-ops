@@ -195,6 +195,7 @@ export const GET_TRIP_ASSIGNED_FOR_CREW = gql`
           }
         }
         sector {
+          sectorNo
           source {
             name
             code
@@ -296,10 +297,14 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
         pax
         flightTime
         fuelRecord {
+          fuelStation
+          uploadedDate
+          fuelOnArrival
           fuelGauge
           fuelLoaded
-          fuelStation
-          fuelOnArrival
+          fuelReceipt
+          handledBy
+          designation
         }
         documents {
           type

@@ -628,7 +628,7 @@ export default function Layout() {
           <MenuItem
             onClick={() => {
               handleMenuClose();
-              navigate("/settings/profile");
+              navigate("/app/settings/profile");
             }}
           >
             My Profile
@@ -636,7 +636,7 @@ export default function Layout() {
           <MenuItem
             onClick={() => {
               handleMenuClose();
-              navigate("/settings/leave");
+              navigate("/app/settings/leave");
             }}
           >
             My Leaves
