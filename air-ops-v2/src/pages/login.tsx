@@ -37,7 +37,11 @@ import pfIMG from "../Asset/Images/profile_view.png";
 import leftLogo from "../Asset/Images/Left-side-logo.png";
 import { useSnackbar } from "@/app/providers";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+// const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+const cloudfrontBaseUrl =
+  import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/"; // Ensure it ends with a slash if needed
+
 export default function Login() {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -115,7 +119,7 @@ export default function Login() {
           name: data.user.name || data?.user?.fullName,
           email: data.user.email,
           type: data?.user?.type,
-          image: `${apiBaseUrl}${data?.user?.profile}`,
+          image: `${cloudfrontBaseUrl}${data?.user?.profile}`,
           // role: data.user.role,
           roles: data.user.roles,
           permissions: data.user.permissions,
