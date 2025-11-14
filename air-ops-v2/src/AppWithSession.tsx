@@ -5,6 +5,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { ReactRouterAppProvider } from "@toolpad/core/react-router";
 import { Outlet, useNavigate } from "react-router";
 import type { Navigation } from "@toolpad/core/AppProvider";
+import LocalActivityOutlinedIcon from "@mui/icons-material/LocalActivityOutlined";
 
 import {
   Flight,
@@ -172,6 +173,11 @@ export const NAVIGATION: Navigation = [
         title: "Operators",
         icon: <SensorOccupiedOutlinedIcon />,
       },
+      {
+        segment: "support-ticket",
+        title: "Support Ticket",
+        icon: <LocalActivityOutlinedIcon />,
+      },
     ],
   },
   {
@@ -195,6 +201,12 @@ export const NAVIGATION: Navigation = [
         icon: <PasswordOutlinedIcon />,
       },
     ],
+  },
+
+  {
+    segment: "my-tickets",
+    title: "My Ticket",
+    icon: <LocalActivityOutlinedIcon />,
   },
 ];
 

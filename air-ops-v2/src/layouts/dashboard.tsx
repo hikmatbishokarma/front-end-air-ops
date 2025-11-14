@@ -641,6 +641,16 @@ export default function Layout() {
           >
             My Leaves
           </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              navigate("/app/my-tickets");
+            }}
+          >
+            My Tickets
+          </MenuItem>
+
           <Divider />
           <MenuItem sx={{ p: 0 }} className="top-header-file">
             <SignOutButton
