@@ -309,7 +309,8 @@ text-align: left;
   border-bottom-left-radius: 25px;
   /* overflow-y: scroll; */
   /* height: 100vh; */
-  background-image: url(../Images/side-background-view.gif) !important;
+  background-image: url(../Images/bg-landing-main.gif) !important;
+      background-position: center;
   height: 100%;
   
 }
