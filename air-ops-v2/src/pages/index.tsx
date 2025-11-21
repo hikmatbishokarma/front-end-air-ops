@@ -30,6 +30,7 @@ import {
   FlightCalendarWidget,
   StaffLeaveWidget,
 } from "../components/CalenderWidget";
+import AirportDistanceCalculator from "../components/AirportDistanceCalculator";
 
 export default function DashboardPage() {
   const { session } = useSession();
@@ -111,6 +112,9 @@ export default function DashboardPage() {
         </Grid>
         <Grid item xs={12} md={6}>
           <StaffLeaveWidget />
+        </Grid>
+        <Grid item xs={12}>
+          <AirportDistanceCalculator />
         </Grid>
       </Grid>
     </Box>
