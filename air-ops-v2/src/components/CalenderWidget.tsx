@@ -10,6 +10,7 @@ import {
   Grid,
   CardContent,
   Tooltip,
+  Container,
   Chip,
   CircularProgress,
   Alert,
@@ -17,6 +18,7 @@ import {
   Stack,
   Avatar,
 } from "@mui/material";
+
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -34,6 +36,7 @@ import { useNavigate } from "react-router";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import { PickersDay, PickersDayProps } from "@mui/x-date-pickers";
 import { useSession } from "@/app/providers";
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 
 // export const FlightCalendarWidget = () => {
 //   const [flightEvents, setFlightEvents] = useState<any[]>([]);
@@ -376,6 +379,7 @@ export const FlightCalendarWidget = () => {
   }, [blockedDates]); // Recalculate only when blockedDates changes
 
   return (
+   <>
     <Card
       className="tripcnfrm"
       sx={{
@@ -614,7 +618,48 @@ export const FlightCalendarWidget = () => {
           />
         </LocalizationProvider>
       </Box>
-    </Card>
+
+      
+
+      
+  </Card>
+  
+
+
+  <Card className="calen_master">
+    <Box>
+      <div className="bbvbvbvb"></div>
+      <FlightTakeoffIcon/>
+      <p>VOMF</p>
+      <div className="bbvbvbvb1"></div>
+    </Box>
+  </Card>
+
+   <Card className="calen_master">
+  <div className="bbvbvbvb"></div>
+    <FlightTakeoffIcon/>
+       <p>VIDF</p>
+    <div className="bbvbvbvb1"></div>
+  </Card>
+  <Card className="calen_master">
+    
+      <div className="bbvbvbvb"></div>
+          <FlightTakeoffIcon/>
+       <p>VABF</p>
+       <div className="bbvbvbvb1"></div>
+  
+  </Card>
+  <Card className="calen_master">
+    <div className="bbvbvbvb"></div>
+        <FlightTakeoffIcon/>
+       <p>VECF</p>
+       <div className="bbvbvbvb1"></div>
+   
+  </Card>
+
+
+</>
+    
   );
 };
 
@@ -785,6 +830,7 @@ export const StaffLeaveWidget = () => {
   };
 
   return (
+   <>
     <Card sx={{ borderRadius: 3, boxShadow: 3, p: 2, background: "#fff" }}>
       <Box
         display="flex"
@@ -984,6 +1030,30 @@ export const StaffLeaveWidget = () => {
           </Typography>
         )}
       </Box>
+    
     </Card>
+
+  <Card className="alert_master_theme">
+     <Stack sx={{ width: '100%' }} spacing={2}>
+      <Alert variant="filled" severity="warning" className="warning_view">
+        This is a filled error Alert.
+      </Alert>
+        <Alert variant="filled" severity="warning">
+        This is a filled warning Alert.
+      </Alert>
+          <Alert variant="filled" severity="info">
+        This is a filled info Alert.
+      </Alert>
+      <Alert variant="filled" severity="success">
+        This is a filled success Alert.
+      </Alert>
+  
+    
+      
+    </Stack>
+   
+  </Card>
+</>
+   
   );
 };

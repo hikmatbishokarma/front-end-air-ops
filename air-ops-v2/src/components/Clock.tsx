@@ -62,6 +62,7 @@ const ClockDisplay: React.FC = () => {
 
   return (
     <Box sx={{ flexGrow: 1, p: 2 }}>
+      
       <Grid container spacing={2} justifyContent="flex-end">
         <Grid item>
           <Card
@@ -75,6 +76,7 @@ const ClockDisplay: React.FC = () => {
               boxShadow: 3,
             }}
           >
+               
             <AccessTimeIcon />
             <Typography variant="subtitle2" sx={{ fontWeight: "bold", mb: 1 }}>
               IST
@@ -122,6 +124,8 @@ export const ClockCompact = () => {
   }, []);
 
   return (
+  
+ 
     <Stack direction="row" spacing={2} alignItems="center">
       <Stack direction="row" spacing={0.5} alignItems="center">
         <AccessTimeIcon fontSize="small" />
@@ -136,5 +140,8 @@ export const ClockCompact = () => {
         </Typography>
       </Stack>
     </Stack>
+   
+
+    
   );
 };
