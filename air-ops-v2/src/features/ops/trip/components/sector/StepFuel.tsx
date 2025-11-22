@@ -131,24 +131,29 @@ export default function StepFuel({ control }: StepFuelProps) {
             <Controller
               name="fuelRecord.fuelReceipt"
               control={control}
-              render={({ field }) => (
-                // <TextField
-                //   {...field}
-                //   size="small"
-                //   label="Fuel Receipt (File URL)"
-                //   fullWidth
-                // />
-                <MediaUpload
-                  size="medium"
-                  label="Fuel Receipt"
-                  category="Fuel Receipt"
-                  accept=".pdf,.doc,.docx"
-                  // value={field.value}
-                  // onUpload={(url) => field.onChange(url)}
-                  value={field.value}
-                  onUpload={(fileObject) => field.onChange(fileObject)}
-                />
-              )}
+              render={({ field }) => {
+                // Convert string (key from backend) to object for MediaUpload display
+                // Backend stores fuelReceipt as string (key), but MediaUpload expects FileObject
+                const displayValue =
+                  typeof field.value === "string" && field.value
+                    ? { key: field.value, url: field.value } // Convert string to object
+                    : field.value; // If already object or null, use as is
+
+                return (
+                  <MediaUpload
+                    size="medium"
+                    label="Fuel Receipt"
+                    category="Fuel Receipt"
+                    accept=".pdf,.doc,.docx"
+                    value={displayValue} // Pass object to MediaUpload
+                    onUpload={(fileObject) => {
+                      // Save only the key string to backend (not the full object)
+                      const keyValue = fileObject?.key || null;
+                      field.onChange(keyValue);
+                    }}
+                  />
+                );
+              }}
             />
           </Grid>
         </Grid>

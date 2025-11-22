@@ -17,11 +17,6 @@ export const useCreateTripMutation = () => {
 
   const createTrip = useCallback(
     async (row: any) => {
-      if (!operatorId) {
-        showSnackbar("Operator ID not available for creating trip.", "error");
-        return { success: false, error: new Error("Operator ID not found.") };
-      }
-
       try {
         // --- 1. Data Transformation (Cleaning __typename and calculating flight time) ---
         const transformedSectors = row.sectors.map((sector: any) => {
@@ -55,7 +50,7 @@ export const useCreateTripMutation = () => {
           variables: {
             input: {
               tripDetail: {
-                operatorId,
+                ...(operatorId && { operatorId }), // Include operatorId only if it exists
                 quotation: row.id,
                 quotationNo: row.quotationNo,
                 sectors: transformedSectors,
@@ -67,17 +62,17 @@ export const useCreateTripMutation = () => {
         // --- 3. Execute Mutation ---
         const result = await mutate(gqlParams);
 
-        const newTripId = result?.data?.createTrip?.id;
+        const newTripId = result?.data?.id;
 
         // --- 4. Side-Effect Handling (Snackbar & Navigation) ---
-        if (result.success && newTripId) {
+        if (newTripId) {
           showSnackbar(
             `Trip ${row.quotationNo} created successfully!`,
             "success"
           );
 
           // Navigate to the new trip detail page, passing the original quote row data as state
-          navigate(`/trip-detail/${newTripId}`, { state: row });
+          navigate(`/app/trip-detail/${newTripId}`, { state: row });
 
           return { success: true, newTripId };
         }

@@ -6,6 +6,7 @@ import Layout from "./layouts/dashboard";
 import DashboardPage from "./pages";
 
 import RoleControllerPage from "@/pages/RoleControllerPage";
+import { RoleEdit } from "@/features/role";
 
 import UserControllerPage from "@/pages/UserControllerPage";
 import { UserProfile } from "@/pages/settings/profile";
@@ -47,7 +48,10 @@ import ManualControllerPage from "@/pages/ManualControllerPage";
 import Landingpage from "./pages/landingpage/landingpage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import MyTripsPage from "./features/my-trips/pages/MyTrip";
-import ViewTripDetailsPage from "./features/my-trips/pages/ViewTripDetails";
+import SupportTicketsPage from "./pages/support/SupportTicketsPage";
+import UserTicketListPage from "./pages/support/UserTicketListPage";
+import UserTicketDetailsPage from "./features/support/user/components/UserTicketDetailsPage";
+import CreateTicketPage from "./features/support/user/components/CreateTicketPane";
 
 const router = createBrowserRouter([
   {
@@ -225,6 +229,14 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: "admin/roles/edit/:id",
+            element: (
+              <ProtectedRoute>
+                <RoleEdit />
+              </ProtectedRoute>
+            ),
+          },
+          {
             path: "admin/users",
             element: (
               <ProtectedRoute>
@@ -249,6 +261,31 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: "my-tickets",
+            // element: (
+            //   <ProtectedRoute>
+            //     <UserTicketListPage />
+            //   </ProtectedRoute>
+            // ),
+            Component: UserTicketListPage,
+          },
+
+          {
+            path: "my-tickets/:id",
+            // element: (
+            //   <ProtectedRoute>
+            //     <UserTicketListPage />
+            //   </ProtectedRoute>
+            // ),
+            Component: UserTicketDetailsPage,
+          },
+
+          {
+            path: "create-ticket",
+            Component: CreateTicketPage,
+          },
+
+          {
             path: "settings/leave",
             element: (
               <ProtectedRoute>
@@ -256,6 +293,7 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
+
           {
             path: "settings/change-password",
             element: (
@@ -320,6 +358,21 @@ const router = createBrowserRouter([
                 <MyTripsPage />
               </ProtectedRoute>
             ),
+          },
+
+          {
+            path: "admin/support-ticket",
+            // Component: MyTripsPage,
+            element: (
+              <ProtectedRoute>
+                <SupportTicketsPage />
+              </ProtectedRoute>
+            ),
+          },
+
+          {
+            path: "admin/support-ticket/:ticketId",
+            Component: SupportTicketsPage,
           },
         ],
       },

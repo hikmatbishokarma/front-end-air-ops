@@ -628,7 +628,7 @@ export default function Layout() {
           <MenuItem
             onClick={() => {
               handleMenuClose();
-              navigate("/settings/profile");
+              navigate("/app/settings/profile");
             }}
           >
             My Profile
@@ -636,11 +636,21 @@ export default function Layout() {
           <MenuItem
             onClick={() => {
               handleMenuClose();
-              navigate("/settings/leave");
+              navigate("/app/settings/leave");
             }}
           >
             My Leaves
           </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              navigate("/app/my-tickets");
+            }}
+          >
+            My Tickets
+          </MenuItem>
+
           <Divider />
           <MenuItem sx={{ p: 0 }} className="top-header-file">
             <SignOutButton

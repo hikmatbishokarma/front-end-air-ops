@@ -300,7 +300,7 @@ export const FlightCalendarWidget = () => {
   }, [selectedDate, getFlightSegmentsForCalendar]);
 
   const onClickTripConfirmationWidget = () => {
-    navigate("/trip-confirmation/calender");
+    navigate("/app/trip-confirmation/calender");
   };
 
   // --- Logic for the CALENDAR (Monthly Blocked Dates) ---
@@ -826,7 +826,7 @@ export const StaffLeaveWidget = () => {
   const leavesForList = getLeavesForSelectedDayList(selectedDate);
 
   const OnClickLeaveWidget = () => {
-    navigate("/staff-leave/calender");
+    navigate("/app/staff-leave/calender");
   };
 
   return (

@@ -23,6 +23,7 @@ export const GET_ROLES = gql`
     $sorting: [roleSort!]! = []
   ) {
     roles(filter: $filter, paging: $paging, sorting: $sorting) {
+      totalCount
       nodes {
         id
         type

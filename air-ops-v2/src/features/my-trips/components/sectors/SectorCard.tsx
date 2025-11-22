@@ -13,7 +13,7 @@ import LuggageIcon from "@mui/icons-material/Luggage";
 import EventSeatIcon from "@mui/icons-material/EventSeat";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
-import { Sector } from "../../types/sector";
+import { Sector, AircraftInfo } from "../../types/sector";
 import { roleForUserInSector } from "../../utils/crew";
 import { fmtDate } from "@/shared/utils";
 import { useState } from "react";
@@ -26,13 +26,13 @@ const RADIUS = 14;
 export default function SectorCard({
   sector,
   tripId,
-  aircraftName,
+  aircraft,
   currentUserId,
   onOpen,
 }: {
   sector: Sector;
   tripId?: string;
-  aircraftName?: string;
+  aircraft?: AircraftInfo;
   currentUserId: string;
   onOpen: (tab: "overview" | "crew" | "documents" | "upload") => void;
 }) {
@@ -79,7 +79,11 @@ export default function SectorCard({
           <AirplanemodeActiveIcon sx={{ fontSize: 22, color: ACCENT }} />
           <Stack spacing={0} sx={{ minWidth: 140 }}>
             <Typography fontWeight={700} fontSize={14}>
-              {aircraftName ?? "Aircraft"}
+              {aircraft || sector.aircraft
+                ? (aircraft || sector.aircraft)?.code
+                  ? `${(aircraft || sector.aircraft)?.name} (${(aircraft || sector.aircraft)?.code})`
+                  : (aircraft || sector.aircraft)?.name
+                : "Aircraft"}
             </Typography>
             <Stack direction="row" spacing={1} alignItems="center">
               <LuggageIcon sx={{ fontSize: 16, color: MUTED }} />
@@ -104,7 +108,9 @@ export default function SectorCard({
                 {fmtDate(sector.depatureDate)}
               </Typography>
               <Typography fontSize={12} color={MUTED}>
-                {sector.source}
+                {typeof sector.source === "object"
+                  ? sector.source.code
+                  : sector.source}
               </Typography>
             </Box>
 
@@ -147,7 +153,9 @@ export default function SectorCard({
                 {fmtDate(sector.arrivalDate)}
               </Typography>
               <Typography fontSize={12} color={MUTED}>
-                {sector.destination}
+                {typeof sector.destination === "object"
+                  ? sector.destination.code
+                  : sector.destination}
               </Typography>
             </Box>
           </Stack>

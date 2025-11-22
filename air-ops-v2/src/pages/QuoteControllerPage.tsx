@@ -102,7 +102,7 @@ const QuoteControllerPage = () => {
 
   const handelCreate = (selectedTab: string) => {
     if (selectedTab === "Quotes") {
-      navigate("/quotes/create");
+      navigate("/app/quotes/create");
     }
     // else if (selectedTab === "Invoices") {
 

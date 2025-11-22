@@ -1,37 +1,143 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Stack } from "@mui/material";
-
 import FileUpload from "@/components/FileUpload";
 import DocumentsList from "./DocumentList";
+import { Sector } from "../../types/sector";
+import { useSession, useSnackbar } from "@/app/providers";
+import useGql from "@/lib/graphql/gql";
+import { UPLOAD_TRIP_DOC_BY_CREW } from "@/lib/graphql/queries/trip-detail";
 
-const UploadTab = ({ preflightDocs, postflightDocs, setDocs }) => {
+interface UploadTabProps {
+  sector: Sector;
+  preflightDocs: any[];
+  postflightDocs: any[];
+  setDocs: (docs: { pre: any[]; post: any[] }) => void;
+}
+
+const UploadTab = ({
+  sector,
+  preflightDocs,
+  postflightDocs,
+  setDocs,
+}: UploadTabProps) => {
+  const { session } = useSession();
+  const showSnackbar = useSnackbar();
+  const currentUserId = session?.user?.id || null;
   const [uploadType, setUploadType] = useState<"pre" | "post">("pre");
 
-  const handleUpload = (fileObject) => {
-    if (!fileObject) return;
+  // Load existing crew uploaded documents from sector
+  useEffect(() => {
+    if (sector.crewUploadedDocs && sector.crewUploadedDocs.length > 0) {
+      const preDocs: any[] = [];
+      const postDocs: any[] = [];
 
-    const newDoc = {
-      name: fileObject.key.split("/").pop()!, // filename
-      url: fileObject.url,
-      key: fileObject.key,
-      uploadedAt: new Date().toISOString(),
-      type: uploadType,
-    };
+      sector.crewUploadedDocs.forEach((doc) => {
+        const docItem = {
+          name: doc.name,
+          url: doc.url,
+          key: doc.url, // Use URL as key for now
+          uploadedAt: new Date().toISOString(), // API doesn't provide uploadedAt
+          type: doc.type === "pre" ? "pre" : "post",
+        };
 
-    if (uploadType === "pre") {
-      setDocs({
-        pre: [...preflightDocs, newDoc],
-        post: postflightDocs,
+        if (doc.type === "pre") {
+          preDocs.push(docItem);
+        } else {
+          postDocs.push(docItem);
+        }
       });
-    } else {
-      setDocs({
-        pre: preflightDocs,
-        post: [...postflightDocs, newDoc],
+
+      setDocs({ pre: preDocs, post: postDocs });
+    }
+  }, [sector.crewUploadedDocs, setDocs]);
+
+  const handleUpload = async (fileObject: any) => {
+    if (!fileObject || !currentUserId || !sector.tripId) {
+      showSnackbar("Missing required information for upload", "error");
+      return;
+    }
+
+    try {
+      // Extract filename from key, removing timestamp prefix if present
+      // Key format: "Trip Detail Docs/1762673796889-Airops-AOQT-25-0060-1.pdf"
+      // We want: "Airops-AOQT-25-0060-1.pdf"
+      const getFileName = (fileObj: any): string => {
+        if (!fileObj) return "document";
+
+        if (fileObj.key) {
+          const fullPath = fileObj.key;
+          const fileName = fullPath.split("/").pop() || "";
+          // Remove timestamp prefix if present (format: timestamp-filename)
+          const match = fileName.match(/^\d+-(.+)$/);
+          return match ? match[1] : fileName;
+        }
+
+        if (fileObj.name) {
+          return fileObj.name;
+        }
+
+        return "document";
+      };
+
+      const fileName = getFileName(fileObject);
+      const fileKey = fileObject.key || null;
+      const typeValue = uploadType === "pre" ? "preFlight" : "postFlight";
+
+      // Upload document via API
+      const result = await useGql({
+        query: UPLOAD_TRIP_DOC_BY_CREW,
+        queryName: "uploadTripDocByCrew",
+        queryType: "mutation",
+        variables: {
+          data: {
+            name: fileName,
+            url: fileKey,
+            type: typeValue,
+            crew: currentUserId,
+          },
+          where: {
+            tripId: sector.tripId,
+            sectorNo: sector.sectorNo,
+          },
+        },
       });
+
+      if (result?.errors) {
+        throw new Error(
+          result.errors[0]?.message || "Failed to upload document"
+        );
+      }
+
+      const newDoc = {
+        name: fileObject.key?.split("/").pop() || fileObject.name || "document",
+        url: fileObject.url || fileObject.previewUrl,
+        key: fileObject.key || fileObject.url || fileObject.previewUrl,
+        uploadedAt: new Date().toISOString(),
+        type: uploadType,
+      };
+
+      if (uploadType === "pre") {
+        setDocs({
+          pre: [...preflightDocs, newDoc],
+          post: postflightDocs,
+        });
+      } else {
+        setDocs({
+          pre: preflightDocs,
+          post: [...postflightDocs, newDoc],
+        });
+      }
+
+      showSnackbar("Document uploaded successfully", "success");
+    } catch (error: any) {
+      console.error("Error uploading document:", error);
+      showSnackbar(error.message || "Failed to upload document", "error");
     }
   };
 
-  const handleDelete = (type: "pre" | "post", key: string) => {
+  const handleDelete = async (type: "pre" | "post", key: string) => {
+    // TODO: Implement delete API call if needed
+    // For now, just remove from local state
     if (type === "pre") {
       setDocs({
         pre: preflightDocs.filter((d) => d.key !== key),
@@ -43,6 +149,7 @@ const UploadTab = ({ preflightDocs, postflightDocs, setDocs }) => {
         post: postflightDocs.filter((d) => d.key !== key),
       });
     }
+    showSnackbar("Document deleted", "success");
   };
 
   return (
@@ -65,11 +172,12 @@ const UploadTab = ({ preflightDocs, postflightDocs, setDocs }) => {
         </Button>
       </Stack>
 
-      {/* Your Existing Upload Component */}
+      {/* Upload Component */}
       <FileUpload
         onUpload={handleUpload}
-        accept=".pdf,.png,.jpg,.jpeg"
+        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
         label="Upload Document"
+        category="Trip Detail Docs"
       />
 
       {/* Combined List */}

@@ -92,7 +92,7 @@ export const useCreateQuote = () => {
         // 3. SIDE-EFFECT HANDLING (Snackbar & Navigation)
         if (result.success) {
           showSnackbar("Created new Quote!", "success");
-          navigate("/quotes", { state: { refresh: true } });
+          navigate("/app/quotes", { state: { refresh: true } });
         } else {
           // If the custom mutate failed, it already set the error state
           showSnackbar(
@@ -142,13 +142,34 @@ export const useUpdateQuote = (quoteId: string | undefined) => {
           }),
         };
 
-        // Clean itinerary (filter out incomplete items)
+        // Clean itinerary (filter out incomplete items) - legacy support
         if (Array.isArray(formData.itinerary)) {
           const cleanedItinerary = formData.itinerary.filter(
             (item: any) => item.source && item.destination
           );
           if (cleanedItinerary.length)
             cleanedPayload.itinerary = cleanedItinerary;
+        }
+
+        // Clean sectors (filter out incomplete sectors) - current form uses sectors
+        if (Array.isArray(formData?.sectors)) {
+          const cleanedSectors = formData.sectors
+            .filter((item: any) => item.source && item.destination)
+            .map((sector: any) => {
+              // Remove __typename from nested objects (source and destination)
+              const { __typename: sourceTypename, ...source } =
+                sector.source || {};
+              const { __typename: destTypename, ...destination } =
+                sector.destination || {};
+              const { __typename, ...rest } = sector;
+
+              return {
+                ...rest,
+                source,
+                destination,
+              };
+            });
+          if (cleanedSectors.length) cleanedPayload.sectors = cleanedSectors;
         }
 
         // Clean prices (filter, remove __typename)
@@ -182,7 +203,7 @@ export const useUpdateQuote = (quoteId: string | undefined) => {
         // 3. SIDE-EFFECT HANDLING (Snackbar & Navigation)
         if (result.success) {
           showSnackbar("Quote updated successfully!", "success");
-          navigate("/quotes");
+          navigate("/app/quotes", { state: { refresh: true } });
         } else {
           showSnackbar(
             result.error?.message || "Failed To Update Quote!",
@@ -303,7 +324,9 @@ export const useCreateInitialPassengerDetails = (
       const isPaxExist = await isPassengerExist(row.quotationNo, row.id);
 
       if (isPaxExist) {
-        navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
+        navigate(
+          `/app/passenger-detail/${encodeURIComponent(row.quotationNo)}`
+        );
         return { success: true };
       }
 
@@ -354,7 +377,9 @@ export const useCreateInitialPassengerDetails = (
 
         // 4. Success Handling (Navigation/Snackbar)
         if (result.success) {
-          navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
+          navigate(
+            `/app/passenger-detail/${encodeURIComponent(row.quotationNo)}`
+          );
         } else {
           showSnackbar(
             result.error?.message || "Failed to add passenger!",

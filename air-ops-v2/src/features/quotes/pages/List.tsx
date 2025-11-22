@@ -452,7 +452,7 @@ export const QuoteList = ({
   // };
 
   const handelSaveAndPreview = async (quotationNo: string) => {
-    navigate(`/sales-confirmation-preview/${quotationNo}`);
+    navigate(`/app/sales-confirmation-preview/${quotationNo}`);
   };
 
   // const isPassengerExist = async (quotationNo, quotationId) => {

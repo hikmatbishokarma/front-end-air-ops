@@ -26,6 +26,7 @@ import {
   FlightCategoryEnum,
   FlightCategoryKey,
   QuotationStatus,
+  QuotationStatusMap,
   SalesCategoryLabels,
 } from "../../../shared/utils";
 
@@ -72,7 +73,13 @@ export const SalesConfirmationList = ({ filter, refreshKey }: any) => {
   const handelPreview = async (row: any) => {
     setSelectedRowData(row);
 
-    if (row.status == QuotationStatus.SALE_CONFIRMED) {
+    // Normalize status: API might return enum key (e.g., "SALE_CONFIRMED") or enum value (e.g., "Sale Confirmed")
+    const normalizedStatus = QuotationStatusMap[row.status] || row.status;
+
+    if (
+      normalizedStatus === QuotationStatus.SALE_CONFIRMED ||
+      row.status === "SALE_CONFIRMED"
+    ) {
       setSaleConfirmationPreviewTemplate(row.confirmationTemplate);
       setShowTripConfirmationPreview(true);
     }
@@ -192,8 +199,9 @@ export const SalesConfirmationList = ({ filter, refreshKey }: any) => {
                 <TableCell align="right">{row.createdAt}</TableCell>
 
                 <TableCell onClick={(e) => e.stopPropagation()}>
-                  {/* If the quote is a charter AND it's a new quote */}
-                  {row.status === QuotationStatus.SALE_CONFIRMED && (
+                  {/* Normalize status: API might return enum key (e.g., "SALE_CONFIRMED") or enum value (e.g., "Sale Confirmed") */}
+                  {(row.status === QuotationStatus.SALE_CONFIRMED ||
+                    row.status === "SALE_CONFIRMED") && (
                     <Button
                       className="generate_pi12"
                       variant="outlined"
@@ -203,9 +211,11 @@ export const SalesConfirmationList = ({ filter, refreshKey }: any) => {
                     </Button>
                   )}
 
-                  {row.status === QuotationStatus.TRIP_GENERATED && (
+                  {(row.status === QuotationStatus.TRIP_GENERATED ||
+                    row.status === "TRIP_GENERATED") && (
                     <span style={{ color: "green", fontWeight: "bold" }}>
-                      {QuotationStatus.TRIP_GENERATED}
+                      {QuotationStatusMap[row.status] ||
+                        QuotationStatus.TRIP_GENERATED}
                     </span>
                   )}
                 </TableCell>

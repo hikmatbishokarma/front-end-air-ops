@@ -132,8 +132,20 @@ const QuoteEdit = () => {
     await updateQuote(formData);
   };
 
-  if (isUpdating) {
+  if (loading || isUpdating) {
     return <Typography>Loading quote data...</Typography>;
+  }
+
+  if (error) {
+    return (
+      <Typography color="error">
+        Error loading quote: {error.message}
+      </Typography>
+    );
+  }
+
+  if (!initialData) {
+    return <Typography>No quote data found.</Typography>;
   }
 
   return (

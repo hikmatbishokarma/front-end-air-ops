@@ -6,7 +6,7 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import FlightIcon from "@mui/icons-material/Flight";
-import { Sector } from "../../types/sector";
+import { Sector, AircraftInfo } from "../../types/sector";
 import { fmtDate } from "@/shared/utils";
 
 const ACCENT = "#E53935";
@@ -15,10 +15,10 @@ const LIGHT = "#F3F4F6";
 
 export default function OverviewTab({
   sector,
-  aircraftName,
+  aircraft,
 }: {
   sector: Sector;
-  aircraftName?: string;
+  aircraft?: AircraftInfo;
 }) {
   return (
     <Box sx={{ p: 2 }}>
@@ -26,7 +26,13 @@ export default function OverviewTab({
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="row" spacing={2} alignItems="center">
           <Chip
-            label={aircraftName ?? "Aircraft"}
+            label={
+              aircraft
+                ? aircraft.code
+                  ? `${aircraft.name} (${aircraft.code})`
+                  : aircraft.name
+                : "Aircraft"
+            }
             size="small"
             sx={{ bgcolor: LIGHT, color: "#111", fontWeight: 600 }}
           />
@@ -77,9 +83,16 @@ export default function OverviewTab({
           {/* airport text */}
           <Stack spacing={0}>
             <Typography fontWeight={700} fontSize={15}>
-              {sector.source}
+              {typeof sector.source === "object" && sector.source.country
+                ? sector.source.country
+                : "Departure"}
             </Typography>
             <Typography fontSize={13} color={MUTED}>
+              {typeof sector.source === "object"
+                ? `${sector.source.name} (${sector.source.code})`
+                : sector.source}
+            </Typography>
+            <Typography fontSize={12} color={MUTED} sx={{ mt: 0.5 }}>
               Departure
             </Typography>
           </Stack>
@@ -94,10 +107,20 @@ export default function OverviewTab({
           </Stack>
           <Stack spacing={0.5}>
             <Typography fontWeight={600} fontSize={14}>
-              {aircraftName ?? "Aircraft"}
+              {aircraft
+                ? aircraft.code
+                  ? `${aircraft.name} (${aircraft.code})`
+                  : aircraft.name
+                : "Aircraft"}
             </Typography>
             <Typography fontSize={13} color={MUTED}>
-              {sector.source} → {sector.destination}
+              {typeof sector.source === "object"
+                ? sector.source.code
+                : sector.source}{" "}
+              →{" "}
+              {typeof sector.destination === "object"
+                ? sector.destination.code
+                : sector.destination}
             </Typography>
           </Stack>
         </Stack>
@@ -127,9 +150,17 @@ export default function OverviewTab({
 
           <Stack spacing={0}>
             <Typography fontWeight={700} fontSize={15}>
-              {sector.destination}
+              {typeof sector.destination === "object" &&
+              sector.destination.country
+                ? sector.destination.country
+                : "Arrival"}
             </Typography>
             <Typography fontSize={13} color={MUTED}>
+              {typeof sector.destination === "object"
+                ? `${sector.destination.name} (${sector.destination.code})`
+                : sector.destination}
+            </Typography>
+            <Typography fontSize={12} color={MUTED} sx={{ mt: 0.5 }}>
               Arrival
             </Typography>
           </Stack>

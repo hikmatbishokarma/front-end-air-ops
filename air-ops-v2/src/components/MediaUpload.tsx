@@ -157,10 +157,36 @@ const CompactUploadedPreview = ({
   fileType?: string | undefined;
   sx?: {} | undefined;
 }) => {
-  // const fileName = value ? value.split("/").pop() : "";
+  // Extract filename from key, removing timestamp prefix if present
+  // Key format: "Trip Detail Docs/1762673796889-Airops-AOQT-25-0060-1.pdf"
+  // We want: "Airops-AOQT-25-0060-1.pdf"
+  const getFileName = (fileObject: any): string => {
+    if (!fileObject) return "";
 
-  // ⭐️ CHANGE 2: Get key from value for filename
-  const fileName = value?.key ? value.key.split("/").pop() : "";
+    // If value is a string (URL), try to extract from URL
+    if (typeof fileObject === "string") {
+      return fileObject.split("/").pop() || "";
+    }
+
+    // If value is an object with key
+    if (fileObject.key) {
+      const fullPath = fileObject.key;
+      const fileName = fullPath.split("/").pop() || "";
+      // Remove timestamp prefix if present (format: timestamp-filename)
+      // Match pattern: digits-filename
+      const match = fileName.match(/^\d+-(.+)$/);
+      return match ? match[1] : fileName;
+    }
+
+    // Fallback: try to get from URL
+    if (fileObject.url) {
+      return fileObject.url.split("/").pop() || "";
+    }
+
+    return "";
+  };
+
+  const fileName = getFileName(value);
 
   const handleDownload = (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
@@ -267,7 +293,7 @@ const MediaUpload = ({
   accept = ".pdf,.doc,.docx,.png,.jpg,.jpeg",
 }: {
   onUpload: (fileObject: FileObject | null) => void;
-  value: FileObject | null | undefined; // New type
+  value: FileObject | null | undefined; // Keep original type - only FileObject
   label?: string;
   category?: string;
   size?: "small" | "medium" | "large";
@@ -516,8 +542,7 @@ const MediaUpload = ({
           {uploading && <UploadProgress progress={progress} />}
           {value && !uploading && (
             <CompactUploadedPreview
-              // value={value}
-              value={value.url}
+              value={value} // Pass the full FileObject (with key and url)
               label={label}
               onChangeFile={triggerFileInput} // Pass triggerFileInput to "Change" icon
               onRemoveFile={handleRemoveFile}

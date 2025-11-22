@@ -175,7 +175,7 @@ const CrewDetailChildren: React.FC<ReusableFormProps> = ({
                       onChange={field.onChange}
                       label="Role"
                       options={roles}
-                      getOptionLabel={(option) => option.name}
+                      getOptionLabel={(option) => option.type}
                       isOptionEqualToValue={(a, b) => a.id === b.id}
                       error={!!error}
                       helperText={error?.message}

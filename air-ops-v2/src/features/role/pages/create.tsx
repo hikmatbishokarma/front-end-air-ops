@@ -38,6 +38,7 @@ export enum RoleType {
   ENGINEERING = "ENGINEERING",
   AUDIT = "AUDIT",
   ACCOUNTING = "ACCOUNTING",
+  SITE_USER = "SITE_USER",
 }
 
 type AccessPermission = {
@@ -47,21 +48,35 @@ type AccessPermission = {
 
 type FormValues = {
   type: string;
-  name: string;
+  // name: string;
   description: string;
   accessPermissions: AccessPermission[];
 };
 
 const resources = NAVIGATION.reduce((acc: any[], item: any) => {
+  // Helper function to strip /app prefix and extract resource name
+  const extractResource = (segment: string): string => {
+    if (!segment) return "";
+    // Remove /app prefix if present
+    let resource = segment.startsWith("app/")
+      ? segment.replace("app/", "")
+      : segment;
+    // For nested routes like "app/admin/aircraft", extract the last part
+    const parts = resource.split("/");
+    return parts.length > 1 ? parts[parts.length - 1] : resource;
+  };
+
   if (item.segment && item?.children?.length > 0) {
     item.children.forEach((child: any) => {
       if (child.segment) {
-        acc.push({ label: child.title, id: child.segment });
+        const resourceId = extractResource(child.segment);
+        acc.push({ label: child.title, id: resourceId });
       }
     });
   }
   if (item.segment) {
-    acc.push({ label: item.title, id: item.segment });
+    const resourceId = extractResource(item.segment);
+    acc.push({ label: item.title, id: resourceId });
   }
   return acc;
 }, []);
@@ -87,7 +102,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
   } = useForm<FormValues>({
     defaultValues: {
       type: "",
-      name: "",
+      // name: "",
       description: "",
       accessPermissions: [{ resource: "", action: [Action.CREATE] }],
     },
@@ -164,7 +179,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
                   {...field}
                   select
                   variant="outlined"
-                  label="Category"
+                  label="Role"
                   size="small"
                 >
                   {availableRoles?.map((role) => (
@@ -177,7 +192,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs={6}>
+        {/* <Grid item xs={6}>
           <Controller
             name="name"
             control={control}
@@ -186,7 +201,7 @@ const RoleCreate: React.FC<ComponentProps> = ({ onClose, refreshList }) => {
               <TextField {...field} size="small" label="Name" fullWidth />
             )}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {/* Access Permission Rows */}

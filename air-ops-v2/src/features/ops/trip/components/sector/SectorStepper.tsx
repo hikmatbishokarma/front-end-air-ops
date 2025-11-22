@@ -63,26 +63,90 @@ function CustomStepIcon(props: StepIconProps) {
 export default function SectorStepper({ sector, onSave }: any) {
   const [activeStep, setActiveStep] = useState(0);
 
+  // Transform documents from backend format (fileUrl as string) to form format
+  const transformedDocuments = (sector.documents || []).map((doc: any) => ({
+    ...doc,
+    // Keep fileUrl as string (key) - MediaUpload will handle conversion for display
+    fileUrl: doc.fileUrl || null,
+  }));
+
   const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       ...sector,
       assignedCrews: sector.assignedCrews || [],
       fuelRecord: sector.fuelRecord || {},
-      documents: sector.documents || [],
+      documents: transformedDocuments,
       baInfo: sector.baInfo || {},
     },
   });
 
-  const handleNext = () => setActiveStep((prev) => prev + 1);
-  const handleBack = () => setActiveStep((prev) => prev - 1);
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setActiveStep((prev) => prev + 1);
+  };
+
+  const handleBack = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setActiveStep((prev) => prev - 1);
+  };
 
   const submitSector = (data: any) => {
-    console.log("Saving sector:", sector.sectorNo, data);
-    onSave?.(sector.sectorNo, data);
+    // Transform documents to ensure fileUrl is a string (key) not an object
+    const transformedData = {
+      ...data,
+      documents:
+        data.documents?.map((doc: any) => ({
+          ...doc,
+          fileUrl:
+            typeof doc.fileUrl === "object" && doc.fileUrl?.key
+              ? doc.fileUrl.key // Extract key string from object
+              : doc.fileUrl || null, // Keep as string or null
+        })) || [],
+      fuelRecord: {
+        ...data.fuelRecord,
+        fuelReceipt:
+          typeof data.fuelRecord?.fuelReceipt === "object" &&
+          data.fuelRecord?.fuelReceipt?.key
+            ? data.fuelRecord.fuelReceipt.key // Extract key string from object
+            : data.fuelRecord?.fuelReceipt || null, // Keep as string or null
+      },
+    };
+    console.log("Saving sector:", sector.sectorNo, transformedData);
+    onSave?.(sector.sectorNo, transformedData);
+  };
+
+  // Prevent form submission unless we're on the last step
+  const handleFormSubmit = (e: React.FormEvent) => {
+    // Only allow submission on the last step
+    if (activeStep !== steps.length - 1) {
+      // Prevent submission on all steps except the last one
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+    // On last step, let react-hook-form handle the submission
+    // Don't prevent default here, let handleSubmit handle it
+    handleSubmit(submitSector)(e);
+  };
+
+  // Prevent Enter key from submitting form on non-last steps
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter" && activeStep < steps.length - 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Optionally move to next step on Enter
+      // handleNext();
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(submitSector)}>
+    <form onSubmit={handleFormSubmit} onKeyDown={handleKeyDown}>
       <Box mt={2}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
@@ -104,11 +168,19 @@ export default function SectorStepper({ sector, onSave }: any) {
         </Box>
 
         <Box mt={2} display="flex" justifyContent="space-between">
-          <Button disabled={activeStep === 0} onClick={handleBack}>
+          <Button
+            type="button"
+            disabled={activeStep === 0}
+            onClick={(e) => handleBack(e)}
+          >
             Back
           </Button>
           {activeStep < steps.length - 1 ? (
-            <Button variant="contained" onClick={handleNext}>
+            <Button
+              type="button"
+              variant="contained"
+              onClick={(e) => handleNext(e)}
+            >
               Next
             </Button>
           ) : (

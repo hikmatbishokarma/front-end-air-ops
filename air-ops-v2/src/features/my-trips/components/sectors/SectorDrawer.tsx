@@ -10,7 +10,7 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
-import { Sector } from "../../types/sector";
+import { Sector, AircraftInfo } from "../../types/sector";
 import { fmtDate } from "@/shared/utils";
 
 import CrewTab from "../tabs/CrewTab";
@@ -25,7 +25,7 @@ type Props = {
   sector: Sector;
   initialTab?: "overview" | "crew" | "documents" | "upload";
   currentUserId: string;
-  aircraftName?: string;
+  aircraft?: AircraftInfo;
 };
 
 const SectorDrawer: React.FC<Props> = ({
@@ -34,7 +34,7 @@ const SectorDrawer: React.FC<Props> = ({
   sector,
   initialTab = "overview",
   currentUserId,
-  aircraftName,
+  aircraft,
 }) => {
   const [tab, setTab] = useState<typeof initialTab>(initialTab);
   useEffect(() => setTab(initialTab), [initialTab, sector._id]);
@@ -43,9 +43,6 @@ const SectorDrawer: React.FC<Props> = ({
     pre: [],
     post: [],
   });
-
-  const src = sector.source;
-  const dst = sector.destination;
 
   return (
     <Drawer
@@ -74,10 +71,22 @@ const SectorDrawer: React.FC<Props> = ({
         >
           <Box>
             <Typography variant="h5" fontWeight={800}>
-              {sector.source} → {sector.destination}
+              {typeof sector.source === "object"
+                ? sector.source.code
+                : sector.source}{" "}
+              →{" "}
+              {typeof sector.destination === "object"
+                ? sector.destination.code
+                : sector.destination}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {src} → {dst}
+              {typeof sector.source === "object"
+                ? `${sector.source.name}, ${sector.source.country}`
+                : sector.source}{" "}
+              →{" "}
+              {typeof sector.destination === "object"
+                ? `${sector.destination.name}, ${sector.destination.country}`
+                : sector.destination}
             </Typography>
           </Box>
           <Box textAlign="right">
@@ -131,7 +140,7 @@ const SectorDrawer: React.FC<Props> = ({
       <Box p={2} sx={{ overflowY: "auto" }}>
         {/* {tab === "overview" && <OverviewTab sector={sector} />} */}
         {tab === "overview" && (
-          <OverviewTab sector={sector} aircraftName={aircraftName} />
+          <OverviewTab sector={sector} aircraft={aircraft || sector.aircraft} />
         )}
         {tab === "crew" && (
           <CrewTab sector={sector} currentUserId={currentUserId} />
@@ -139,6 +148,7 @@ const SectorDrawer: React.FC<Props> = ({
         {tab === "documents" && <DocumentsTab sector={sector} />}
         {tab === "upload" && (
           <UploadTab
+            sector={sector}
             preflightDocs={docs.pre}
             postflightDocs={docs.post}
             setDocs={setDocs}
