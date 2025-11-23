@@ -208,29 +208,29 @@ export const UserProfile = () => {
         {renderField("fullName", "Full Name")}
         {renderField("displayName", "Display Name")}
         {renderField("gender", "Gender", false, genderOptions)}
-        {renderDateField("dateOfBirth", "Date of Birth")}
+        {renderDateField("dateOfBirth", "Date of Birth", false)}
         {renderField("designation", "Designation", true)}
         {renderField("location", "Location")}
         {renderField("phone", "Phone", true)}
         {renderField("email", "Email", true)}
-        {renderField("alternateContact", "Alternate Contact")}
-        {renderField("education", "Education")}
-        {renderField("experience", "Experience")}
+        {renderField("alternateContact", "Alternate Contact", false)}
+        {renderField("education", "Education", false)}
+        {renderField("experience", "Experience", false)}
         {renderField(
           "martialStatus",
           "Marital Status",
           false,
           fieldOptions.maritalStatus
         )}
-        {renderDateField("anniversaryDate", "Anniversary Date")}
+        {renderDateField("anniversaryDate", "Anniversary Date", false)}
         {renderField("religion", "Religion", false, fieldOptions.religion)}
         {renderField("nationality", "Nationality", false, fieldOptions.country)}
-        {renderField("aadhar", "Aadhar")}
-        {renderField("pan", "PAN")}
-        {renderField("passportNo", "Passport No")}
-        {renderField("currentAddress", "Current Address")}
-        {renderField("permanentAddress", "Permanent Address")}
-        {renderField("bloodGroup", "Blood Group")}
+        {renderField("aadhar", "Aadhar", false,)}
+        {renderField("pan", "PAN", false,)}
+        {renderField("passportNo", "Passport No", false,)}
+        {renderField("currentAddress", "Current Address", true,)}
+        {renderField("permanentAddress", "Permanent Address", true,)}
+        {renderField("bloodGroup", "Blood Group", false,)}
       </Grid>
     </Box>
   );

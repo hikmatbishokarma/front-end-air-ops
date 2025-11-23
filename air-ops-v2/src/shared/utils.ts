@@ -50,6 +50,7 @@ export enum SalesDocumentType {
   PROFORMA_INVOICE = "Proforma Invoice",
   TAX_INVOICE = "Tax Invoice",
   SALE_CONFIRMATION = "Sale Confirmation",
+  MANIFEST = "Manifest",
 }
 
 export enum InvoiceType {
@@ -307,9 +308,9 @@ export const calculateTotalFlightTime = (itinerary) => {
       "sector:::",
       sector,
       sector.depatureDate &&
-        sector.depatureTime &&
-        sector.arrivalDate &&
-        sector.arrivalTime
+      sector.depatureTime &&
+      sector.arrivalDate &&
+      sector.arrivalTime
     );
     if (
       sector.depatureDate &&
@@ -380,6 +381,20 @@ export const transformKeyToObject = (
     };
   }
   return null;
+};
+
+/**
+ * Removes timestamp prefix from S3 uploaded filenames
+ * @param fileName - The filename with timestamp prefix (e.g., "1763925003605-EmiratesTicket1-1.pdf")
+ * @returns Clean filename without timestamp (e.g., "EmiratesTicket1-1.pdf")
+ */
+export const getCleanFileName = (fileName: string | null | undefined): string => {
+  if (!fileName) return "—";
+
+  // Remove timestamp prefix (format: digits-filename)
+  // Match pattern: 1763925003605-EmiratesTicket1-1.pdf
+  const match = fileName.match(/^\d+-(.+)$/);
+  return match ? match[1] : fileName;
 };
 
 // 3. Helper function to transform an array of S3 keys into an array of RHF objects

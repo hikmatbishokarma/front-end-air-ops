@@ -31,6 +31,7 @@ export interface Quotation {
 
 export interface Trip {
   id: string;
+  tripId: string;
   quotationNo: string;
   quotation: Quotation;
   sectors: Sector[];

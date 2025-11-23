@@ -20,6 +20,7 @@ type Airport = {
   country?: string;
   latitude?: number;
   longitude?: number;
+  state?: string;
 };
 
 const LocationAutocomplete = ({
@@ -123,6 +124,7 @@ const LocationAutocomplete = ({
             country: selected.country,
             lat: selected.latitude,
             long: selected.longitude,
+            state: selected.state,
           });
         }
       }}

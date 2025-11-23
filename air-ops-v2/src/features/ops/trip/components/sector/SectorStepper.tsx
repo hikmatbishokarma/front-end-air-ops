@@ -25,6 +25,7 @@ import NoDrinksIcon from "@mui/icons-material/NoDrinks";
 import StepBADetails from "./StepBA";
 interface SectorStepperProps {
   sector: Sector;
+  tripId?: string;
 }
 
 const steps = [
@@ -60,7 +61,7 @@ function CustomStepIcon(props: StepIconProps) {
   );
 }
 
-export default function SectorStepper({ sector, onSave }: any) {
+export default function SectorStepper({ sector, tripId, onSave }: any) {
   const [activeStep, setActiveStep] = useState(0);
 
   // Transform documents from backend format (fileUrl as string) to form format
@@ -112,7 +113,7 @@ export default function SectorStepper({ sector, onSave }: any) {
         ...data.fuelRecord,
         fuelReceipt:
           typeof data.fuelRecord?.fuelReceipt === "object" &&
-          data.fuelRecord?.fuelReceipt?.key
+            data.fuelRecord?.fuelReceipt?.key
             ? data.fuelRecord.fuelReceipt.key // Extract key string from object
             : data.fuelRecord?.fuelReceipt || null, // Keep as string or null
       },
@@ -164,7 +165,7 @@ export default function SectorStepper({ sector, onSave }: any) {
           {activeStep === 1 && <StepCrew control={control} />}
           {activeStep === 2 && <StepBADetails control={control} />}
           {activeStep === 3 && <StepFuel control={control} />}
-          {activeStep === 4 && <StepDocuments control={control} />}
+          {activeStep === 4 && <StepDocuments control={control} tripId={tripId} sectorNo={sector.sectorNo} />}
         </Box>
 
         <Box mt={2} display="flex" justifyContent="space-between">

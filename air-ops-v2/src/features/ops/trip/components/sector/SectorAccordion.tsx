@@ -29,6 +29,7 @@ interface SectorAccordionProps {
   index: number;
   sector: Sector;
   aircraft?: any;
+  tripId?: string;
   expanded: boolean;
 
   onChange: () => void;
@@ -39,6 +40,7 @@ export default function SectorAccordion({
   index,
   sector,
   aircraft,
+  tripId,
   expanded,
   onChange,
   onSave,
@@ -98,7 +100,7 @@ export default function SectorAccordion({
       <AccordionDetails>
         <Box>
           {/* Stepper for sector info, crew, fuel, docs */}
-          <SectorStepper sector={sector} onSave={onSave} />
+          <SectorStepper sector={sector} tripId={tripId} onSave={onSave} />
         </Box>
       </AccordionDetails>
     </Accordion>

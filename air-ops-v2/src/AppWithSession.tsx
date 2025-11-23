@@ -131,6 +131,12 @@ export const NAVIGATION: Navigation = [
     icon: <QueryStatsOutlinedIcon />,
   },
 
+  {
+    segment: "app/notams",
+    title: "Notam",
+    icon: <QueryStatsOutlinedIcon />,
+  },
+
   // {
   //   segment: "roles",
   //   title: "Role",

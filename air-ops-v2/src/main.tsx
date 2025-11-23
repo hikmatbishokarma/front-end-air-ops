@@ -52,6 +52,7 @@ import SupportTicketsPage from "./pages/support/SupportTicketsPage";
 import UserTicketListPage from "./pages/support/UserTicketListPage";
 import UserTicketDetailsPage from "./features/support/user/components/UserTicketDetailsPage";
 import CreateTicketPage from "./features/support/user/components/CreateTicketPane";
+import NotamAdminPage from "./features/notam/pages/NotamPage";
 
 const router = createBrowserRouter([
   {
@@ -165,6 +166,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <AuditControllerPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "notams",
+            element: (
+              <ProtectedRoute>
+                <NotamAdminPage />
               </ProtectedRoute>
             ),
           },

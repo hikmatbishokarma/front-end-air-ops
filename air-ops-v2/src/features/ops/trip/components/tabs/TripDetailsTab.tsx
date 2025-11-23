@@ -134,6 +134,7 @@ export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
               index={index + 1}
               sector={{ ...sector, sectorNo: index + 1 }}
               aircraft={trip?.quotation.aircraft}
+              tripId={trip.tripId}
               expanded={expanded === index}
               onChange={() => setExpanded(expanded === index ? -1 : index)}
               onSave={(sectorNo, data) => {

@@ -346,3 +346,13 @@ export const UPLOAD_TRIP_DOC_BY_CREW = gql`
     }
   }
 `;
+
+
+export const GENERATE_PASSENGER_MANIFEST = gql`
+mutation generatePassengerManifest($input: GeneratePassengerManifestInput!){
+  generatePassengerManifest(input:$input)
+    
+  }
+
+
+`
