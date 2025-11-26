@@ -42,6 +42,7 @@ export interface ThreadMessage {
     email: string;
     role: string;
     designation: string;
+    profile?: string;
   };
 
   message: string; // HTML or plain text

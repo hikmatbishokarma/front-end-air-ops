@@ -2,32 +2,33 @@ import {
   Avatar,
   Box,
   Button,
-  IconButton,
   Paper,
   Typography,
+  CircularProgress,
 } from "@mui/material";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import ReactQuill from "react-quill";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import SendIcon from "@mui/icons-material/Send";
-import { Attachment } from "../types";
-import { AttachmentsList } from "./AttachmentList";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import MediaUpload from "@/components/MediaUpload";
+import { FileObject } from "@/shared/types/common";
+import { useAddMessageToTicket } from "../hooks/useSupportTicketMutations";
 
 export const InlineReplyPanel = ({
+  ticketId,
   requesterEmail,
-  onSend,
-  onUpload,
   onCancel,
+  onSent,
 }: {
+  ticketId: string;
   requesterEmail?: string;
-  onSend: (payload: { html: string; attachments: Attachment[] }) => void;
-  onUpload?: (file: File) => Promise<Attachment>;
   onCancel: () => void;
+  onSent?: () => void;
 }) => {
   const [html, setHtml] = useState<string>("");
-  const [files, setFiles] = useState<Attachment[]>([]);
-  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [attachments, setAttachments] = useState<FileObject[]>([]);
+
+  const { addMessage, loading } = useAddMessageToTicket();
 
   const modules = useMemo(
     () => ({
@@ -42,32 +43,29 @@ export const InlineReplyPanel = ({
     []
   );
 
-  const pickFile = () => fileRef.current?.click();
-
-  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const chosen = Array.from(e.target.files || []);
-    if (!chosen.length) return;
-
-    if (onUpload) {
-      for (const f of chosen) {
-        const meta = await onUpload(f);
-        setFiles((p) => [...p, meta]);
-      }
-    } else {
-      // Local fallback
-      setFiles((p) => [
-        ...p,
-        ...chosen.map((f) => ({ id: String(Math.random()), name: f.name })),
-      ]);
+  const handleAttachmentUpload = (fileObject: FileObject | null) => {
+    if (fileObject) {
+      setAttachments((prev) => [...prev, fileObject]);
     }
-    e.target.value = "";
   };
 
-  const handleSend = () => {
-    onSend({ html, attachments: files });
-    setHtml("");
-    setFiles([]);
-    onCancel();
+  const handleRemoveAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSend = async () => {
+    const result = await addMessage({
+      ticketId,
+      message: html,
+      attachments: attachments.map((att) => att.key),
+    });
+
+    if (result.success) {
+      setHtml("");
+      setAttachments([]);
+      onSent?.();
+      onCancel();
+    }
   };
 
   return (
@@ -123,47 +121,71 @@ export const InlineReplyPanel = ({
           <ReactQuill value={html} onChange={setHtml} modules={modules} />
         </Box>
 
-        {/* Attachments preview */}
-        {files.length > 0 && <AttachmentsList attachments={files} />}
+        {/* Attachments */}
+        <Box sx={{ mb: 2 }}>
+          {attachments.map((attachment, index) => (
+            <Box key={index} sx={{ mb: 1 }}>
+              <MediaUpload
+                onUpload={(fileObject) => {
+                  if (fileObject) {
+                    setAttachments((prev) => {
+                      const newAttachments = [...prev];
+                      newAttachments[index] = fileObject;
+                      return newAttachments;
+                    });
+                  } else {
+                    handleRemoveAttachment(index);
+                  }
+                }}
+                value={attachment}
+                label={`Attachment ${index + 1}`}
+                category="support-attachments"
+                size="medium"
+                accept=".pdf,.png,.jpg,.jpeg"
+              />
+            </Box>
+          ))}
+
+          {/* Add new attachment */}
+          <MediaUpload
+            onUpload={handleAttachmentUpload}
+            value={null}
+            label="Add Attachment"
+            category="support-attachments"
+            size="medium"
+            accept=".pdf,.png,.jpg,.jpeg"
+          />
+        </Box>
 
         {/* Actions row */}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             mt: 2,
-            bgcolor: "#F4F5F7",
+            gap: 1,
           }}
         >
-          {/* Attach (icon-only) */}
-          <IconButton onClick={pickFile}>
-            <AttachFileIcon />
-          </IconButton>
-          <input
-            ref={fileRef}
-            type="file"
-            multiple
-            hidden
-            onChange={handleFiles}
-          />
+          {/* Cancel (icon-only) */}
+          <Button
+            onClick={onCancel}
+            startIcon={<DeleteOutlineOutlinedIcon />}
+            sx={{ textTransform: "none" }}
+          >
+            Cancel
+          </Button>
 
-          <Box sx={{ display: "flex", gap: 1 }}>
-            {/* Cancel (icon-only) */}
-            <IconButton onClick={onCancel}>
-              <DeleteOutlineOutlinedIcon />
-            </IconButton>
-
-            {/* Send (icon + text) */}
-            <Button
-              onClick={handleSend}
-              variant="contained"
-              endIcon={<SendIcon />}
-              sx={{ textTransform: "none" }}
-            >
-              Send
-            </Button>
-          </Box>
+          {/* Send (icon + text) */}
+          <Button
+            onClick={handleSend}
+            variant="contained"
+            endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
+            disabled={loading}
+            sx={{ textTransform: "none" }}
+          >
+            {loading ? "Sending..." : "Send"}
+          </Button>
         </Box>
       </Box>
     </Paper>

@@ -28,6 +28,7 @@ export default function TicketCard({ ticket, selected, onClick }: any) {
     >
       {/* AVATAR */}
       <Avatar
+        src={ticket.requester?.profile ? `${import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/"}${ticket.requester.profile}` : undefined}
         sx={{
           mr: 2,
           width: 42,
@@ -37,12 +38,22 @@ export default function TicketCard({ ticket, selected, onClick }: any) {
           fontWeight: 600,
         }}
       >
-        {ticket.requester?.name?.[0] ?? "?"}
+        {!ticket.requester?.profile && (ticket.requester?.name?.[0] ?? "?")}
       </Avatar>
 
       {/* MAIN CONTENT */}
       <Box sx={{ flex: 1, minWidth: 0 }}>
         {/* NAME + TIME */}
+
+
+        <Typography
+          variant="body2"
+          noWrap
+          sx={{ color: "#374151", mt: 0.3, fontSize: "0.8rem" }}
+        >
+          {ticket.requester?.displayName || ticket.requester?.fullName || "Unknown User"} ({ticket.requester?.email || "No email"})
+        </Typography>
+
         <Box
           sx={{
             display: "flex",
@@ -56,26 +67,20 @@ export default function TicketCard({ ticket, selected, onClick }: any) {
             noWrap
             sx={{ fontSize: 15, color: "#111827" }}
           >
-            {ticket.requester?.name}
-          </Typography>
-
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ whiteSpace: "nowrap" }}
-          >
-            {ticket.timeAgo}
+            {ticket.subject}
           </Typography>
         </Box>
 
-        {/* SNIPPET */}
         <Typography
-          variant="body2"
-          sx={{ mt: 0.25, mb: 1, color: "#4B5563" }}
-          noWrap
+          variant="caption"
+          color="text.secondary"
+          sx={{ whiteSpace: "nowrap", display: "block", mt: 0.2 }}
         >
-          {ticket.snippet}
+          {ticket.timeAgo}
         </Typography>
+
+        {/* SNIPPET */}
+
 
         {/* CHIPS */}
         <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
