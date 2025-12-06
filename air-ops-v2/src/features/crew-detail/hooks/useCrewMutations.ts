@@ -34,11 +34,35 @@ export const useCreateCrewDetail = () => {
         // 1. DATA MAPPING/CLEANING (copied directly from Create.tsx logic)
         let { certifications, nominees, profile, roles, ...rest } = formData;
 
+        // Helper to convert dates (Moment/Date/string) to ISO timestamp
+        const formatDateToISO = (date: any) => {
+          if (!date) return null;
+
+          // If it's a Moment object
+          if (date._isAMomentObject) {
+            return date.isValid() ? date.toISOString() : null;
+          }
+
+          // If it's a Date object
+          if (date instanceof Date) {
+            return date.toISOString();
+          }
+
+          // If it's already a string, return as is
+          if (typeof date === 'string') {
+            return date;
+          }
+
+          return null;
+        };
+
         const formattedData = {
           ...rest,
           certifications: certifications?.map((cert: any) => ({
             ...cert,
             issuedBy: cert?.issuedBy?.key,
+            dateOfIssue: formatDateToISO(cert?.dateOfIssue),
+            validTill: formatDateToISO(cert?.validTill),
           })),
           nominees: nominees?.map((nominee: any) => ({
             ...nominee,
@@ -106,9 +130,34 @@ export const useUpdateCrewDetail = (
         // 1. DATA MAPPING/CLEANING (copied directly from Edit.tsx logic)
         let { certifications, nominees, profile, roles, ...rest } = formData;
 
-        // Match Edit.tsx logic: certifications only map issuedBy
+        // Helper to convert dates (Moment/Date/string) to ISO timestamp
+        const formatDateToISO = (date: any) => {
+          if (!date) return null;
+
+          // If it's a Moment object
+          if (date._isAMomentObject) {
+            return date.isValid() ? date.toISOString() : null;
+          }
+
+          // If it's a Date object
+          if (date instanceof Date) {
+            return date.toISOString();
+          }
+
+          // If it's already a string, return as is
+          if (typeof date === 'string') {
+            return date;
+          }
+
+          return null;
+        };
+
+        // Match Edit.tsx logic: certifications map issuedBy and convert dates
         const formattedCertifications = certifications?.map((cert: any) => ({
+          ...cert,
           issuedBy: cert?.issuedBy?.key,
+          dateOfIssue: formatDateToISO(cert?.dateOfIssue),
+          validTill: formatDateToISO(cert?.validTill),
         }));
 
         const formattedNominees = nominees?.map((nominee: any) => ({

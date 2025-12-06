@@ -50,6 +50,7 @@ export enum SalesDocumentType {
   PROFORMA_INVOICE = "Proforma Invoice",
   TAX_INVOICE = "Tax Invoice",
   SALE_CONFIRMATION = "Sale Confirmation",
+  MANIFEST = "Manifest",
 }
 
 export enum InvoiceType {
@@ -307,9 +308,9 @@ export const calculateTotalFlightTime = (itinerary) => {
       "sector:::",
       sector,
       sector.depatureDate &&
-        sector.depatureTime &&
-        sector.arrivalDate &&
-        sector.arrivalTime
+      sector.depatureTime &&
+      sector.arrivalDate &&
+      sector.arrivalTime
     );
     if (
       sector.depatureDate &&
@@ -382,6 +383,20 @@ export const transformKeyToObject = (
   return null;
 };
 
+/**
+ * Removes timestamp prefix from S3 uploaded filenames
+ * @param fileName - The filename with timestamp prefix (e.g., "1763925003605-EmiratesTicket1-1.pdf")
+ * @returns Clean filename without timestamp (e.g., "EmiratesTicket1-1.pdf")
+ */
+export const getCleanFileName = (fileName: string | null | undefined): string => {
+  if (!fileName) return "—";
+
+  // Remove timestamp prefix (format: digits-filename)
+  // Match pattern: 1763925003605-EmiratesTicket1-1.pdf
+  const match = fileName.match(/^\d+-(.+)$/);
+  return match ? match[1] : fileName;
+};
+
 // 3. Helper function to transform an array of S3 keys into an array of RHF objects
 export const transformKeysArray = (
   keysArray: string[] | null | undefined
@@ -407,3 +422,42 @@ export const QuotationStatusMap: Record<string, QuotationStatus> = {
 };
 
 export const fmtDate = (iso: string) => moment(iso).format("dddd, MMM D");
+
+
+
+export const formatRelativeTime = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+  const diffWeek = Math.floor(diffDay / 7);
+  const diffMonth = Math.floor(diffDay / 30);
+  const diffYear = Math.floor(diffDay / 365);
+
+  if (diffYear > 0) return `${diffYear} year${diffYear > 1 ? 's' : ''} ago`;
+  if (diffMonth > 0) return `${diffMonth} month${diffMonth > 1 ? 's' : ''} ago`;
+  if (diffWeek > 0) return `${diffWeek} week${diffWeek > 1 ? 's' : ''} ago`;
+  if (diffDay > 0) return `${diffDay} day${diffDay > 1 ? 's' : ''} ago`;
+  if (diffHour > 0) return `${diffHour} hour${diffHour > 1 ? 's' : ''} ago`;
+  if (diffMin > 0) return `${diffMin} minute${diffMin > 1 ? 's' : ''} ago`;
+  return 'Just now';
+};
+
+/**
+ * Format date to full format (e.g., "Sun, 5 Dec 2021 at 12:49 AM")
+ */
+export const formatFullDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-US', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+};

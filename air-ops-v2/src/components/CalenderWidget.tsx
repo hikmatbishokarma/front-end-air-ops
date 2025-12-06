@@ -379,194 +379,194 @@ export const FlightCalendarWidget = () => {
   }, [blockedDates]); // Recalculate only when blockedDates changes
 
   return (
-   <>
-    <Card
-      className="tripcnfrm"
-      sx={{
-        display: "flex",
-        height: 300,
-        borderRadius: 3,
-        overflow: "hidden",
-        boxShadow: 3,
-      }}
-    >
-      {/* Left: Events */}
-      <Box
+    <>
+      <Card
+        className="tripcnfrm"
         sx={{
-          width: "45%",
-          //   backgroundColor: "#e3f2fd",
-          backgroundColor: "#FFFFFF",
-          p: 1.5,
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
+          height: 300,
+          borderRadius: 3,
+          overflow: "hidden",
+          boxShadow: 3,
         }}
-        onClick={onClickTripConfirmationWidget}
       >
-        <Box flexGrow={1} className="dashboard-trip">
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            ✈️ Trip Confirmation
-          </Typography>
-          <Divider sx={{ mb: 1 }} />
+        {/* Left: Events */}
+        <Box
+          sx={{
+            width: "45%",
+            //   backgroundColor: "#e3f2fd",
+            backgroundColor: "#FFFFFF",
+            p: 1.5,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+          onClick={onClickTripConfirmationWidget}
+        >
+          <Box flexGrow={1} className="dashboard-trip">
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+              ✈️ Trip Confirmation
+            </Typography>
+            <Divider sx={{ mb: 1 }} />
 
-          {loading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="100%"
-            >
-              <CircularProgress size={24} />
-              <Typography variant="body2" ml={1} color="text.secondary">
-                Loading events...
-              </Typography>
-            </Box>
-          ) : error ? (
-            <Alert severity="error">{error}</Alert>
-          ) : flightTrips?.length > 0 ? (
-            <Fade in={!loading}>
+            {loading ? (
               <Box
-                sx={{
-                  maxHeight: "calc(100% - 60px)",
-                  overflowY: "auto",
-                  pr: 1,
-                }}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
               >
-                {flightTrips?.map((trip, index) => (
-                  <Box key={index} mb={2}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Typography variant="subtitle2" fontWeight="bold">
-                        {trip.aircraftDetail.name}
-                      </Typography>
-
-                      <Typography variant="caption" color="text.secondary">
-                        {trip.aircraftDetail.code}
-                      </Typography>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        borderRadius: 2,
-                        backgroundColor: "#f7f7f7",
-                        px: 1,
-                        py: 1,
-                        border: "1px solid #e0e0e0",
-                      }}
-                    >
-                      {trip.sectors.map((sector, i) => (
-                        <Stack
-                          key={i}
-                          direction="row"
-                          alignItems="center"
-                          justifyContent="space-between"
-                          spacing={1}
-                          sx={{
-                            py: 0.1,
-                            borderBottom:
-                              i !== trip.sectors.length - 1
-                                ? "1px solid #e0e0e0"
-                                : "none",
-                          }}
-                        >
-                          {/* Departure */}
-                          <Box textAlign="center" minWidth={50}>
-                            <Typography
-                              variant="body1"
-                              fontWeight="bold"
-                              lineHeight={1.1}
-                            >
-                              {sector.source}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              lineHeight={1.2}
-                            >
-                              {sector.depatureTime}
-                            </Typography>
-                          </Box>
-
-                          {/* Icon + Duration */}
-                          <Box textAlign="center" minWidth={60}>
-                            <Typography lineHeight={1.1} fontSize="medium">
-                              ..... 🛫 .....
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              sx={{ fontStyle: "italic" }}
-                              lineHeight={1.2}
-                            >
-                              {sector.duration}
-                            </Typography>
-                          </Box>
-
-                          {/* Arrival */}
-                          <Box textAlign="center" minWidth={50}>
-                            <Typography
-                              variant="body1"
-                              fontWeight="bold"
-                              lineHeight={1.1}
-                            >
-                              {sector.destination}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              lineHeight={1.2}
-                            >
-                              {sector.arrivalTime}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      ))}
-                    </Box>
-                  </Box>
-                ))}
+                <CircularProgress size={24} />
+                <Typography variant="body2" ml={1} color="text.secondary">
+                  Loading events...
+                </Typography>
               </Box>
-            </Fade>
-          ) : (
-            // <Fade in={!loading}>
-            <NoScheduleFound
-            // No onCheckCalendar prop passed here because the calendar is directly beside it.
-            // The main interaction for "no schedule today" is to simply pick a different date.
-            // If you want a button here to navigate to a *separate* full calendar page,
-            // you would add onCheckCalendar={() => navigate('/full-calendar-page')}
-            />
-            // </Fade>
-          )}
-        </Box>
-      </Box>
+            ) : error ? (
+              <Alert severity="error">{error}</Alert>
+            ) : flightTrips?.length > 0 ? (
+              <Fade in={!loading}>
+                <Box
+                  sx={{
+                    maxHeight: "calc(100% - 60px)",
+                    overflowY: "auto",
+                    pr: 1,
+                  }}
+                >
+                  {flightTrips?.map((trip, index) => (
+                    <Box key={index} mb={2}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          {trip.aircraftDetail.name}
+                        </Typography>
 
-      {/* Right: Calendar */}
-      <Box
-        className="month_calender"
-        sx={{
-          width: "55%",
-          backgroundColor: "#f5f5f5",
-          p: 0.5,
-          "& .MuiPickersLayout-root": {
-            height: "100%",
-          },
-          "& .MuiDayCalendar-monthContainer": {
-            height: "100%",
-          },
-          "& .MuiPickersCalendarHeader-root": {
-            mt: 0,
-          },
-          "& .MuiDayCalendar-weekContainer": {
-            justifyContent: "center",
-          },
-        }}
-      >
-        <LocalizationProvider dateAdapter={AdapterMoment}>
-          {/* <StaticDatePicker
+                        <Typography variant="caption" color="text.secondary">
+                          {trip.aircraftDetail.code}
+                        </Typography>
+                      </Box>
+
+                      <Box
+                        sx={{
+                          borderRadius: 2,
+                          backgroundColor: "#f7f7f7",
+                          px: 1,
+                          py: 1,
+                          border: "1px solid #e0e0e0",
+                        }}
+                      >
+                        {trip.sectors.map((sector, i) => (
+                          <Stack
+                            key={i}
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            spacing={1}
+                            sx={{
+                              py: 0.1,
+                              borderBottom:
+                                i !== trip.sectors.length - 1
+                                  ? "1px solid #e0e0e0"
+                                  : "none",
+                            }}
+                          >
+                            {/* Departure */}
+                            <Box textAlign="center" minWidth={50}>
+                              <Typography
+                                variant="body1"
+                                fontWeight="bold"
+                                lineHeight={1.1}
+                              >
+                                {sector.source}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                lineHeight={1.2}
+                              >
+                                {sector.depatureTime}
+                              </Typography>
+                            </Box>
+
+                            {/* Icon + Duration */}
+                            <Box textAlign="center" minWidth={60}>
+                              <Typography lineHeight={1.1} fontSize="medium">
+                                ..... 🛫 .....
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ fontStyle: "italic" }}
+                                lineHeight={1.2}
+                              >
+                                {sector.duration}
+                              </Typography>
+                            </Box>
+
+                            {/* Arrival */}
+                            <Box textAlign="center" minWidth={50}>
+                              <Typography
+                                variant="body1"
+                                fontWeight="bold"
+                                lineHeight={1.1}
+                              >
+                                {sector.destination}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                lineHeight={1.2}
+                              >
+                                {sector.arrivalTime}
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        ))}
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+              </Fade>
+            ) : (
+              // <Fade in={!loading}>
+              <NoScheduleFound
+              // No onCheckCalendar prop passed here because the calendar is directly beside it.
+              // The main interaction for "no schedule today" is to simply pick a different date.
+              // If you want a button here to navigate to a *separate* full calendar page,
+              // you would add onCheckCalendar={() => navigate('/full-calendar-page')}
+              />
+              // </Fade>
+            )}
+          </Box>
+        </Box>
+
+        {/* Right: Calendar */}
+        <Box
+          className="month_calender"
+          sx={{
+            width: "55%",
+            backgroundColor: "#f5f5f5",
+            p: 0.5,
+            "& .MuiPickersLayout-root": {
+              height: "100%",
+            },
+            "& .MuiDayCalendar-monthContainer": {
+              height: "100%",
+            },
+            "& .MuiPickersCalendarHeader-root": {
+              mt: 0,
+            },
+            "& .MuiDayCalendar-weekContainer": {
+              justifyContent: "center",
+            },
+          }}
+        >
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            {/* <StaticDatePicker
             displayStaticWrapperAs="desktop"
             value={selectedDate}
             onChange={(newDate: moment.Moment | null) => {
@@ -589,77 +589,44 @@ export const FlightCalendarWidget = () => {
             }}
           /> */}
 
-          <StaticDatePicker
-            displayStaticWrapperAs="desktop"
-            value={selectedDate}
-            onChange={(newDate: moment.Moment | null) => {
-              if (newDate) {
-                setSelectedDate(newDate);
-              }
-            }}
-            onMonthChange={(newMonth: moment.Moment) => {
-              // Fetch flight segments for the new month
-              fetchMonthlyFlightSegments(newMonth);
-            }}
-            slots={{
-              actionBar: () => null,
-              day: MemoizedCustomDay,
-            }}
-            sx={{
-              "& .MuiDayCalendar-weekDayLabel": {
-                fontSize: "0.7rem",
-              },
-              "& .MuiPickersDay-root": {
-                fontSize: "0.75rem",
-                width: 32,
-                height: 32,
-              },
-            }}
-          />
-        </LocalizationProvider>
-      </Box>
-
-      
-
-      
-  </Card>
-  
+            <StaticDatePicker
+              displayStaticWrapperAs="desktop"
+              value={selectedDate}
+              onChange={(newDate: moment.Moment | null) => {
+                if (newDate) {
+                  setSelectedDate(newDate);
+                }
+              }}
+              onMonthChange={(newMonth: moment.Moment) => {
+                // Fetch flight segments for the new month
+                fetchMonthlyFlightSegments(newMonth);
+              }}
+              slots={{
+                actionBar: () => null,
+                day: MemoizedCustomDay,
+              }}
+              sx={{
+                "& .MuiDayCalendar-weekDayLabel": {
+                  fontSize: "0.7rem",
+                },
+                "& .MuiPickersDay-root": {
+                  fontSize: "0.75rem",
+                  width: 32,
+                  height: 32,
+                },
+              }}
+            />
+          </LocalizationProvider>
+        </Box>
 
 
-  <Card className="calen_master">
-    <Box>
-      <div className="bbvbvbvb"></div>
-      <FlightTakeoffIcon/>
-      <p>VOMF</p>
-      <div className="bbvbvbvb1"></div>
-    </Box>
-  </Card>
-
-   <Card className="calen_master">
-  <div className="bbvbvbvb"></div>
-    <FlightTakeoffIcon/>
-       <p>VIDF</p>
-    <div className="bbvbvbvb1"></div>
-  </Card>
-  <Card className="calen_master">
-    
-      <div className="bbvbvbvb"></div>
-          <FlightTakeoffIcon/>
-       <p>VABF</p>
-       <div className="bbvbvbvb1"></div>
-  
-  </Card>
-  <Card className="calen_master">
-    <div className="bbvbvbvb"></div>
-        <FlightTakeoffIcon/>
-       <p>VECF</p>
-       <div className="bbvbvbvb1"></div>
-   
-  </Card>
 
 
-</>
-    
+      </Card>
+
+
+    </>
+
   );
 };
 
@@ -830,230 +797,211 @@ export const StaffLeaveWidget = () => {
   };
 
   return (
-   <>
-    <Card sx={{ borderRadius: 3, boxShadow: 3, p: 2, background: "#fff" }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
+    <>
+      <Card sx={{ borderRadius: 3, boxShadow: 3, p: 2, background: "#fff" }}>
         <Box
-          width="100%"
           display="flex"
           justifyContent="space-between"
           alignItems="center"
           mb={2}
         >
-          <Typography variant="body2" fontWeight={500} color="text.secondary">
-            👨‍✈️ Staff Leave Calendar
-          </Typography>
-          <Typography variant="body2" fontWeight={500} color="text.secondary">
-            {selectedDate.format("MMMM D, YYYY")}{" "}
-            {/* Display selectedDate, not today */}
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box display="flex" justifyContent="space-between" mb={1} gap={1}>
-        {weekDays.map((date, index) => {
-          const isToday = date.isSame(today, "day");
-          const isSelected = date.isSame(selectedDate, "day");
-          const leavesOnDayDots = getLeavesForDateDots(date);
-
-          return (
-            <Box
-              className="leave-format"
-              key={index}
-              onClick={() => handleDayClick(date)}
-              sx={{
-                backgroundColor: isSelected
-                  ? "#001551"
-                  : isToday
-                    ? "#e0f2f7" // Different color for today if not selected
-                    : "#f5f5f5", // Default background
-                color: isSelected ? "#fff" : "#000",
-
-                borderRadius: 2,
-                minWidth: 40,
-                height: 40,
-                px: 1,
-                py: 0.5,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "space-between",
-                cursor: "pointer",
-                boxShadow: isSelected ? "0 0 0 2px #001551" : "none",
-                transition: "all 0.2s ease-in-out",
-                "&:hover": {
-                  backgroundColor: isSelected ? "#001551cd" : "#e0e0e0",
-                },
-              }}
-            >
-              <Typography
-                variant="caption"
-                fontWeight={600}
-                sx={{ fontSize: "0.65rem", lineHeight: 1 }}
-              >
-                {date.format("ddd")}
-              </Typography>
-              <Typography
-                variant="caption"
-                sx={{ fontSize: "0.75rem", fontWeight: 500, lineHeight: 1 }}
-              >
-                {date.format("D")}
-              </Typography>
-              <Box display="flex" justifyContent="center" gap={0.3}>
-                {loading ? (
-                  <CircularProgress size={6} sx={{ color: "text.secondary" }} />
-                ) : error ? (
-                  <FiberManualRecordIcon
-                    fontSize="inherit"
-                    sx={{ color: "error.main", fontSize: 6 }}
-                  />
-                ) : (
-                  leavesOnDayDots.map(
-                    (
-                      leave // Removed 'i' as key if 'leave.id' is available
-                    ) => (
-                      <FiberManualRecordIcon
-                        key={leave.id} // Use unique ID from leave object for key
-                        fontSize="inherit"
-                        sx={{
-                          color: leaveColors[leave.leaveType],
-                          fontSize: 6,
-                        }}
-                      />
-                    )
-                  )
-                )}
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-
-      <Divider sx={{ mb: 2 }} />
-
-      <Box sx={{ minHeight: 150 }} onClick={OnClickLeaveWidget}>
-        {loading ? (
           <Box
+            width="100%"
             display="flex"
-            justifyContent="center"
+            justifyContent="space-between"
             alignItems="center"
-            minHeight={100}
+            mb={2}
           >
-            <CircularProgress size={24} />
-            <Typography variant="body2" ml={1} color="text.secondary">
-              Loading leaves for {selectedDate.format("MMM D")}...
+            <Typography variant="body2" fontWeight={500} color="text.secondary">
+              👨‍✈️ Staff Leave Calendar
+            </Typography>
+            <Typography variant="body2" fontWeight={500} color="text.secondary">
+              {selectedDate.format("MMMM D, YYYY")}{" "}
+              {/* Display selectedDate, not today */}
             </Typography>
           </Box>
-        ) : error ? (
-          <Alert severity="error">{error}</Alert>
-        ) : leavesForList.length > 0 ? (
-          <Fade in={!loading}>
-            <Box>
-              {leavesForList.map((leave, i) => {
-                return (
-                  <Box
-                    key={leave.id}
-                    display="flex"
-                    alignItems="flex-start"
-                    position="relative"
-                    mb={1}
-                  >
-                    {/* Timeline Dot */}
+        </Box>
+
+        <Box display="flex" justifyContent="space-between" mb={1} gap={1}>
+          {weekDays.map((date, index) => {
+            const isToday = date.isSame(today, "day");
+            const isSelected = date.isSame(selectedDate, "day");
+            const leavesOnDayDots = getLeavesForDateDots(date);
+
+            return (
+              <Box
+                className="leave-format"
+                key={index}
+                onClick={() => handleDayClick(date)}
+                sx={{
+                  backgroundColor: isSelected
+                    ? "#001551"
+                    : isToday
+                      ? "#e0f2f7" // Different color for today if not selected
+                      : "#f5f5f5", // Default background
+                  color: isSelected ? "#fff" : "#000",
+
+                  borderRadius: 2,
+                  minWidth: 40,
+                  height: 40,
+                  px: 1,
+                  py: 0.5,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  boxShadow: isSelected ? "0 0 0 2px #001551" : "none",
+                  transition: "all 0.2s ease-in-out",
+                  "&:hover": {
+                    backgroundColor: isSelected ? "#001551cd" : "#e0e0e0",
+                  },
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  fontWeight={600}
+                  sx={{ fontSize: "0.65rem", lineHeight: 1 }}
+                >
+                  {date.format("ddd")}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{ fontSize: "0.75rem", fontWeight: 500, lineHeight: 1 }}
+                >
+                  {date.format("D")}
+                </Typography>
+                <Box display="flex" justifyContent="center" gap={0.3}>
+                  {loading ? (
+                    <CircularProgress size={6} sx={{ color: "text.secondary" }} />
+                  ) : error ? (
+                    <FiberManualRecordIcon
+                      fontSize="inherit"
+                      sx={{ color: "error.main", fontSize: 6 }}
+                    />
+                  ) : (
+                    leavesOnDayDots.map(
+                      (
+                        leave // Removed 'i' as key if 'leave.id' is available
+                      ) => (
+                        <FiberManualRecordIcon
+                          key={leave.id} // Use unique ID from leave object for key
+                          fontSize="inherit"
+                          sx={{
+                            color: leaveColors[leave.leaveType],
+                            fontSize: 6,
+                          }}
+                        />
+                      )
+                    )
+                  )}
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+
+        <Divider sx={{ mb: 2 }} />
+
+        <Box sx={{ minHeight: 150 }} onClick={OnClickLeaveWidget}>
+          {loading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight={100}
+            >
+              <CircularProgress size={24} />
+              <Typography variant="body2" ml={1} color="text.secondary">
+                Loading leaves for {selectedDate.format("MMM D")}...
+              </Typography>
+            </Box>
+          ) : error ? (
+            <Alert severity="error">{error}</Alert>
+          ) : leavesForList.length > 0 ? (
+            <Fade in={!loading}>
+              <Box>
+                {leavesForList.map((leave, i) => {
+                  return (
                     <Box
-                      sx={{
-                        width: 20,
-                        display: "flex",
-                        justifyContent: "center",
-                        mt: "5px",
-                      }}
+                      key={leave.id}
+                      display="flex"
+                      alignItems="flex-start"
+                      position="relative"
+                      mb={1}
                     >
-                      <CircleIcon fontSize="small" sx={{ color: "#90a4ae" }} />
-                    </Box>
-
-                    {i < leavesForList.length - 1 && (
+                      {/* Timeline Dot */}
                       <Box
                         sx={{
-                          position: "absolute",
-                          left: 9,
-                          top: 20,
-                          bottom: -10,
-                          width: 2,
-                          backgroundColor: "#e0e0e0",
-                          zIndex: 0,
-                        }}
-                      ></Box>
-                    )}
-
-                    <Box flex={1} ml={2}>
-                      <Box
-                        sx={{
-                          backgroundColor: `${leaveColors[leave.leaveType]}20`,
-                          borderLeft: `4px solid ${leaveColors[leave.leaveType]}`,
-                          borderRadius: 2,
-                          p: 1,
-                          mb: 1,
+                          width: 20,
+                          display: "flex",
+                          justifyContent: "center",
+                          mt: "5px",
                         }}
                       >
-                        <Box display="flex" justifyContent="space-between">
-                          <Typography variant="caption" fontWeight={600}>
-                            {`${leave.staffName || "N/A"}(${moment(leave.date).format("Do")}-${moment(leave.toDate).format("Do")})`}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{ color: leaveColors[leave.leaveType] }}
-                          >
-                            {/* {leave.leaveType} Leave */}
-                            {LeaveType[leave.leaveType]}
-                          </Typography>
+                        <CircleIcon fontSize="small" sx={{ color: "#90a4ae" }} />
+                      </Box>
+
+                      {i < leavesForList.length - 1 && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            left: 9,
+                            top: 20,
+                            bottom: -10,
+                            width: 2,
+                            backgroundColor: "#e0e0e0",
+                            zIndex: 0,
+                          }}
+                        ></Box>
+                      )}
+
+                      <Box flex={1} ml={2}>
+                        <Box
+                          sx={{
+                            backgroundColor: `${leaveColors[leave.leaveType]}20`,
+                            borderLeft: `4px solid ${leaveColors[leave.leaveType]}`,
+                            borderRadius: 2,
+                            p: 1,
+                            mb: 1,
+                          }}
+                        >
+                          <Box display="flex" justifyContent="space-between">
+                            <Typography variant="caption" fontWeight={600}>
+                              {`${leave.staffName || "N/A"}(${moment(leave.date).format("Do")}-${moment(leave.toDate).format("Do")})`}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              sx={{ color: leaveColors[leave.leaveType] }}
+                            >
+                              {/* {leave.leaveType} Leave */}
+                              {LeaveType[leave.leaveType]}
+                            </Typography>
+                          </Box>
                         </Box>
                       </Box>
                     </Box>
-                  </Box>
-                );
-              })}
-            </Box>
-          </Fade>
-        ) : (
-          <Typography
-            variant="caption"
-            align="center"
-            display="block"
-            color="text.disabled"
-            sx={{ mt: 2 }}
-          >
-            No leaves for {selectedDate.format("MMM D")}
-          </Typography>
-        )}
-      </Box>
-    
-    </Card>
+                  );
+                })}
+              </Box>
+            </Fade>
+          ) : (
+            <Typography
+              variant="caption"
+              align="center"
+              display="block"
+              color="text.disabled"
+              sx={{ mt: 2 }}
+            >
+              No leaves for {selectedDate.format("MMM D")}
+            </Typography>
+          )}
+        </Box>
 
-  <Card className="alert_master_theme">
-     <Stack sx={{ width: '100%' }} spacing={2}>
-      <Alert variant="filled" severity="warning" className="warning_view">
-        This is a filled error Alert.
-      </Alert>
-        <Alert variant="filled" severity="warning">
-        This is a filled warning Alert.
-      </Alert>
-          <Alert variant="filled" severity="info">
-        This is a filled info Alert.
-      </Alert>
-      <Alert variant="filled" severity="success">
-        This is a filled success Alert.
-      </Alert>
-  
-    
-      
-    </Stack>
-   
-  </Card>
-</>
-   
+      </Card>
+
+
+    </>
+
   );
 };

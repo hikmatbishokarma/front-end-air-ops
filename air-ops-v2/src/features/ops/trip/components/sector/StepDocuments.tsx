@@ -1,13 +1,15 @@
-import { Box, TextField, IconButton, Grid, Tooltip } from "@mui/material";
-import { useEffect } from "react";
+import { Box, TextField, IconButton, Grid, Tooltip, Paper } from "@mui/material";
+import { useEffect, useState, useRef } from "react";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import { DocumentInfo, SectorFormValues } from "../../type/trip.type";
 import { Control, Controller, useFieldArray, useWatch } from "react-hook-form";
 
 import MediaUpload from "@/components/MediaUpload";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PassengerManifestPreview from "../PassengerManifestPreview";
 
 const defaultDocs: DocumentInfo[] = [
   { type: "Flight Plan" },
@@ -29,9 +31,14 @@ const documentTypeLinks: Record<string, string> = {
 
 interface StepDocumentsProps {
   control: Control<SectorFormValues>;
+  tripId?: string;
+  sectorNo?: number;
 }
 
-export default function StepDocuments({ control }: StepDocumentsProps) {
+export default function StepDocuments({ control, tripId, sectorNo }: StepDocumentsProps) {
+
+  console.log("tripId:::", tripId, "sectorNo:::", sectorNo)
+  const [manifestDialogOpen, setManifestDialogOpen] = useState(false);
   const { fields, update, append, remove } = useFieldArray({
     control,
     name: "documents",
@@ -92,7 +99,41 @@ export default function StepDocuments({ control }: StepDocumentsProps) {
               control={control}
               render={({ field }) => {
                 const docType = fields[index]?.type || "";
-                // Get link from predefined mapping or from field value
+                const isManifest = docType === "Manifest";
+
+                // For Manifest, show icon button
+                if (isManifest) {
+                  return (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                      }}
+                    >
+                      <Tooltip title="View Passenger Manifest" arrow>
+                        <IconButton
+                          color="primary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setManifestDialogOpen(true);
+                          }}
+                          sx={{
+                            "&:hover": {
+                              backgroundColor: "primary.light",
+                              color: "primary.contrastText",
+                            },
+                          }}
+                        >
+                          <AssignmentOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  );
+                }
+
+                // For other documents, show external link logic
                 const predefinedLink = documentTypeLinks[docType];
                 const linkUrl = predefinedLink || field.value || "";
                 const hasLink = Boolean(linkUrl);
@@ -197,6 +238,16 @@ export default function StepDocuments({ control }: StepDocumentsProps) {
       >
         Add Document
       </Button> */}
+
+      {/* Manifest Preview Dialog */}
+      {tripId && sectorNo && (
+        <PassengerManifestPreview
+          tripId={tripId}
+          sectorNo={sectorNo}
+          open={manifestDialogOpen}
+          onClose={() => setManifestDialogOpen(false)}
+        />
+      )}
     </Box>
   );
 }

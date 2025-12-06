@@ -8,6 +8,7 @@ import {
   Divider,
   TextField,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import SendIcon from "@mui/icons-material/Send";
@@ -15,6 +16,7 @@ import ThreadBubble from "@/features/support/user/components/ThreadBubble";
 import ReplyBox from "@/features/support/user/components/ReplyBox";
 import { useParams } from "react-router";
 import { useUserTicketDetails } from "../hooks/useUserTicketQueries.hook";
+import { useSession } from "@/app/providers";
 
 export default function UserTicketDetailsPage({
   ticketId,
@@ -23,9 +25,35 @@ export default function UserTicketDetailsPage({
   ticketId: string;
   onBack: () => void;
 }) {
-  const { details, loading } = useUserTicketDetails(ticketId);
+  const { details, loading, refetch } = useUserTicketDetails(ticketId);
+  const { session } = useSession();
 
-  console.log("details::::", details, ticketId);
+  console.log("details:::", details);
+
+  if (loading) {
+    return (
+      <Container maxWidth="md" sx={{ py: 3, textAlign: "center" }}>
+        <CircularProgress />
+        <Typography sx={{ mt: 2 }}>Loading ticket details...</Typography>
+      </Container>
+    );
+  }
+
+  if (!details) {
+    return (
+      <Container maxWidth="md" sx={{ py: 3 }}>
+        <Typography color="error">Ticket not found</Typography>
+        <Button onClick={onBack} sx={{ mt: 2 }}>
+          ← Back to My Tickets
+        </Button>
+      </Container>
+    );
+  }
+
+  const handleReplySent = () => {
+    // Refetch ticket details to show new message
+    refetch?.();
+  };
 
   return (
     <Container maxWidth="md" sx={{ py: 3 }}>
@@ -43,13 +71,13 @@ export default function UserTicketDetailsPage({
 
       {/* Header */}
       <Typography variant="h5" sx={{ fontWeight: 600 }}>
-        {details?.subject}
+        {details.subject}
       </Typography>
 
       <Box sx={{ display: "flex", gap: 1, mt: 1, mb: 2 }}>
         <Chip
           size="small"
-          label={details?.status}
+          label={details.status}
           sx={{
             borderRadius: "12px",
             bgcolor: "#E9F3FF",
@@ -58,34 +86,41 @@ export default function UserTicketDetailsPage({
         />
         <Chip
           size="small"
-          label={details?.priority}
+          label={details.priority}
           sx={{
             borderRadius: "12px",
             bgcolor: "#FFF4E5",
             color: "#D97A05",
           }}
         />
+        {details.department && (
+          <Chip
+            size="small"
+            label={details.department}
+            sx={{
+              borderRadius: "12px",
+              bgcolor: "#F3F4F6",
+              color: "#374151",
+            }}
+          />
+        )}
       </Box>
 
       <Divider sx={{ mb: 3 }} />
 
       {/* Thread */}
       <Box>
-        {details?.messages?.map((msg, i) => (
+        {details.messages?.map((msg: any, i: number) => (
           <ThreadBubble
             key={i}
             msg={msg}
-            currentUserEmail={"hikmatbk101@gmail.com"}
+            currentUserEmail={session?.user?.email || ""}
           />
         ))}
       </Box>
 
       {/* Reply */}
-      <ReplyBox
-        onSend={(text) => {
-          console.log("send reply:", text);
-        }}
-      />
+      <ReplyBox ticketId={ticketId} onSent={handleReplySent} />
     </Container>
   );
 }

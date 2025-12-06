@@ -1,44 +1,37 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 
 import "react-quill/dist/quill.snow.css";
 import { Box, Container, Typography, Chip, Divider } from "@mui/material";
 
-import {
-  Attachment,
-  TicketDetail,
-} from "@/features/support/support-team/types";
+import { TicketDetail } from "@/features/support/support-team/types";
 import { ThreadRenderer } from "@/features/support/support-team/components/SupportThreadBubble";
 import { ReplyActionBar } from "@/features/support/support-team/components/ReplyActionBar";
 import { InlineReplyPanel } from "@/features/support/support-team/components/InlineReplyPanel";
+import { useUpdateSupportTicket } from "../hooks/useSupportTicketMutations";
 
 // ---------- Right Pane Container (Header + Thread + Reply Action + Inline Panel) ----------
 export default function SupportTicketDetailPane({
   detail,
-  onUpload,
-  onSend,
+  onRefetch,
 }: {
   detail: TicketDetail;
-  onUpload?: (file: File) => Promise<Attachment>;
-  onSend: (payload: {
-    html: string;
-    attachments: Attachment[];
-  }) => Promise<void> | void;
+  onRefetch?: () => void;
 }) {
   const [replyOpen, setReplyOpen] = useState(false);
+  const { updateTicket } = useUpdateSupportTicket();
 
-  const handleCloseTicket = () => {
+  const handleCloseTicket = async () => {
     if (window.confirm("Are you sure you want to close this ticket?")) {
-      console.log("Close ticket", detail.id);
+      const result = await updateTicket(detail.id, { status: "CLOSED" });
+      if (result.success) {
+        onRefetch?.();
+      }
     }
   };
 
-  const wrappedSend = async (payload: {
-    html: string;
-    attachments: Attachment[];
-  }) => {
-    await onSend(payload);
-    // keep behavior: close panel after send
+  const handleReplySent = () => {
     setReplyOpen(false);
+    onRefetch?.();
   };
 
   return (
@@ -52,9 +45,33 @@ export default function SupportTicketDetailPane({
         </Typography>
 
         <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-          <Chip size="small" label={detail.status} />
-          <Chip size="small" label={`${detail.priority} Priority`} />
-          <Chip size="small" label={`${detail.department} Department`} />
+          <Chip
+            size="small"
+            label={detail.status}
+            sx={{
+              borderRadius: "12px",
+              bgcolor: "#E9F3FF",
+              color: "#1F5B98",
+            }}
+          />
+          <Chip
+            size="small"
+            label={detail.priority}
+            sx={{
+              borderRadius: "12px",
+              bgcolor: "#FFF4E5",
+              color: "#D97A05",
+            }}
+          />
+          <Chip
+            size="small"
+            label={detail.department}
+            sx={{
+              borderRadius: "12px",
+              bgcolor: "#F3F4F6",
+              color: "#374151",
+            }}
+          />
         </Box>
       </Container>
 
@@ -76,9 +93,9 @@ export default function SupportTicketDetailPane({
         {replyOpen && (
           <Box>
             <InlineReplyPanel
+              ticketId={detail.id}
               requesterEmail={detail.requester?.email}
-              onSend={wrappedSend}
-              onUpload={onUpload}
+              onSent={handleReplySent}
               onCancel={() => setReplyOpen(false)}
             />
           </Box>

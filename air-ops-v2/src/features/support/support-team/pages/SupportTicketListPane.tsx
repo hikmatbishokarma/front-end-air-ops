@@ -14,6 +14,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import TicketCard from "../components/SupportTicketCard";
+import { formatRelativeTime } from "@/shared/utils";
 
 /**
  * Props:
@@ -74,7 +75,10 @@ export default function SupportTicketListPane({
           {tickets.map((t) => (
             <TicketCard
               key={t.id}
-              ticket={t}
+              ticket={{
+                ...t,
+                timeAgo: formatRelativeTime(t.updatedAt),
+              }}
               selected={selectedId === t.id}
               onClick={() => onSelect(t.id)}
             />

@@ -13,8 +13,10 @@ export interface Attachment {
 
 export interface Author {
   id?: string;
-  name: string;
+  name?: string;
+  displayName?: string;
   email?: string;
+  profile?: string;
   role?: "requester" | "agent" | "engineer" | "system";
 }
 
@@ -22,8 +24,8 @@ export interface Message {
   id: string;
   author: Author;
   createdAt: string; // ISO
-  html: string; // from rich editor
-  attachments?: Attachment[];
+  message: string; // from rich editor
+  attachments?: string[];
   internalNote?: boolean;
 }
 

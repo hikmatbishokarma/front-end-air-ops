@@ -47,6 +47,8 @@ interface ActionButtonProps {
   handelSaleConfirmation?: ({ quotationNo }) => void; // ✅ make optional
   showGenerateTI?: boolean;
   currentRecord?: any;
+  tripId?: string; // For manifest download
+  sectorNo?: number; // For manifest download
 }
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -67,6 +69,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   onGenerateInvoice,
   handelSaleConfirmation,
   currentRecord,
+  tripId,
+  sectorNo,
 }) => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -119,7 +123,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             email: clientEmail,
             documentType: getEnumKeyByValue(
               SalesDocumentType,
-              SalesDocumentType[documentType]
+              SalesDocumentType[documentType as keyof typeof SalesDocumentType]
             ),
           },
         },
@@ -197,9 +201,30 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 
   const handleDownloadPDF = async () => {
     try {
-      const _documentType = SalesDocumentType[documentType];
+      const _documentType = SalesDocumentType[documentType as keyof typeof SalesDocumentType];
 
       setDownloading(true); // start animation
+
+      // Special handling for MANIFEST - use different API endpoint
+      if (documentType === "MANIFEST" && tripId && sectorNo) {
+        const response = await axios.get(
+          `${apiBaseUrl}api/document/manifest/download?tripId=${tripId}&sectorNo=${sectorNo}`,
+          { responseType: "blob" }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `Passenger_Manifest_${tripId}_Sector${sectorNo}.pdf`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setDownloading(false);
+        return;
+      }
       const response = await axios.get(
         `${apiBaseUrl}api/document/quote/download?quotationNo=${currentQuotation}&documentType=${_documentType}`,
         {

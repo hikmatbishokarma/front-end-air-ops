@@ -1,6 +1,6 @@
 // src/features/support/user/components/CreateTicketPane.tsx
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -9,16 +9,12 @@ import {
   Paper,
   TextField,
   Typography,
-  IconButton,
+  CircularProgress,
 } from "@mui/material";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
 import SendIcon from "@mui/icons-material/Send";
-
-interface Attachment {
-  id: string;
-  name: string;
-  file: File;
-}
+import MediaUpload from "@/components/MediaUpload";
+import { FileObject } from "@/shared/types/common";
+import { useCreateSupportTicket } from "@/features/support/support-team/hooks/useSupportTicketMutations";
 
 export default function CreateTicketPane({
   faq,
@@ -29,49 +25,49 @@ export default function CreateTicketPane({
   onBack: () => void;
   onCreated: (ticketId: string) => void;
 }) {
-  const fileRef = useRef<HTMLInputElement | null>(null);
-
   // Form state
   const [department, setDepartment] = useState("");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [attachments, setAttachments] = useState<FileObject[]>([]);
 
-  // pick files
-  const pickFile = () => fileRef.current?.click();
+  const { createTicket, loading } = useCreateSupportTicket();
 
-  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const chosen = Array.from(e.target.files || []);
-    if (!chosen.length) return;
-
-    const mapped = chosen.map((file) => ({
-      id: Math.random().toString(),
-      name: file.name,
-      file,
-    }));
-
-    setAttachments((prev) => [...prev, ...mapped]);
-    e.target.value = "";
+  const handleAttachmentUpload = (fileObject: FileObject | null) => {
+    if (fileObject) {
+      setAttachments((prev) => [...prev, fileObject]);
+    }
   };
 
-  const handleSubmit = () => {
+  const handleRemoveAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async () => {
     if (!department || !subject || !description) {
       alert("Please fill the form completely.");
       return;
     }
 
-    // TODO: Replace this stub with GraphQL createTicket mutation
-    const newFakeId = Math.random().toString();
-
-    console.log("Creating ticket:", {
-      department,
+    const result = await createTicket({
       subject,
-      description,
-      attachments,
+      status: "OPEN",
+      priority: "MEDIUM",
+      department,
+      message: description,
+      attachments: attachments.map((att) => att.key),
     });
 
-    // send ticketId back to controller
-    onCreated(newFakeId);
+    if (result.success && result.ticketId) {
+      // Reset form
+      setDepartment("");
+      setSubject("");
+      setDescription("");
+      setAttachments([]);
+
+      // Navigate to ticket details
+      onCreated(result.ticketId);
+    }
   };
 
   return (
@@ -151,48 +147,51 @@ export default function CreateTicketPane({
                 Attachments
               </Typography>
 
-              <input
-                ref={fileRef}
-                type="file"
-                multiple
-                hidden
-                onChange={handleFiles}
-              />
-
-              <Button
-                startIcon={<AttachFileIcon />}
-                onClick={pickFile}
-                sx={{
-                  textTransform: "none",
-                  borderRadius: 1.5,
-                }}
-              >
-                Upload Files
-              </Button>
-
-              {attachments.length > 0 && (
-                <Box sx={{ mt: 1 }}>
-                  {attachments.map((a) => (
-                    <Typography
-                      key={a.id}
-                      sx={{ fontSize: 14, color: "#374151", mb: 0.5 }}
-                    >
-                      📄 {a.name}
-                    </Typography>
-                  ))}
+              {/* Show existing attachments */}
+              {attachments.map((attachment, index) => (
+                <Box key={index} sx={{ mb: 1 }}>
+                  <MediaUpload
+                    onUpload={(fileObject) => {
+                      if (fileObject) {
+                        setAttachments((prev) => {
+                          const newAttachments = [...prev];
+                          newAttachments[index] = fileObject;
+                          return newAttachments;
+                        });
+                      } else {
+                        handleRemoveAttachment(index);
+                      }
+                    }}
+                    value={attachment}
+                    label={`Attachment ${index + 1}`}
+                    category="support-attachments"
+                    size="medium"
+                    accept=".pdf,.png,.jpg,.jpeg"
+                  />
                 </Box>
-              )}
+              ))}
+
+              {/* Add new attachment button */}
+              <MediaUpload
+                onUpload={handleAttachmentUpload}
+                value={null}
+                label="Add Attachment"
+                category="support-attachments"
+                size="medium"
+                accept=".pdf,.png,.jpg,.jpeg"
+              />
             </Box>
 
             {/* Submit */}
             <Box sx={{ textAlign: "right" }}>
               <Button
                 variant="contained"
-                endIcon={<SendIcon />}
+                endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
                 onClick={handleSubmit}
+                disabled={loading}
                 sx={{ textTransform: "none", px: 3 }}
               >
-                Submit Ticket
+                {loading ? "Submitting..." : "Submit Ticket"}
               </Button>
             </Box>
           </Paper>

@@ -31,6 +31,9 @@ import {
   StaffLeaveWidget,
 } from "../components/CalenderWidget";
 import AirportDistanceCalculator from "../components/AirportDistanceCalculator";
+import UserNotamDashboard from "@/features/notam/pages/UserNotamDashboard";
+import CertificationAlertsPanel from "@/features/certification-alert/pages/CertificationAlertsPanel";
+
 
 export default function DashboardPage() {
   const { session } = useSession();
@@ -113,6 +116,14 @@ export default function DashboardPage() {
         <Grid item xs={12} md={6}>
           <StaffLeaveWidget />
         </Grid>
+        <Grid item xs={12} md={6}>
+          <UserNotamDashboard />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <CertificationAlertsPanel />
+        </Grid>
+
         <Grid item xs={12}>
           <AirportDistanceCalculator />
         </Grid>

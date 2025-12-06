@@ -1,30 +1,40 @@
-import React, { useRef, useState } from "react";
-import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
+import React, { useState } from "react";
+import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import MediaUpload from "@/components/MediaUpload";
+import { FileObject } from "@/shared/types/common";
+import { useAddMessageToTicket } from "@/features/support/support-team/hooks/useSupportTicketMutations";
 
-export default function ReplyBox({ onSend }) {
+export default function ReplyBox({ ticketId, onSent }: { ticketId: string; onSent?: () => void }) {
   const [text, setText] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
-  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [attachments, setAttachments] = useState<FileObject[]>([]);
 
-  const pickFile = () => fileRef.current?.click();
+  const { addMessage, loading } = useAddMessageToTicket();
 
-  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const chosen = Array.from(e.target.files || []);
-    if (!chosen.length) return;
-    setFiles((prev) => [...prev, ...chosen]);
-    e.target.value = "";
+  const handleAttachmentUpload = (fileObject: FileObject | null) => {
+    if (fileObject) {
+      setAttachments((prev) => [...prev, fileObject]);
+    }
   };
 
-  const handleSend = () => {
-    onSend({
-      message: text.trim(),
-      attachments: files,
+  const handleRemoveAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSend = async () => {
+    if (!text.trim()) return;
+
+    const result = await addMessage({
+      ticketId,
+      message: `<p>${text}</p>`,
+      attachments: attachments.map((att) => att.key),
     });
 
-    setText("");
-    setFiles([]);
+    if (result.success) {
+      setText("");
+      setAttachments([]);
+      onSent?.();
+    }
   };
 
   return (
@@ -52,45 +62,52 @@ export default function ReplyBox({ onSend }) {
         sx={{ mb: 2 }}
       />
 
-      {/* Attached file tags */}
-      {files.length > 0 && (
-        <Box sx={{ mb: 2 }}>
-          {files.map((f, i) => (
-            <Typography
-              key={i}
-              sx={{ fontSize: 14, color: "#374151", mb: 0.5 }}
-            >
-              📎 {f.name}
-            </Typography>
-          ))}
-        </Box>
-      )}
+      {/* Attachments */}
+      <Box sx={{ mb: 2 }}>
+        {attachments.map((attachment, index) => (
+          <Box key={index} sx={{ mb: 1 }}>
+            <MediaUpload
+              onUpload={(fileObject) => {
+                if (fileObject) {
+                  setAttachments((prev) => {
+                    const newAttachments = [...prev];
+                    newAttachments[index] = fileObject;
+                    return newAttachments;
+                  });
+                } else {
+                  handleRemoveAttachment(index);
+                }
+              }}
+              value={attachment}
+              label={`Attachment ${index + 1}`}
+              category="support-attachments"
+              size="medium"
+              accept=".pdf,.png,.jpg,.jpeg"
+            />
+          </Box>
+        ))}
 
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        {/* Attach button */}
-        <div>
-          <input
-            ref={fileRef}
-            type="file"
-            multiple
-            hidden
-            onChange={handleFiles}
-          />
+        {/* Add new attachment */}
+        <MediaUpload
+          onUpload={handleAttachmentUpload}
+          value={null}
+          label="Add Attachment"
+          category="support-attachments"
+          size="medium"
+          accept=".pdf,.png,.jpg,.jpeg"
+        />
+      </Box>
 
-          <IconButton onClick={pickFile}>
-            <AttachFileIcon />
-          </IconButton>
-        </div>
-
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         {/* Send button */}
         <Button
           variant="contained"
-          endIcon={<SendIcon />}
+          endIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
           onClick={handleSend}
-          disabled={!text.trim()}
+          disabled={!text.trim() || loading}
           sx={{ textTransform: "none", px: 3 }}
         >
-          Send
+          {loading ? "Sending..." : "Send"}
         </Button>
       </Box>
     </Box>
