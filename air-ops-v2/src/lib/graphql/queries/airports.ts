@@ -32,6 +32,8 @@ export const GET_AIRPORTS = gql`
         city
         country
         type
+        latitude
+        longitude
       }
     }
   }

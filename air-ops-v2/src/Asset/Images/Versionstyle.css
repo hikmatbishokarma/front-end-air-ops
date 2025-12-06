@@ -309,7 +309,7 @@ text-align: left;
   border-bottom-left-radius: 25px;
   /* overflow-y: scroll; */
   /* height: 100vh; */
-  background-image: url(../Images/bg-landing-main.gif) !important;
+  /* background-image: url(../Images/bg-landing-main.gif) !important; */
       background-position: center;
   height: 100%;
   
@@ -328,8 +328,9 @@ text-align: left;
 }
 .MuiDrawer-anchorLeft nav .Mui-selected {
   background-color: #ff0202 !important;
-  border-top-left-radius: 50% 200px;
-  border-bottom-right-radius: 50% 200px;
+  /* border-top-left-radius: 50% 200px;
+  border-bottom-right-radius: 50% 200px; */
+  border-radius: 50px;
 }
 /* .MuiDrawer-paper{
     width: 240px !important;
@@ -376,8 +377,9 @@ text-align: left;
 }
 .MuiListItemButton-root:hover {
   background-color: #ffffff2e !important;
-  border-top-left-radius: 50% 200px;
-  border-bottom-right-radius: 50% 200px;
+  /* border-top-left-radius: 50% 200px;
+  border-bottom-right-radius: 50% 200px; */
+  border-radius: 50px;
 }
 .MuiTableHead-root th {
   background-color: #001551 !important;
@@ -1183,16 +1185,7 @@ ease-in-out;
     margin-bottom: 5px;
      
 }
-@media screen and (max-width: 768px) {
-.left-side-logo {
 
-    width: 150px;
-    height: 150px;
-    margin-top: 50px;
-    margin: 0 auto;
-    display: block;
-}
-}
 .img-flight-label img{
   transition: transform 0.9s ease-in-out;
 }
@@ -1240,4 +1233,27 @@ text-align: center;
 }
 .warning_view{
   background-color: #ff0202 !important;
+}
+
+.MuiDrawer-paper{
+  width: 215px !important;
+}
+
+@media screen and (max-width: 768px) {
+.left-side-logo {
+
+    width: 150px;
+    height: 150px;
+    margin-top: 50px;
+    margin: 0 auto;
+    display: block;
+}
+
+.sector-mobile-view{
+    display: block !important;
+    
+  }
+  .fc .fc-toolbar{
+    display: block;
+  }
 }

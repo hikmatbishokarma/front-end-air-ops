@@ -134,7 +134,7 @@ const SectorsStepV2 = ({ control, watch, getValues, setValue }: any) => {
   };
 
   return (
-    <Box sx={{ display: "flex", mt: 5, gap: 2 }}>
+    <Box sx={{ display: "flex", mt: 5, gap: 2 }} className="sector-mobile-view">
       {/* Left Panel */}
       <Box
         sx={{

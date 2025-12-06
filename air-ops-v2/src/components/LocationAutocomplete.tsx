@@ -18,8 +18,8 @@ type Airport = {
   name: string;
   city: string;
   country?: string;
-  lat?: number;
-  long?: number;
+  latitude?: number;
+  longitude?: number;
 };
 
 const LocationAutocomplete = ({
@@ -100,10 +100,10 @@ const LocationAutocomplete = ({
           ? value.code === "ZZZZ"
             ? { icao_code: "ZZZZ", name: "Heliport", city: "" }
             : {
-                icao_code: value.code,
-                name: value.name,
-                city: value.city,
-              }
+              icao_code: value.code,
+              name: value.name,
+              city: value.city,
+            }
           : null
       }
       onInputChange={(_, newValue) => setInputValue(newValue)}
@@ -121,8 +121,8 @@ const LocationAutocomplete = ({
             name: selected.name,
             city: selected.city,
             country: selected.country,
-            lat: selected.lat,
-            long: selected.long,
+            lat: selected.latitude,
+            long: selected.longitude,
           });
         }
       }}
