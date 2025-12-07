@@ -28,6 +28,19 @@ mutation addMessageToTicket($input: CreateMessageInput!){
 
 `
 
+export const UPDATE_TICKET_METADATA = gql`
+mutation updateTicketMetadata($ticketId: String!, $updates: UpdateTicketInput!){
+  updateTicketMetadata(ticketId: $ticketId, updates: $updates){
+    id
+    status
+    priority
+    subject
+    department
+  }
+}
+
+`
+
 export const GET_SUPPORT_TICKETS = gql`
 query tickets(
 $filter: TicketFilter! = {}

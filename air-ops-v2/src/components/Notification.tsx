@@ -176,10 +176,30 @@ const NotificationItem = ({
             </Box>
           </Typography>
         );
+      case "TICKET_CREATED":
+        return (
+          <Typography variant="body1">
+            <Box component="span" fontWeight="bold">
+              New Support Ticket
+            </Box>
+            {" - "}
+            {notification.message || notification.title}
+          </Typography>
+        );
+      case "TICKET_REPLY":
+        return (
+          <Typography variant="body1">
+            <Box component="span" fontWeight="bold">
+              New Reply on Ticket
+            </Box>
+            {" - "}
+            {notification.message || notification.title}
+          </Typography>
+        );
       default:
         return (
           <Typography variant="body1">
-            New notification from {userDisplayName}
+            {notification.title || notification.message || `New notification from ${userDisplayName}`}
           </Typography>
         );
     }
@@ -458,12 +478,12 @@ const NotificationDrawer = ({
             prev.map((notif) =>
               notif.type === "ACCESS_REQUEST" && notif.refId === accessRequestId
                 ? {
-                    ...notif,
-                    metadata: {
-                      ...notif.metadata,
-                      accessRequestStatus: "ACCEPTED",
-                    },
-                  }
+                  ...notif,
+                  metadata: {
+                    ...notif.metadata,
+                    accessRequestStatus: "ACCEPTED",
+                  },
+                }
                 : notif
             )
           );
@@ -484,7 +504,9 @@ const NotificationDrawer = ({
       n.recipientRoles?.includes("ADMIN") ||
       n.type === "ACCESS_REQUEST" ||
       n.type === "mentioned" ||
-      n.type === "tags_added"
+      n.type === "tags_added" ||
+      n.type === "TICKET_CREATED" ||
+      n.type === "TICKET_REPLY"
   );
   const teamNotifications = notifications.filter(
     (n) => n.type === "ACCESS_REQUEST_STATUS_UPDATE"

@@ -8,6 +8,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getCleanFileName } from "@/shared/utils";
 // import { useDeleteNotamMutation } from "../hooks/useNotamMutation";
 
+const cloudfrontBaseUrl =
+    import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/";
+
 export default function NotamTable({ category }) {
     const { notamList, loading } = useNotamsByCategory(category);
     //const { deleteNotam } = useDeleteNotamMutation();
@@ -18,9 +21,9 @@ export default function NotamTable({ category }) {
     //     }
     // };
 
-    const handleDownload = (fileUrl) => {
-        if (fileUrl) {
-            window.open(fileUrl, "_blank");
+    const handleDownload = (fileName) => {
+        if (fileName) {
+            window.open(`${cloudfrontBaseUrl}${fileName}`, "_blank");
         }
     };
 
@@ -81,8 +84,8 @@ export default function NotamTable({ category }) {
                             <TableCell align="right">
                                 <IconButton
                                     size="small"
-                                    onClick={() => handleDownload(notam.fileUrl)}
-                                    disabled={!notam.fileUrl}
+                                    onClick={() => handleDownload(notam.fileName)}
+                                    disabled={!notam.fileName}
                                     color="primary"
                                 >
                                     <DownloadIcon fontSize="small" />

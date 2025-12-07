@@ -16,29 +16,18 @@ export default function SupportTicketsPage() {
   const { ticketId } = useParams();
 
   console.log("id::::", ticketId);
-  const { data: tickets = [] } = useTicketsList();
+  const { data: tickets = [], refetch: refetchList } = useTicketsList();
   const selectedId = ticketId || (tickets[0]?.id ?? null);
 
-  const { data: detail } = useTicketDetail(selectedId);
+  const { data: detail, refetch: refetchDetail } = useTicketDetail(selectedId);
 
   const handleSelect = (ticketId) => {
     navigate(`/app/admin/support-ticket/${ticketId}`);
   };
 
-  const handleUpload = async (file) => {
-    // Replace with real upload
-    return {
-      id: Math.random().toString(),
-      name: file.name,
-      mime: file.type,
-      sizeBytes: file.size,
-      url: URL.createObjectURL(file),
-    };
-  };
-
-  const handleSend = async ({ html, attachments }) => {
-    console.log("Send reply:", { html, attachments });
-    // Replace with API call
+  const handleRefetch = () => {
+    refetchList();
+    refetchDetail();
   };
 
   return (
@@ -53,8 +42,7 @@ export default function SupportTicketsPage() {
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <SupportTicketDetailPane
             detail={detail}
-            onUpload={handleUpload}
-            onSend={handleSend}
+            onRefetch={handleRefetch}
           />
         </Box>
       ) : null}

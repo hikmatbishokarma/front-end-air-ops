@@ -8,7 +8,7 @@ import {
 // 💡 ASSUMPTION: Update paths to your shared utilities and GQL definitions
 import useGql from "@/lib/graphql/gql";
 import { CHECK_FOR_PASSENGER } from "@/lib/graphql/queries/passenger-detail";
-import { useSnackbar } from "@/app/providers";
+import { useSession, useSnackbar } from "@/app/providers";
 import { QuotationStatus, SalesCategoryLabels } from "@/shared/utils";
 import { GET_QUOTES, SHOW_PREVIEW } from "@/lib/graphql/queries/quote";
 
@@ -151,6 +151,9 @@ export const useQuoteListData = ({
   const [loading, setLoading] = useState(true);
   const showSnackbar = useSnackbar();
 
+  const { session } = useSession();
+  const operatorId = session?.user.operator?.id || null;
+
   const fetchQuotes = useCallback(async () => {
     setLoading(true);
     try {
@@ -159,7 +162,10 @@ export const useQuoteListData = ({
         queryName: "quotes",
         queryType: "query-with-count",
         variables: {
-          filter,
+          filter: {
+            ...filter,
+            ...(operatorId && { operatorId: { eq: operatorId } }),
+          },
           offset: page * rowsPerPage,
           limit: rowsPerPage,
           sorting: [{ "field": "createdAt", "direction": "DESC" }],

@@ -312,174 +312,12 @@ export const QuoteList = ({
     setRefreshKey();
   };
 
-  // const onAddPassenger = async (row) => {
-  //   setCurrentQuotationInfo({
-  //     id: row.id,
-  //     quotationNo: row.quotationNo,
-  //     isLatest: row.isLatest,
-  //     client: row.requestedBy,
-  //     status: row.status,
-  //   });
-
-  //   const isPaxEsit = await isPassengerExist(row.quotationNo, row.id);
-
-  //   if (isPaxEsit) {
-  //     navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
-  //     return;
-  //   }
-
-  //   try {
-  //     {
-  //       const data = await useGql({
-  //         query: CREATE_PASSENGER_DETAILS,
-  //         queryName: "",
-  //         queryType: "mutation",
-  //         variables: {
-  //           input: {
-  //             passengerDetail: {
-  //               operatorId,
-  //               quotation: row.id,
-  //               quotationNo: row.quotationNo,
-  //               // sectors: row.sectors.map((sector, index) => ({
-  //               //   sectorNo: index + 1,
-  //               //   source: sector.source,
-  //               //   destination: sector.destination,
-  //               //   depatureDate: sector.depatureDate,
-  //               //   depatureTime: sector.depatureTime,
-  //               //   arrivalTime: sector.arrivalTime,
-  //               //   arrivalDate: sector.arrivalDate,
-  //               //   pax: sector.paxNumber || 0,
-  //               //   flightTime: calculateFlightTime(
-  //               //     sector.depatureDate,
-  //               //     sector.depatureTime,
-  //               //     sector.arrivalDate,
-  //               //     sector.arrivalTime
-  //               //   ),
-  //               // })),
-  //               sectors: row.sectors.map((sector, index) => {
-  //                 const { __typename, ...source } = sector.source || {};
-  //                 const { __typename: __typenameDest, ...destination } =
-  //                   sector.destination || {};
-
-  //                 return {
-  //                   sectorNo: index + 1,
-  //                   source,
-  //                   destination,
-  //                   depatureDate: sector.depatureDate,
-  //                   depatureTime: sector.depatureTime,
-  //                   arrivalTime: sector.arrivalTime,
-  //                   arrivalDate: sector.arrivalDate,
-  //                   pax: sector.paxNumber || 0,
-  //                   flightTime: calculateFlightTime(
-  //                     sector.depatureDate,
-  //                     sector.depatureTime,
-  //                     sector.arrivalDate,
-  //                     sector.arrivalTime
-  //                   ),
-  //                 };
-  //               }),
-  //             },
-  //           },
-  //         },
-  //       });
-
-  //       if (data?.errors) {
-  //         // Use optional chaining for safer access
-  //         throw new Error(data.errors[0]?.message || "Something went wrong.");
-  //       } else {
-  //         navigate(`/passenger-detail/${encodeURIComponent(row.quotationNo)}`);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     // Catch and handle all errors from API call or state updates
-  //     console.error("Failed to add passenger:", error);
-  //     showSnackbar(error.message || "Failed to add passenger!", "error");
-  //   }
-  // };
-
-  // const onGenerateSalesConfirmation = async (rowData:any) => {
-  //   try {
-  //     setSelectedRowData(rowData);
-  //     const result = await useGql({
-  //       query: SALE_CONFIRMATION,
-  //       queryName: "saleConfirmation",
-  //       queryType: "mutation",
-  //       variables: {
-  //         args: {
-  //           quotationNo: rowData.quotationNo,
-  //           ...(operatorId && { operatorId }),
-  //         },
-  //       },
-  //     });
-
-  //     if (!result || result?.errors?.length) {
-  //       showSnackbar(
-  //         result?.errors?.[0]?.message || "Internal server error!",
-  //         "error"
-  //       );
-  //     } else {
-  //       showSnackbar("Sale confirmed successfully!", "success");
-
-  //       setSaleConfirmationPreviewTemplate(result?.confirmationTemplate);
-
-  //       setShowTripConfirmationPreview(true);
-  //     }
-  //   } catch (error) {
-  //     showSnackbar(error.message || "Failed to Add!", "error");
-  //   } finally {
-  //     setRefreshKey();
-  //   }
-  // };
-
-  // const handelSectorSave = async (payload) => {
-  //   try {
-  //     const data = await useGql({
-  //       query: UPADTE_PASSANGER_DETAIL,
-  //       queryName: "updatePassengerDetail",
-  //       queryType: "mutation",
-  //       variables: payload,
-  //     });
-
-  //     if (!data || data?.errors) {
-  //       showSnackbar(
-  //         data?.errors?.[0]?.message || "Something went wrong",
-  //         "error"
-  //       );
-  //     } else showSnackbar("Add successfully", "success");
-  //   } catch (error) {
-  //     showSnackbar(error.message || "Failed to Add!", "error");
-  //   }
-  // };
 
   const handelSaveAndPreview = async (quotationNo: string) => {
     navigate(`/app/sales-confirmation-preview/${quotationNo}`);
   };
 
-  // const isPassengerExist = async (quotationNo, quotationId) => {
-  //   try {
-  //     const result = await useGql({
-  //       query: CHECK_FOR_PASSENGER,
-  //       variables: {
-  //         filter: {
-  //           quotationNo: { eq: quotationNo },
-  //           ...(quotationId ? { quotation: { eq: quotationId } } : {}),
-  //         },
-  //       },
-  //       queryName: "passengerDetails",
-  //       queryType: "query-with-count",
-  //     });
 
-  //     if (result?.errors?.length) {
-  //       console.warn("Passenger check error:", result?.errors?.[0]?.message);
-  //       return false; // don’t block creation if check fails
-  //     }
-
-  //     return Array.isArray(result?.data) && result?.data?.length > 0;
-  //   } catch (error) {
-  //     console.error("Error checking passenger existence:", error);
-  //     return false; // fallback to create
-  //   }
-  // };
 
   const { isPassengerExist } = usePassengerExistenceCheck();
   const { createPassengerDetails } =
@@ -556,7 +394,7 @@ export const QuoteList = ({
                 <TableCell component="th" scope="row">
                   {
                     FlightCategoryEnum[
-                      row.category as keyof typeof FlightCategoryEnum
+                    row.category as keyof typeof FlightCategoryEnum
                     ]
                   }
                 </TableCell>
@@ -568,7 +406,7 @@ export const QuoteList = ({
                 {/* <TableCell align="right">{row.itinerary}</TableCell> */}
                 <TableCell
                   align="right"
-                  // onClick={(event) => event.stopPropagation()}
+                // onClick={(event) => event.stopPropagation()}
                 >
                   <SectorTooltip sectors={row.sectors} />
                 </TableCell>

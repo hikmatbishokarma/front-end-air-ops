@@ -69,9 +69,9 @@ export const MessageBubble = ({
 export const ThreadRenderer = ({ detail }: { detail: TicketDetail }) => {
   return (
     <Box sx={{ pb: 2 }}>
-      {detail.messages.map((m) => (
+      {detail.messages.map((m, index) => (
         <MessageBubble
-          key={m.id}
+          key={`${m.createdAt}-${m.author?.id || index}`}
           msg={m}
           requesterEmail={detail.requester?.email}
         />

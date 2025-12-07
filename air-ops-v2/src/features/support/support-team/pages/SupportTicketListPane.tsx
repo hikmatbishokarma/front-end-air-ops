@@ -84,7 +84,6 @@ export default function SupportTicketListPane({
             />
           ))}
         </List>
-        ;
       </Box>
     </Box>
   );

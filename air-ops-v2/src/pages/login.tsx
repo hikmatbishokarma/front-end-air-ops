@@ -77,18 +77,19 @@ export default function Login() {
   const handleReset = async () => {
     const data = await useGql({
       query: FORGOT_PASSWORD,
-      queryName: "",
+      queryName: "forgotPassword",
       queryType: "mutation",
       variables: {
         email: email,
       },
     });
 
-    if (data?.data?.forgotPassword?.status) {
+
+    if (data?.status) {
       setShowEmailSent(true);
       setApiError(null);
     } else {
-      setApiError(data?.data?.forgotPassword?.message);
+      setApiError(data?.message);
     }
   };
 

@@ -4,7 +4,7 @@ import { useSession } from "@/app/providers";
 import { useGqlMutation } from "@/shared/hooks/useGqlMutation";
 import {
     CREATE_SUPPORT_TICKET,
-    UPDATE_SUPPORT_TICKET,
+    UPDATE_TICKET_METADATA,
     ADD_MESSAGE_TO_TICKET,
 } from "@/lib/graphql/queries/support-ticket";
 
@@ -93,14 +93,12 @@ export const useUpdateSupportTicket = () => {
         ) => {
             try {
                 const gqlParams = {
-                    query: UPDATE_SUPPORT_TICKET,
-                    queryName: "updateOneTicket",
+                    query: UPDATE_TICKET_METADATA,
+                    queryName: "updateTicketMetadata",
                     queryType: "mutation",
                     variables: {
-                        input: {
-                            id,
-                            update: updateData,
-                        },
+                        ticketId: id,
+                        updates: updateData,
                     },
                 };
 

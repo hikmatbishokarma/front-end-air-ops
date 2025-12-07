@@ -36,7 +36,7 @@ export default function UploadNotamDialog({ open, onClose, category, onSuccess }
             const notamData = {
                 region: data.region,
                 category,
-                fileName: data.file.key.split('/').pop(), // Extract filename from key
+                fileName: data.file.key, // Use full key as filename for CloudFront URL
                 fileUrl: data.file.url,
                 fileKey: data.file.key,
             };

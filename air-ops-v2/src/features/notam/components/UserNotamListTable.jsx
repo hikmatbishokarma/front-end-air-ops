@@ -13,6 +13,9 @@ const REGIONS = [
     { code: "VABF", name: "Mumbai" },
 ];
 
+const cloudfrontBaseUrl =
+    import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/";
+
 export default function UserNotamListTable({ category }) {
     const { notamList, loading } = useNotamsByCategory(category);
 
@@ -56,7 +59,7 @@ export default function UserNotamListTable({ category }) {
 
                                 <TableCell align="right">
                                     {file && (
-                                        <IconButton onClick={() => window.open(file.fileUrl, "_blank")}>
+                                        <IconButton onClick={() => window.open(`${cloudfrontBaseUrl}${file.fileName}`, "_blank")}>
                                             <DownloadIcon />
                                         </IconButton>
                                     )}

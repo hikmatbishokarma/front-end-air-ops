@@ -333,6 +333,9 @@ export default function Layout() {
       const fetchedNotifications =
         result?.data?.systemNotifications || result || [];
 
+
+      console.log("fetchedNotifications::", fetchedNotifications);
+
       if (!fetchedNotifications || fetchedNotifications.length === 0) {
         // showSnackbar("No new notifications!", "info"); // Only show if genuinely no notifications
         console.log("No notifications fetched or empty array.");

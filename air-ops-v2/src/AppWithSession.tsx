@@ -169,11 +169,11 @@ export const NAVIGATION: Navigation = [
         title: "Airports",
         icon: <LocalAirportIcon />,
       },
-      {
-        segment: "users",
-        title: "Users",
-        icon: <Person />,
-      },
+      // {
+      //   segment: "users",
+      //   title: "Users",
+      //   icon: <Person />,
+      // },
       {
         segment: "operators",
         title: "Operators",

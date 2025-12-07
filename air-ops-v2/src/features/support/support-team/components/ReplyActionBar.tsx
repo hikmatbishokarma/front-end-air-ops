@@ -2,6 +2,7 @@ import { Avatar, Button, Paper } from "@mui/material";
 import ReplyIcon from "@mui/icons-material/Reply";
 import ForwardIcon from "@mui/icons-material/Forward";
 import NoteIcon from "@mui/icons-material/Note";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const ReplyActionBar = ({
   onReplyClick,
@@ -35,15 +36,6 @@ export const ReplyActionBar = ({
         startIcon={<ReplyIcon />}
         size="small"
         variant="outlined"
-        // sx={{
-        //   textTransform: "none",
-        //   borderRadius: 1.5,
-        //   borderColor: "#DFE7F3",
-        //   bgcolor: "#FFFFFF",
-        //   color: "#102A43",
-        //   "&:hover": { bgcolor: "#F0F4FF" },
-        // }}
-
         sx={{
           textTransform: "none",
           borderRadius: 1.5,
@@ -101,6 +93,32 @@ export const ReplyActionBar = ({
         }}
       >
         Forward
+      </Button>
+
+      <Button
+        onClick={onClose}
+        startIcon={<CloseIcon />}
+        size="small"
+        variant="outlined"
+        sx={{
+          textTransform: "none",
+          borderRadius: 1.5,
+          borderColor: "#FFE5E5",
+          bgcolor: "#FFF5F5",
+          color: "#D32F2F !important",
+          "& .MuiButton-startIcon > *": {
+            color: "#D32F2F !important",
+            fill: "#D32F2F !important",
+          },
+          "& svg": { color: "#D32F2F !important", fill: "#D32F2F !important" },
+          "&:hover": {
+            bgcolor: "#FFEBEE",
+            borderColor: "#FFCDD2",
+          },
+          ml: "auto", // Push to the right
+        }}
+      >
+        Close Ticket
       </Button>
     </Paper>
   );

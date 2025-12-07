@@ -245,14 +245,14 @@ const router = createBrowserRouter([
               </ProtectedRoute>
             ),
           },
-          {
-            path: "admin/users",
-            element: (
-              <ProtectedRoute>
-                <UserControllerPage />
-              </ProtectedRoute>
-            ),
-          },
+          // {
+          //   path: "admin/users",
+          //   element: (
+          //     <ProtectedRoute>
+          //       <UserControllerPage />
+          //     </ProtectedRoute>
+          //   ),
+          // },
           {
             path: "admin/operators",
             element: (
