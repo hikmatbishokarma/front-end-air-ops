@@ -166,6 +166,7 @@
   margin-top: 4%;
   margin-bottom: 4%;
 }
+
 .chartsWork .innerChart_d {
   border: 2px solid rgb(226, 226, 226);
   border-radius: 12px;
@@ -185,6 +186,7 @@
 .css-a8dfo2-MuiButtonBase-root-MuiButton-root {
   background-color: #001551 !important;
 }
+
 .MuiButton-sizeMedium {
   background-color: #001551 !important;
 }
@@ -192,6 +194,7 @@
 .css-41x60c-MuiButtonBase-root-MuiButton-root {
   background-color: #001551 !important;
 }
+
 /* =============    Change password page styles     --------------- */
 .icon-svg-password .css-4uxqju-MuiSvgIcon-root {
   height: 12px;
@@ -202,25 +205,31 @@
 .snpage-view {
   background-color: #fff;
 }
+
 .pfimg-icon {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
+
 .left-side-logo {
   width: 250px;
   height: 250px;
   margin-top: 50px;
 }
+
 .cnter-top {
   padding-top: 50px;
 }
+
 .css-pl4ugn-MuiButtonBase-root-MuiButton-root {
   background-color: #001551 !important;
 }
+
 .css-echumz-MuiButtonBase-root-MuiButton-root {
   background-color: #001551 !important;
 }
+
 .ban_img {
   /* background-image: url(../Asset/Images/Banner-vi-demo.gif) !important; */
   background-image: url(../Images/Banner-vi-demo.gif) !important;
@@ -230,35 +239,43 @@
   border-radius: 15px;
   background-position: center;
 }
+
 .v1_board {
   position: absolute;
   width: 100%;
   top: 23px;
 }
+
 .v1_quote_btn {
   margin-bottom: 20px !important;
 }
+
 .v1_board .v1_h6 {
   color: #fff;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }
+
 .css-f84ov1-MuiTypography-root {
   display: none;
 }
+
 .v1_board .v1-card-h6 {
   font-size: 12px;
   font-weight: 600;
 }
+
 .MuiButton-sizeMedium {
   margin-right: 24px !important;
 }
+
 .MuiButton-sizeMedium {
   margin-right: 24px !important;
   background-color: #001551 !important;
   color: #ffffff !important;
 }
+
 .table-top-status {
   margin-top: 100px;
 }
@@ -267,17 +284,21 @@
 .dash-table {
   margin-top: 0px;
 }
+
 .coming-soon {
   padding-top: 20px;
 }
+
 .dash-table .css-1xp5r68-MuiFormControl-root-MuiTextField-root {
   margin-top: 2px;
 }
+
 .dash-table .MuiTableCell-sizeMedium {
   text-align: left !important;
   color: #12277a;
   /* padding: 3px 9px 0 10px; */
 }
+
 /* .dash-table .css-3wds0e-MuiTableCell-root{
 text-align: left;
 } */
@@ -285,6 +306,7 @@ text-align: left;
   align-items: flex-start;
   margin-top: 46px;
 }
+
 /*Edit Aircraft Category page*/
 .edit-role-category .css-1v24f9t-MuiOutlinedInput-notchedOutline {
   top: -14px;
@@ -293,15 +315,19 @@ text-align: left;
 .edit-role-category .css-1tu6adf-MuiInputBase-input-MuiOutlinedInput-input {
   margin-top: 19px;
 }
+
 .css-5y2zdi {
   background-color: #001551 !important;
 }
+
 .css-1pv2xcc {
   margin-top: 21px;
 }
+
 .css-loca4d {
   text-align: left;
 }
+
 /*side navigation styles*/
 .MuiDrawer-anchorLeft nav {
   background-color: #001551 !important;
@@ -310,28 +336,35 @@ text-align: left;
   /* overflow-y: scroll; */
   /* height: 100vh; */
   /* background-image: url(../Images/bg-landing-main.gif) !important; */
-      background-position: center;
+  background-position: center;
   height: 100%;
-  
+  overflow: hidden !important;
+
 }
+
 .MuiDrawer-anchorLeft nav ul li a {
   color: #fff;
 }
+
 .MuiDrawer-anchorLeft nav svg {
   color: #fff !important;
 }
+
 .MuiListItemText-primary {
   color: #fff !important;
 }
+
 .MuiListSubheader-root {
   display: none;
 }
+
 .MuiDrawer-anchorLeft nav .Mui-selected {
   background-color: #ff0202 !important;
   /* border-top-left-radius: 50% 200px;
   border-bottom-right-radius: 50% 200px; */
   border-radius: 50px;
 }
+
 /* .MuiDrawer-paper{
     width: 240px !important;
 }
@@ -350,17 +383,21 @@ text-align: left;
   background-color: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .MuiBox-root .fc .fc-toolbar-title {
   font-size: 15px;
 }
+
 /*card styles*/
 .MuiCard-root {
   border-radius: 25px !important;
   text-align: left !important;
 }
+
 .card-fligh-label {
   position: relative;
 }
+
 .img-flight-label {
   position: absolute;
   right: 0;
@@ -370,91 +407,115 @@ text-align: left;
 .section-title {
   background-color: #001551 !important;
 }
+
 .MuiButton-outlinedPrimary {
   color: #fff !important;
   border: 1px solid #001551 !important;
   border-color: #001551 !important;
 }
+
 .MuiListItemButton-root:hover {
   background-color: #ffffff2e !important;
   /* border-top-left-radius: 50% 200px;
   border-bottom-right-radius: 50% 200px; */
   border-radius: 50px;
 }
+
 .MuiTableHead-root th {
   background-color: #001551 !important;
   color: #fff !important;
   padding-top: 10px !important;
   padding-bottom: 10px !important;
 }
+
 .MuiTableRow-root:hover {
   background: #eee;
   color: #fff;
 }
+
 .css-1ji9znz {
   padding: 0px !important;
 }
+
 .MuiSvgIcon-fontSizeMedium .Mui-completed {
   background-color: #001551 !important;
 }
+
 .MuiBox-root.css-1f266ni svg {
   color: #fff !important;
 }
+
 .MuiBox-root.css-1f266ni .MuiButtonBase-root {
   background: #001551 !important;
   height: 25px;
   width: 25px;
   margin: 5px;
 }
+
 .Mui-active {
   color: #001551 !important;
 }
+
 .Mui-completed {
   color: #001551 !important;
 }
+
 .popup-person-one .MuiGrid-item {
   height: 69px;
 }
+
 .MuiOutlinedInput-root {
   border-radius: 18px !important;
 }
+
 .MuiInputLabel-formControl {
   font-size: 14px !important;
 }
+
 .MuiOutlinedInput-input {
   font-size: 14px !important;
 }
+
 .MuiButton-sizeMedium:hover {
   background: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .MuiButton-text {
   background: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .MuiBreadcrumbs-ol {
   display: none !important;
 }
+
 .search_quo1 {
   margin-top: 70px !important;
 }
+
 .rest-fiter-btn {
   background: #ff0202 !important;
   border: #ff0202 !important;
   color: #fff !important;
 }
+
 .crew-type-v1 {
   margin-top: 0px !important;
 }
+
 .MuiAutocomplete-inputRoot {
   min-height: 40px !important;
 }
+
 .crew-table-v1 {
   margin-top: 70px;
 }
+
 .choose-profile-v1 .MuiPaper-elevation1 {
   height: 40px !important;
 }
+
 .manuals-quo-v1 {
   margin-top: 70px;
 }
@@ -462,33 +523,41 @@ text-align: left;
 .choose-profile-v1 p {
   font-size: 12px !important;
 }
+
 .upload-profile-crew h6 {
   margin-top: -40px;
   font-size: 14px;
 }
+
 .view-icon-quote .MuiTypography-h6 {
   background-color: #a0a7bc;
   margin-bottom: 10px;
 }
+
 .view-icon-quote .MuiIconButton-root {
   background: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .view-icon-quote .MuiIconButton-root svg {
   color: #fff !important;
 }
+
 .v1_board .MuiCardContent-root:hover {
   background-color: #eee !important;
   border: #eee !important;
   color: #000 !important;
 }
+
 .MuiTablePagination-toolbar {
   background-color: #eee;
 }
+
 .enquirey-data-1 .add-icon-v1 {
   background-color: #001551 !important;
   margin: 0px 5px;
 }
+
 .enquirey-data-1 .add-icon-v1 svg {
   color: #fff;
 }
@@ -496,26 +565,32 @@ text-align: left;
 .enquirey-data-1 .add-icon-v1:hover {
   background-color: #ff0202 !important;
 }
+
 .panel-one .MuiDialogTitle-root {
   background-color: #eee;
 }
+
 .MuiBox-root.css-1f266ni .MuiButtonBase-root:hover {
   background: #ff0202 !important;
 }
+
 .panel-one .popup-quote-model {
   background-color: #001551 !important;
   height: 25px;
   width: 25px;
   margin: 5px;
 }
+
 .panel-one .popup-quote-model .popup-close-panel {
   color: #fff;
   height: 20px;
   width: 20px;
 }
+
 .panel-one .popup-quote-model:hover {
   background-color: #ff0202 !important;
 }
+
 /*header v1 styels*/
 .css-17iyb8u {
   width: 100% !important;
@@ -523,20 +598,25 @@ text-align: left;
   border-top-right-radius: 20px;
   height: 100% !important;
 }
+
 .css-k0sogd {
   margin-top: 0px !important;
 }
+
 .css-23htwk .MuiStack-root {
   margin-top: 4px !important;
 }
+
 .css-1mth41f {
   margin-top: 0px;
 }
+
 .css-1eg89m4 {
   background-color: #001551 !important;
   box-shadow: 0 0 0 2px #001551 !important;
   color: #ffffff;
 }
+
 .notification-side-bar .MuiButton-containedPrimary {
   background-color: #001551 !important;
 
@@ -552,12 +632,15 @@ text-align: left;
 .tripcnfrm .Mui-selected {
   background-color: #001551 !important;
 }
+
 .leave-format {
   color: #000;
 }
+
 .MuiDrawer-docked {
   height: 100vh !important;
 }
+
 .calendar-right {
   border: 1px solid #ddd !important;
   padding: 8px !important;
@@ -571,6 +654,7 @@ text-align: left;
   padding: 5px;
   color: #fff;
 }
+
 .price-units .MuiGrid-spacing-xs-2 {
   /* padding-top: 0px !important; */
 
@@ -591,17 +675,21 @@ text-align: left;
   margin-left: 0px !important;
   border-bottom: 0px !important;
 }
+
 .price-units .MuiGrid-item {
   padding: 12px !important;
   height: 86px;
 }
+
 .price-units {
   border: 1px solid #ddd;
   padding-top: 15px !important;
 }
+
 .dashboard-trip h6 {
   font-size: 13px;
 }
+
 .top-header-file .MuiButton-outlined {
   border: 0px !important;
   background: #001551 !important;
@@ -611,15 +699,19 @@ text-align: left;
 .top-header-file .MuiButton-outlined:hover {
   background: #ff0202;
 }
+
 .filter-date-range {
   border-radius: 29px !important;
 }
+
 .inr-width {
   max-width: 5% !important;
 }
+
 .review-back-btn {
   height: 37px !important;
 }
+
 .invoice-button .MuiButton-containedPrimary {
   background-color: #001551 !important;
   color: #ffffff !important;
@@ -630,10 +722,12 @@ text-align: left;
   background: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .leave-request .canecl-leave-btn {
   background: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .ground-handlers {
   background-color: #001551 !important;
   height: 25px;
@@ -646,16 +740,20 @@ text-align: left;
 .ground-handlers:hover {
   background-color: #ff0202 !important;
 }
+
 .edit-icon-size {
   font-size: 16px !important;
 }
+
 .leave-table {
   background-color: #fff;
 }
+
 .sector-map .fromto {
   height: 83px;
   margin-bottom: 20px;
 }
+
 .month_calender .MuiDateCalendar-viewTransitionContainer {
   width: 250px;
 }
@@ -664,31 +762,39 @@ text-align: left;
   padding-left: 9px;
   padding-right: 70px;
 }
+
 .password-styles {
   background: transparent !important;
   color: #ff0202 !important;
 }
+
 .password-styles:hover {
   background-color: transparent !important;
   color: #001551 !important;
 }
+
 .library-quo-v1 {
   margin-top: 22px;
 }
+
 .fiter-apply {
   background-color: #001551 !important;
 }
+
 .v1_board .pt-board {
   position: relative;
   bottom: 16px;
 }
+
 .enquirey-data-1 .MuiPaper-rounded {
   background-color: transparent;
   box-shadow: none !important;
 }
+
 .AccordionSummary_flex {
   display: block !important;
 }
+
 .Sector_Typography {
   background-color: #001551 !important;
   border-radius: 10px !important;
@@ -699,16 +805,20 @@ text-align: left;
   font-size: 1.25rem;
   line-height: 1.6;
 }
+
 .Sector_Typography .MuiAccordionSummary-content {
   margin: 8px 0 !important;
 }
+
 .Sector_Typography .MuiSvgIcon-root {
   color: #fff !important;
 }
+
 .top-border-view1 {
   border: 1px solid #ddd;
   border-radius: 10px;
 }
+
 .add_sectors_size {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
   font-weight: 500 !important;
@@ -716,6 +826,7 @@ text-align: left;
   line-height: 1.6 !important;
   letter-spacing: 0.0075em !important;
 }
+
 .AccordionSummary_flex .MuiGrid-spacing-xs-2 {
   margin-left: 0px !important;
 }
@@ -732,74 +843,92 @@ text-align: left;
 .add-icon-v1:hover {
   background-color: #ff0202 !important;
 }
+
 .crew_leave_type1 {
   padding-top: 50px;
 }
+
 .forgot_psd {
   background-color: #ff0202 !important;
   border: #ff0202 !important;
   color: #fff !important;
 }
+
 .forgot_rest_btn {
   background-color: #001551 !important;
 
   color: #ffff !important;
 }
+
 .leave_summary_gap .MuiTypography-subtitle2 {
   font-size: 12px;
 }
+
 .leave_summary_gap .MuiCardContent-root {
   padding: 8px;
 }
+
 .leave_summary_gap .MuiBox-root {
   gap: 8px;
 }
+
 .fromto {
   height: 83px;
 }
+
 .add_sector_data_1 {
   background-color: #001551 !important;
   color: #fff !important;
 }
+
 .add_sector_data_1:hover {
   background-color: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .add_sector_data_2:hover {
   background-color: #ff0202 !important;
   border: #ff0202 !important;
 }
+
 .add_sector_data_2 {
   background-color: #001551 !important;
   color: #fff !important;
   min-width: 88px !important;
 }
+
 .add_delete_data {
   display: grid !important;
   margin-left: auto !important;
   margin-top: 0px !important;
 }
+
 /*security tab css*/
 .security_filter_bar {
   background-color: #fff;
   border-radius: 8px;
   padding: 8px 8px;
 }
+
 .security_tabs_filter {
   background: #fff;
   border-radius: 8px;
 }
+
 .security_tabs_filter .Mui-selected {
   color: #001551 !important;
   font-weight: bold;
 }
+
 .security_tabs_filter .MuiTabs-indicator {
   background-color: #001551;
 }
+
 .security_tabs_filter .MuiTab-textColorPrimary {
   color: #000;
   font-weight: bold;
 }
+
 /*quote tab css*/
 /* .generate_p2_2{
         padding: 8px 8px !important;
@@ -810,6 +939,7 @@ text-align: left;
 .Mui-error {
   color: #ff0202 !important;
 }
+
 .generate_pi11 {
   width: 99px !important;
   padding: 4px 0px !important;
@@ -817,6 +947,7 @@ text-align: left;
   margin: 0px !important;
   text-transform: capitalize !important;
 }
+
 .generate_pi12 {
   width: 105px !important;
   padding: 4px 0px !important;
@@ -824,6 +955,7 @@ text-align: left;
   margin: 0px !important;
   text-transform: capitalize !important;
 }
+
 .security_tabs_filter .Mui-disabled {
   opacity: 1 !important;
 }
@@ -841,15 +973,19 @@ text-align: left;
   padding-bottom: 12px;
   color: #fff !important;
 }
+
 .passenger_catering {
   height: 1.4375em !important;
 }
+
 .passenger_insturctions textarea {
   height: 1.4375em !important;
 }
+
 .email_invoice_Preview table {
   margin-top: 50px !important;
 }
+
 .paasenger_details_point .takeofficon {
   background-color: #fff;
   height: 26px;
@@ -857,31 +993,39 @@ text-align: left;
   border-radius: 20px;
   padding: 6px;
 }
+
 .paasenger_details_point .chip-details {
   background-color: #fff;
 }
+
 .resnd_btn {
   background-color: #001551 !important;
   color: #fff !important;
   margin-top: 14px !important;
 }
+
 /*ladingpage*/
 .ld-page {
   background-color: transparent !important;
   color: #001551 !important;
 }
+
 .ld-page:hover {
   background-color: transparent !important;
 }
+
 .ld-header-page {
   background-color: transparent !important;
 }
+
 .lading-mb-1 {
   width: 100%;
 }
+
 .landingpage-view-1 {
   padding: 0px;
 }
+
 .landingpage-view-1 .ldicon-1 {
   flex-shrink: 0;
   font-size: 20px;
@@ -895,6 +1039,7 @@ text-align: left;
   align-items: flex-start;
   margin-top: 40px;
 }
+
 .landingpage-view-1 h5 {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -902,6 +1047,7 @@ text-align: left;
   font-weight: 700;
   color: #cb1338;
 }
+
 .landingpage-view-1 p {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -914,6 +1060,7 @@ text-align: left;
 .landingpage-view-2 {
   padding: 0px;
 }
+
 .landingpage-view-2 .ldicon-2 {
   flex-shrink: 0;
   font-size: 20px;
@@ -927,6 +1074,7 @@ text-align: left;
   align-items: flex-start;
   margin-top: 40px;
 }
+
 .landingpage-view-2 h5 {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -934,6 +1082,7 @@ text-align: left;
   font-weight: 700;
   color: #cb1338;
 }
+
 .landingpage-view-2 p {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -941,6 +1090,7 @@ text-align: left;
 
   color: #000;
 }
+
 .landingpage_animation h5 {
   font-weight: 700;
   margin: 10px 0 15px 0;
@@ -948,11 +1098,13 @@ text-align: left;
   transition: ease-in-out 0.3s;
   color: #cb1338;
 }
+
 .landingpage_animation p {
   line-height: 24px;
   font-size: 14px;
   margin-bottom: 0;
 }
+
 .landingpage_animation .card-landingpage {
   background-color: var(--surface-color);
   box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.1);
@@ -963,9 +1115,11 @@ text-align: left;
   position: relative;
   overflow: hidden;
 }
+
 .position-relative {
   position: relative !important;
 }
+
 .ld-v1-iocn {
   font-size: 64px;
   line-height: 1;
@@ -974,6 +1128,7 @@ text-align: left;
   width: 80px !important;
   height: 80px !important;
 }
+
 .left-data-1 {
   position: absolute;
   left: -20px;
@@ -1049,6 +1204,7 @@ text-align: left;
   width: 80px !important;
   height: 80px !important;
 }
+
 .ld-v9-iocn {
   color: #0dcaf0;
   font-size: 64px;
@@ -1068,6 +1224,7 @@ text-align: left;
   width: 80px !important;
   height: 80px !important;
 }
+
 .ld-v11-iocn {
   color: #6610f2;
   font-size: 64px;
@@ -1105,6 +1262,7 @@ text-align: left;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
 }
+
 .ldbannerv1 h1 {
   margin: 0;
   font-size: 48px;
@@ -1112,10 +1270,12 @@ text-align: left;
   line-height: 56px;
   color: #fff;
 }
+
 .ldbannerv1 p {
   font-size: 24px;
   color: #fff;
 }
+
 .ldbannerv1 .getld {
   font-weight: 400;
   font-size: 15px;
@@ -1127,133 +1287,172 @@ text-align: left;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
   background-color: #cb1338;
 }
+
 .banner-ld-flight {
   width: 100%;
 }
+
 .logo-page-lg {
   max-height: 46px;
   margin-right: 8px;
 }
+
 .map-ld-page {
   text-align: center;
 }
+
 .iframe-source {
   width: 100%;
   height: 350px;
 }
+
 .contact_map {
   margin-bottom: 60px;
 }
+
 .footer-page-ld {
   color: #fff !important;
   background-color: #1a0460 !important;
   font-size: 14px;
 }
-.footer-page-ld{
-    color: #fff  !important;;
-    /* background-color: #1a0460 !important; */
-    font-size: 14px;
-    background-image: url(../Images/bg-landing-main1.gif) !important;
+
+.footer-page-ld {
+  color: #fff !important;
+  ;
+  /* background-color: #1a0460 !important; */
+  font-size: 14px;
+  background-image: url(../Images/bg-landing-main1.gif) !important;
 
 }
-.manin-lg-page-hd{
-    color: #cb1338;
-    font-size: 30px;
-}
-.contact_landing_page{
-    color: #cb1338;
-    background: #cb133870;
-    font-size: 20px;
-    width: 44px !important;
-    height: 44px !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50px;
-    transition: all 0.3s 
-ease-in-out;
-    margin-right: 15px;
-    padding: 10px;
-}
-.contact_map_view p{
-    color: #cb1338;
-    margin-bottom: 0px;
-    margin-top: 0px;
-    padding: 0;
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 5px;
-     
+
+.manin-lg-page-hd {
+  color: #cb1338;
+  font-size: 30px;
 }
 
-.img-flight-label img{
+.contact_landing_page {
+  color: #cb1338;
+  background: #cb133870;
+  font-size: 20px;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  transition: all 0.3s ease-in-out;
+  margin-right: 15px;
+  padding: 10px;
+}
+
+.contact_map_view p {
+  color: #cb1338;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 5px;
+
+}
+
+.img-flight-label img {
   transition: transform 0.9s ease-in-out;
 }
 
-.img-flight-label img:hover{
+.img-flight-label img:hover {
   transform: scale(1.5);
 
 }
-.calen_master{
-    width: 21%;
-    height: 100px;
-    display: inline-block;
-    margin-top: 20px;
-    
-    margin: 9px;
-    text-align: center;
-  
+
+.calen_master {
+  width: 21%;
+  height: 100px;
+  display: inline-block;
+  margin-top: 20px;
+
+  margin: 9px;
+  text-align: center;
+
 }
-.calen_master p{
-text-align: center;
-    font-size: 18px;
-    font-weight: 700 !important;
-    margin-bottom: 6px;
-    margin-top: 3px;
-    color: #ff0202;
+
+.calen_master p {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700 !important;
+  margin-bottom: 6px;
+  margin-top: 3px;
+  color: #ff0202;
 }
-.bbvbvbvb{
+
+.bbvbvbvb {
   background-color: grey;
   height: 20px;
   width: 100%;
 }
-.bbvbvbvb1{
+
+.bbvbvbvb1 {
   background-color: grey;
   height: 20px;
   width: 100%;
 }
-.calen_master svg{
+
+.calen_master svg {
   display: block;
   margin: 0 auto;
   color: #001551;
 }
-.alert_master_theme{
+
+.alert_master_theme {
   background-color: transparent !important;
   margin-top: 10px;
 }
-.warning_view{
+
+.warning_view {
   background-color: #ff0202 !important;
 }
 
-.MuiDrawer-paper{
+.MuiDrawer-paper {
+  width: 215px !important;
+}
+
+.css-8p6m3b-MuiDrawer-docked {
   width: 215px !important;
 }
 
 @media screen and (max-width: 768px) {
-.left-side-logo {
+  .left-side-logo {
 
     width: 150px;
     height: 150px;
     margin-top: 50px;
     margin: 0 auto;
     display: block;
-}
-
-.sector-mobile-view{
-    display: block !important;
-    
   }
-  .fc .fc-toolbar{
+
+  .sector-mobile-view {
+    display: block !important;
+
+  }
+
+  .fc .fc-toolbar {
     display: block;
   }
+
+  .mobile_card_view_1 {
+    height: 80px;
+  }
+
+  .mobile_card_view_1 .img-flight-label img {
+    height: 20px;
+    width: 34px;
+  }
+
+  .search_quo1 {
+    margin-top: 170px !important;
+  }
+}
+
+.distance_view .MuiOutlinedInput-root {
+  border-radius: 0px !important
 }
