@@ -46,11 +46,11 @@ const ManualControllerPage = () => {
       // 2. Map the generic searchTermValue to the specific GQL field (quotationNo)
       const searchFilter = searchTermValue
         ? {
-            or: [
-              { name: { iLike: searchTerm } },
-              { department: { iLike: searchTerm } },
-            ],
-          }
+          or: [
+            { name: { iLike: searchTerm } },
+            { department: { iLike: searchTerm } },
+          ],
+        }
         : {};
 
       const departmentFilter = selectedDepartment
@@ -109,7 +109,7 @@ const ManualControllerPage = () => {
           flexWrap: "wrap",
         }}
       >
-        <TextField
+        <TextField className="fidels_security_md"
           variant="outlined"
           placeholder="Search by name"
           value={searchTerm}

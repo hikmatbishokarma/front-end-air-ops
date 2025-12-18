@@ -41,11 +41,11 @@ export const LibraryControllerPage = () => {
       // 2. Map the generic searchTermValue to the specific GQL field
       const searchFilter = searchTermValue
         ? {
-            or: [
-              { name: { iLike: searchTermValue.iLike } },
-              { department: { iLike: searchTermValue.iLike } },
-            ],
-          }
+          or: [
+            { name: { iLike: searchTermValue.iLike } },
+            { department: { iLike: searchTermValue.iLike } },
+          ],
+        }
         : {};
 
       const departmentFilter = selectedDepartment
@@ -110,11 +110,11 @@ export const LibraryControllerPage = () => {
     const timer = setTimeout(() => {
       const searchFilter = searchTerm
         ? {
-            or: [
-              { name: { iLike: `%${searchTerm}%` } },
-              { department: { iLike: `%${searchTerm}%` } },
-            ],
-          }
+          or: [
+            { name: { iLike: `%${searchTerm}%` } },
+            { department: { iLike: `%${searchTerm}%` } },
+          ],
+        }
         : {};
 
       const departmentFilter = selectedDepartment
@@ -154,7 +154,7 @@ export const LibraryControllerPage = () => {
           flexWrap: "wrap",
         }}
       >
-        <TextField
+        <TextField className="fidels_security_md"
           variant="outlined"
           placeholder="Search by name"
           value={searchTerm}
@@ -163,7 +163,7 @@ export const LibraryControllerPage = () => {
           sx={{ width: 300, mr: 2 }}
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">
+              <InputAdornment position="start" >
                 <SearchIcon />
               </InputAdornment>
             ),

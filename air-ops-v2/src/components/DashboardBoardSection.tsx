@@ -17,8 +17,8 @@ const StatCard: React.FC<StatCardProps> = ({
   selectedTab,
   categories,
   statData,
-  onCreate = () => {}, // Provide an empty default function
-  handleStatCardSelect = () => {}, // Provide an empty default function
+  onCreate = () => { }, // Provide an empty default function
+  handleStatCardSelect = () => { }, // Provide an empty default function
   createEnabledTabs = [],
   singularMap = {}, // Provide an empty default object
 }) => {
@@ -53,8 +53,8 @@ const StatCard: React.FC<StatCardProps> = ({
         {/* Cards Section */}
         <Grid container spacing={2}>
           {categories.map((item) => (
-            <Grid item xs={3} key={item.name}>
-              <Card
+            <Grid item xs={6} md={3} key={item.name}>
+              <Card className="mobile_card_view_1"
                 onClick={() => handleStatCardSelect(item)}
                 style={{
                   cursor: "pointer",

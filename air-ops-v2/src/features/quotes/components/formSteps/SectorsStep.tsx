@@ -166,7 +166,7 @@ const SectorsStep = ({
     };
 
   return (
-    <Box sx={{ display: "flex", mt: 5, gap: 2 }}>
+    <Box sx={{ display: "flex", mt: 5, gap: 2 }} >
       {/* Left Panel - Sectors */}
       <Box
         sx={{

@@ -457,7 +457,7 @@ const AirportDistanceCalculator = () => {
     const [mode, setMode] = useState<"airport" | "helicopter">("airport");
 
     return (
-        <Card sx={{ mt: 4, overflow: "hidden" }}>
+        <Card sx={{ mt: 4, overflow: "hidden" }} className="distance_view">
             {/* Mode Selection Header */}
             <Box sx={{ bgcolor: "#0d2d6c", p: 2 }}>
                 <Typography variant="h6" sx={{ color: "white", fontWeight: "bold", mb: 2 }}>

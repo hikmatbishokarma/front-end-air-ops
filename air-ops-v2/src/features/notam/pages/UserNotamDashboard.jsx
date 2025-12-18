@@ -7,7 +7,7 @@ export default function UserNotamDashboard() {
     const [category, setCategory] = useState("DAILY");
 
     return (
-        <Paper sx={{ p: 3 }}>
+        <Paper sx={{ p: 3, borderRadius: '24px' }}>
             {/* Header */}
             <Box sx={{ pb: 1.5, mb: 1 }}>
                 <Typography variant="subtitle1" fontWeight="600">

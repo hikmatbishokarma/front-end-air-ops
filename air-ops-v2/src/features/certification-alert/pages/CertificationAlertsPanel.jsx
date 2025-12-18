@@ -13,7 +13,7 @@ export default function CertificationAlertsPanel() {
 
     if (loading) {
         return (
-            <Paper sx={{ p: 3, height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Paper sx={{ p: 3, height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '24px' }}>
                 <CircularProgress size={24} />
                 <Typography ml={2}>Loading certifications...</Typography>
             </Paper>
@@ -22,14 +22,14 @@ export default function CertificationAlertsPanel() {
 
     if (error) {
         return (
-            <Paper sx={{ p: 3, height: 400 }}>
+            <Paper sx={{ p: 3, height: 400, borderRadius: '24px' }}>
                 <Alert severity="error">Failed to load certification alerts: {error.message}</Alert>
             </Paper>
         );
     }
 
     return (
-        <Paper sx={{ height: 400, display: 'flex', flexDirection: 'column', p: 3 }}>
+        <Paper sx={{ height: 400, display: 'flex', flexDirection: 'column', p: 3, borderRadius: '24px' }}>
             {/* Header */}
             <Box sx={{ pb: 1.5, mb: 1 }}>
                 <Typography variant="subtitle1" fontWeight="600">

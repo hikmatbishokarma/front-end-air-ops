@@ -64,14 +64,14 @@ export const AirpotList = () => {
         variables: {
           filter: searchTerm
             ? {
-                or: [
-                  { city: { iLike: searchTerm } },
-                  { country: { iLike: searchTerm } },
-                  { iata_code: { iLike: searchTerm } },
-                  { icao_code: { iLike: searchTerm } },
-                  { name: { iLike: searchTerm } },
-                ],
-              }
+              or: [
+                { city: { iLike: searchTerm } },
+                { country: { iLike: searchTerm } },
+                { iata_code: { iLike: searchTerm } },
+                { icao_code: { iLike: searchTerm } },
+                { name: { iLike: searchTerm } },
+              ],
+            }
             : {},
           paging: {
             offset: page * pageSize,
