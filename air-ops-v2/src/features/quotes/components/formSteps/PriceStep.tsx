@@ -119,20 +119,25 @@ const PriceStep = ({
 
   return (
     <Box sx={{ mt: 5 }} className="price-units">
-      <Grid container spacing={2} sx={{ mb: 3 }} className="label-price-c1">
-        <Grid item xs={3}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ mb: 3, display: { xs: "none", md: "flex" } }}
+        className="label-price-c1"
+      >
+        <Grid item md={3}>
           <Typography variant="h6">Label</Typography>
         </Grid>
-        <Grid item xs={1.5}>
+        <Grid item md={1.5}>
           <Typography variant="h6">Unit (Hrs)</Typography>
         </Grid>
-        <Grid item xs={1.5}>
+        <Grid item md={1.5}>
           <Typography variant="h6">Price</Typography>
         </Grid>
-        <Grid item xs={1.5}>
+        <Grid item md={1.5}>
           <Typography variant="h6">Currency</Typography>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item md={2}>
           <Typography variant="h6">Total</Typography>
         </Grid>
       </Grid>
@@ -146,7 +151,7 @@ const PriceStep = ({
             alignItems="center"
           >
             {/* Label */}
-            <Grid item xs={3}>
+            <Grid item xs={12} md={3}>
               <Controller
                 name={`prices.${index}.label`}
                 control={control}
@@ -196,7 +201,7 @@ const PriceStep = ({
             </Grid> */}
 
             {/* Unit */}
-            <Grid item xs={1.5}>
+            <Grid item xs={6} md={1.5}>
               <Controller
                 name={`prices.${index}.unit`}
                 control={control}
@@ -218,7 +223,7 @@ const PriceStep = ({
             </Grid>
 
             {/* Price */}
-            <Grid item xs={1.5}>
+            <Grid item xs={6} md={1.5}>
               <Controller
                 name={`prices.${index}.price`}
                 control={control}
@@ -244,7 +249,7 @@ const PriceStep = ({
             </Grid>
 
             {/* Currency */}
-            <Grid item xs={1.5}>
+            <Grid item xs={6} md={1.5}>
               <Controller
                 name={`prices.${index}.currency`}
                 control={control}
@@ -261,7 +266,7 @@ const PriceStep = ({
             </Grid>
 
             {/* Total */}
-            <Grid item xs={2}>
+            <Grid item xs={6} md={2}>
               <Controller
                 name={`prices.${index}.total`}
                 control={control}
@@ -279,7 +284,12 @@ const PriceStep = ({
             </Grid>
 
             {/* Delete Button */}
-            <Grid item xs={1}>
+            <Grid
+              item
+              xs={12}
+              md={1}
+              sx={{ display: "flex", justifyContent: { xs: "flex-end", md: "flex-start" } }}
+            >
               <IconButton
                 className="add-icon-v1"
                 onClick={() => removePrice(index)}
@@ -293,7 +303,7 @@ const PriceStep = ({
       </LocalizationProvider>
 
       {/* Add Button */}
-      <Grid item xs={1.5}>
+      <Grid item xs={12} md={1.5}>
         <IconButton
           aria-label="Add"
           onClick={handleAddFee}
@@ -304,14 +314,14 @@ const PriceStep = ({
       </Grid>
 
       {/* Grand Total */}
-      <Grid container spacing={2} sx={{ mt: 2 }}>
-        <Grid item xs={1.5}>
+      <Grid container spacing={2} sx={{ mt: 2 }} alignItems="center">
+        <Grid item xs={4} md={1.5}>
           <span>TOTAL</span>
         </Grid>
-        <Grid item xs={1.5} className="inr-width">
+        <Grid item xs={2} md={1.5} sx={{ maxWidth: { md: "5%" } }}>
           <span>INR</span>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={6} md={2}>
           <TextField
             value={grandTotal}
             type="number"

@@ -678,7 +678,8 @@ text-align: left;
 
 .price-units .MuiGrid-item {
   padding: 12px !important;
-  height: 86px;
+  min-height: 86px;
+  height: auto;
 }
 
 .price-units {
@@ -1413,7 +1414,7 @@ text-align: left;
 }
 
 .MuiDrawer-paper {
-  width: 215px !important;
+  width: 225px !important;
 }
 
 .css-8p6m3b-MuiDrawer-docked {
@@ -1421,6 +1422,14 @@ text-align: left;
 }
 
 @media screen and (max-width: 768px) {
+  .add-icon-v1 {
+    height: 40px;
+  }
+
+  .fidels_security_md {
+    padding-bottom: 20px !important;
+  }
+
   .left-side-logo {
 
     width: 150px;
