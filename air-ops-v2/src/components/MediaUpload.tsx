@@ -369,7 +369,12 @@ const MediaUpload = ({
       // const uploadedFilePath = response.data.filePath;
       // onUpload(uploadedFilePath);
 
-      const uploadedFileObject: FileObject = response.data;
+      const responseData = response.data;
+      // Normalize backend response to match FileObject interface
+      const uploadedFileObject: FileObject = {
+        key: responseData.key,
+        url: responseData.url || responseData.previewUrl,
+      };
       onUpload(uploadedFileObject);
     } catch (error) {
       console.error("Upload error:", error);
@@ -535,7 +540,7 @@ const MediaUpload = ({
                 label={label}
                 handleFileChange={triggerFileInput} // Pass triggerFileInput to "Choose" button
                 accept={accept}
-                // getRootProps and getInputProps are no longer needed here
+              // getRootProps and getInputProps are no longer needed here
               />
             </Box>
           )}

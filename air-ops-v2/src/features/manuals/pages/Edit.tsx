@@ -58,12 +58,12 @@ export const ManualEdit = ({ id, onClose, refreshList }: ManualEditProps) => {
     try {
       const data = await useGql({
         query: UPDATE_MANUAL,
-        queryName: "",
+        queryName: "updateOneManual",
         queryType: "mutation",
         variables: { input: { id: Id, update: formData } },
       });
 
-      if (!data || data.data?.errors) {
+      if (!data || data?.errors) {
         showSnackbar("Something went wrong", "error");
       } else showSnackbar("Updated successfully", "success");
     } catch (error: any) {

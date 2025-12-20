@@ -20,7 +20,7 @@ export const SecurityCreate = ({
   const createSecurity = async (formData: any) => {
     const result = await useGql({
       query: CREATE_SECURITY,
-      queryName: "",
+      queryName: "createOneSecurity",
       queryType: "mutation",
       variables: {
         input: {
@@ -30,7 +30,7 @@ export const SecurityCreate = ({
     });
 
     if (result) {
-      showSnackbar("Failed to Create Security!", "success");
+      showSnackbar("Security Created Successfully!", "success");
     } else {
       showSnackbar("Failed to Create Security!", "error");
     }

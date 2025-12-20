@@ -132,13 +132,15 @@ export const UserProfile = () => {
     name: any,
     label: any,
     disabled = false,
-    options?: { label: string; value: string }[]
+    options?: { label: string; value: string }[],
+    required = false
   ) => (
     <Grid item xs={12} sm={6} md={4}>
       <Controller
         name={name}
         control={control}
-        render={({ field }) =>
+        rules={{ required: required ? `${label} is required` : false }}
+        render={({ field, fieldState: { error } }) =>
           options ? (
             <TextField
               {...field}
@@ -148,6 +150,8 @@ export const UserProfile = () => {
               size="small"
               disabled={disabled}
               value={field.value || ""}
+              error={!!error}
+              helperText={error?.message}
             >
               {options.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -163,6 +167,8 @@ export const UserProfile = () => {
               size="small"
               disabled={disabled}
               InputLabelProps={{ shrink: !!field.value }}
+              error={!!error}
+              helperText={error?.message}
             />
           )
         }
@@ -173,13 +179,14 @@ export const UserProfile = () => {
   const renderDateField = (
     name: keyof CrewDetailFormValues,
     label: string,
-    disabled = false
+    disabled = false,
+    required = false
   ) => (
     <Grid item xs={12} sm={6} md={4}>
       <Controller
         name={name}
         control={control}
-        rules={{ required: true }} // Optional: add validation
+        rules={{ required: required ? `${label} is required` : false }}
         render={({ field, fieldState: { error } }) => (
           <DatePicker
             label={label}
@@ -205,32 +212,33 @@ export const UserProfile = () => {
   const renderBasicTab = () => (
     <Box p={2}>
       <Grid container spacing={2}>
-        {renderField("fullName", "Full Name")}
-        {renderField("displayName", "Display Name")}
-        {renderField("gender", "Gender", false, genderOptions)}
-        {renderDateField("dateOfBirth", "Date of Birth", false)}
-        {renderField("designation", "Designation", true)}
-        {renderField("location", "Location")}
-        {renderField("phone", "Phone", true)}
-        {renderField("email", "Email", true)}
-        {renderField("alternateContact", "Alternate Contact", false)}
-        {renderField("education", "Education", false)}
-        {renderField("experience", "Experience", false)}
+        {renderField("fullName", "Full Name", false, undefined, true)}
+        {renderField("displayName", "Display Name", false, undefined, true)}
+        {renderField("gender", "Gender", false, genderOptions, true)}
+        {renderDateField("dateOfBirth", "Date of Birth", false, true)}
+        {renderField("designation", "Designation", true, undefined, true)}
+        {renderField("location", "Location", false, undefined, false)}
+        {renderField("phone", "Phone", true, undefined, true)}
+        {renderField("email", "Email", true, undefined, true)}
+        {renderField("alternateContact", "Alternate Contact", false, undefined, false)}
+        {renderField("education", "Education", false, undefined, false)}
+        {renderField("experience", "Experience", false, undefined, false)}
         {renderField(
           "martialStatus",
           "Marital Status",
           false,
-          fieldOptions.maritalStatus
+          fieldOptions.maritalStatus,
+          false
         )}
-        {renderDateField("anniversaryDate", "Anniversary Date", false)}
-        {renderField("religion", "Religion", false, fieldOptions.religion)}
-        {renderField("nationality", "Nationality", false, fieldOptions.country)}
-        {renderField("aadhar", "Aadhar", false,)}
-        {renderField("pan", "PAN", false,)}
-        {renderField("passportNo", "Passport No", false,)}
-        {renderField("currentAddress", "Current Address", true,)}
-        {renderField("permanentAddress", "Permanent Address", true,)}
-        {renderField("bloodGroup", "Blood Group", false,)}
+        {renderDateField("anniversaryDate", "Anniversary Date", false, false)}
+        {renderField("religion", "Religion", false, fieldOptions.religion, false)}
+        {renderField("nationality", "Nationality", false, fieldOptions.country, false)}
+        {renderField("aadhar", "Aadhar", false)}
+        {renderField("pan", "PAN", false)}
+        {renderField("passportNo", "Passport No", false)}
+        {renderField("currentAddress", "Current Address", false, undefined, true)}
+        {renderField("permanentAddress", "Permanent Address", false, undefined, true)}
+        {renderField("bloodGroup", "Blood Group", false)}
       </Grid>
     </Box>
   );
@@ -582,7 +590,11 @@ export const UserProfile = () => {
 
       if (!data || data.data?.errors) {
         showSnackbar("Something went wrong", "error");
-      } else showSnackbar("Updated successfully", "success");
+      } else {
+        showSnackbar("Updated successfully", "success");
+        // Refresh data to show updated profile immediately
+        fetchCreDetailById(userId);
+      }
     } catch (error: any) {
       showSnackbar(error.message || "Failed to edit Crew Detail!", "error");
     }
@@ -673,7 +685,7 @@ export const UserProfile = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={isSubmitting || !isDirty || !isValid} // Disable if submitting, no changes, or form is invalid
+                  disabled={isSubmitting}
                 >
                   {isSubmitting ? "Saving..." : "Save Changes"}
                 </Button>

@@ -44,6 +44,7 @@ const RepresentativeChildren: React.FC<ReusableFormProps> = ({
   return (
     <Box
       component="form"
+      noValidate
       onSubmit={onSubmit}
       sx={{ maxWidth: 900, margin: "auto", mt: 4 }}
     >

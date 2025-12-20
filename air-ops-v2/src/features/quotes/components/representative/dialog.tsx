@@ -6,11 +6,15 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Typography,
+  Box,
+  Chip,
 } from "@mui/material";
 import { EditRepresentative } from "./edit";
 import { CreateRepresentative } from "./create";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import { Business } from "@mui/icons-material";
 
 const RepresentativeDialog = ({
   dialogOpen,
@@ -22,7 +26,21 @@ const RepresentativeDialog = ({
   return (
     <Dialog open={dialogOpen} onClose={handleDialogClose} className="panel-one">
       <DialogTitle>
-        representative for {client?.name}
+        <Typography variant="subtitle2" color="text.secondary">
+          Adding representative for
+        </Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
+          <Business fontSize="small" color="primary" />
+          <Chip
+            label={client?.name}
+            color="primary"
+            variant="outlined"
+            size="medium"
+            sx={{ fontWeight: 600 }}
+          />
+        </Box>
+
         <IconButton
           aria-label="close"
           onClick={handleDialogClose}
@@ -33,7 +51,7 @@ const RepresentativeDialog = ({
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <CloseIcon className="ground-handlers"/>
+          <CloseIcon className="ground-handlers" />
         </IconButton>
       </DialogTitle>
 

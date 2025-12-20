@@ -20,7 +20,7 @@ export const LibraryCreate = ({ onClose, refreshList }: LibraryCreateProps) => {
   const createLibrary = async (formData: any) => {
     const result = await useGql({
       query: CREATE_LIBRARY,
-      queryName: "",
+      queryName: "createOneLibrary",
       queryType: "mutation",
       variables: {
         input: {
@@ -30,7 +30,7 @@ export const LibraryCreate = ({ onClose, refreshList }: LibraryCreateProps) => {
     });
 
     if (result) {
-      showSnackbar("Created Library!", "success");
+      showSnackbar("Library Created Successfully!", "success");
     } else {
       showSnackbar("Failed to Create Library!", "error");
     }

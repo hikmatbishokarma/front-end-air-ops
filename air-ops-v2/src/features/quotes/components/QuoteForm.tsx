@@ -125,18 +125,18 @@ const QuoteForm = ({
         // aircraft is already an object from API, but we need to find it in the list
         aircraft: initialData.aircraft
           ? aircrafts.find((a) => a.id === initialData.aircraft?.id) ||
-            initialData.aircraft
+          initialData.aircraft
           : null,
         // requestedBy is already an object from API, but we need to find it in the list
         requestedBy: initialData.requestedBy
           ? clients.find((c) => c.id === initialData.requestedBy?.id) ||
-            initialData.requestedBy
+          initialData.requestedBy
           : null,
         // representative is already an object from API, but we need to find it in the list
         representative: initialData.representative
           ? representatives.find(
-              (r) => r.id === initialData.representative?.id
-            ) || initialData.representative
+            (r) => r.id === initialData.representative?.id
+          ) || initialData.representative
           : null,
         // Ensure sectors and prices are arrays
         sectors: initialData.sectors || [],
@@ -182,6 +182,13 @@ const QuoteForm = ({
       }
     }
   }, [initialData, aircrafts, clients, representatives, isEdit, setValue]);
+
+  // Fetch representatives when selected client changes
+  useEffect(() => {
+    if (selectedClient?.id) {
+      fetchRepresentatives(selectedClient.id);
+    }
+  }, [selectedClient?.id]);
 
   const dynamicSteps = showPriceStep
     ? ["Flight Plan", "Sectors", "Price", "Review"]

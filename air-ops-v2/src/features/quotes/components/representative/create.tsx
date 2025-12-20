@@ -47,7 +47,7 @@ export const CreateRepresentative = ({ client, handleDialogClose }) => {
     try {
       const data = await useGql({
         query: CREATE_REPRESENTATIVE,
-        queryName: "",
+        queryName: "createOneRepresentative",
         queryType: "mutation",
         variables: {
           input: {
@@ -55,6 +55,7 @@ export const CreateRepresentative = ({ client, handleDialogClose }) => {
           },
         },
       });
+
 
       if (!data || data?.errors) {
         showSnackbar(

@@ -22,7 +22,8 @@ import {
 import logoPhn from "./Asset/images/logo_phn.png";
 
 import { useSession } from "./app/providers"; // import your hook
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const cloudfrontBaseUrl =
+  import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/";
 
 import AirplaneTicketOutlineIcon from "@mui/icons-material/AirplaneTicketOutlined";
 import FactCheckOutlineIcon from "@mui/icons-material/FactCheckOutlined";
@@ -246,7 +247,7 @@ export default function AppWithSession() {
 
     if (session) {
       const logoImg = session?.user?.operator?.companyLogo ? (
-        <img src={`${apiBaseUrl}${session.user.operator.companyLogo}`} alt="" />
+        <img src={`${cloudfrontBaseUrl}${session.user.operator.companyLogo}`} alt="" />
       ) : (
         <img src={logoPhn} alt="" />
       );

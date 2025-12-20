@@ -12,6 +12,7 @@ import { Controller, Control, SubmitHandler } from "react-hook-form";
 import ReactQuill from "react-quill";
 import Autocomplete from "@mui/material/Autocomplete";
 import CityAutocomplete from "../../../components/city-autocomplete";
+import StateAutocomplete from "../../../components/state-autocomplete";
 import FileUpload from "../../../components/FileUpload";
 import MediaUpload from "../../../components/MediaUpload";
 import { FormFieldProps } from "../../../interfaces/common.interface";
@@ -57,6 +58,15 @@ const OperatorChildren: React.FC<ReusableFormProps> = ({
                       label={field.label}
                       error={!!error} // Pass boolean error state
                       helperText={error?.message} // Pass the error message
+                    />
+                  );
+                } else if (field.name === "state") {
+                  return (
+                    <StateAutocomplete
+                      {...controllerField}
+                      label={field.label}
+                      error={!!error}
+                      helperText={error?.message}
                     />
                   );
                 } else if (field.type == "file") {

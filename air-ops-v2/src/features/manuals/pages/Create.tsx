@@ -17,7 +17,7 @@ export const ManualCreate = ({ onClose, refreshList }: ManualCreateProps) => {
   const createManual = async (formData: any) => {
     const result = await useGql({
       query: CREATE_MANUAL,
-      queryName: "",
+      queryName: "createOneManual",
       queryType: "mutation",
       variables: {
         input: {
@@ -27,7 +27,7 @@ export const ManualCreate = ({ onClose, refreshList }: ManualCreateProps) => {
     });
 
     if (result) {
-      showSnackbar("Failed to Create Manual!", "success");
+      showSnackbar("Manual Created Successfully!", "success");
     } else {
       showSnackbar("Failed to Create Manual!", "error");
     }

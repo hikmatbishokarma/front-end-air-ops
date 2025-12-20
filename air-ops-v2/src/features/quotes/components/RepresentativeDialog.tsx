@@ -13,9 +13,13 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Typography,
+  Box,
+  Chip,
 } from "@mui/material";
 import useGql from "@/lib/graphql/gql";
 import { CREATE_REPRESENTATIVE } from "@/lib/graphql/queries/representative";
+import { Business } from "@mui/icons-material";
 
 const RepresentativeDialog = ({
   subDialogOpen,
@@ -34,7 +38,7 @@ const RepresentativeDialog = ({
   const createRepresentative = async (formData) => {
     const data = await useGql({
       query: CREATE_REPRESENTATIVE,
-      queryName: "",
+      queryName: "createOneRepresentative",
       queryType: "mutation",
       variables: {
         input: {
@@ -43,11 +47,11 @@ const RepresentativeDialog = ({
       },
     });
 
-    console.log("submitted data:", data);
+
   };
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
+
 
     const formData = { ...data, client: client.id };
 
@@ -63,7 +67,22 @@ const RepresentativeDialog = ({
 
   return (
     <Dialog open={subDialogOpen} onClose={handleSubDialogClose}>
-      <DialogTitle>Adding representative for {client?.name}</DialogTitle>
+      <DialogTitle>
+        <Typography variant="subtitle2" color="text.secondary">
+          Adding representative for
+        </Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
+          <Business fontSize="small" color="primary" />
+          <Chip
+            label={client?.name}
+            color="primary"
+            variant="outlined"
+            size="medium"
+            sx={{ fontWeight: 600 }}
+          />
+        </Box>
+      </DialogTitle>
       <DialogContent>
         <Controller
           name="name"
@@ -76,14 +95,22 @@ const RepresentativeDialog = ({
         <Controller
           name="phone"
           control={control}
-          rules={{ required: "Phone number is required" }}
-          render={({ field }) => (
+          rules={{
+            required: "Phone number is required",
+            pattern: {
+              value: /^[0-9]{10}$/,
+              message: "Phone number must be 10 digits",
+            },
+          }}
+          render={({ field, fieldState: { error } }) => (
             <TextField
               {...field}
               label="Phone"
               fullWidth
               margin="normal"
               type="tel"
+              error={!!error}
+              helperText={error?.message}
             />
           )}
         />
@@ -97,8 +124,15 @@ const RepresentativeDialog = ({
               message: "Enter a valid email",
             },
           }}
-          render={({ field }) => (
-            <TextField {...field} label="Email" fullWidth margin="normal" />
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              label="Email"
+              fullWidth
+              margin="normal"
+              error={!!error}
+              helperText={error?.message}
+            />
           )}
         />
         <Controller

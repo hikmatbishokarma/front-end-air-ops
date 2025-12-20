@@ -291,11 +291,13 @@ const HelicopterCalculator = () => {
             const result = await useGql({
                 query: GET_NEAREST_AIRPORT,
                 queryName: "nearestAirport",
-                queryType: "query",
+                queryType: "query-without-edge",
                 variables: { lat, long: lon },
             });
-            if (result?.data?.nearestAirport) {
-                const airport = result.data.nearestAirport;
+
+
+            if (result) {
+                const airport = result;
                 const airportLat = parseCoordinate(airport.latitude);
                 const airportLon = parseCoordinate(airport.longitude);
 
@@ -547,11 +549,11 @@ const CustomCalculator = () => {
             const result = await useGql({
                 query: GET_NEAREST_AIRPORT,
                 queryName: "nearestAirport",
-                queryType: "query",
+                queryType: "query-without-edge",
                 variables: { lat, long: lon },
             });
-            if (result?.data?.nearestAirport) {
-                const airport = result.data.nearestAirport;
+            if (result) {
+                const airport = result;
 
                 // For client-side distance calc, we still need parsed values
                 const localLat = parseCoordinate(lat);
@@ -823,6 +825,7 @@ const CustomCalculator = () => {
                                             <Box>
                                                 <Typography variant="body2" sx={{ color: "#1976d2", fontWeight: "bold" }}>{nearestAirport.code}</Typography>
                                                 <Typography variant="caption">{nearestAirport.name} ({formatDistanceInUnit(nearestDistance)})</Typography>
+                                                <Typography variant="caption" display="block">{nearestAirport.city}, {nearestAirport.state}, {nearestAirport.country}</Typography>
                                             </Box>
                                         ) : "N/A"}
                                     </TableCell>
