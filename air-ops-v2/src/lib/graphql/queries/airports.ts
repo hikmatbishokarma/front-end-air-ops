@@ -90,3 +90,19 @@ export const DELETE_AIRPORT = gql`
     }
   }
 `;
+
+export const GET_NEAREST_AIRPORT = gql`
+  query nearestAirport($lat: String!, $long: String!) {
+    nearestAirport(lat: $lat, long: $long) {
+      id
+      iata_code
+      icao_code
+      name
+      city
+      country
+      state
+      latitude
+      longitude
+    }
+  }
+`;

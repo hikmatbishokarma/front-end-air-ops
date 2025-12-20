@@ -256,7 +256,7 @@ export const useConfirmSale = ({
           variables: {
             args: {
               quotationNo,
-              ...(operatorId && { operatorId }),
+              // ...(operatorId && { operatorId }),
             },
           },
         };

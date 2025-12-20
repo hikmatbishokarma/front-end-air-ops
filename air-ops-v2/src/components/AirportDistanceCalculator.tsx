@@ -21,7 +21,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import FlightIcon from "@mui/icons-material/Flight";
 import LocationAutocomplete from "./LocationAutocomplete";
 import useGql from "@/lib/graphql/gql";
-import { GET_AIRPORTS } from "@/lib/graphql/queries/airports";
+import { GET_AIRPORTS, GET_NEAREST_AIRPORT } from "@/lib/graphql/queries/airports";
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 type Airport = {
     code: string;
@@ -33,6 +34,60 @@ type Airport = {
     long?: string | number;
 };
 
+const deg2rad = (deg: number) => {
+    return deg * (Math.PI / 180);
+};
+
+const parseCoordinate = (coord: string | number | undefined): number | null => {
+    if (typeof coord === "number") return coord;
+    if (!coord) return null;
+
+    const trimmed = coord.trim();
+
+    // Format: N13-08.1 (Legacy)
+    const regexLegacy = /^([NSEW])(\d+)-([\d.]+)$/i;
+    const matchLegacy = trimmed.match(regexLegacy);
+    if (matchLegacy) {
+        const [, dir, deg, min] = matchLegacy;
+        let decimal = parseInt(deg, 10) + parseFloat(min) / 60;
+        if (dir.toUpperCase() === "S" || dir.toUpperCase() === "W") {
+            decimal *= -1;
+        }
+        return decimal;
+    }
+
+    // Format: 28.6139° N or 28.6139 N (Suffix)
+    const regexSuffix = /^([\d.]+)[°º]?\s*([NSEW])$/i;
+    const matchSuffix = trimmed.match(regexSuffix);
+    if (matchSuffix) {
+        const [, val, dir] = matchSuffix;
+        let decimal = parseFloat(val);
+        if (dir.toUpperCase() === "S" || dir.toUpperCase() === "W") {
+            decimal *= -1;
+        }
+        return decimal;
+    }
+
+    // Format: Simple Number
+    const simple = parseFloat(trimmed);
+    return isNaN(simple) ? null : simple;
+};
+
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 3440.065;
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
+    return d;
+};
+
 // ============ ORIGINAL AIRPORT CALCULATOR (UNCHANGED) ============
 const AirportCalculator = () => {
     const [fromAirport, setFromAirport] = useState<Airport | null>(null);
@@ -41,44 +96,7 @@ const AirportCalculator = () => {
     const [unit, setUnit] = useState<"nautical" | "miles" | "kilometers">("nautical");
     const [showResult, setShowResult] = useState(false);
 
-    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-        const R = 3440.065;
-        const dLat = deg2rad(lat2 - lat1);
-        const dLon = deg2rad(lon2 - lon1);
-        const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(deg2rad(lat1)) *
-            Math.cos(deg2rad(lat2)) *
-            Math.sin(dLon / 2) *
-            Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const d = R * c;
-        return d;
-    };
 
-    const deg2rad = (deg: number) => {
-        return deg * (Math.PI / 180);
-    };
-
-    const parseCoordinate = (coord: string | number | undefined): number | null => {
-        if (typeof coord === "number") return coord;
-        if (!coord) return null;
-
-        const regex = /^([NSEW])(\d+)-([\d.]+)$/;
-        const match = coord.match(regex);
-
-        if (match) {
-            const [, dir, deg, min] = match;
-            let decimal = parseInt(deg, 10) + parseFloat(min) / 60;
-            if (dir === "S" || dir === "W") {
-                decimal *= -1;
-            }
-            return decimal;
-        }
-
-        const simple = parseFloat(coord);
-        return isNaN(simple) ? null : simple;
-    };
 
     const handleCalculate = () => {
         const lat1 = parseCoordinate(fromAirport?.lat);
@@ -124,52 +142,68 @@ const AirportCalculator = () => {
                     p: 2,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
                     gap: 2,
+                    flexWrap: "wrap",
                 }}
             >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1, maxWidth: "800px" }}>
-                    <Box sx={{ display: "flex", alignItems: "center", bgcolor: "#1976d2", borderRadius: 1 }}>
-                        <Box sx={{ px: 2, py: 1, color: "white", fontWeight: "bold" }}>From:</Box>
-                        <Box sx={{ bgcolor: "white", width: 200 }}>
-                            <LocationAutocomplete
-                                value={fromAirport}
-                                onChange={setFromAirport}
-                                label=""
-                                isRequired={false}
-                            />
-                        </Box>
+                {/* FROM SECTION */}
+                <Box sx={{ display: "flex", alignItems: "stretch", bgcolor: "#1976d2", borderRadius: 1, flex: "1 1 300px" }}>
+                    <Box sx={{ px: 2, display: "flex", alignItems: "center", color: "white", fontWeight: "bold", borderRight: "1px solid rgba(255,255,255,0.2)" }}>From:</Box>
+                    <Box sx={{ bgcolor: "white", flex: 1, borderTopRightRadius: 4, borderBottomRightRadius: 4, overflow: "hidden" }}>
+                        <LocationAutocomplete
+                            value={fromAirport}
+                            onChange={setFromAirport}
+                            label=""
+                            isRequired={false}
+                        />
                     </Box>
-
-                    <FlightIcon sx={{ color: "#1976d2", transform: "rotate(90deg)", fontSize: 30 }} />
-
-                    <Box sx={{ display: "flex", alignItems: "center", bgcolor: "#1976d2", borderRadius: 1 }}>
-                        <Box sx={{ px: 2, py: 1, color: "white", fontWeight: "bold" }}>To:</Box>
-                        <Box sx={{ bgcolor: "white", width: 200 }}>
-                            <LocationAutocomplete
-                                value={toAirport}
-                                onChange={setToAirport}
-                                label=""
-                                isRequired={false}
-                            />
-                        </Box>
-                    </Box>
-
-                    <Button
-                        variant="contained"
-                        onClick={handleCalculate}
-                        sx={{
-                            bgcolor: "#1976d2",
-                            textTransform: "none",
-                            fontWeight: "bold",
-                            px: 4,
-                            "&:hover": { bgcolor: "#1565c0" },
-                        }}
-                    >
-                        Calculate
-                    </Button>
                 </Box>
+
+                {/* SWAP BUTTON */}
+                <IconButton
+                    onClick={() => {
+                        const temp = fromAirport;
+                        setFromAirport(toAirport);
+                        setToAirport(temp);
+                    }}
+                    sx={{
+                        bgcolor: "white",
+                        "&:hover": { bgcolor: "#e0e0e0" },
+                        boxShadow: 1,
+                        flexShrink: 0
+                    }}
+                >
+                    <SwapHorizIcon sx={{ color: "#1976d2" }} />
+                </IconButton>
+
+                {/* TO SECTION */}
+                <Box sx={{ display: "flex", alignItems: "stretch", bgcolor: "#1976d2", borderRadius: 1, flex: "1 1 300px" }}>
+                    <Box sx={{ px: 2, display: "flex", alignItems: "center", color: "white", fontWeight: "bold", borderRight: "1px solid rgba(255,255,255,0.2)" }}>To:</Box>
+                    <Box sx={{ bgcolor: "white", flex: 1, borderTopRightRadius: 4, borderBottomRightRadius: 4, overflow: "hidden" }}>
+                        <LocationAutocomplete
+                            value={toAirport}
+                            onChange={setToAirport}
+                            label=""
+                            isRequired={false}
+                        />
+                    </Box>
+                </Box>
+
+                <Button
+                    variant="contained"
+                    onClick={handleCalculate}
+                    sx={{
+                        bgcolor: "#1976d2",
+                        textTransform: "none",
+                        fontWeight: "bold",
+                        px: 4,
+                        py: 1.5,
+                        "&:hover": { bgcolor: "#1565c0" },
+                        flexShrink: 0
+                    }}
+                >
+                    Calculate
+                </Button>
             </Box>
 
             {showResult && distance !== null && (
@@ -248,85 +282,37 @@ const HelicopterCalculator = () => {
     const [distance, setDistance] = useState<number | null>(null);
     const [unit, setUnit] = useState<"nautical" | "miles" | "kilometers">("nautical");
     const [showResult, setShowResult] = useState(false);
-    const [allAirports, setAllAirports] = useState([]);
     const [fromNearestAirport, setFromNearestAirport] = useState<Airport | null>(null);
     const [toNearestAirport, setToNearestAirport] = useState<Airport | null>(null);
     const [fromNearestDistance, setFromNearestDistance] = useState<number | null>(null);
     const [toNearestDistance, setToNearestDistance] = useState<number | null>(null);
+    const fetchNearestAirport = async (lat: string, lon: string) => {
+        try {
+            const result = await useGql({
+                query: GET_NEAREST_AIRPORT,
+                queryName: "nearestAirport",
+                queryType: "query",
+                variables: { lat, long: lon },
+            });
+            if (result?.data?.nearestAirport) {
+                const airport = result.data.nearestAirport;
+                const airportLat = parseCoordinate(airport.latitude);
+                const airportLon = parseCoordinate(airport.longitude);
 
-    useEffect(() => {
-        const fetchAirports = async () => {
-            try {
-                const result = await useGql({
-                    query: GET_AIRPORTS,
-                    queryName: "airports",
-                    queryType: "query-with-count",
-                    variables: {
-                        filter: {},
-                        paging: {
-                            limit: 1000,
-                            offset: 0,
-                        },
-                    },
-                });
+                // Parse local coordinates for distance calculation
+                const localLat = parseCoordinate(lat);
+                const localLon = parseCoordinate(lon);
 
-
-                if (result?.data) {
-                    setAllAirports(result.data);
+                let dist = null;
+                if (airportLat !== null && airportLon !== null && localLat !== null && localLon !== null) {
+                    dist = calculateDistance(localLat, localLon, airportLat, airportLon);
                 }
-            } catch (error) {
-                console.error("Error fetching airports:", error);
+                return { airport, distance: dist };
             }
-        };
-        fetchAirports();
-    }, []);
-
-
-    console.log("allAirports::", allAirports)
-
-    const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-        const R = 3440.065;
-        const dLat = deg2rad(lat2 - lat1);
-        const dLon = deg2rad(lon2 - lon1);
-        const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    };
-
-    const deg2rad = (deg: number) => deg * (Math.PI / 180);
-
-    const parseCoordinate = (coord: string): number | null => {
-        if (!coord) return null;
-        const regex = /^([NSEW])(\d+)-([\d.]+)$/;
-        const match = coord.match(regex);
-        if (match) {
-            const [, dir, deg, min] = match;
-            let decimal = parseInt(deg, 10) + parseFloat(min) / 60;
-            if (dir === "S" || dir === "W") decimal *= -1;
-            return decimal;
+        } catch (error) {
+            console.error("Error fetching nearest airport:", error);
         }
-        const simple = parseFloat(coord);
-        return isNaN(simple) ? null : simple;
-    };
-
-    const findNearestAirport = (lat: number, lon: number) => {
-        if (!allAirports.length) return { airport: null, distance: null };
-        let nearest: Airport | null = null;
-        let minDistance = Infinity;
-        allAirports.forEach((airport: any) => {
-            const airportLat = parseCoordinate(String(airport.latitude));
-            const airportLon = parseCoordinate(String(airport.longitude));
-            if (airportLat !== null && airportLon !== null) {
-                const dist = calculateDistance(lat, lon, airportLat, airportLon);
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    nearest = airport;
-                }
-            }
-        });
-        return { airport: nearest, distance: minDistance === Infinity ? null : minDistance };
+        return { airport: null, distance: null };
     };
 
     const handleCalculate = () => {
@@ -338,12 +324,17 @@ const HelicopterCalculator = () => {
         if (lat1 !== null && lon1 !== null && lat2 !== null && lon2 !== null) {
             const dist = calculateDistance(lat1, lon1, lat2, lon2);
             setDistance(dist);
-            const { airport: fromAirport, distance: fromDist } = findNearestAirport(lat1, lon1);
-            const { airport: toAirport, distance: toDist } = findNearestAirport(lat2, lon2);
-            setFromNearestAirport(fromAirport);
-            setToNearestAirport(toAirport);
-            setFromNearestDistance(fromDist);
-            setToNearestDistance(toDist);
+
+            fetchNearestAirport(fromLat, fromLong).then(({ airport, distance }) => {
+                setFromNearestAirport(airport);
+                setFromNearestDistance(distance);
+            });
+
+            fetchNearestAirport(toLat, toLong).then(({ airport, distance }) => {
+                setToNearestAirport(airport);
+                setToNearestDistance(distance);
+            });
+
             setShowResult(true);
         }
     };
@@ -376,17 +367,98 @@ const HelicopterCalculator = () => {
 
     return (
         <>
-            <Box sx={{ bgcolor: "#0d2d6c", p: 2, display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <TextField label="From Lat" value={fromLat} onChange={(e) => setFromLat(e.target.value)} placeholder="N13-08.1" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
-                    <TextField label="From Long" value={fromLong} onChange={(e) => setFromLong(e.target.value)} placeholder="E077-36.6" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
+            <Box
+                sx={{
+                    bgcolor: "#0d2d6c",
+                    p: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    flexWrap: "wrap"
+                }}
+            >
+                {/* FROM SECTION */}
+                <Box sx={{ display: "flex", alignItems: "stretch", bgcolor: "#1976d2", borderRadius: 1, flex: "1 1 300px" }}>
+                    <Box sx={{ px: 2, display: "flex", alignItems: "center", color: "white", fontWeight: "bold", borderRight: "1px solid rgba(255,255,255,0.2)" }}>From:</Box>
+                    <Box sx={{ bgcolor: "white", flex: 1, borderTopRightRadius: 4, borderBottomRightRadius: 4, overflow: "hidden", display: "flex" }}>
+                        <TextField
+                            placeholder="Lat (N13-08.1)"
+                            value={fromLat}
+                            onChange={(e) => setFromLat(e.target.value)}
+                            size="small"
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                "& .MuiOutlinedInput-root": { borderRadius: 0 },
+                                borderRight: "1px solid #eee"
+                            }}
+                        />
+                        <TextField
+                            placeholder="Long (E077-36.6)"
+                            value={fromLong}
+                            onChange={(e) => setFromLong(e.target.value)}
+                            size="small"
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                "& .MuiOutlinedInput-root": { borderRadius: 0 }
+                            }}
+                        />
+                    </Box>
                 </Box>
-                <FlightIcon sx={{ color: "#1976d2", transform: "rotate(90deg)", fontSize: 30 }} />
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <TextField label="To Lat" value={toLat} onChange={(e) => setToLat(e.target.value)} placeholder="N12-58.2" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
-                    <TextField label="To Long" value={toLong} onChange={(e) => setToLong(e.target.value)} placeholder="E077-40.3" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
+
+                {/* SWAP BUTTON */}
+                <IconButton
+                    onClick={() => {
+                        const tLat = fromLat; const tLong = fromLong;
+                        setFromLat(toLat); setFromLong(toLong);
+                        setToLat(tLat); setToLong(tLong);
+                    }}
+                    sx={{
+                        bgcolor: "white",
+                        "&:hover": { bgcolor: "#e0e0e0" },
+                        boxShadow: 1,
+                        flexShrink: 0
+                    }}
+                >
+                    <SwapHorizIcon sx={{ color: "#1976d2" }} />
+                </IconButton>
+
+                {/* TO SECTION */}
+                <Box sx={{ display: "flex", alignItems: "stretch", bgcolor: "#1976d2", borderRadius: 1, flex: "1 1 300px" }}>
+                    <Box sx={{ px: 2, display: "flex", alignItems: "center", color: "white", fontWeight: "bold", borderRight: "1px solid rgba(255,255,255,0.2)" }}>To:</Box>
+                    <Box sx={{ bgcolor: "white", flex: 1, borderTopRightRadius: 4, borderBottomRightRadius: 4, overflow: "hidden", display: "flex" }}>
+                        <TextField
+                            placeholder="Lat (N12-58.2)"
+                            value={toLat}
+                            onChange={(e) => setToLat(e.target.value)}
+                            size="small"
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                "& .MuiOutlinedInput-root": { borderRadius: 0 },
+                                borderRight: "1px solid #eee"
+                            }}
+                        />
+                        <TextField
+                            placeholder="Long (E077-40.3)"
+                            value={toLong}
+                            onChange={(e) => setToLong(e.target.value)}
+                            size="small"
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                "& .MuiOutlinedInput-root": { borderRadius: 0 }
+                            }}
+                        />
+                    </Box>
                 </Box>
-                <Button variant="contained" onClick={handleCalculate} sx={{ bgcolor: "#1976d2", textTransform: "none", fontWeight: "bold", px: 4, "&:hover": { bgcolor: "#1565c0" } }}>Calculate</Button>
+
+                <Button variant="contained" onClick={handleCalculate} sx={{ bgcolor: "#1976d2", textTransform: "none", fontWeight: "bold", px: 4, py: 1.5, flexShrink: 0, "&:hover": { bgcolor: "#1565c0" } }}>Calculate</Button>
             </Box>
 
             {showResult && distance !== null && (
@@ -452,9 +524,321 @@ const HelicopterCalculator = () => {
     );
 };
 
+// ============ CUSTOM CALCULATOR ============
+const CustomCalculator = () => {
+    // True: From=Airport, To=Lat/Long
+    // False: From=Lat/Long, To=Airport
+    const [isAirportToLatLong, setIsAirportToLatLong] = useState(true);
+
+    // Data states
+    const [airportData, setAirportData] = useState<Airport | null>(null); // The single airport side
+    const [latData, setLatData] = useState("");
+    const [longData, setLongData] = useState("");
+
+    const [distance, setDistance] = useState<number | null>(null);
+    const [unit, setUnit] = useState<"nautical" | "miles" | "kilometers">("nautical");
+    const [showResult, setShowResult] = useState(false);
+    const [nearestAirport, setNearestAirport] = useState<Airport | null>(null);
+    const [nearestDistance, setNearestDistance] = useState<number | null>(null);
+
+    // Nearest airport logic for the Lat/Long side
+    const fetchNearestAirport = async (lat: string, lon: string) => {
+        try {
+            const result = await useGql({
+                query: GET_NEAREST_AIRPORT,
+                queryName: "nearestAirport",
+                queryType: "query",
+                variables: { lat, long: lon },
+            });
+            if (result?.data?.nearestAirport) {
+                const airport = result.data.nearestAirport;
+
+                // For client-side distance calc, we still need parsed values
+                const localLat = parseCoordinate(lat);
+                const localLon = parseCoordinate(lon);
+
+                const airportLat = parseCoordinate(airport.latitude);
+                const airportLon = parseCoordinate(airport.longitude);
+
+                let dist = null;
+                if (localLat !== null && localLon !== null && airportLat !== null && airportLon !== null) {
+                    dist = calculateDistance(localLat, localLon, airportLat, airportLon);
+                }
+                return { airport, distance: dist };
+            }
+        } catch (error) {
+            console.error("Error fetching nearest airport:", error);
+        }
+        return { airport: null, distance: null };
+    };
+
+    const handleCalculate = () => {
+        let lat1: number | null = null;
+        let lon1: number | null = null;
+        let lat2: number | null = null;
+        let lon2: number | null = null;
+
+        const manualLat = parseCoordinate(latData);
+        const manualLong = parseCoordinate(longData);
+        const airportLat = parseCoordinate(airportData?.lat);
+        const airportLong = parseCoordinate(airportData?.long);
+
+        if (isAirportToLatLong) {
+            // From Airport -> To Lat/Long
+            lat1 = airportLat;
+            lon1 = airportLong;
+            lat2 = manualLat;
+            lon2 = manualLong;
+        } else {
+            // From Lat/Long -> To Airport
+            lat1 = manualLat;
+            lon1 = manualLong;
+            lat2 = airportLat;
+            lon2 = airportLong;
+        }
+
+        if (lat1 !== null && lon1 !== null && lat2 !== null && lon2 !== null) {
+            // Main Distance
+            const dist = calculateDistance(lat1, lon1, lat2, lon2);
+            setDistance(dist);
+
+            // Find nearest for the manual coordinates side
+            fetchNearestAirport(latData, longData).then(({ airport, distance }) => {
+                setNearestAirport(airport);
+                setNearestDistance(distance);
+            });
+
+            setShowResult(true);
+        }
+    };
+
+    const getDisplayDistance = () => {
+        if (distance === null) return 0;
+        switch (unit) {
+            case "miles": return (distance * 1.15078).toFixed(2);
+            case "kilometers": return (distance * 1.852).toFixed(2);
+            default: return distance.toFixed(2);
+        }
+    };
+
+    const getUnitLabel = () => {
+        switch (unit) {
+            case "miles": return "Miles";
+            case "kilometers": return "Kilometers";
+            default: return "Nautical Miles";
+        }
+    };
+
+    const formatDistanceInUnit = (dist: number | null) => {
+        if (dist === null) return "N/A";
+        switch (unit) {
+            case "miles": return `${(dist * 1.15078).toFixed(2)} mi`;
+            case "kilometers": return `${(dist * 1.852).toFixed(2)} km`;
+            default: return `${dist.toFixed(2)} NM`;
+        }
+    };
+
+    return (
+        <>
+            <Box
+                sx={{
+                    bgcolor: "#0d2d6c",
+                    p: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    flexWrap: "wrap",
+                }}
+            >
+                {/* FROM SECTION */}
+                <Box sx={{ display: "flex", alignItems: "stretch", bgcolor: "#1976d2", borderRadius: 1, flex: "1 1 300px" }}>
+                    <Box sx={{ px: 2, display: "flex", alignItems: "center", color: "white", fontWeight: "bold", borderRight: "1px solid rgba(255,255,255,0.2)" }}>From:</Box>
+                    <Box sx={{ bgcolor: "white", flex: 1, borderTopRightRadius: 4, borderBottomRightRadius: 4, overflow: "hidden" }}>
+                        {isAirportToLatLong ? (
+                            <LocationAutocomplete
+                                value={airportData}
+                                onChange={setAirportData}
+                                label=""
+                                isRequired={false}
+                            />
+                        ) : (
+                            <Box sx={{ display: "flex", height: "100%" }}>
+                                <TextField
+                                    placeholder="Lat (N13-08.1)"
+                                    value={latData}
+                                    onChange={(e) => setLatData(e.target.value)}
+                                    size="small"
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{
+                                        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                        "& .MuiOutlinedInput-root": { borderRadius: 0 },
+                                        borderRight: "1px solid #eee"
+                                    }}
+                                />
+                                <TextField
+                                    placeholder="Long (E077-36.6)"
+                                    value={longData}
+                                    onChange={(e) => setLongData(e.target.value)}
+                                    size="small"
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{
+                                        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                        "& .MuiOutlinedInput-root": { borderRadius: 0 }
+                                    }}
+                                />
+                            </Box>
+                        )}
+                    </Box>
+                </Box>
+
+                {/* SWAP BUTTON */}
+                <IconButton
+                    onClick={() => setIsAirportToLatLong(!isAirportToLatLong)}
+                    sx={{
+                        bgcolor: "white",
+                        "&:hover": { bgcolor: "#e0e0e0" },
+                        boxShadow: 1,
+                        flexShrink: 0
+                    }}
+                >
+                    <SwapHorizIcon sx={{ color: "#1976d2" }} />
+                </IconButton>
+
+                {/* TO SECTION */}
+                <Box sx={{ display: "flex", alignItems: "stretch", bgcolor: "#1976d2", borderRadius: 1, flex: "1 1 300px" }}>
+                    <Box sx={{ px: 2, display: "flex", alignItems: "center", color: "white", fontWeight: "bold", borderRight: "1px solid rgba(255,255,255,0.2)" }}>To:</Box>
+                    <Box sx={{ bgcolor: "white", flex: 1, borderTopRightRadius: 4, borderBottomRightRadius: 4, overflow: "hidden" }}>
+                        {!isAirportToLatLong ? (
+                            <LocationAutocomplete
+                                value={airportData}
+                                onChange={setAirportData}
+                                label=""
+                                isRequired={false}
+                            />
+                        ) : (
+                            <Box sx={{ display: "flex", height: "100%" }}>
+                                <TextField
+                                    placeholder="Lat (N12-58.2)"
+                                    value={latData}
+                                    onChange={(e) => setLatData(e.target.value)}
+                                    size="small"
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{
+                                        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                        "& .MuiOutlinedInput-root": { borderRadius: 0 },
+                                        borderRight: "1px solid #eee"
+                                    }}
+                                />
+                                <TextField
+                                    placeholder="Long (E077-40.3)"
+                                    value={longData}
+                                    onChange={(e) => setLongData(e.target.value)}
+                                    size="small"
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{
+                                        "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                                        "& .MuiOutlinedInput-root": { borderRadius: 0 }
+                                    }}
+                                />
+                            </Box>
+                        )}
+                    </Box>
+                </Box>
+
+                <Button
+                    variant="contained"
+                    onClick={handleCalculate}
+                    sx={{
+                        bgcolor: "#1976d2",
+                        textTransform: "none",
+                        fontWeight: "bold",
+                        px: 4,
+                        py: 1.5,
+                        "&:hover": { bgcolor: "#1565c0" },
+                        flexShrink: 0
+                    }}
+                >
+                    Calculate
+                </Button>
+            </Box>
+
+            {showResult && distance !== null && (
+                <Box sx={{ bgcolor: "#eef5fa", position: "relative" }}>
+                    <IconButton onClick={() => setShowResult(false)} sx={{ position: "absolute", right: 8, top: 8, color: "#666" }}><CloseIcon /></IconButton>
+                    <Box sx={{ p: 4, textAlign: "center" }}>
+                        <Typography variant="h6" gutterBottom>The distance is</Typography>
+                        <Typography variant="h2" sx={{ fontWeight: "bold", my: 2 }}>
+                            {getDisplayDistance()}{" "}<Typography component="span" variant="h4" sx={{ fontWeight: "normal" }}>{getUnitLabel()}</Typography>
+                        </Typography>
+                        <RadioGroup row value={unit} onChange={(e) => setUnit(e.target.value as any)} sx={{ justifyContent: "center", mt: 2 }}>
+                            <FormControlLabel value="nautical" control={<Radio />} label="Nautical Miles" />
+                            <FormControlLabel value="miles" control={<Radio />} label="Miles" />
+                            <FormControlLabel value="kilometers" control={<Radio />} label="Kilometers" />
+                        </RadioGroup>
+                    </Box>
+
+                    <TableContainer component={Paper} square elevation={0}>
+                        <Table>
+                            <TableHead sx={{ bgcolor: "#6c757d" }}>
+                                <TableRow>
+                                    <TableCell sx={{ color: "white", fontWeight: "bold" }}>Location</TableCell>
+                                    <TableCell sx={{ color: "white", fontWeight: "bold" }}>Details</TableCell>
+                                    <TableCell sx={{ color: "white", fontWeight: "bold" }}>Nearest Airport (if Lat/Long)</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow sx={{ bgcolor: "white" }}>
+                                    <TableCell sx={{ fontWeight: "bold" }}>From</TableCell>
+                                    <TableCell sx={{ color: "#1976d2" }}>
+                                        {isAirportToLatLong ? (
+                                            <>{airportData?.code} - {airportData?.name}</>
+                                        ) : (
+                                            <>{latData}, {longData}</>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {!isAirportToLatLong && nearestAirport ? (
+                                            <Box>
+                                                <Typography variant="body2" sx={{ color: "#1976d2", fontWeight: "bold" }}>{nearestAirport.code}</Typography>
+                                                <Typography variant="caption">{nearestAirport.name} ({formatDistanceInUnit(nearestDistance)})</Typography>
+                                            </Box>
+                                        ) : "N/A"}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow sx={{ bgcolor: "#f5f5f5" }}>
+                                    <TableCell sx={{ fontWeight: "bold" }}>To</TableCell>
+                                    <TableCell sx={{ color: "#1976d2" }}>
+                                        {!isAirportToLatLong ? (
+                                            <>{airportData?.code} - {airportData?.name}</>
+                                        ) : (
+                                            <>{latData}, {longData}</>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {isAirportToLatLong && nearestAirport ? (
+                                            <Box>
+                                                <Typography variant="body2" sx={{ color: "#1976d2", fontWeight: "bold" }}>{nearestAirport.code}</Typography>
+                                                <Typography variant="caption">{nearestAirport.name} ({formatDistanceInUnit(nearestDistance)})</Typography>
+                                            </Box>
+                                        ) : "N/A"}
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            )}
+        </>
+    );
+};
+
 // ============ MAIN WRAPPER WITH MODE SELECTION ============
 const AirportDistanceCalculator = () => {
-    const [mode, setMode] = useState<"airport" | "helicopter">("airport");
+    const [mode, setMode] = useState<"airport" | "helicopter" | "custom">("airport");
 
     return (
         <Card sx={{ mt: 4, overflow: "hidden" }} className="distance_view">
@@ -466,7 +850,7 @@ const AirportDistanceCalculator = () => {
                 <RadioGroup
                     row
                     value={mode}
-                    onChange={(e) => setMode(e.target.value as "airport" | "helicopter")}
+                    onChange={(e) => setMode(e.target.value as "airport" | "helicopter" | "custom")}
                 >
                     <FormControlLabel
                         value="airport"
@@ -478,11 +862,18 @@ const AirportDistanceCalculator = () => {
                         control={<Radio sx={{ color: "white", "&.Mui-checked": { color: "#1976d2" } }} />}
                         label={<Typography sx={{ color: "white" }}>Helicopter Mode</Typography>}
                     />
+                    <FormControlLabel
+                        value="custom"
+                        control={<Radio sx={{ color: "white", "&.Mui-checked": { color: "#1976d2" } }} />}
+                        label={<Typography sx={{ color: "white" }}>Custom Mode</Typography>}
+                    />
                 </RadioGroup>
             </Box>
 
             {/* Render selected calculator */}
-            {mode === "airport" ? <AirportCalculator /> : <HelicopterCalculator />}
+            {mode === "airport" && <AirportCalculator />}
+            {mode === "helicopter" && <HelicopterCalculator />}
+            {mode === "custom" && <CustomCalculator />}
         </Card>
     );
 };
