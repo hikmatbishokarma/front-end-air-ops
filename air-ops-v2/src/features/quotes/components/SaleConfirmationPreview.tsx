@@ -47,7 +47,7 @@ const SaleConfirmationPreview: React.FC<SaleConfirmationPreviewProps> = ({
 
   const componentRef = React.useRef(null);
 
-  console.log("currentQuotation:::", currentQuotation);
+
 
   return (
     <Box>

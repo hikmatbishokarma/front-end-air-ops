@@ -214,6 +214,19 @@ export const QuoteList = ({
       status: row.status,
     });
 
+    // Check for SALE_CONFIRMED status
+    // Normalize status: API might return enum key (e.g., "SALE_CONFIRMED") or enum value (e.g., "Sale Confirmed")
+    const normalizedStatus = QuotationStatusMap[row.status] || row.status;
+
+    if (
+      normalizedStatus === QuotationStatus.SALE_CONFIRMED ||
+      row.status === "SALE_CONFIRMED"
+    ) {
+      setSaleConfirmationPreviewTemplate(row.confirmationTemplate);
+      setShowTripConfirmationPreview(true);
+      return;
+    }
+
     // 2. CALL BUSINESS LOGIC HOOK (Handles API, conditions, and dialog updates)
     await fetchAndShowPreview(row, selectedTab); // Pass the required local state (selectedTab)
   };
@@ -355,7 +368,7 @@ export const QuoteList = ({
     await confirmSale(rowData.quotationNo);
   };
 
-  console.log("quoteList::::", quoteList);
+
 
   return (
     <>
