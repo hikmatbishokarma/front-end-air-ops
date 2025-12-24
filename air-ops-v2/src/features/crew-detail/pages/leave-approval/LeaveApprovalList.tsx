@@ -60,7 +60,7 @@ const LeaveApprovalRequestTable = ({
     try {
       const result = await useGql({
         query: UPDATE_LEAVE_REQUEST,
-        queryName: "",
+        queryName: "updateLeaveRequest",
         queryType: "mutation",
         variables: {
           where: {
@@ -72,7 +72,7 @@ const LeaveApprovalRequestTable = ({
         },
       });
 
-      if (!result?.data || result?.errors) {
+      if (!result || result?.errors) {
         showSnackbar(result?.errors?.[0]?.message, "error");
       } else {
         showSnackbar(
@@ -128,7 +128,7 @@ const LeaveApprovalRequestTable = ({
                     label={row.status}
                     color={
                       statusColorMap[
-                        row.status as keyof typeof statusColorMap
+                      row.status as keyof typeof statusColorMap
                       ] || "default"
                     }
                     size="small"

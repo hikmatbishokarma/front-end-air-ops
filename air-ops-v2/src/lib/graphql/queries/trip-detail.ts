@@ -43,6 +43,7 @@ export const GET_TRIP_DETAILS = gql`
         quotationNo
         sectors {
           sectorNo
+          status
           source {
             code
             name
@@ -274,6 +275,7 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
       quotationNo
       sectors {
         sectorNo
+        status
         source {
           code
           name
@@ -356,3 +358,17 @@ mutation generatePassengerManifest($input: GeneratePassengerManifestInput!){
 
 
 `
+
+
+
+
+export const GET_OPS_DASHBOARD_SUMMARY = gql`
+  query GetOpsDashboardSummary($operatorId: String) {
+    opsDashboardSummary(operatorId: $operatorId) {
+        saleConfirmations
+        tripDetails
+        crewTripsDoc
+        reports
+    }
+  }
+`;

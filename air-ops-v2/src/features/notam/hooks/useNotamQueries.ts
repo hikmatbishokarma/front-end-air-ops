@@ -27,7 +27,7 @@ export const useNotamData = ({
         const parsedFilter = JSON.parse(filterString);
         const finalFilter = {
             ...parsedFilter,
-            ...(operatorId && { operator: { id: { eq: operatorId } } }),
+            ...(operatorId && { operatorId: { eq: operatorId } }),
         };
 
         setLoading(true);

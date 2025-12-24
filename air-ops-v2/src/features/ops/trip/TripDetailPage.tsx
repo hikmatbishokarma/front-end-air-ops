@@ -5,6 +5,7 @@ import { useParams, useNavigate, useLocation } from "react-router";
 import { useTrip } from "../hooks/useTrip";
 import { PassengerDetailsTab } from "./components/tabs/PassengerDetailsTab";
 import IntimationsTab from "./components/tabs/IntimationsTab";
+import TripChecklistTab from "./components/tabs/TripChecklistTab";
 import TripDetailsTab from "./components/tabs/TripDetailsTab";
 
 export default function TripDetailPage() {
@@ -51,7 +52,7 @@ export default function TripDetailPage() {
         )}
         {tab === 1 && <IntimationsTab quotation={trip} />}
         {tab === 2 && <TripDetailsTab trip={trip} />}
-        {/* {tab === 3 && <ChecklistTab />} */}
+        {tab === 3 && <TripChecklistTab tripId={tripId!} />}
       </Box>
     </Box>
   );

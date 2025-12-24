@@ -67,7 +67,7 @@ const LeaveFormDrawer: React.FC<LeaveFormDrawerProps> = ({
       keepMounted
       PaperProps={{
         sx: {
-          width: 400,
+          width: 680,
           height: "100%",
           display: "flex",
           flexDirection: "column",

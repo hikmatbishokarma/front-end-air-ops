@@ -39,8 +39,8 @@ export const LeaveRequest = () => {
               filters?.type !== "ALL" && { type: { eq: filters.type } }),
             ...(filters?.status &&
               filters?.status !== "ALL" && {
-                status: { eq: filters.status },
-              }),
+              status: { eq: filters.status },
+            }),
             ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
@@ -61,7 +61,7 @@ export const LeaveRequest = () => {
     try {
       const data = await useGql({
         query: CREATE_LEAVE,
-        queryName: "",
+        queryName: "createOneLeave",
         queryType: "mutation",
         variables: {
           input: {
@@ -79,7 +79,7 @@ export const LeaveRequest = () => {
   };
 
   const handelLeaveRequest = async (formData) => {
-    formData = { ...formData, crew: userId };
+    formData = { ...formData, crew: userId, ...(operatorId && { operatorId }) };
     await createLeaveRequest(formData);
     handleCloseDrawer();
     await getLeaves();

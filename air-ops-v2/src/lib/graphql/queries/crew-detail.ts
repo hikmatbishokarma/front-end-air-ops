@@ -48,6 +48,7 @@ export const GET_CREW_DETAIL_BY_ID = gql`
       id
       roles {
         id
+        type
         name
       }
       profile

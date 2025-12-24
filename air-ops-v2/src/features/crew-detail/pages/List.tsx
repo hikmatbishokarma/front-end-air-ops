@@ -125,7 +125,7 @@ export const CrewDetailList = ({
                   <TableCell>{item?.phone}</TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {item?.roles?.map((role: any) => role?.name)?.join(", ")}
+                      {item?.roles?.map((role: any) => role?.name || role?.type)?.join(", ")}
                     </Typography>
                   </TableCell>
                   <TableCell>

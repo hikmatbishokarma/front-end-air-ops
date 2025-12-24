@@ -14,6 +14,7 @@ import moment from "moment";
 import { SalesCategoryLabels } from "@/shared/utils";
 import { IBaseFilter, useAppFilter } from "@/hooks/useAppFilter";
 import CrewTripList from "@/features/ops/tables/CrewTrip";
+import { useOpsSummaryData } from "@/features/ops/hooks/useOpsSummaryData";
 
 const OpsControllerPage = () => {
   const { session } = useSession();
@@ -23,6 +24,10 @@ const OpsControllerPage = () => {
   const operatorId = session?.user.operator?.id || null;
 
   const [selectedTab, setSelectedTab] = useState("Sale Confirmation");
+
+  const { summaryData } = useOpsSummaryData(operatorId, refreshKey);
+
+  console.log("summaryData:::", summaryData);
 
   const handleStatCardSelect = (data: IStatCard) => {
     setSelectedTab(data.name);
@@ -112,26 +117,6 @@ const OpsControllerPage = () => {
     handleFilterChange // The hook updates the final GQL filter state
   );
 
-  //   // 3. EFFECT: When the base filter or department state changes, MERGE them.
-  //   useEffect(() => {
-  //     const { searchTermValue, ...rest } = baseFilter;
-
-  //     // 3a. Map the generic properties to the specific GQL field names
-  //     const searchFilter = searchTermValue
-  //       ? { quotationNo: { eq: searchTerm } }
-  //       : {};
-
-  //     const mergedFilter = {
-  //       ...rest,
-  //       ...searchFilter,
-  //     };
-
-  //     setFinalGqlFilter(mergedFilter);
-
-  //     // Note: You might want to call your data fetching here or use a separate refreshKey state.
-  //     // fetchData(mergedFilter);
-  //   }, [baseFilter]);
-
   const saleConfirmationFilter = useMemo(() => {
     return {
       ...finalGqlFilter,
@@ -153,7 +138,7 @@ const OpsControllerPage = () => {
         selectedTab={selectedTab}
         categories={statCards}
         handleStatCardSelect={handleStatCardSelect}
-        statData={{}}
+        statData={summaryData}
         createEnabledTabs={[]}
       />
       <Box
