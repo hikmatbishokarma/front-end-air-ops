@@ -7,6 +7,7 @@ import { PassengerDetailsTab } from "./components/tabs/PassengerDetailsTab";
 import IntimationsTab from "./components/tabs/IntimationsTab";
 import TripChecklistTab from "./components/tabs/TripChecklistTab";
 import TripDetailsTab from "./components/tabs/TripDetailsTab";
+import BoardingPassTab from "./components/tabs/BoardingPassTab";
 
 export default function TripDetailPage() {
   const [tab, setTab] = useState(0);
@@ -40,6 +41,7 @@ export default function TripDetailPage() {
         <Tab label="Passengers" />
         <Tab label="Intimations" />
         <Tab label="Trip Details" />
+        <Tab label="Boarding Pass" />
         <Tab label="Checklist & Summary" />
       </Tabs>
 
@@ -50,9 +52,10 @@ export default function TripDetailPage() {
             quotationNo={trip?.quotationNo}
           />
         )}
-        {tab === 1 && <IntimationsTab quotation={trip} />}
+        {tab === 1 && <IntimationsTab trip={trip} />}
         {tab === 2 && <TripDetailsTab trip={trip} />}
-        {tab === 3 && <TripChecklistTab tripId={tripId!} />}
+        {tab === 3 && <BoardingPassTab trip={trip} />}
+        {tab === 4 && <TripChecklistTab tripId={tripId!} />}
       </Box>
     </Box>
   );

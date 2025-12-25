@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-export default function CertificationAlertCard({ item }) {
+export default function CertificationAlertCard({ item, onClick }) {
     const getSeverity = () => {
         const days = item.daysLeft;
 
@@ -40,6 +40,7 @@ export default function CertificationAlertCard({ item }) {
 
     return (
         <Box
+            onClick={() => onClick(item)}
             sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -54,6 +55,7 @@ export default function CertificationAlertCard({ item }) {
                 borderRadius: '4px',
                 bgcolor: bgColors[severity],
                 transition: 'all 0.2s ease',
+                cursor: 'pointer',
                 // Add blinking animation for critical alerts
                 ...(isCritical && {
                     animation: 'blink 2s ease-in-out infinite',
@@ -79,18 +81,49 @@ export default function CertificationAlertCard({ item }) {
                 {icons[severity]}
             </Typography>
 
-            {/* Certification Name - Center */}
-            <Typography
-                variant="body2"
-                fontWeight="600"
-                sx={{
-                    flex: 1,
-                    lineHeight: 1.4,
-                    color: 'text.primary',
-                }}
-            >
-                {item.title}
-            </Typography>
+            {/* Certification Name and Staff Name - Center */}
+            <Box sx={{ flex: 1 }}>
+                {item.staffName && (
+                    <Typography
+                        variant="body2"
+                        fontWeight="700"
+                        sx={{
+                            lineHeight: 1.3,
+                            color: 'text.primary',
+                            mb: 0.25,
+                        }}
+                    >
+                        {item.staffName}
+                    </Typography>
+                )}
+                <Typography
+                    variant="body2"
+                    sx={{
+                        lineHeight: 1.4,
+                        color: 'text.secondary',
+                        fontWeight: 500,
+                    }}
+                >
+                    {item.title}
+                    {item.licenceNo && (
+                        <Typography
+                            component="span"
+                            variant="caption"
+                            sx={{
+                                ml: 1,
+                                color: 'text.secondary',
+                                fontFamily: 'monospace',
+                                backgroundColor: 'rgba(0,0,0,0.05)',
+                                px: 0.75,
+                                py: 0.25,
+                                borderRadius: 0.5,
+                            }}
+                        >
+                            #{item.licenceNo}
+                        </Typography>
+                    )}
+                </Typography>
+            </Box>
 
             {/* Days Left - Right */}
             <Typography

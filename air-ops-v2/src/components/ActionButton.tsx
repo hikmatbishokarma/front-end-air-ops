@@ -113,19 +113,24 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   const handleSendEmail = async () => {
     try {
       setLoading(true);
+      const inputVariables: any = {
+        quotationNo: currentQuotation,
+        email: clientEmail,
+        documentType: getEnumKeyByValue(
+          SalesDocumentType,
+          SalesDocumentType[documentType as keyof typeof SalesDocumentType]
+        ),
+      };
+
+      if (tripId) inputVariables.tripId = tripId;
+      if (sectorNo) inputVariables.sectorNo = Number(sectorNo);
+
       const result = await useGql({
         query: SEND_ACKNOWLEDGEMENT,
         queryName: "sendAcknowledgement",
         queryType: "mutation",
         variables: {
-          input: {
-            quotationNo: currentQuotation,
-            email: clientEmail,
-            documentType: getEnumKeyByValue(
-              SalesDocumentType,
-              SalesDocumentType[documentType as keyof typeof SalesDocumentType]
-            ),
-          },
+          input: inputVariables,
         },
       });
 
@@ -205,7 +210,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 
       setDownloading(true); // start animation
 
-      // Special handling for MANIFEST - use different API endpoint
+      // Special handling for Manifest download
       if (documentType === "MANIFEST" && tripId && sectorNo) {
         const response = await axios.get(
           `${apiBaseUrl}api/document/manifest/download?tripId=${tripId}&sectorNo=${sectorNo}`,
@@ -225,6 +230,30 @@ const ActionButton: React.FC<ActionButtonProps> = ({
         setDownloading(false);
         return;
       }
+
+      // Special handling for Boarding Pass download
+      if (documentType === "BOARDING_PASS" && tripId && sectorNo) {
+        const response = await axios.get(
+          `${apiBaseUrl}api/document/boarding-pass/download`,
+          {
+            params: {
+              tripId,
+              sectorNo
+            },
+            responseType: 'blob'
+          }
+        );
+
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(new Blob([response.data]));
+        link.setAttribute('download', `boarding-passes-${tripId}-sector-${sectorNo}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+        setDownloading(false);
+        return;
+      }
+
       const response = await axios.get(
         `${apiBaseUrl}api/document/quote/download?quotationNo=${currentQuotation}&documentType=${_documentType}`,
         {
@@ -346,7 +375,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
         )}
 
         {showPrint && (
-          <IconButton color="primary" onClick={printFn}>
+          <IconButton color="primary" onClick={() => printFn()}>
             <PrintIcon fontSize="small" />
           </IconButton>
         )}

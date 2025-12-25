@@ -11,6 +11,10 @@ interface CertificationAlert {
     validTill: string;
 }
 
+const cloudfrontBaseUrl =
+    import.meta.env.VITE_CLOUDFRONT_BASE_URL || "http://localhost:3000/";
+
+
 export const useStaffCertifications = () => {
     const [certifications, setCertifications] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -87,6 +91,9 @@ export const useCertificationAlerts = (certificationList: any[]): CertificationA
             staffName: item.displayName ?? item.staffName,
             daysLeft,
             validTill: item.validTill,
+            dateOfIssue: item.dateOfIssue,
+            licenceNo: item.licenceNo,
+            issuedBy: `${cloudfrontBaseUrl}${item.issuedBy}`
         };
     });
 };
