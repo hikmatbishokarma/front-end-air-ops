@@ -604,7 +604,7 @@ export const UserProfile = () => {
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={4} md={3}>
-          <Card sx={{ p: 2 }}>
+          <Card sx={{ p: 2 }} className="pfofile_mob_img">
             <Box display="flex" flexDirection="column" alignItems="center">
               +{" "}
               <Controller

@@ -30,8 +30,8 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
   const operatorId = session?.user.operator?.id || null;
 
   return (
-    <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-      <Grid item xs={6}>
+    <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }} className="admin_aircraft_edit">
+      <Grid item xs={6} className="edit_aircraft_admin">
         <Controller
           name="name"
           control={control}
@@ -53,7 +53,7 @@ export const BasicInfoStep = ({ control }: { control: any }) => {
           )}
         />
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={2} className="edit_aircraft_admin">
         <Controller
           name="code"
           control={control}
@@ -253,7 +253,7 @@ export const MediaStep = ({
   getValues: any;
 }) => (
   <Grid container spacing={1} alignItems="center" sx={{ mb: 3 }}>
-    <Grid item xs={6}>
+    <Grid item xs={6} md={3}>
       <Controller
         name="flightImage"
         control={control}
@@ -268,7 +268,7 @@ export const MediaStep = ({
         )}
       />
     </Grid>
-    <Grid item xs={6}>
+    <Grid item xs={6} md={3}>
       <Controller
         name="seatLayoutImage"
         control={control}
@@ -283,7 +283,7 @@ export const MediaStep = ({
         )}
       />
     </Grid>
-    <Grid item xs={6}>
+    <Grid item xs={6} md={3}>
       <Controller
         name="warningImage"
         control={control}
@@ -308,7 +308,7 @@ export const MediaStep = ({
       />
     </Grid>
 
-    <Grid item xs={6}>
+    <Grid item xs={6} md={12}>
       <Controller
         name="flightInteriorImages"
         control={control}
@@ -319,9 +319,9 @@ export const MediaStep = ({
             onChange={field.onChange}
             label="Flight Interior"
             category="flight_media"
-            // ⭐️ Simplified: Just pass the RHF field change function
-            // The MultiFileUpload component will now handle the array aggregation
-            // onUpload={field.onChange} // We will change MultiFileUpload to use this differently
+          // ⭐️ Simplified: Just pass the RHF field change function
+          // The MultiFileUpload component will now handle the array aggregation
+          // onUpload={field.onChange} // We will change MultiFileUpload to use this differently
           />
         )}
       />

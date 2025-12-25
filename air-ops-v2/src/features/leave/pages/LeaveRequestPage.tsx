@@ -94,7 +94,7 @@ export const LeaveRequest = () => {
         mb={2}
       >
         <Typography variant="h6">Leave</Typography>
-        <Button variant="contained" onClick={handleOpenDrawer}>
+        <Button className="leave_apply_btn_mob" variant="contained" onClick={handleOpenDrawer}>
           Apply Leave
         </Button>
       </Box>

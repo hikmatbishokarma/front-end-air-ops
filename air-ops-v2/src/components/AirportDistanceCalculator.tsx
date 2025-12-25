@@ -138,7 +138,7 @@ const AirportCalculator = () => {
         <>
             <Box
                 sx={{
-                    bgcolor: "#0d2d6c",
+                    bgcolor: "#fff",
                     p: 2,
                     display: "flex",
                     alignItems: "center",
@@ -369,7 +369,7 @@ const HelicopterCalculator = () => {
 
     return (
         <>
-            <Box
+            <Box className="ds_mobile_phone"
                 sx={{
                     bgcolor: "#0d2d6c",
                     p: 2,
@@ -460,7 +460,7 @@ const HelicopterCalculator = () => {
                     </Box>
                 </Box>
 
-                <Button variant="contained" onClick={handleCalculate} sx={{ bgcolor: "#1976d2", textTransform: "none", fontWeight: "bold", px: 4, py: 1.5, flexShrink: 0, "&:hover": { bgcolor: "#1565c0" } }}>Calculate</Button>
+                <Button className="calculate_style" variant="contained" onClick={handleCalculate} sx={{ bgcolor: "#1976d2", textTransform: "none", fontWeight: "bold", px: 4, py: 1.5, flexShrink: 0, "&:hover": { bgcolor: "#1565c0" } }}>Calculate</Button>
             </Box>
 
             {showResult && distance !== null && (
@@ -642,7 +642,7 @@ const CustomCalculator = () => {
 
     return (
         <>
-            <Box
+            <Box className="ds_mobile_phone"
                 sx={{
                     bgcolor: "#0d2d6c",
                     p: 2,

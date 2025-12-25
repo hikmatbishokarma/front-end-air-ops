@@ -307,7 +307,7 @@ const RoleEdit = () => {
 
             {/* Delete Button */}
             <Grid item xs={1} sx={{ textAlign: "center" }}>
-              <IconButton onClick={() => remove(index)} color="error">
+              <IconButton className="ground-handlers" onClick={() => remove(index)} color="error">
                 <Delete fontSize="small" />
               </IconButton>
             </Grid>
@@ -316,7 +316,7 @@ const RoleEdit = () => {
 
         {/* Add Row Button */}
         <Box sx={{ display: "flex", justifyContent: "start", mt: 2 }}>
-          <IconButton aria-label="Add" onClick={addAccessPermissionRow}>
+          <IconButton className="ground-handlers" aria-label="Add" onClick={addAccessPermissionRow}>
             <AddIcon className="ground-handler" />
           </IconButton>
         </Box>
