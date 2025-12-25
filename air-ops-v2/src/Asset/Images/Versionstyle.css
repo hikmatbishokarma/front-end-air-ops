@@ -337,13 +337,16 @@ text-align: left;
   /* height: 100vh; */
   /* background-image: url(../Images/bg-landing-main.gif) !important; */
   background-position: center;
-  height: 100%;
-  overflow: hidden !important;
+  height: 100vh;
+  overflow: scroll !important;
+
+  scrollbar-color: #001551 #001551;
 
 }
 
 .MuiDrawer-anchorLeft nav ul li a {
   color: #fff;
+  margin: 0px 10px;
 }
 
 .MuiDrawer-anchorLeft nav svg {
@@ -363,6 +366,7 @@ text-align: left;
   /* border-top-left-radius: 50% 200px;
   border-bottom-right-radius: 50% 200px; */
   border-radius: 50px;
+  margin: 0px 10px
 }
 
 /* .MuiDrawer-paper{
@@ -1413,12 +1417,16 @@ text-align: left;
   background-color: #ff0202 !important;
 }
 
-.MuiDrawer-paper {
-  width: 225px !important;
+.drawer_header_bar .MuiDrawer-paper {
+  width: 240px !important;
 }
 
-.css-8p6m3b-MuiDrawer-docked {
-  width: 215px !important;
+.drawer_header_bar .css-8p6m3b-MuiDrawer-docked {
+  width: 240px !important;
+}
+
+.drawer_header_bar .MuiDrawer-paper {
+  background-color: #001551 !important;
 }
 
 @media screen and (max-width: 768px) {
@@ -1460,8 +1468,53 @@ text-align: left;
   .search_quo1 {
     margin-top: 170px !important;
   }
+
+  .edit_aircraft_admin .MuiFormControl-fullWidth {
+    height: auto;
+  }
+
+  .edit_aircraft_admin {
+    max-width: 100% !important;
+  }
+
+  .admin_aircraft_edit {
+    display: block !important;
+  }
+
+  .ds_mobile_phone {
+    display: block !important;
+  }
+
+  .calculate_style {
+    margin-top: 30px !important;
+  }
+
+  .ds_flight_iocn {
+    margin-top: 18px;
+    margin-bottom: 10px;
+  }
 }
 
 .distance_view .MuiOutlinedInput-root {
   border-radius: 0px !important
+}
+
+.add-icon-v1 {
+  height: 36px;
+  width: 36px;
+}
+
+.edit_aircraft_admin .MuiFormControl-fullWidth {
+  height: 60px;
+}
+
+.notam_daily {
+  background: #fff;
+  border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+  .drawer_header_bar .MuiContainer-maxWidthLg {
+    max-width: 100% !important;
+  }
 }

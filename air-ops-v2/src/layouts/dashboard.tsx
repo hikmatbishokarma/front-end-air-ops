@@ -682,7 +682,7 @@ export default function Layout() {
   }
 
   return (
-    <Box
+    <Box className="drawer_header_bar"
       sx={{
         minHeight: "100vh",
         backgroundColor: "#ddd",

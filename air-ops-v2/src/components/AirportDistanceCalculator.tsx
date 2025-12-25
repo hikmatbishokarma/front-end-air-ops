@@ -120,7 +120,7 @@ const AirportCalculator = () => {
         <>
             <Box
                 sx={{
-                    bgcolor: "#0d2d6c",
+                    bgcolor: "#fff",
                     p: 2,
                     display: "flex",
                     alignItems: "center",
@@ -129,7 +129,7 @@ const AirportCalculator = () => {
                     gap: 2,
                 }}
             >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1, maxWidth: "800px" }}>
+                <Box className="ds_mobile_phone" sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1, maxWidth: "800px" }}>
                     <Box sx={{ display: "flex", alignItems: "center", bgcolor: "#1976d2", borderRadius: 1 }}>
                         <Box sx={{ px: 2, py: 1, color: "white", fontWeight: "bold" }}>From:</Box>
                         <Box sx={{ bgcolor: "white", width: 200 }}>
@@ -142,7 +142,7 @@ const AirportCalculator = () => {
                         </Box>
                     </Box>
 
-                    <FlightIcon sx={{ color: "#1976d2", transform: "rotate(90deg)", fontSize: 30 }} />
+                    <FlightIcon className="ds_flight_iocn" sx={{ color: "#1976d2", transform: "rotate(90deg)", fontSize: 30 }} />
 
                     <Box sx={{ display: "flex", alignItems: "center", bgcolor: "#1976d2", borderRadius: 1 }}>
                         <Box sx={{ px: 2, py: 1, color: "white", fontWeight: "bold" }}>To:</Box>
@@ -156,7 +156,7 @@ const AirportCalculator = () => {
                         </Box>
                     </Box>
 
-                    <Button
+                    <Button className="calculate_style"
                         variant="contained"
                         onClick={handleCalculate}
                         sx={{
@@ -376,17 +376,17 @@ const HelicopterCalculator = () => {
 
     return (
         <>
-            <Box sx={{ bgcolor: "#0d2d6c", p: 2, display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+            <Box className="ds_mobile_phone" sx={{ bgcolor: "#fff", p: 2, display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <TextField label="From Lat" value={fromLat} onChange={(e) => setFromLat(e.target.value)} placeholder="N13-08.1" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
                     <TextField label="From Long" value={fromLong} onChange={(e) => setFromLong(e.target.value)} placeholder="E077-36.6" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
                 </Box>
-                <FlightIcon sx={{ color: "#1976d2", transform: "rotate(90deg)", fontSize: 30 }} />
+                <FlightIcon className="ds_flight_iocn" sx={{ color: "#1976d2", transform: "rotate(90deg)", fontSize: 30 }} />
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <TextField label="To Lat" value={toLat} onChange={(e) => setToLat(e.target.value)} placeholder="N12-58.2" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
                     <TextField label="To Long" value={toLong} onChange={(e) => setToLong(e.target.value)} placeholder="E077-40.3" size="small" sx={{ bgcolor: "white", borderRadius: 1, width: 140 }} />
                 </Box>
-                <Button variant="contained" onClick={handleCalculate} sx={{ bgcolor: "#1976d2", textTransform: "none", fontWeight: "bold", px: 4, "&:hover": { bgcolor: "#1565c0" } }}>Calculate</Button>
+                <Button className="calculate_style" variant="contained" onClick={handleCalculate} sx={{ bgcolor: "#1976d2", textTransform: "none", fontWeight: "bold", px: 4, "&:hover": { bgcolor: "#1565c0" } }}>Calculate</Button>
             </Box>
 
             {showResult && distance !== null && (

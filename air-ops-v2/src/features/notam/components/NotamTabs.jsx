@@ -8,7 +8,7 @@ const CATEGORY = {
 
 export default function NotamTabs({ value, onChange }) {
     return (
-        <Box>
+        <Box className="notam_daily">
             <Tabs
                 value={value}
                 onChange={(e, v) => onChange(v)}
