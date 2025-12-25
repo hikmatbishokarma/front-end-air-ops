@@ -106,7 +106,7 @@ const RoleList = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+      <Box clasName="admin_role_responsive" sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
         <Button
           variant="contained"
           color="primary"

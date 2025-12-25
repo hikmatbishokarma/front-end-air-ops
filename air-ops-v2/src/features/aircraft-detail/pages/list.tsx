@@ -138,7 +138,7 @@ export const AircraftDetailList = () => {
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button
+        <Button className="admin_role_responsive"
           variant="contained"
           color="primary"
           onClick={handleOpen}
