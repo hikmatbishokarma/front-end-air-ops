@@ -39,8 +39,8 @@ export const LeaveRequest = () => {
               filters?.type !== "ALL" && { type: { eq: filters.type } }),
             ...(filters?.status &&
               filters?.status !== "ALL" && {
-                status: { eq: filters.status },
-              }),
+              status: { eq: filters.status },
+            }),
             ...(operatorId && { operatorId: { eq: operatorId } }),
           },
         },
@@ -94,7 +94,7 @@ export const LeaveRequest = () => {
         mb={2}
       >
         <Typography variant="h6">Leave</Typography>
-        <Button variant="contained" onClick={handleOpenDrawer}>
+        <Button className="leave_apply_btn_mob" variant="contained" onClick={handleOpenDrawer}>
           Apply Leave
         </Button>
       </Box>

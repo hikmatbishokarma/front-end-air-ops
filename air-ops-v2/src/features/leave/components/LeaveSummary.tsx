@@ -27,7 +27,7 @@ type LeaveSummaryProps = {
 
 const LeaveSummary: React.FC<LeaveSummaryProps> = ({ data }) => {
   return (
-    <Grid container spacing={2} mb={2}>
+    <Grid container spacing={2} mb={2} >
       {data.map((item) => (
         <Grid item xs={6} md={2.3} key={item.type}>
           <Card variant="outlined" className="leave_summary_gap">
