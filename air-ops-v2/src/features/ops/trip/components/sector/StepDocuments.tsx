@@ -37,7 +37,7 @@ interface StepDocumentsProps {
 
 export default function StepDocuments({ control, tripId, sectorNo }: StepDocumentsProps) {
 
-  console.log("tripId:::", tripId, "sectorNo:::", sectorNo)
+
   const [manifestDialogOpen, setManifestDialogOpen] = useState(false);
   const { fields, update, append, remove } = useFieldArray({
     control,

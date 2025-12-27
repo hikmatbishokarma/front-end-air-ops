@@ -8,7 +8,11 @@ export const CREATE_INTIMATION = gql`
       sectorNo
       recipientType
       toEmail
+      toEmails
+      ccEmails
       subject
+      template
+      body
       note
       attachmentUrl
       status
@@ -25,7 +29,11 @@ export const UPDATE_INTIMATION = gql`
       sectorNo
       recipientType
       toEmail
+      toEmails
+      ccEmails
       subject
+      template
+      body
       note
       attachmentUrl
       status
@@ -59,7 +67,11 @@ export const GET_INTIMATIONS_BY_TRIP = gql`
       sectorNo
       recipientType
       toEmail
+      toEmails
+      ccEmails
       subject
+      template
+      body
       note
       attachmentUrl
       status

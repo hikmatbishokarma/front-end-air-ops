@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -14,12 +14,30 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Tab,
+  Tabs,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useIntimation } from "../../hooks/useIntimation";
 import MediaUpload from "@/components/MediaUpload";
 import { FileObject } from "@/shared/types/common";
 import { logoColors } from "@/shared/utils";
+import useGql from "@/lib/graphql/gql";
+import { GET_AIRPORT_BY_ICAO } from "@/lib/graphql/queries/airports";
+import moment from "moment";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 interface TripDetailsTabProps {
   trip: any;
@@ -45,7 +63,7 @@ interface IntimationFormData {
 
 export default function IntimationsTab({ trip }: TripDetailsTabProps) {
   const tripId = trip.id;
-  const { intimations, creating, sending, createIntimation, sendIntimation } =
+  const { intimations, creating, sending, createIntimation, sendIntimation, updateIntimation } =
     useIntimation(tripId);
 
   const [expandedSector, setExpandedSector] = useState<number>(0);
@@ -109,6 +127,7 @@ export default function IntimationsTab({ trip }: TripDetailsTabProps) {
               intimations={intimationsBySector[index + 1] || []}
               onCreateIntimation={createIntimation}
               onSendIntimation={sendIntimation}
+              onUpdateIntimation={updateIntimation}
               creating={creating}
               sending={sending}
             />
@@ -129,7 +148,17 @@ interface SectorIntimationFormProps {
   onSendIntimation: (id: string) => Promise<any>;
   creating: boolean;
   sending: boolean;
+  onUpdateIntimation: (id: string, input: any) => Promise<any>;
 }
+
+const TEMPLATES = ["Template A", "Template B", "Template C"];
+
+// Helper to set editor content safely
+const setEditorContent = (ref: React.RefObject<HTMLDivElement>, content: string) => {
+  if (ref.current) {
+    ref.current.innerHTML = content;
+  }
+};
 
 function SectorIntimationForm({
   tripId,
@@ -140,319 +169,469 @@ function SectorIntimationForm({
   onSendIntimation,
   creating,
   sending,
+  onUpdateIntimation,
 }: SectorIntimationFormProps) {
-  const [formData, setFormData] = useState<IntimationFormData>({
-    recipientType: "",
-    toEmail: "",
+  const [activeTab, setActiveTab] = useState(0);
+  const [template, setTemplate] = useState<string>("");
+  const [formData, setFormData] = useState<{
+    toEmails: string;
+    ccEmails: string;
+    subject: string;
+    body: string;
+  }>({
+    toEmails: "",
+    ccEmails: "",
     subject: "",
-    note: "",
-    attachmentUrl: "",
+    body: "",
   });
 
-  const [attachment, setAttachment] = useState<FileObject | null>(null);
-  const [emailError, setEmailError] = useState<string>("");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  // Ref for the contentEditable div
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  // Sync editor content when template/editingId changes and ref becomes available
+  useEffect(() => {
+    if (editorRef.current && formData.body && editorRef.current.innerHTML !== formData.body) {
+      editorRef.current.innerHTML = formData.body;
+    }
+  }, [template, editingId]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
+    // Reset form on tab switch
+    setTemplate("");
+    setFormData({
+      toEmails: "",
+      ccEmails: "",
+      subject: "",
+      body: "",
+    });
+    setEditingId(null);
+    setEditorContent(editorRef, "");
+  };
+
+  const currentAirportCode = activeTab === 0 ? sector.source?.code : sector.destination?.code;
+  const currentType = activeTab === 0 ? 'Departure' : 'Arrival';
+
+  // Fetch airport data and populate form
+  const handleTemplateChange = async (event: SelectChangeEvent) => {
+    const selectedTemplate = event.target.value;
+    setTemplate(selectedTemplate);
+
+    // Reset basics
+    let newTo = "";
+    let newCc = "";
+    // Customize subject based on type
+    let subject = `Flight Intimation - ${currentType} - ${sector.source?.code} to ${sector.destination?.code}`;
+
+    // ZZZZ Logic: Manual Input
+    if (currentAirportCode === "ZZZZ") {
+      // Leave emails empty for manual input
+    } else if (currentAirportCode) {
+      // Fetch Airport Data
+      try {
+        const result = await useGql({
+          query: GET_AIRPORT_BY_ICAO,
+          variables: { icao: currentAirportCode },
+          queryName: "airportByIcao",
+          queryType: "query",
+        });
+
+        const airport = result;
+
+        if (airport) {
+          // TO: Main email
+          if (airport.email) newTo = airport.email;
+
+          // CC: Ground Handlers + Fuel Suppliers
+          const ghEmails =
+            airport.groundHandlersInfo?.map((g: any) => g.email) || [];
+          const fuelEmails =
+            airport.fuelSuppliers?.map((f: any) => f.email) || [];
+          newCc = [...ghEmails, ...fuelEmails].filter(Boolean).join(", ");
+        }
+      } catch (error) {
+        console.error("Error fetching airport data:", error);
+      }
+    }
+
+    const depDate = sector.depatureDate
+      ? moment(sector.depatureDate).format("DD MMM YYYY")
+      : "";
+    const depTime = sector.depatureTime || "";
+    const pax = sector.pax || "TBA";
+
+    const aircraftName = sector.aircraft?.name || "";
+    const aircraftCode = sector.aircraft?.code || "";
+    const aircraftDisplay = [aircraftName, aircraftCode].filter(Boolean).join(" - ") || "TBA";
+
+    let generatedBody = "";
+
+    // Updated to use Real HTML Tables since we are now using contentEditable
+    const tableStyle = "border-collapse: collapse; width: 100%; border: 1px solid #000;";
+    const thStyle = "padding: 8px; text-align: center; background-color: #f2f2f2; border: 1px solid #000; font-weight: bold;";
+    const tdStyle = "padding: 8px; text-align: center; border: 1px solid #000;";
+
+    switch (selectedTemplate) {
+      case "Template B":
+        // Template B: Formal Request
+        generatedBody = `
+          <p>Dear Partners,</p>
+          <p>We kindly request your services for the following flight operation at <strong>${currentAirportCode}</strong> (${currentType}).</p>
+          <br/>
+          <table border="1" cellpadding="5" cellspacing="0" style="${tableStyle}">
+            <thead>
+                <tr>
+                    <th colspan="2" style="${thStyle}">FLIGHT SCHEDULE / DETAILS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="${tdStyle} text-align: left;"><strong>Sector</strong></td>
+                    <td style="${tdStyle} text-align: left;">${sector.source?.code} - ${sector.destination?.code}</td>
+                </tr>
+                <tr>
+                    <td style="${tdStyle} text-align: left;"><strong>Date</strong></td>
+                    <td style="${tdStyle} text-align: left;">${depDate}</td>
+                </tr>
+                 <tr>
+                    <td style="${tdStyle} text-align: left;"><strong>ETD (UTC)</strong></td>
+                    <td style="${tdStyle} text-align: left;">${depTime}</td>
+                </tr>
+                 <tr>
+                    <td style="${tdStyle} text-align: left;"><strong>Aircraft</strong></td>
+                    <td style="${tdStyle} text-align: left;">${aircraftDisplay}</td>
+                </tr>
+                 <tr>
+                    <td style="${tdStyle} text-align: left;"><strong>PAX</strong></td>
+                    <td style="${tdStyle} text-align: left;">${pax}</td>
+                </tr>
+            </tbody>
+          </table>
+          <br/>
+          <p>Please ensure all ground handling and fuel services are arranged accordingly. Awaiting your confirmation.</p>
+          <p>Sincerely,<br/>Airops Operations</p>
+        `;
+        break;
+
+      case "Template C":
+        // Template C: Vertical Table (Clean)
+        generatedBody = `
+          <p>Greetings,</p>
+          <p>Please find the operation details below:</p>
+          <table border="1" cellpadding="5" cellspacing="0" style="${tableStyle}">
+              <tr>
+                <td style="${thStyle}">Airport</td>
+                <td style="${tdStyle}">${currentAirportCode} (${currentType})</td>
+              </tr>
+              <tr>
+                <td style="${thStyle}">Sector</td>
+                <td style="${tdStyle}">${sector.source?.code} -> ${sector.destination?.code}</td>
+              </tr>
+              <tr>
+                <td style="${thStyle}">Date</td>
+                <td style="${tdStyle}">${depDate}</td>
+              </tr>
+              <tr>
+                <td style="${thStyle}">Time (UTC)</td>
+                <td style="${tdStyle}">${depTime}</td>
+              </tr>
+               <tr>
+                <td style="${thStyle}">Aircraft</td>
+                <td style="${tdStyle}">${aircraftDisplay}</td>
+              </tr>
+              <tr>
+                <td style="${thStyle}">PAX</td>
+                <td style="${tdStyle}">${pax}</td>
+              </tr>
+          </table>
+          <p>Please confirm receipt.</p>
+          <p>Regards,<br/>Ops Team</p>
+        `;
+        break;
+
+      case "Template A":
+      default:
+        // Template A: Horizontal Table (Standard)
+        generatedBody = `
+          <p>Dear Team,</p>
+          <p>Please find below the flight intimation details for ${currentType} at ${currentAirportCode}:</p>
+          <table border="1" cellpadding="5" cellspacing="0" style="${tableStyle}">
+            <thead>
+                <tr>
+                    <th style="${thStyle}">Sector</th>
+                    <th style="${thStyle}">Date</th>
+                    <th style="${thStyle}">ETD (UTC)</th>
+                    <th style="${thStyle}">PAX</th>
+                    <th style="${thStyle}">Aircraft</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="${tdStyle}">${sector.source?.code} - ${sector.destination?.code}</td>
+                    <td style="${tdStyle}">${depDate}</td>
+                    <td style="${tdStyle}">${depTime}</td>
+                    <td style="${tdStyle}">${pax}</td>
+                    <td style="${tdStyle}">${aircraftDisplay}</td>
+                </tr>
+            </tbody>
+          </table>
+          <p>Please acknowledge receipt.</p>
+          <p>Best Regards,<br/>Operations Team</p>
+        `;
+        break;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      toEmails: newTo,
+      ccEmails: newCc,
+      subject: subject,
+      body: generatedBody,
+    }));
+
+    // Update Editor
+    setEditorContent(editorRef, generatedBody);
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Validate email on change
-    if (name === "toEmail") {
-      if (value && !validateEmail(value)) {
-        setEmailError("Please enter a valid email address");
-      } else {
-        setEmailError("");
-      }
-    }
   };
 
-  const handleAttachmentUpload = (fileObject: FileObject | null) => {
-    setAttachment(fileObject);
-    setFormData((prev) => ({
-      ...prev,
-      attachmentUrl: fileObject?.url || "",
-    }));
+  // Handle manual edits in contentEditable
+  const handleBodyBlur = (e: React.FormEvent<HTMLDivElement>) => {
+    const html = e.currentTarget.innerHTML;
+    setFormData(prev => ({ ...prev, body: html }));
   };
 
   const handleSaveDraft = async () => {
-    // Validate email before saving
-    if (!validateEmail(formData.toEmail)) {
-      setEmailError("Please enter a valid email address");
-      return;
-    }
+    // Ensure we grab latest content if user didn't blur
+    const currentBody = editorRef.current?.innerHTML || formData.body;
 
     const input = {
       tripId,
       sectorNo,
-      recipientType: formData.recipientType,
-      toEmail: formData.toEmail,
+      recipientType: currentType, // 'Departure' or 'Arrival'
+      toEmails: formData.toEmails.split(",").map((e) => e.trim()).filter(Boolean),
+      ccEmails: formData.ccEmails.split(",").map((e) => e.trim()).filter(Boolean),
       subject: formData.subject,
-      note: formData.note,
-      attachmentUrl: formData.attachmentUrl,
+      body: currentBody,
+      note: currentBody, // Fallback
+      attachmentUrl: "",
+      template: template,
     };
 
-    await onCreateIntimation(input);
-    // Reset form
+    if (editingId) {
+      await onUpdateIntimation(editingId, input);
+      setEditingId(null);
+    } else {
+      await onCreateIntimation(input);
+    }
+
+    // Clear form
+    setTemplate("");
     setFormData({
-      recipientType: "",
-      toEmail: "",
+      toEmails: "",
+      ccEmails: "",
       subject: "",
-      note: "",
-      attachmentUrl: "",
+      body: "",
     });
-    setAttachment(null);
-    setEmailError("");
+    setEditorContent(editorRef, "");
   };
+
+  const handleEdit = (intimation: any) => {
+    setEditingId(intimation._id);
+    setTemplate(intimation.template || "");
+
+    if (intimation.recipientType === 'Arrival') {
+      setActiveTab(1);
+    } else {
+      setActiveTab(0);
+    }
+
+    const bodyContent = intimation.body || intimation.note || "";
+
+    setFormData({
+      toEmails: (intimation.toEmails || [intimation.toEmail]).join(", "),
+      ccEmails: (intimation.ccEmails || []).join(", "),
+      subject: intimation.subject,
+      body: bodyContent,
+    });
+
+    setEditorContent(editorRef, bodyContent);
+  }
 
   const handleSend = async (intimationId: string) => {
     await onSendIntimation(intimationId);
   };
 
-  const isFormValid =
-    formData.recipientType &&
-    formData.toEmail &&
-    validateEmail(formData.toEmail) &&
-    !emailError;
+  // Filter intimations for current tab
+  const filteredIntimations = intimations.filter(i => {
+    if (activeTab === 0) return i.recipientType !== 'Arrival'; // Default to Departure
+    return i.recipientType === 'Arrival';
+  });
 
   return (
     <Box>
-      {/* Departure Airport Section */}
-      <Box mb={3}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+        <Tabs value={activeTab} onChange={handleTabChange} aria-label="airport tabs">
+          <Tab label={`Departure: ${sector.source?.code}`} />
+          <Tab label={`Arrival: ${sector.destination?.code}`} />
+        </Tabs>
+      </Box>
+
+      {/* Form Section */}
+      <Box mb={3} sx={{ p: 2, bgcolor: "#fff", borderRadius: 2, border: "1px solid #eee" }}>
         <Typography variant="subtitle2" fontWeight="bold" mb={2}>
-          Departure Airport: {sector.source?.code}
+          Compose Intimation ({currentType}: {currentAirportCode})
         </Typography>
 
         <Stack spacing={2}>
           <FormControl fullWidth size="small">
-            <InputLabel>Recipient Type</InputLabel>
+            <InputLabel>Select Template</InputLabel>
             <Select
-              name="recipientType"
-              value={formData.recipientType}
-              onChange={handleInputChange}
-              label="Recipient Type"
+              value={template}
+              onChange={handleTemplateChange}
+              label="Select Template"
             >
-              {RECIPIENT_TYPES.map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type}
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {TEMPLATES.map((t) => (
+                <MenuItem key={t} value={t}>
+                  {t}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
 
-          <TextField
-            fullWidth
-            size="small"
-            label="To Email"
-            name="toEmail"
-            type="email"
-            value={formData.toEmail}
-            onChange={handleInputChange}
-            error={!!emailError}
-            helperText={emailError}
-            required
-          />
+          {template && (
+            <>
+              <TextField
+                fullWidth
+                size="small"
+                label="To (Comma separated)"
+                name="toEmails"
+                value={formData.toEmails}
+                onChange={handleInputChange}
+                helperText="Main recipients"
+              />
 
-          <TextField
-            fullWidth
-            size="small"
-            label="Subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleInputChange}
-          />
+              <TextField
+                fullWidth
+                size="small"
+                label="CC (Comma separated)"
+                name="ccEmails"
+                value={formData.ccEmails}
+                onChange={handleInputChange}
+                helperText="Fuel, Ground Handlers, etc."
+              />
 
-          <TextField
-            fullWidth
-            size="small"
-            label="Custom Note"
-            name="note"
-            multiline
-            rows={3}
-            value={formData.note}
-            onChange={handleInputChange}
-          />
+              <TextField
+                fullWidth
+                size="small"
+                label="Subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleInputChange}
+              />
 
-          <MediaUpload
-            label="Attachment (PDF)"
-            value={attachment}
-            onUpload={handleAttachmentUpload}
-            category="intimation"
-            size="medium"
-            accept=".pdf"
-          />
-
-          <Stack direction="row" spacing={2}>
-            <Button
-              variant="contained"
-              onClick={handleSaveDraft}
-              disabled={creating || !isFormValid}
-            >
-              Save Draft
-            </Button>
-          </Stack>
-        </Stack>
-
-        {/* Display existing intimations for this sector */}
-        {intimations.length > 0 && (
-          <Box mt={3}>
-            <Typography variant="subtitle2" fontWeight="bold" mb={1}>
-              Sent Intimations:
-            </Typography>
-            {intimations.map((intimation: any) => (
-              <Box
-                key={intimation._id}
-                sx={{
-                  p: 2,
-                  mb: 2,
-                  border: "1px solid #e0e0e0",
-                  borderRadius: 2,
-                  backgroundColor: "#f9f9f9",
+              <Typography variant="caption" color="textSecondary">Email Body (Editable)</Typography>
+              <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={handleBodyBlur}
+                style={{
+                  border: "1px solid #c4c4c4",
+                  borderRadius: "4px",
+                  padding: "16px",
+                  minHeight: "300px",
+                  maxHeight: "600px",
+                  overflowY: "auto",
+                  outline: "none",
+                  backgroundColor: "#fff",
+                  fontFamily: 'Roboto, sans-serif'
                 }}
-              >
-                <Stack spacing={1.5}>
-                  {/* Header with recipient and status */}
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Box>
-                      <Typography variant="body2" fontWeight="bold">
-                        To: {intimation.toEmail}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Recipient: {intimation.recipientType}
-                      </Typography>
-                    </Box>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Chip
-                        label={intimation.status}
-                        size="small"
-                        color={
-                          intimation.status === "SENT"
-                            ? "success"
-                            : intimation.status === "DRAFT"
-                              ? "default"
-                              : "error"
-                        }
-                      />
-                      {intimation.status === "DRAFT" && (
-                        <Button
-                          size="small"
-                          variant="contained"
-                          onClick={() => handleSend(intimation._id)}
-                          disabled={sending}
-                        >
-                          Send
-                        </Button>
-                      )}
-                      {intimation.status === "FAILED" && (
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={() => handleSend(intimation._id)}
-                          disabled={sending}
-                        >
-                          Resend
-                        </Button>
-                      )}
-                    </Stack>
-                  </Stack>
+              />
 
-                  {/* Email Preview */}
-                  <Box
-                    sx={{
-                      p: 2,
-                      backgroundColor: "#fff",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: 1,
-                    }}
-                  >
-                    {/* Subject */}
-                    {intimation.subject && (
-                      <Box mb={1}>
-                        <Typography variant="caption" color="text.secondary">
-                          Subject:
-                        </Typography>
-                        <Typography variant="body2" fontWeight="500">
-                          {intimation.subject}
-                        </Typography>
-                      </Box>
-                    )}
+              <Stack direction="row" spacing={2} justifyContent="flex-end">
+                <Button
+                  variant="outlined"
+                  onClick={() => setPreviewOpen(true)}
+                >
+                  Preview
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveDraft}
+                  disabled={creating}
+                >
+                  {editingId ? "Update Draft" : "Save Draft"}
+                </Button>
+              </Stack>
+            </>
+          )}
+        </Stack>
+      </Box>
 
-                    {/* Note */}
-                    {intimation.note && (
-                      <Box mb={1}>
-                        <Typography variant="caption" color="text.secondary">
-                          Note:
-                        </Typography>
-                        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                          {intimation.note}
-                        </Typography>
-                      </Box>
-                    )}
-
-                    {/* Attachment */}
-                    {intimation.attachmentUrl && (
-                      <Box>
-                        <Typography variant="caption" color="text.secondary">
-                          Attachment (PDF):
-                        </Typography>
-                        <Stack direction="row" alignItems="center" spacing={1} mt={0.5}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                              p: 1,
-                              backgroundColor: "#f5f5f5",
-                              borderRadius: 1,
-                              border: "1px solid #e0e0e0",
-                            }}
-                          >
-                            <Box
-                              component="span"
-                              sx={{
-                                fontSize: "1.2rem",
-                              }}
-                            >
-                              📄
-                            </Box>
-                            <Typography variant="body2">Attachment (PDF)</Typography>
-                          </Box>
-                          <Button
-                            size="small"
-                            variant="text"
-                            onClick={() => window.open(intimation.attachmentUrl, "_blank")}
-                            sx={{ textTransform: "none" }}
-                          >
-                            Preview
-                          </Button>
-                        </Stack>
-                      </Box>
-                    )}
-                  </Box>
-
-                  {/* Timestamp */}
-                  {intimation.sentAt && (
-                    <Typography variant="caption" color="text.secondary">
-                      Sent: {new Date(intimation.sentAt).toLocaleString()}
-                    </Typography>
-                  )}
-                  {intimation.errorMessage && (
-                    <Typography variant="caption" color="error">
-                      Error: {intimation.errorMessage}
-                    </Typography>
+      {/* Existing Intimations List */}
+      <Stack spacing={2}>
+        {filteredIntimations.map((intimation: any) => (
+          <Box
+            key={intimation._id}
+            sx={{
+              p: 2,
+              border: "1px solid #e0e0e0",
+              borderRadius: 2,
+              bgcolor: "#f9f9f9",
+            }}
+          >
+            <Stack spacing={1}>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="subtitle2" fontWeight="bold">
+                  {intimation.subject}
+                </Typography>
+                <Stack direction="row" spacing={1}>
+                  <Chip label={intimation.status} size="small" color={intimation.status === 'SENT' ? 'success' : 'default'} />
+                  {intimation.status === 'DRAFT' && (
+                    <>
+                      <Button size="small" onClick={() => handleEdit(intimation)}>Edit</Button>
+                      <Button size="small" variant="contained" onClick={() => handleSend(intimation._id)} disabled={sending}>Send</Button>
+                    </>
                   )}
                 </Stack>
-              </Box>
-            ))}
+              </Stack>
+              <Typography variant="caption">To: {intimation.toEmails?.join(", ") || intimation.toEmail}</Typography>
+              <Typography variant="caption">CC: {intimation.ccEmails?.join(", ")}</Typography>
+              <Typography variant="caption">Type: {intimation.recipientType}</Typography>
+
+              {/* Preview Body Button or Summary */}
+            </Stack>
           </Box>
-        )}
-      </Box>
+        ))}
+      </Stack>
+
+      {/* Preview Modal */}
+      <Dialog open={previewOpen} onClose={() => setPreviewOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Email Preview</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={2}>
+            <Typography variant="subtitle2"><strong>To:</strong> {formData.toEmails}</Typography>
+            <Typography variant="subtitle2"><strong>CC:</strong> {formData.ccEmails}</Typography>
+            <Typography variant="subtitle2"><strong>Subject:</strong> {formData.subject}</Typography>
+            <Box sx={{ p: 2, border: '1px solid #eee', borderRadius: 1 }} dangerouslySetInnerHTML={{ __html: formData.body }} />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPreviewOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

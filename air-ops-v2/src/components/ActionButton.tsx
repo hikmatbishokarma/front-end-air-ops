@@ -24,7 +24,7 @@ import jsPDF from "jspdf";
 import useGql from "../lib/graphql/gql";
 import { SEND_ACKNOWLEDGEMENT } from "../lib/graphql/queries/quote";
 import { useSnackbar } from "@/app/providers";
-import { getEnumKeyByValue, SalesDocumentType } from "../shared/utils";
+import { getEnumKeyByValue, SalesDocumentType, QuotationStatus, QuotationStatusMap } from "../shared/utils";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import { InvoiceConfirmationModal } from "./InvoiceConfirmationModel";
@@ -49,6 +49,9 @@ interface ActionButtonProps {
   currentRecord?: any;
   tripId?: string; // For manifest download
   sectorNo?: number; // For manifest download
+  onPressGeneratePI?: () => void;
+  onPressAddPax?: () => void;
+  onPressGenerateSC?: () => void;
 }
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -71,6 +74,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   currentRecord,
   tripId,
   sectorNo,
+  onPressGeneratePI,
+  onPressAddPax,
+  onPressGenerateSC,
 }) => {
   const navigate = useNavigate();
   const showSnackbar = useSnackbar();
@@ -394,52 +400,46 @@ const ActionButton: React.FC<ActionButtonProps> = ({
             )}
           </IconButton>
         )}
-        {/* {showGeneratePI && (
-          <Tooltip
-            title={`Generate Proforma Invoice for QuotationNo: ${currentQuotation}`}
-            arrow
-          >
-            <IconButton
-              color="info"
-              onClick={() => handelInvoice("PROFORMA_INVOICE")}
-            >
-              <AddCircleOutlineIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {showGenerateTI && (
-          <Tooltip
-            title={`Generate Tax Invoice for QuotationNo: ${currentQuotation}`}
-            arrow
-          >
-            <IconButton
-              color="info"
-              onClick={() =>
-                onGenerateInvoice?.({
-                  type: "TAX_INVOICE",
-                  quotationNo: currentQuotation,
-                })
-              }
-            >
-              <AddCircleOutlineIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {showGenerateTripConfirmation && (
-          <Tooltip
-            title={`Generate Sale Confirmation for QuotationNo: ${currentQuotation}`}
-            arrow
-          >
-            <IconButton
-              color="info"
-              onClick={() =>
-                handelSaleConfirmation?.({ quotationNo: currentQuotation })
-              }
-            >
-              <AddCircleOutlineIcon />
-            </IconButton>
-          </Tooltip>
-        )} */}
+        {/* Dynamic Plus Action Button */}
+        {(() => {
+          if (!currentRecord) return null;
+          const normalizedStatus = QuotationStatusMap[currentRecord.status] ?? currentRecord.status;
+
+          return (
+            <>
+              {/* Generate PI: Charter & Status=QUOTE */}
+              {currentRecord.category === "CHARTER" &&
+                normalizedStatus === QuotationStatus.QUOTE && (
+                  <Tooltip title="Generate Proforma Invoice" arrow>
+                    <IconButton color="info" onClick={onPressGeneratePI}>
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+
+              {/* Add Pax: (Non-Charter & Status=QUOTE) OR (Charter & Status=PROFOMA_INVOICE) */}
+              {((currentRecord.category !== "CHARTER" &&
+                normalizedStatus === QuotationStatus.QUOTE) ||
+                (currentRecord.category === "CHARTER" &&
+                  normalizedStatus === QuotationStatus.PROFOMA_INVOICE)) && (
+                  <Tooltip title="Add Passengers" arrow>
+                    <IconButton color="info" onClick={onPressAddPax}>
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+
+              {/* Generate SC: Status=PAX_ADDED */}
+              {normalizedStatus === QuotationStatus.PAX_ADDED && (
+                <Tooltip title="Generate Sale Confirmation" arrow>
+                  <IconButton color="info" onClick={onPressGenerateSC}>
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </>
+          );
+        })()}
       </Box>
 
       <InvoiceConfirmationModal

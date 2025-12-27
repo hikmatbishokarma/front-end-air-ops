@@ -201,7 +201,13 @@ export default function StepBADetails({ control }: StepBADetailsProps) {
                   render={({ field, fieldState: { error } }) => (
                     <DateTimePicker
                       {...field}
+                      value={field.value ? moment(field.value) : null}
                       label="BA Conducted Date & Time"
+                      disablePast
+                      onChange={(date) => {
+                        // Ensure we save ISO string, not the moment object
+                        field.onChange(date ? date.toISOString() : null);
+                      }}
                       slotProps={{
                         textField: {
                           fullWidth: true,
@@ -218,36 +224,52 @@ export default function StepBADetails({ control }: StepBADetailsProps) {
                 <Controller
                   name={`baInfo.baReports.${index}.record`}
                   control={control}
-                  render={({ field }) => (
-                    <MediaUpload
-                      size="medium"
-                      label="BA Record"
-                      category="Trip Detail Reports"
-                      accept=".mp3,.wav,.pdf"
-                      // value={field.value}
-                      // onUpload={(url) => field.onChange(url)}
-                      value={field.value}
-                      onUpload={(fileObject) => field.onChange(fileObject)}
-                    />
-                  )}
+                  render={({ field }) => {
+                    const displayValue =
+                      typeof field.value === "string" && field.value
+                        ? { key: field.value, url: field.value }
+                        : field.value;
+
+                    return (
+                      <MediaUpload
+                        size="medium"
+                        label="BA Record"
+                        category="Trip Detail Reports"
+                        accept=".mp3,.wav,.pdf"
+                        value={displayValue}
+                        onUpload={(fileObject) => {
+                          const keyValue = fileObject?.key || null;
+                          field.onChange(keyValue);
+                        }}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Controller
                   name={`baInfo.baReports.${index}.video`}
                   control={control}
-                  render={({ field }) => (
-                    <MediaUpload
-                      size="medium"
-                      label="BA Video"
-                      category="Trip Detail Reports"
-                      accept=".mp4,.mov,.avi"
-                      // value={field.value}
-                      // onUpload={(url) => field.onChange(url)}
-                      value={field.value}
-                      onUpload={(fileObject) => field.onChange(fileObject)}
-                    />
-                  )}
+                  render={({ field }) => {
+                    const displayValue =
+                      typeof field.value === "string" && field.value
+                        ? { key: field.value, url: field.value }
+                        : field.value;
+
+                    return (
+                      <MediaUpload
+                        size="medium"
+                        label="BA Video"
+                        category="Trip Detail Reports"
+                        accept=".mp4,.mov,.avi"
+                        value={displayValue}
+                        onUpload={(fileObject) => {
+                          const keyValue = fileObject?.key || null;
+                          field.onChange(keyValue);
+                        }}
+                      />
+                    );
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sx={{ textAlign: "right" }}>

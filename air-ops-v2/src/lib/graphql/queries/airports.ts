@@ -106,3 +106,24 @@ export const GET_NEAREST_AIRPORT = gql`
     }
   }
 `;
+
+export const GET_AIRPORT_BY_ICAO = gql`
+  query airportByIcao($icao: String!) {
+    airportByIcao(icao: $icao) {
+      id
+      name
+      city
+      country
+      email
+      contactNumber
+      groundHandlersInfo {
+        email
+        companyName
+      }
+      fuelSuppliers {
+        email
+        companyName
+      }
+    }
+  }
+`;

@@ -12,6 +12,7 @@ import SectorAccordion from "../sector/SectorAccordion";
 import { useState } from "react";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { logoColors, removeTypename } from "@/shared/utils";
+import { cleanPayload } from "@/utils/cleanPayload";
 import { Trip, Sector } from "../../type/trip.type";
 import useGql from "@/lib/graphql/gql";
 import { UPDATE_TRIP_DETAILS } from "@/lib/graphql/queries/trip-detail";
@@ -46,6 +47,7 @@ export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
       }
 
       const formattedData = removeTypename(dataAsAny);
+      const cleanedData = cleanPayload(formattedData);
 
       const result = await useGql({
         query: UPDATE_TRIP_DETAILS,
@@ -55,7 +57,7 @@ export default function TripDetailsTab({ trip }: TripDetailsTabProps) {
           where: {
             _id: trip.id,
           },
-          data: { sector: formattedData },
+          data: { sector: cleanedData },
         },
       });
 

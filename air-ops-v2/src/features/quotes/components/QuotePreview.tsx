@@ -38,6 +38,9 @@ const QuotePreview = ({
   showGeneratePI = false,
   onGenerateInvoice,
   currentRecord,
+  onPressGeneratePI,
+  onPressAddPax,
+  onPressGenerateSC,
 }) => {
   const [showEmailDialog, setShowEmailDialog] = useState(false);
 
@@ -92,6 +95,9 @@ const QuotePreview = ({
         showGeneratePI={showGeneratePI}
         onGenerateInvoice={onGenerateInvoice}
         currentRecord={currentRecord}
+        onPressGeneratePI={onPressGeneratePI}
+        onPressAddPax={onPressAddPax}
+        onPressGenerateSC={onPressGenerateSC}
       />
 
       <Paper elevation={3} sx={{ padding: 2, overflow: "auto" }}>

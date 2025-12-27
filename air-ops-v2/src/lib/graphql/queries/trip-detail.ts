@@ -316,6 +316,13 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
         assignedCrews {
           designation
           crews
+          crewsInfo{
+          fullName
+          displayName
+          id
+          crewId
+          email
+        }
         }
         baInfo {
           baMachine

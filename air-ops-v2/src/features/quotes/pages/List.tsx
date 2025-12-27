@@ -579,7 +579,15 @@ export const QuoteList = ({
           showEdit={selectedRowData?.isLatest}
           showGeneratePI={selectedRowData?.isLatest}
           onGenerateInvoice={onGenerateInvoice}
-          currentRecord={currentQuotationInfo}
+          currentRecord={{
+            ...currentQuotationInfo,
+            category: selectedRowData?.category, // Pass category
+            status: selectedRowData?.status // Pass status directly from row data
+          }}
+          // Pass action handlers
+          onPressGeneratePI={() => onGeneratePI(selectedRowData)}
+          onPressAddPax={() => onAddPassenger(selectedRowData)}
+          onPressGenerateSC={() => onGenerateSalesConfirmation(selectedRowData)}
         />
       </CustomDialog>
 

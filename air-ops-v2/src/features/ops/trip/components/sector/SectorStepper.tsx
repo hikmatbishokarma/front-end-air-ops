@@ -71,7 +71,7 @@ export default function SectorStepper({ sector, tripId, onSave }: any) {
     fileUrl: doc.fileUrl || null,
   }));
 
-  const { control, handleSubmit, reset, watch } = useForm({
+  const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
       ...sector,
       assignedCrews: sector.assignedCrews || [],
@@ -164,7 +164,7 @@ export default function SectorStepper({ sector, tripId, onSave }: any) {
           )}
           {activeStep === 1 && <StepCrew control={control} />}
           {activeStep === 2 && <StepBADetails control={control} />}
-          {activeStep === 3 && <StepFuel control={control} />}
+          {activeStep === 3 && <StepFuel control={control} setValue={setValue} />}
           {activeStep === 4 && <StepDocuments control={control} tripId={tripId} sectorNo={sector.sectorNo} />}
         </Box>
 

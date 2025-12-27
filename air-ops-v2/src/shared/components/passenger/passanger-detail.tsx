@@ -66,8 +66,8 @@ export default function PassengerDetails({
   logoColors = { primary: "#0A58CA", accent: "#E11D48" }, // blue & red
   quotation,
   quotationNo,
-  onSaveSector = (formData) => {},
-  onPreview = (allFormData) => {},
+  onSaveSector = (formData) => { },
+  onPreview = (allFormData) => { },
 }: {
   // --- Data Props ---
   quotation: any;
@@ -253,7 +253,10 @@ export default function PassengerDetails({
           !Array.isArray(out[k]) &&
           Object.keys(out[k]).length === 0)
       ) {
-        out[k] = JSON.parse(JSON.stringify(source[k]));
+        out[k] =
+          source[k] !== undefined
+            ? JSON.parse(JSON.stringify(source[k]))
+            : undefined;
       } else if (typeof out[k] === "object" && typeof source[k] === "object") {
         out[k] = fillIfEmpty(out[k], source[k]);
       }
@@ -431,7 +434,7 @@ export default function PassengerDetails({
           className="paasenger_details_point"
           title={
             <Stack direction="row" alignItems="center" spacing={1.5}>
-              <FlightTakeoffIcon sx={{ color: logoColors.primary }} className="takeofficon"/>
+              <FlightTakeoffIcon sx={{ color: logoColors.primary }} className="takeofficon" />
               <Typography variant="h6" fontWeight={800}>
                 Passenger,Catering & Travel -{" "}
                 {tripInfo?.quotation?.aircraft?.name}
@@ -475,7 +478,7 @@ export default function PassengerDetails({
           sx={{ pb: 0 }}
         />
         <CardContent sx={{ pt: 0, pb: 2 }}>
-          <form onSubmit={handleSubmit(() => {})} noValidate autoComplete="off">
+          <form onSubmit={handleSubmit(() => { })} noValidate autoComplete="off">
             <Stack spacing={2.5}>
               {sectorFields.map((sector, sectorIndex) => {
                 return (

@@ -71,6 +71,8 @@ export const SalesConfirmationList = ({ filter, refreshKey }: any) => {
   });
 
   const handelPreview = async (row: any) => {
+
+
     setSelectedRowData(row);
 
     // Normalize status: API might return enum key (e.g., "SALE_CONFIRMED") or enum value (e.g., "Sale Confirmed")
@@ -78,7 +80,7 @@ export const SalesConfirmationList = ({ filter, refreshKey }: any) => {
 
     if (
       normalizedStatus === QuotationStatus.SALE_CONFIRMED ||
-      row.status === "SALE_CONFIRMED"
+      row.status === "SALE_CONFIRMED" || normalizedStatus === QuotationStatus.TRIP_GENERATED
     ) {
       setSaleConfirmationPreviewTemplate(row.confirmationTemplate);
       setShowTripConfirmationPreview(true);
@@ -192,7 +194,7 @@ export const SalesConfirmationList = ({ filter, refreshKey }: any) => {
                 <TableCell align="right">{row.requester}</TableCell>
                 <TableCell
                   align="right"
-                  // onClick={(event) => event.stopPropagation()}
+                // onClick={(event) => event.stopPropagation()}
                 >
                   <SectorTooltip sectors={row.sectors} />
                 </TableCell>
@@ -202,22 +204,22 @@ export const SalesConfirmationList = ({ filter, refreshKey }: any) => {
                   {/* Normalize status: API might return enum key (e.g., "SALE_CONFIRMED") or enum value (e.g., "Sale Confirmed") */}
                   {(row.status === QuotationStatus.SALE_CONFIRMED ||
                     row.status === "SALE_CONFIRMED") && (
-                    <Button
-                      className="generate_pi12"
-                      variant="outlined"
-                      onClick={() => onHandelCreateTrip(row)}
-                    >
-                      Generate Trip
-                    </Button>
-                  )}
+                      <Button
+                        className="generate_pi12"
+                        variant="outlined"
+                        onClick={() => onHandelCreateTrip(row)}
+                      >
+                        Generate Trip
+                      </Button>
+                    )}
 
                   {(row.status === QuotationStatus.TRIP_GENERATED ||
                     row.status === "TRIP_GENERATED") && (
-                    <span style={{ color: "green", fontWeight: "bold" }}>
-                      {QuotationStatusMap[row.status] ||
-                        QuotationStatus.TRIP_GENERATED}
-                    </span>
-                  )}
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        {QuotationStatusMap[row.status] ||
+                          QuotationStatus.TRIP_GENERATED}
+                      </span>
+                    )}
                 </TableCell>
               </TableRow>
             ))}

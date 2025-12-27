@@ -1,7 +1,8 @@
 import { Box, TextField, Typography, Button, Grid } from "@mui/material";
-import { useForm, Controller, Control } from "react-hook-form";
+import { useForm, Controller, Control, UseFormSetValue, useWatch } from "react-hook-form";
 import { FuelRecordInfo } from "../../type/trip.type";
 import MediaUpload from "@/components/MediaUpload";
+import { useEffect } from "react";
 import {
   LocalizationProvider,
   DatePicker,
@@ -9,12 +10,33 @@ import {
   DateTimePicker,
 } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import moment from "moment";
 
 interface StepFuelProps {
   control: Control<any>; // comes from SectorStepper useForm
+  setValue: UseFormSetValue<any>;
 }
 
-export default function StepFuel({ control }: StepFuelProps) {
+export default function StepFuel({ control, setValue }: StepFuelProps) {
+  const fuelOnArrival = useWatch({ control, name: "fuelRecord.fuelOnArrival" });
+  const fuelLoaded = useWatch({ control, name: "fuelRecord.fuelLoaded" });
+
+  useEffect(() => {
+    // Only calculate if both values are present
+    const arrival = parseFloat(fuelOnArrival) || 0;
+    const loaded = parseFloat(fuelLoaded) || 0;
+
+    // Check if values are actually numbers (not NaN) and at least one is non-zero (or just update always?)
+    // User asked "calculate fuelGauge by summing fuelOnArrival + fuelLoaded?"
+    // We should probably only auto-update if the user hasn't manually overridden it? 
+    // But this is a simple auto-calc request. Let's just update it.
+    // To avoid loops or overriding manual input too aggressively, maybe we can just set it.
+
+    if (arrival >= 0 || loaded >= 0) {
+      setValue("fuelRecord.fuelGauge", (arrival + loaded).toString());
+    }
+  }, [fuelOnArrival, fuelLoaded, setValue]);
+
   return (
     <Box>
       <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -40,7 +62,13 @@ export default function StepFuel({ control }: StepFuelProps) {
               render={({ field, fieldState: { error } }) => (
                 <DateTimePicker
                   {...field}
+                  value={field.value ? moment(field.value) : null}
                   label="Fuel Uploaded Date"
+                  disablePast
+                  onChange={(date) => {
+                    // Ensure we save ISO string, not the moment object
+                    field.onChange(date ? date.toISOString() : null);
+                  }}
                   slotProps={{
                     textField: {
                       required: true,
@@ -94,6 +122,9 @@ export default function StepFuel({ control }: StepFuelProps) {
                   size="small"
                   label="Fuel Gauge"
                   fullWidth
+                  InputProps={{
+                    readOnly: true,
+                  }}
                 />
               )}
             />
@@ -133,11 +164,10 @@ export default function StepFuel({ control }: StepFuelProps) {
               control={control}
               render={({ field }) => {
                 // Convert string (key from backend) to object for MediaUpload display
-                // Backend stores fuelReceipt as string (key), but MediaUpload expects FileObject
                 const displayValue =
                   typeof field.value === "string" && field.value
-                    ? { key: field.value, url: field.value } // Convert string to object
-                    : field.value; // If already object or null, use as is
+                    ? { key: field.value, url: field.value }
+                    : field.value;
 
                 return (
                   <MediaUpload
@@ -145,9 +175,9 @@ export default function StepFuel({ control }: StepFuelProps) {
                     label="Fuel Receipt"
                     category="Fuel Receipt"
                     accept=".pdf,.doc,.docx"
-                    value={displayValue} // Pass object to MediaUpload
+                    value={displayValue}
                     onUpload={(fileObject) => {
-                      // Save only the key string to backend (not the full object)
+                      // Save only the key string to backend
                       const keyValue = fileObject?.key || null;
                       field.onChange(keyValue);
                     }}

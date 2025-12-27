@@ -107,7 +107,7 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
                     backgroundColor: "#f5f5f5",
                   },
                 }}
-                // onClick={() => handleRowClick(row)}
+              // onClick={() => handleRowClick(row)}
               >
                 <TableCell component="th" scope="row">
                   {row.operator?.companyName ?? "AirOps"}
@@ -126,7 +126,7 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
 
                 <TableCell
                   align="right"
-                  // onClick={(event) => event.stopPropagation()}
+                // onClick={(event) => event.stopPropagation()}
                 >
                   <SectorTooltip sectors={row.sectors} />
                 </TableCell>
@@ -157,6 +157,14 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
                       }}
                     >
                       Edit Trip
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose();
+                        navigate(`/app/trip-compliance-report/${selectedRow.id}`);
+                      }}
+                    >
+                      View DGCA Report
                     </MenuItem>
                   </Menu>
                 </TableCell>

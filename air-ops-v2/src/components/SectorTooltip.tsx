@@ -159,9 +159,10 @@ export const SectorTooltip: React.FC<SectorTooltipProps> = ({ sectors }) => {
       arrow
       placement="top"
     >
-      <Box sx={{ cursor: "pointer", color: "#1976d2" }}>
+      <Box sx={{ cursor: "pointer", color: "#1976d2", whiteSpace: "nowrap" }}>
         <Typography variant="body2" fontWeight={600}>
-          {start} → {end} | 👤 {totalPax} Pax
+          {/* {start} → {end} | 👤 {totalPax} Pax */}
+          {start} → {end}
         </Typography>
       </Box>
     </StyledTooltip>

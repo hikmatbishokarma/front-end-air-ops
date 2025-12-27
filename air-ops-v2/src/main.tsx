@@ -34,6 +34,7 @@ import StaffLeaveCalenderView from "@/features/ops/calendar/LeaveCalender";
 import { LibraryControllerPage } from "@/pages/LibraryControllerPage";
 
 import TripDetailPage from "@/features/ops/trip/TripDetailPage";
+import TripComplianceReportPage from "@/features/ops/pages/TripComplianceReport";
 
 import PassengerEditPage from "@/shared/components/passenger/PassengerEdit";
 import QuoteControllerPage from "@/pages/QuoteControllerPage";
@@ -339,6 +340,10 @@ const router = createBrowserRouter([
             //   </ProtectedRoute>
             // ),
             Component: TripDetailPage,
+          },
+          {
+            path: "trip-compliance-report/:tripId",
+            Component: TripComplianceReportPage,
           },
           {
             path: "sales-confirmation-preview/:quotationNo",
