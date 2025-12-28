@@ -25,7 +25,9 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import moment from "moment";
 import SectorTooltip from "../../../components/SectorTooltip";
-import { useTripDetailData } from "../hooks/useOpsQueries";
+import { useTripDetailData, useTripConfirmationPreview } from "../hooks/useOpsQueries"; // Import custom hook
+import { CustomDialog } from "../../../components/CustomeDialog";
+import TripConfirmationPreview from "../components/TripConfirmationPreview";
 
 export const TripDetailList = ({ filter, refreshKey }: any) => {
   const { session, setSession, loading } = useSession();
@@ -50,6 +52,11 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<any>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewContent, setPreviewContent] = useState<string | null>(null);
+
+  const { getPreview, loading: previewLoading } = useTripConfirmationPreview();
+
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, row: any) => {
     setAnchorEl(event.currentTarget);
@@ -65,8 +72,13 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
     navigate(`/app/trip-detail/${row.id}`, { state: row });
   };
 
-  const handleRowClick = (row: any) => {
-    navigate(`/app/trip-detail/${row.id}`, { state: row });
+  const handleRowClick = async (row: any) => {
+    setSelectedRow(row);
+    const html = await getPreview(row.id);
+    if (html) {
+      setPreviewContent(html);
+      setShowPreview(true);
+    }
   };
 
   const { tripDetailList, tripDetailTotalCount } = useTripDetailData({
@@ -107,7 +119,7 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
                     backgroundColor: "#f5f5f5",
                   },
                 }}
-              // onClick={() => handleRowClick(row)}
+                onClick={() => handleRowClick(row)}
               >
                 <TableCell component="th" scope="row">
                   {row.operator?.companyName ?? "AirOps"}
@@ -164,7 +176,7 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
                         navigate(`/app/trip-compliance-report/${selectedRow.id}`);
                       }}
                     >
-                      View DGCA Report
+                      View Report
                     </MenuItem>
                   </Menu>
                 </TableCell>
@@ -182,6 +194,21 @@ export const TripDetailList = ({ filter, refreshKey }: any) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </TableContainer>
+
+      <CustomDialog
+        open={showPreview}
+        onClose={() => setShowPreview(false)}
+        title="Trip Confirmation Preview"
+        width="900px"
+        maxWidth="md"
+      >
+        <TripConfirmationPreview
+          htmlContent={previewContent}
+          tripId={selectedRow?.id}
+          quotationNo={selectedRow?.quotationNo}
+          currentRecord={selectedRow}
+        />
+      </CustomDialog>
     </>
   );
 };

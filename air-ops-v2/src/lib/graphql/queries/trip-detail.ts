@@ -379,3 +379,9 @@ export const GET_OPS_DASHBOARD_SUMMARY = gql`
     }
   }
 `;
+
+export const TRIP_CONFIRMATION_PREVIEW = gql`
+  query tripConfirmationPreview($tripId: String!) {
+    tripConfirmationPreview(tripId: $tripId)
+  }
+`;
