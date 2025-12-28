@@ -16,7 +16,7 @@ export const BoardingPassPreviewDialog = ({ open, onClose, data }: BoardingPassP
     if (!data) return null;
 
     return (
-        <Dialog
+        <Dialog className="boardpass_popop_view"
             open={open}
             onClose={onClose}
             maxWidth="md"
@@ -29,7 +29,7 @@ export const BoardingPassPreviewDialog = ({ open, onClose, data }: BoardingPassP
             }}
         >
             {/* Header with Actions and Close Button */}
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, borderBottom: "1px solid #eee" }}>
+            <Box className="pass_one_data" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, borderBottom: "1px solid #eee" }}>
                 <Typography variant="h6" fontWeight="bold">Boarding Pass Preview</Typography>
 
                 <Box display="flex" gap={1} alignItems="center">
@@ -47,13 +47,13 @@ export const BoardingPassPreviewDialog = ({ open, onClose, data }: BoardingPassP
                         currentRecord={{}}
                     />
 
-                    <IconButton onClick={onClose} size="small" sx={{ ml: 1 }}>
-                        <CloseIcon />
+                    <IconButton className="boarding_icon_pass" onClick={onClose} size="small" sx={{ ml: 1 }}>
+                        <CloseIcon className="pass_icon" />
                     </IconButton>
                 </Box>
             </Box>
 
-            <DialogContent sx={{ p: 4, bgcolor: "#F5F7FA", display: "flex", justifyContent: "center" }}>
+            <DialogContent className="passenger_pass_over" sx={{ p: 4, bgcolor: "#F5F7FA", display: "flex", justifyContent: "center" }}>
                 <div ref={componentRef} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                     {/* Wrapper to ensure print styles are capturing the right content */}
                     <BoardingPassCard data={data} />

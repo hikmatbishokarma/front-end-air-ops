@@ -38,7 +38,7 @@ export default function TripDetailPage() {
         </h3>
       </Box>
 
-      <Tabs value={tab} onChange={handleTabChange}>
+      <Tabs className="ps_pass_summary" value={tab} onChange={handleTabChange}>
         <Tab label="Passengers" />
         <Tab label="Intimations" />
         <Tab label="Trip Details" />
@@ -47,7 +47,7 @@ export default function TripDetailPage() {
         <Tab label="Summary" />
       </Tabs>
 
-      <Box mt={3}>
+      <Box mt={3} >
         {tab === 0 && (
           <PassengerDetailsTab
             quotation={trip?.quotation}

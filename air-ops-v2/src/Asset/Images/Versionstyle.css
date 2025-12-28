@@ -1546,3 +1546,57 @@ text-align: left;
 .MuiButton-textPrimary {
   color: #fff;
 }
+
+.boardpass_popop_view .pass_one_data {
+  background-color: #eee;
+}
+
+.boarding_icon_pass {
+  background-color: #001551 !important;
+  height: 25px;
+  width: 25px;
+  margin: 5px;
+}
+
+.pass_icon {
+  color: #fff;
+  height: 20px;
+  width: 20px;
+}
+
+.boarding_icon_pass:hover {
+  background-color: #ff0202 !important;
+}
+
+.passenger_pass_over .css-1nouaol {
+  background-color: #001551;
+}
+
+.passenger_pass_over h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #001551;
+}
+
+.passenger_pass_over p {
+  color: #001551;
+}
+
+.passenger_pass_over h5 {
+  font-size: 14px;
+}
+
+.ps_pass_summary {
+  background: #fff;
+  border-radius: 8px;
+}
+
+.ps_pass_summary tab {
+  color: #000 !important;
+  font-weight: 600;
+}
+
+.ps_pass_summary .MuiTab-textColorPrimary {
+  color: #000 !important;
+  font-weight: 600;
+}
