@@ -4,6 +4,7 @@ import useGql from "../../../lib/graphql/gql";
 import {
   GET_TRIP_DETAILS,
   GET_CREW_DOC_UPLODED_FOR_TRIP,
+  TRIP_CONFIRMATION_PREVIEW,
 } from "../../../lib/graphql/queries/trip-detail";
 
 interface TripDetailQueryArgs {
@@ -146,4 +147,31 @@ export const useCrewTripData = ({
   }, [getCrewTrips]);
 
   return { crewTripList, crewTripTotalCount };
+};
+
+export const useTripConfirmationPreview = () => {
+  const [loading, setLoading] = useState(false);
+
+  const getPreview = useCallback(async (tripId: string) => {
+    setLoading(true);
+    try {
+      const result = await useGql({
+        query: TRIP_CONFIRMATION_PREVIEW,
+        queryName: "tripConfirmationPreview",
+        queryType: "query-without-edge",
+        variables: { tripId },
+      });
+      setLoading(false);
+
+
+      // result.data contains the string response because the API returns a scalar String
+      return result;
+    } catch (error) {
+      console.error("Error fetching trip confirmation preview:", error);
+      setLoading(false);
+      return null;
+    }
+  }, []);
+
+  return { getPreview, loading };
 };

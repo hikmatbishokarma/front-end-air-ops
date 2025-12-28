@@ -119,13 +119,17 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   const handleSendEmail = async () => {
     try {
       setLoading(true);
+      let mappedDocType = SalesDocumentType[documentType as keyof typeof SalesDocumentType];
+
+      // If lookup by key failed, check if it's already a value
+      if (!mappedDocType && Object.values(SalesDocumentType).includes(documentType as SalesDocumentType)) {
+        mappedDocType = documentType as SalesDocumentType;
+      }
+
       const inputVariables: any = {
         quotationNo: currentQuotation,
         email: clientEmail,
-        documentType: getEnumKeyByValue(
-          SalesDocumentType,
-          SalesDocumentType[documentType as keyof typeof SalesDocumentType]
-        ),
+        documentType: getEnumKeyByValue(SalesDocumentType, mappedDocType),
       };
 
       if (tripId) inputVariables.tripId = tripId;
@@ -212,7 +216,12 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 
   const handleDownloadPDF = async () => {
     try {
-      const _documentType = SalesDocumentType[documentType as keyof typeof SalesDocumentType];
+      let _documentType = SalesDocumentType[documentType as keyof typeof SalesDocumentType];
+
+      // If lookup by key failed, check if it's already a value
+      if (!_documentType && Object.values(SalesDocumentType).includes(documentType as SalesDocumentType)) {
+        _documentType = documentType as SalesDocumentType;
+      }
 
       setDownloading(true); // start animation
 
@@ -260,9 +269,34 @@ const ActionButton: React.FC<ActionButtonProps> = ({
         return;
       }
 
+      // Special handling for Trip Confirmation download
+      if ((documentType === "TRIP_CONFIRMATION" || documentType === SalesDocumentType.TRIP_CONFIRMATION) && tripId) {
+        const response = await axios.get(
+          `${apiBaseUrl}api/document/trip-confirmation/download?tripId=${tripId}`,
+          { responseType: "blob" }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `Trip_Confirmation_${tripId.replace(/\//g, '-')}.pdf`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setDownloading(false);
+        return;
+      }
+
       const response = await axios.get(
-        `${apiBaseUrl}api/document/quote/download?quotationNo=${currentQuotation}&documentType=${_documentType}`,
+        `${apiBaseUrl}api/document/quote/download`,
         {
+          params: {
+            quotationNo: currentQuotation,
+            documentType: _documentType
+          },
           responseType: "blob", // important for binary data
         }
       );

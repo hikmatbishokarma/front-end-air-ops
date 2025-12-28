@@ -21,6 +21,7 @@ interface Sector {
   depatureDate: string;
   arrivalDate: string;
   paxNumber: number;
+  pax?: number;
   // Add any other properties used in the component
 }
 
@@ -146,7 +147,7 @@ export const SectorTooltip: React.FC<SectorTooltipProps> = ({ sectors }) => {
                       borderRadius: "6px",
                     }}
                   >
-                    👤 {s.paxNumber || 0} Pax
+                    👤 {s.paxNumber || s.pax || 0} Pax
                   </Typography>
                 </Box>
 
