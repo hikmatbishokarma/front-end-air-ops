@@ -682,7 +682,7 @@ text-align: left;
 
 .price-units .MuiGrid-item {
   padding: 12px !important;
-  min-height: 86px;
+  min-height: 102px;
   height: auto;
 }
 
@@ -1421,7 +1421,7 @@ text-align: left;
   width: 240px !important;
 }
 
-.drawer_header_bar .css-8p6m3b-MuiDrawer-docked {
+.drawer_header_bar .MuiDrawer-anchorLeft {
   width: 240px !important;
 }
 
@@ -1541,4 +1541,8 @@ text-align: left;
   .drawer_header_bar .MuiContainer-maxWidthLg {
     max-width: 100% !important;
   }
+}
+
+.MuiButton-textPrimary {
+  color: #fff;
 }
