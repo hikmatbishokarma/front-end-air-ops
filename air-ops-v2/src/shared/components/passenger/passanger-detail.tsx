@@ -36,6 +36,7 @@ import { useSnackbar } from "@/app/providers";
 import useGql from "../../../lib/graphql/gql";
 import { GET_PASSENGER_DETAILS } from "../../../lib/graphql/queries/passenger-detail";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import CountryAutocomplete from "@/components/country-autocomplete";
 
 interface LogoColors {
   primary: string;
@@ -119,6 +120,10 @@ export default function PassengerDetails({
       gender: "",
       age: 0,
       aadharId: "",
+      weight: 0,
+      nationality: "India",
+      baggageCount: 0,
+      baggageWeight: 0,
     });
 
     const makeMeal = () => ({
@@ -193,7 +198,11 @@ export default function PassengerDetails({
           const formattedData = {
             sectors: data.sectors.map((s: any) => ({
               ...s,
-              passengers: s.passengers || [],
+              passengers:
+                s.passengers?.map((p: any) => ({
+                  ...p,
+                  nationality: p.nationality || "India",
+                })) || [],
               meals: s.meals || [],
               travel: s.travel || {},
               source: s.source || {}, // Ensure source is an object
@@ -810,6 +819,10 @@ function PassengerList({ control, sectorIndex, logoColors }: any) {
       gender: "",
       age: "",
       aadharId: "",
+      weight: "",
+      nationality: "India",
+      baggageCount: "",
+      baggageWeight: "",
     });
   };
 
@@ -947,6 +960,83 @@ function PassengerList({ control, sectorIndex, logoColors }: any) {
                     size="small"
                     error={!!fieldState.error}
                     helperText={fieldState.error?.message}
+                  />
+                )}
+              />
+            </Grid>
+
+            {/* Row 2: Weight, Nationality, Baggage */}
+            <Grid item xs={12} md={3}>
+              <Controller
+                control={control}
+                name={`sectors.${sectorIndex}.passengers.${i}.weight`}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Pax Weight (kg)"
+                    type="number"
+                    fullWidth
+                    size="small"
+                    onChange={(e) =>
+                      field.onChange(
+                        (e.target as HTMLInputElement).valueAsNumber
+                      )
+                    }
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Controller
+                control={control}
+                name={`sectors.${sectorIndex}.passengers.${i}.nationality`}
+                render={({ field }) => (
+                  <CountryAutocomplete
+                    value={field.value}
+                    onChange={(val: any) => field.onChange(val)}
+                    label="Nationality"
+                    error={false}
+                    helperText=""
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Controller
+                control={control}
+                name={`sectors.${sectorIndex}.passengers.${i}.baggageCount`}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="No. of Bags"
+                    type="number"
+                    fullWidth
+                    size="small"
+                    onChange={(e) =>
+                      field.onChange(
+                        (e.target as HTMLInputElement).valueAsNumber
+                      )
+                    }
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Controller
+                control={control}
+                name={`sectors.${sectorIndex}.passengers.${i}.baggageWeight`}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Baggage Weight (kg)"
+                    type="number"
+                    fullWidth
+                    size="small"
+                    onChange={(e) =>
+                      field.onChange(
+                        (e.target as HTMLInputElement).valueAsNumber
+                      )
+                    }
                   />
                 )}
               />
