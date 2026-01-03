@@ -75,6 +75,10 @@ export const GET_PASSENGER_DETAILS = gql`
             age
             gender
             aadharId
+            weight
+            nationality
+            baggageCount
+            baggageWeight
           }
           meals {
             category
@@ -138,6 +142,10 @@ export const GET_PASSENGER_DETAIL_BY_ID = gql`
           age
           gender
           aadharId
+          weight
+          nationality
+          baggageCount
+          baggageWeight
         }
         meals {
           category

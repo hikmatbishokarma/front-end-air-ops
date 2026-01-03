@@ -6,11 +6,11 @@ interface gqlParams {
   variables: object;
   queryName: string;
   queryType?:
-    | "query"
-    | "mutation"
-    | "query-without-edge"
-    | "query-with-count"
-    | "";
+  | "query"
+  | "mutation"
+  | "query-without-edge"
+  | "query-with-count"
+  | "";
 }
 
 const gqlDefaults: gqlParams = {
@@ -30,10 +30,18 @@ const useGql = async (gqlParams: gqlParams) => {
       console.error("❌ Variables are empty before API call!");
     }
 
-    const result = await apolloConnection.query({
-      query,
-      variables,
-    });
+    let result;
+    if (queryType === "mutation") {
+      result = await apolloConnection.mutate({
+        mutation: query,
+        variables,
+      });
+    } else {
+      result = await apolloConnection.query({
+        query,
+        variables,
+      });
+    }
 
     // Check for a 'data.errors' object in the response
     if (result?.errors) {

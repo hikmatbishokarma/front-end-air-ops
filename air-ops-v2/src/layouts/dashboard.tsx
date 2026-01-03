@@ -248,6 +248,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ClockCompact } from "../components/Clock";
+
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"; // Not used directly here
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined"; // Not used directly here
@@ -262,6 +263,7 @@ import {
 } from "../lib/graphql/queries/notifications"; // Your GraphQL query
 import useGql from "../lib/graphql/gql"; // Your GraphQL hook
 import { useSnackbar } from "@/app/providers"; // Your Snackbar context
+import NoticeBoardMarquee from "@/components/NoticeBoard/NoticeBoardMarquee";
 
 // const NOTIFICATION_SOUND_URL =
 //   "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAAA";
@@ -568,12 +570,12 @@ export default function Layout() {
       }
     };
 
+
     return (
       <Box display="flex" alignItems="center" gap={2}>
+        <NoticeBoardMarquee />
         <ClockCompact />
         <IconButton color="inherit" onClick={handleOpenNotificationDrawer}>
-          {" "}
-          {/* Use new handler */}
           <Badge badgeContent={unreadCount} color="error">
             <NotificationsIcon />
           </Badge>
@@ -697,6 +699,8 @@ export default function Layout() {
         sx={{
           "& .MuiBreadcrumbs-root": { display: "none" },
           "& h4.MuiTypography-root": { display: "none" },
+          // Hide the functionality of Theme Switcher (light/dark mode) as requested
+          "& button[aria-label*='mode' i], & button[aria-label*='Mode' i]": { display: "none !important" },
         }}
       >
         <PageContainer>

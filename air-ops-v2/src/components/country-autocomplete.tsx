@@ -32,16 +32,22 @@ const CountryAutocomplete = ({
   // Fetch country by name if editing (when value prop changes)
   useEffect(() => {
     const fetchCountryByName = async () => {
+      // If no value, clear selection
       if (!value) {
         setSelectedOption(null);
         setInputValue("");
         return;
       }
 
+      // If we already have a selected option that matches the value, do nothing
+      if (selectedOption && selectedOption.name === value) {
+        return;
+      }
+
       // Set inputValue immediately so it shows in the field while fetching
       setInputValue(value);
 
-      // Normalize the value for case-insensitive matching (airports might have CAPS, country collection has Pascal Case)
+      // Normalize the value for case-insensitive matching
       const normalizedValue = value.toLowerCase();
 
       // Check if the country is already in options (case-insensitive)
@@ -50,13 +56,10 @@ const CountryAutocomplete = ({
       );
       if (existingOption) {
         setSelectedOption(existingOption);
-        // Display just the name in input field
-        setInputValue(existingOption.name);
         return;
       }
 
-      // Convert CAPS to Pascal Case for search (in case value is in CAPS)
-      // Convert "UNITED STATES" -> "United States" for better matching
+      // Prepare search value (Pascal Case)
       const searchValue = value
         .split(" ")
         .map(
@@ -67,7 +70,7 @@ const CountryAutocomplete = ({
 
       setLoading(true);
       try {
-        // Try exact match first with the converted value
+        // Try exact match first
         let response = await useGql({
           query: GET_COUNTRIES,
           queryName: "countries",
@@ -103,22 +106,17 @@ const CountryAutocomplete = ({
             return [...prevOptions, countryOption];
           });
           setSelectedOption(countryOption);
-          // Display just the name in input field
-          setInputValue(countryOption.name);
-        } else {
-          // If not found but value exists, show the original value
-          setInputValue(value);
         }
       } catch (error) {
         console.error("Error fetching country by name:", error);
-        // Value is already set above, so it will still show
       } finally {
         setLoading(false);
       }
     };
 
     fetchCountryByName();
-  }, [value, options]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   // Fetch countries dynamically based on inputValue (for search)
   useEffect(() => {
@@ -165,17 +163,9 @@ const CountryAutocomplete = ({
 
   return (
     <Autocomplete
-      getOptionLabel={(option) => {
-        // For dropdown: Emoji Name Code format (code last)
-        if (option.emoji && option.isoCode) {
-          return `${option.emoji} ${option.name} ${option.isoCode}`;
-        } else if (option.emoji) {
-          return `${option.emoji} ${option.name}`;
-        } else if (option.isoCode) {
-          return `${option.name} ${option.isoCode}`;
-        }
-        return option.name;
-      }}
+      filterOptions={(x) => x}
+      getOptionLabel={(option) => option.name}
+      isOptionEqualToValue={(option, value) => option.name === value.name}
       options={options}
       value={selectedOption}
       inputValue={inputValue}

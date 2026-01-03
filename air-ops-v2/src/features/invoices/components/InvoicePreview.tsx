@@ -73,7 +73,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         }}
       >
         {/* Invoice content */}
-        <div className="email_invoice_Preview"
+        <div
           ref={componentRef}
           dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
         />
