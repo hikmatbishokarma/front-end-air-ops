@@ -251,7 +251,7 @@ export const AirpotList = () => {
             <CloseIcon className="popup-close-panel" />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent className="aircraft_mapping_list">
           {isEdit ? (
             <AirportEdit
               id={currentRecordId}

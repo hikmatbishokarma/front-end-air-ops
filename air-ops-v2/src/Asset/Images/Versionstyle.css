@@ -1600,3 +1600,17 @@ text-align: left;
   color: #000 !important;
   font-weight: 600;
 }
+
+.MuiButton-text {
+  color: #fff !important;
+}
+
+.aircraft_mapping_list .MuiGrid-item {
+  margin-bottom: 20px !important;
+}
+
+.roles_modal_form_v1 {
+  background: #fff;
+  padding: 10px 10px;
+  border-radius: 10px;
+}

@@ -179,7 +179,7 @@ const RoleEdit = () => {
 
   return (
     <>
-      <Box
+      <Box className="roles_modal_form_v1"
         component="form"
         onSubmit={handleSubmit(onSubmit)}
         sx={{ width: "100%", mx: "auto", mt: 4 }}
