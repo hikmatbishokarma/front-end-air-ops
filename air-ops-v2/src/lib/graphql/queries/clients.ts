@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 export const GET_CLIENTS = gql`
   query getClients(
     $filter: clientFilter! = {}
-    $paging: OffsetPaging! = { limit: 1000 }
+    $paging: OffsetPaging! = { limit: 50 }
     $sorting: [clientSort!]! = []
   ) {
     clients(filter: $filter, paging: $paging, sorting: $sorting) {

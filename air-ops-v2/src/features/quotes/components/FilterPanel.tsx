@@ -187,7 +187,7 @@ export default function FilterPanel({
             sx={{ mb: 3 }}
           >
             <MenuItem value="">All</MenuItem>
-            {clients.map((client) => (
+            {clients?.map((client) => (
               <MenuItem key={client.id} value={client.id}>
                 {client.name}
               </MenuItem>

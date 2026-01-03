@@ -18,6 +18,7 @@ import {
   Handyman,
   Settings,
   AccountBalance,
+  Campaign as CampaignIcon,
 } from "@mui/icons-material";
 import logoPhn from "./Asset/images/logo_phn.png";
 
@@ -184,6 +185,11 @@ export const NAVIGATION: Navigation = [
         segment: "support-ticket",
         title: "Support Ticket",
         icon: <LocalActivityOutlinedIcon />,
+      },
+      {
+        segment: "notice-board",
+        title: "Notice Board",
+        icon: <CampaignIcon />,
       },
     ],
   },
