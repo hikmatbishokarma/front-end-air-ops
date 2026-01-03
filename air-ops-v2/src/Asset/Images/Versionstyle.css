@@ -1614,3 +1614,7 @@ text-align: left;
   padding: 10px 10px;
   border-radius: 10px;
 }
+
+.ld-header-page .MuiButton-text {
+  color: #001551 !important;
+}
