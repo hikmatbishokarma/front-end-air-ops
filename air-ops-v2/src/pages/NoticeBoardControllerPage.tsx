@@ -147,8 +147,8 @@ export default function NoticeBoardControllerPage() {
 
 
     return (
-        <Box p={3}>
-            <Box
+        <Box p={3} >
+            <Box className="notice_slide_bar"
                 sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -204,10 +204,10 @@ export default function NoticeBoardControllerPage() {
             </Box>
 
             <Paper elevation={2}>
-                <TableContainer>
+                <TableContainer className="notice_table_board">
                     <Table>
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                            <TableRow sx={{ backgroundColor: "#f5f5f5" }} className="notice_radius_one">
                                 <TableCell><strong>Message</strong></TableCell>
                                 <TableCell><strong>Start Date</strong></TableCell>
                                 <TableCell><strong>End Date</strong></TableCell>

@@ -1618,3 +1618,30 @@ text-align: left;
 .ld-header-page .MuiButton-text {
   color: #001551 !important;
 }
+
+.css-bdt3d {
+  width: 100% !important;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  height: 100% !important;
+}
+
+.notice_slide_bar {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+
+}
+
+
+.marquee_paragraph {
+
+  background: #001551;
+  color: #fff !important;
+  border-radius: 20px;
+  padding: 6px;
+}
+
+.marquee_paragraph p {
+  color: #fff !important;
+}

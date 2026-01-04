@@ -58,7 +58,7 @@ export default function NoticeBoardMarquee() {
         <Box display="flex" alignItems="center" flexGrow={1} justifyContent="flex-end">
             {activeNotice && activeNotice.isActive && (
                 <MarqueeContainer>
-                    <MarqueeText variant="body2">
+                    <MarqueeText variant="body2" className='marquee_paragraph'>
                         {activeNotice.message}
                     </MarqueeText>
                 </MarqueeContainer>
