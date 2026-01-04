@@ -9,7 +9,7 @@ const categoryLabels = {
 export default function NotamCategoryTabs({ value, onChange }) {
     return (
         <Box>
-            <Tabs
+            <Tabs className="notam_bar_tab"
                 value={value}
                 onChange={(e, v) => onChange(v)}
                 indicatorColor="primary"

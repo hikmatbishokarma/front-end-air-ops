@@ -442,7 +442,13 @@ export default function PassengerDetails({
         <CardHeader
           className="paasenger_details_point"
           title={
-            <Stack direction="row" alignItems="center" spacing={1.5}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1.5}
+              flexWrap="wrap"
+              useFlexGap
+            >
               <FlightTakeoffIcon sx={{ color: logoColors.primary }} className="takeofficon" />
               <Typography variant="h6" fontWeight={800}>
                 Passenger,Catering & Travel -{" "}
@@ -508,6 +514,7 @@ export default function PassengerDetails({
                         "& .MuiAccordionSummary-content": {
                           alignItems: "center",
                           gap: 1.5,
+                          flexWrap: "wrap",
                         },
                       }}
                     >
@@ -608,9 +615,20 @@ export default function PassengerDetails({
                         }}
                       />
 
-                      <Divider flexItem orientation="vertical" sx={{ mx: 1 }} />
+                      <Divider
+                        flexItem
+                        orientation="vertical"
+                        sx={{ mx: 1, display: { xs: "none", md: "block" } }}
+                      />
                       {/* Times */}
-                      <Stack direction="row" spacing={1} alignItems="center">
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                        flexWrap="wrap"
+                        useFlexGap
+                        sx={{ mt: { xs: 1, md: 0 } }}
+                      >
                         <Controller
                           control={control}
                           name={`sectors.${sectorIndex}.depatureDate`}

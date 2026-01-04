@@ -1434,6 +1434,19 @@ text-align: left;
     height: 40px;
   }
 
+  .passenger_add_pax .paasenger_details_point {
+    display: block;
+    padding-bottom: 62px;
+  }
+
+  .ps_pass_summary .MuiTabs-scroller {
+    overflow: scroll !important;
+  }
+
+  .notam_bar_tab .MuiTabs-scroller {
+    overflow: scroll !important;
+  }
+
   .fidels_security_md {
     padding-bottom: 20px !important;
   }
@@ -1541,6 +1554,7 @@ text-align: left;
   .drawer_header_bar .MuiContainer-maxWidthLg {
     max-width: 100% !important;
   }
+
 }
 
 .MuiButton-textPrimary {
