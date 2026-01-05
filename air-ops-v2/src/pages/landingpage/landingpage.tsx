@@ -121,7 +121,7 @@ const Landingpage = () => {
             {/* Mobile menu */}
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton color="inherit" onClick={handleMenuOpen}>
-                <MenuIcon />
+                <MenuIcon className="header_bar_close" />
               </IconButton>
             </Box>
 

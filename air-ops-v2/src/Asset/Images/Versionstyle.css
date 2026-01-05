@@ -1434,6 +1434,12 @@ text-align: left;
     height: 40px;
   }
 
+  .header_bar_close {
+    color: #001551 !important;
+
+
+  }
+
   .passenger_add_pax .paasenger_details_point {
     display: block;
     padding-bottom: 62px;
@@ -1650,10 +1656,10 @@ text-align: left;
 
 .marquee_paragraph {
 
-  background: #001551;
-  color: #fff !important;
-  border-radius: 20px;
-  padding: 6px;
+
+  color: #ff0202;
+
+
 }
 
 .marquee_paragraph p {
