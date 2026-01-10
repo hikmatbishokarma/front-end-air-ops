@@ -119,6 +119,9 @@ export const GET_AIRPORT_BY_ICAO = gql`
       groundHandlersInfo {
         email
         companyName
+        contactNumber
+        alternateContactNumber
+        fullName
       }
       fuelSuppliers {
         email

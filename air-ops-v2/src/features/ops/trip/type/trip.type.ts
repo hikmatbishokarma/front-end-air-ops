@@ -62,9 +62,16 @@ export interface DocumentInfo {
   externalLink?: string; // optional online link
 }
 
+export interface CrewAssignmentDetails {
+  crewId: string;
+  weight: string;
+  baggage: string;
+}
+
 export interface AssignedCrewInfo {
   designation: string;
   crews: string[];
+  crewAssignmentDetails?: CrewAssignmentDetails[];
 }
 
 export interface BaReport {

@@ -94,6 +94,20 @@ export const GET_PASSENGER_DETAILS = gql`
             dropAt
             type
           }
+          sourceGroundHandler {
+            fullName
+            companyName
+            contactNumber
+            alternateContactNumber
+            email
+          }
+          destinationGroundHandler {
+            fullName
+            companyName
+            contactNumber
+            alternateContactNumber
+            email
+          }
         }
       }
     }

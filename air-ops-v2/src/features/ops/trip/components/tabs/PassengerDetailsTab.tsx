@@ -6,6 +6,7 @@ import {
   GET_PASSENGER_DETAILS,
   UPADTE_PASSANGER_DETAIL,
 } from "@/lib/graphql/queries/passenger-detail";
+import { useNavigate } from "react-router";
 
 interface PassengerDetailProps {
   quotation: any | undefined;
@@ -17,6 +18,7 @@ export const PassengerDetailsTab = ({
   quotationNo,
 }: PassengerDetailProps) => {
   const showSnackbar = useSnackbar();
+  const navigate = useNavigate();
 
   const handelSectorSave = async (payload: any) => {
     try {
@@ -38,6 +40,12 @@ export const PassengerDetailsTab = ({
     }
   };
 
+  const handelSaveAndPreview = async (quotationNo: string) => {
+    navigate(
+      `/app/sales-confirmation-preview/${encodeURIComponent(quotationNo)}`
+    );
+  };
+
   return (
     <>
       <PassengerDetails
@@ -45,6 +53,7 @@ export const PassengerDetailsTab = ({
         quotation={quotation.id}
         quotationNo={quotationNo}
         onSaveSector={handelSectorSave}
+        onPreview={handelSaveAndPreview}
       />
     </>
   );

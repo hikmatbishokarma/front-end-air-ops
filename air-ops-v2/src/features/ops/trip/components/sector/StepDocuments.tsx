@@ -24,7 +24,7 @@ const defaultDocs: DocumentInfo[] = [
 
 // Mapping of document types to predefined external links
 const documentTypeLinks: Record<string, string> = {
-  "Flight Plan": "https://onlinefpl.aai.aero/ofpl/#/Login",
+  "Flight Plan": "https://onlinefpl.aai.aero/ofpl/index.jsp",
   "Weather Briefing":
     "https://olbs.amssdelhi.gov.in/nsweb/FlightBriefing/#showFlightOverview",
 };

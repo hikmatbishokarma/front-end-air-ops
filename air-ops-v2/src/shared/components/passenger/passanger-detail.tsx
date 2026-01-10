@@ -20,6 +20,7 @@ import {
   Stack,
   Avatar,
   MenuItem,
+  Radio,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
@@ -30,11 +31,12 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import SaveIcon from "@mui/icons-material/Save";
 import AirlineSeatReclineNormalIcon from "@mui/icons-material/AirlineSeatReclineNormal";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import moment from "moment";
 import { useSnackbar } from "@/app/providers";
 import useGql from "../../../lib/graphql/gql";
 import { GET_PASSENGER_DETAILS } from "../../../lib/graphql/queries/passenger-detail";
+import { GET_AIRPORT_BY_ICAO } from "../../../lib/graphql/queries/airports";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CountryAutocomplete from "@/components/country-autocomplete";
 
@@ -142,6 +144,14 @@ export default function PassengerDetails({
       dropAt: "",
     });
 
+    const makeGroundHandler = () => ({
+      fullName: "",
+      companyName: "",
+      contactNumber: "",
+      alternateContactNumber: "",
+      email: "",
+    });
+
     // Provide a clear structure for TypeScript to infer
     return {
       sectors: [
@@ -171,6 +181,8 @@ export default function PassengerDetails({
           passengers: [makePassenger()],
           meals: [makeMeal()],
           travel: makeTravel(),
+          sourceGroundHandler: makeGroundHandler(),
+          destinationGroundHandler: makeGroundHandler(),
         },
       ],
     };
@@ -205,6 +217,8 @@ export default function PassengerDetails({
                 })) || [],
               meals: s.meals || [],
               travel: s.travel || {},
+              sourceGroundHandler: s.sourceGroundHandler || {},
+              destinationGroundHandler: s.destinationGroundHandler || {},
               source: s.source || {}, // Ensure source is an object
               destination: s.destination || {}, // Ensure destination is an object
             })),
@@ -319,6 +333,9 @@ export default function PassengerDetails({
     delete cleanPayload.source.__typename;
     delete cleanPayload.destination.__typename;
 
+    if (cleanPayload.sourceGroundHandler) delete cleanPayload.sourceGroundHandler.__typename;
+    if (cleanPayload.destinationGroundHandler) delete cleanPayload.destinationGroundHandler.__typename;
+
     // Check if passengers exist and remove __typename
     if (cleanPayload.passengers && Array.isArray(cleanPayload.passengers)) {
       cleanPayload.passengers.forEach((p: any) => delete p.__typename);
@@ -403,6 +420,8 @@ export default function PassengerDetails({
         passengers: s.passengers,
         meals: s.meals,
         travel: s.travel,
+        sourceGroundHandler: s.sourceGroundHandler,
+        destinationGroundHandler: s.destinationGroundHandler,
       };
     });
   }, [tripInfo]);
@@ -767,6 +786,50 @@ export default function PassengerDetails({
                           control={control}
                           sectorIndex={sectorIndex}
                         />
+                      </Box>
+
+                      {/* Ground Handlers (Always visible now) */}
+                      <Divider sx={{ my: 2 }} />
+                      <Box>
+                        {sectionTitle("Ground Handling", <LocalTaxiIcon />)}
+
+                        {/* Source Ground Handler */}
+                        <Box sx={{ mb: 3 }}>
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            sx={{ mb: 1, fontWeight: 600 }}
+                          >
+                            Departure Handler ({sectorFields[sectorIndex].source?.name}) / {sectorFields[sectorIndex].source?.code}
+                          </Typography>
+                          <GroundHandlerSelector
+                            control={control}
+                            sectorIndex={sectorIndex}
+                            type="sourceGroundHandler"
+                            airportCode={sectorFields[sectorIndex].source?.code}
+                            airportName={sectorFields[sectorIndex].source?.name}
+                            setValue={setValue} // Passing setValue to update form
+                          />
+                        </Box>
+
+                        {/* Destination Ground Handler */}
+                        <Box>
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            sx={{ mb: 1, fontWeight: 600 }}
+                          >
+                            Arrival Handler ({sectorFields[sectorIndex].destination?.name}) / {sectorFields[sectorIndex].destination?.code}
+                          </Typography>
+                          <GroundHandlerSelector
+                            control={control}
+                            sectorIndex={sectorIndex}
+                            type="destinationGroundHandler"
+                            airportCode={sectorFields[sectorIndex].destination?.code}
+                            airportName={sectorFields[sectorIndex].destination?.name}
+                            setValue={setValue} // Passing setValue to update form
+                          />
+                        </Box>
                       </Box>
 
                       {/* Save Sector */}
@@ -1344,6 +1407,237 @@ function TravelFields({ control, sectorIndex }: any) {
               placeholder="Hotel / FBO / Terminal"
               fullWidth
               size="small"
+            />
+          )}
+        />
+      </Grid>
+    </Grid>
+  );
+}
+
+// Selector Component that handles both ZZZZ (Manual) and Standard (Dropdown)
+function GroundHandlerSelector({ control, sectorIndex, type, airportCode, airportName, setValue }: any) {
+  const isPrivate = airportCode === "ZZZZ";
+  const [handlers, setHandlers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Use manual fetching properly
+  const fetchHandlers = async () => {
+    if (!airportCode || isPrivate) return;
+    setLoading(true);
+    try {
+      const result = await useGql({
+        query: GET_AIRPORT_BY_ICAO,
+        variables: { icao: airportCode },
+        queryName: "airportByIcao",
+        queryType: "query-without-edge",
+      });
+      if (result?.groundHandlersInfo) { // result is the data object directly due to query-without-edge
+        setHandlers(result.groundHandlersInfo);
+      } else {
+        setHandlers([]);
+      }
+    } catch (e) {
+      console.error("Failed to fetch handlers", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHandlers();
+  }, [airportCode]);
+
+  const [selectedHandlerIndex, setSelectedHandlerIndex] = useState<number | null>(null);
+
+  // Watch the current value of the company name to auto-select the card
+  const currentCompanyName = useWatch({
+    control,
+    name: `sectors.${sectorIndex}.${type}.companyName`,
+  });
+
+  useEffect(() => {
+    if (handlers.length > 0 && currentCompanyName) {
+      const idx = handlers.findIndex(h => h.companyName === currentCompanyName);
+      if (idx !== -1) {
+        setSelectedHandlerIndex(idx);
+      }
+    }
+  }, [handlers, currentCompanyName]);
+
+  const onHandlerSelect = (index: number) => {
+    setSelectedHandlerIndex(index);
+    const handler = handlers[index];
+    if (handler) {
+      // Update all fields
+      setValue(`sectors.${sectorIndex}.${type}.fullName`, handler.fullName || "");
+      setValue(`sectors.${sectorIndex}.${type}.companyName`, handler.companyName || "");
+      setValue(`sectors.${sectorIndex}.${type}.contactNumber`, handler.contactNumber || "");
+      setValue(`sectors.${sectorIndex}.${type}.alternateContactNumber`, handler.alternateContactNumber || "");
+      setValue(`sectors.${sectorIndex}.${type}.email`, handler.email || "");
+    }
+  };
+
+  // 1. If standard airport and no handlers -> Show Message
+  if (!isPrivate && !loading && handlers.length === 0) {
+    return (
+      <Typography variant="body2" color="error.main" sx={{ fontStyle: 'italic', pl: 1 }}>
+        No ground handlers found. Please add ground handler in airports <b>{airportName}</b>.
+      </Typography>
+    );
+  }
+
+  // 2. If standard airport -> Show Horizontal List ONLY (No inputs)
+  if (!isPrivate) {
+    return (
+      <Box>
+        <Typography variant="body2" sx={{ mb: 1, fontWeight: 600 }}>
+          Select Available Handler:
+        </Typography>
+        <Stack direction="row" spacing={2} sx={{ mb: 2, overflowX: 'auto', pb: 1 }}>
+          {handlers.map((h, idx) => (
+            <Card
+              key={idx}
+              variant="outlined"
+              sx={{
+                p: 1.5,
+                minWidth: 280,
+                display: "flex",
+                alignItems: "flex-start",
+                cursor: "pointer",
+                bgcolor: selectedHandlerIndex === idx ? "#f0f7ff" : "white",
+                borderColor: selectedHandlerIndex === idx ? "primary.main" : "divider",
+                transition: "all 0.2s",
+              }}
+              onClick={() => onHandlerSelect(idx)}
+            >
+              <Radio
+                checked={selectedHandlerIndex === idx}
+                size="small"
+                sx={{ mt: -0.5, ml: -0.5 }}
+              />
+              <Box sx={{ ml: 1 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                  {h.companyName}
+                </Typography>
+                <Typography variant="caption" display="block" color="text.secondary">
+                  <b>Name:</b> {h.fullName || "N/A"}
+                </Typography>
+                <Typography variant="caption" display="block" color="text.secondary">
+                  <b>Phone:</b> {h.contactNumber || "N/A"}
+                </Typography>
+                <Typography variant="caption" display="block" color="text.secondary">
+                  <b>Email:</b> {h.email || "N/A"}
+                </Typography>
+                <Typography variant="caption" display="block" color="text.secondary">
+                  <b>Alt:</b> {h.alternateContactNumber || "N/A"}
+                </Typography>
+              </Box>
+            </Card>
+          ))}
+        </Stack>
+      </Box>
+    );
+  }
+
+  // 3. If Private (ZZZZ) -> Show Manual Inputs
+  return (
+    <Grid container spacing={1.5}>
+      <Grid item xs={12} md={3}>
+        <Controller
+          control={control}
+          name={`sectors.${sectorIndex}.${type}.fullName`}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label={"Full Name"}
+              fullWidth
+              size="small"
+            />
+          )}
+        />
+      </Grid>
+
+      <Grid item xs={12} md={3}>
+        <Controller
+          control={control}
+          name={`sectors.${sectorIndex}.${type}.contactNumber`}
+          rules={{
+            required: "Phone is required",
+            pattern: {
+              value: /^[0-9+\-\s()]*$/,
+              message: "Invalid phone format",
+            },
+            minLength: {
+              value: 7,
+              message: "Min 7 digits",
+            },
+            maxLength: {
+              value: 15,
+              message: "Max 15 digits",
+            },
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              label="Phone"
+              fullWidth
+              size="small"
+              error={!!error}
+              helperText={error ? error.message : null}
+            />
+          )}
+        />
+      </Grid>
+
+      <Grid item xs={12} md={3}>
+        <Controller
+          control={control}
+          name={`sectors.${sectorIndex}.${type}.alternateContactNumber`}
+          rules={{
+            pattern: {
+              value: /^[0-9+\-\s()]*$/,
+              message: "Invalid phone format",
+            },
+            minLength: {
+              value: 7,
+              message: "Min 7 digits",
+            },
+            maxLength: {
+              value: 15,
+              message: "Max 15 digits",
+            },
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              label="Alternate Contact No."
+              fullWidth
+              size="small"
+              error={!!error}
+              helperText={error ? error.message : null}
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <Controller
+          control={control}
+          name={`sectors.${sectorIndex}.${type}.email`}
+          rules={{
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address",
+            },
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              label="Email"
+              fullWidth
+              size="small"
+              error={!!error}
+              helperText={error ? error.message : null}
             />
           )}
         />
