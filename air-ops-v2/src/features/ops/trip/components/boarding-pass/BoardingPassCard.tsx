@@ -161,10 +161,10 @@ export const BoardingPassCard = ({ data }: BoardingPassCardProps) => {
                                     {groundHandlers?.source ? (
                                         <>
                                             <Typography variant="caption" sx={{ fontWeight: 700, color: '#5E6CFF', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                                                {groundHandlers.source.name}
+                                                {groundHandlers?.source?.fullName}
                                             </Typography>
                                             <Typography variant="caption" display="block" sx={{ fontSize: '0.7rem', color: '#333' }}>
-                                                {groundHandlers.source.phone}
+                                                {groundHandlers?.source?.contactNumber}
                                             </Typography>
                                         </>
                                     ) : (
@@ -179,10 +179,10 @@ export const BoardingPassCard = ({ data }: BoardingPassCardProps) => {
                                     {groundHandlers?.destination ? (
                                         <>
                                             <Typography variant="caption" sx={{ fontWeight: 700, color: '#5E6CFF', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                                                {groundHandlers.destination.name}
+                                                {groundHandlers?.destination?.fullName}
                                             </Typography>
                                             <Typography variant="caption" display="block" sx={{ fontSize: '0.7rem', color: '#333' }}>
-                                                {groundHandlers.destination.phone}
+                                                {groundHandlers?.destination?.contactNumber}
                                             </Typography>
                                         </>
                                     ) : (
