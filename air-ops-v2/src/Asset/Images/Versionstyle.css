@@ -1434,6 +1434,18 @@ text-align: left;
     height: 40px;
   }
 
+  .css-ua372z-MuiStack-root {
+    display: block !important;
+  }
+
+  .month_calender .MuiDateCalendar-viewTransitionContainer {
+    width: 100% !important;
+  }
+
+  .css-jjhd74-MuiStack-root {
+    display: block !important;
+  }
+
   .header_bar_close {
     color: #001551 !important;
 
@@ -1664,4 +1676,12 @@ text-align: left;
 
 .marquee_paragraph p {
   color: #fff !important;
+}
+
+.marquee_width_one {
+  width: 730px;
+}
+
+.marquee_width_one .css-1ymjhqz {
+  max-width: 730px !important;
 }
