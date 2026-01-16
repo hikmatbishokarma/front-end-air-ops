@@ -27,7 +27,7 @@ const OpsControllerPage = () => {
 
   const { summaryData } = useOpsSummaryData(operatorId, refreshKey);
 
-  console.log("summaryData:::", summaryData);
+
 
   const handleStatCardSelect = (data: IStatCard) => {
     setSelectedTab(data.name);
@@ -76,21 +76,7 @@ const OpsControllerPage = () => {
   // --- STABLE FILTER MERGE FUNCTION (The core fix) ---
   const handleFilterChange = useCallback(
     (newBaseFilter: IBaseFilter) => {
-      // 1. Map the generic properties from the hook's output
-      const { searchTermValue, ...rest } = newBaseFilter;
-
-      // 2. Map the generic searchTermValue to the specific GQL field (quotationNo)
-      const searchFilter = searchTermValue
-        ? { quotationNo: { eq: searchTermValue } }
-        : {};
-
-      const mergedFilter = {
-        ...rest, // Contains date filter (createdAt)
-        ...searchFilter,
-      };
-
-      // 3. Update the final state, breaking the useEffect loop
-      setFinalGqlFilter(mergedFilter);
+      setFinalGqlFilter(newBaseFilter);
     },
     [setFinalGqlFilter]
   );
@@ -118,16 +104,33 @@ const OpsControllerPage = () => {
   );
 
   const saleConfirmationFilter = useMemo(() => {
+    const { searchTermValue, ...rest } = finalGqlFilter;
+    const searchFilter = searchTermValue
+      ? { quotationNo: searchTermValue }
+      : {};
+
     return {
-      ...finalGqlFilter,
+      ...rest,
       ...SALE_CONFIRMATION_BASE_FILTER,
+      ...searchFilter,
       ...(operatorId && { operatorId: { eq: operatorId } }),
     };
   }, [finalGqlFilter, operatorId]);
 
   const tripDetailsFilter = useMemo(() => {
+    const { searchTermValue, ...rest } = finalGqlFilter;
+    const searchFilter = searchTermValue
+      ? {
+        or: [
+          { quotationNo: searchTermValue },
+          { tripId: searchTermValue },
+        ],
+      }
+      : {};
+
     return {
-      ...finalGqlFilter,
+      ...rest,
+      ...searchFilter,
       ...(operatorId && { operatorId: { eq: operatorId } }),
     };
   }, [finalGqlFilter, operatorId]);
