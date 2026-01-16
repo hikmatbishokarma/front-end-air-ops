@@ -17,7 +17,8 @@ import { useSnackbar } from "@/app/providers";
 
 const SaleConfirmationPreviewPage = () => {
   const navigate = useNavigate();
-  const { quotationNo } = useParams(); // assuming route like /preview/:id
+  const params = useParams();
+  const quotationNo = params["*"]; // Retrieve from splat route
 
   const showSnackbar = useSnackbar();
 

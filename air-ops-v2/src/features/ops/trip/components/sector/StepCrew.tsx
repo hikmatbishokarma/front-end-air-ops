@@ -13,8 +13,9 @@ import {
   Chip,
   Grid,
   CircularProgress,
+  Typography,
 } from "@mui/material";
-import { Control, Controller } from "react-hook-form";
+import { Control, Controller, useFormContext, useWatch } from "react-hook-form";
 import { CrewMember, SectorFormValues } from "../../type/trip.type";
 import { logoColors } from "@/shared/utils";
 import { GET_CREW_DETAILS } from "@/lib/graphql/queries/crew-detail";
@@ -28,6 +29,8 @@ interface StepCrewProps {
 }
 
 export default function StepCrew({ control }: StepCrewProps) {
+  const { setValue, getValues } = useFormContext<SectorFormValues>();
+  const assignedCrews = useWatch({ control, name: "assignedCrews" }) || [];
   const { session } = useSession();
   const showSnackbar = useSnackbar();
   const operatorId = session?.user?.operator?.id || null;
@@ -121,7 +124,7 @@ export default function StepCrew({ control }: StepCrewProps) {
             filter,
             paging: {
               offset: 0,
-              limit: 100, // Limit results for autocomplete
+              limit: 50, // Limit results for autocomplete
             },
             sorting: [{ field: "fullName", direction: "ASC" }],
           },
@@ -253,7 +256,32 @@ export default function StepCrew({ control }: StepCrewProps) {
                           }));
                         }}
                         onChange={(_, newValue) => {
-                          field.onChange(newValue.map((c: CrewMember) => c.id)); // save only ids
+                          const newIds = newValue.map((c: CrewMember) => c.id);
+                          field.onChange(newIds); // save only ids
+
+                          // Sync crewAssignmentDetails for PILOT
+                          if (designation === "PILOT") {
+                            const currentDetails =
+                              getValues(
+                                `assignedCrews.${index}.crewAssignmentDetails`
+                              ) || [];
+                            const newDetails = newIds.map((id) => {
+                              const existing = currentDetails.find(
+                                (d) => d.crewId === id
+                              );
+                              return (
+                                existing || {
+                                  crewId: id,
+                                  weight: "",
+                                  baggage: "",
+                                }
+                              );
+                            });
+                            setValue(
+                              `assignedCrews.${index}.crewAssignmentDetails`,
+                              newDetails
+                            );
+                          }
                         }}
                         renderTags={(selected, getTagProps) =>
                           selected.map((option, index) => (
@@ -297,6 +325,65 @@ export default function StepCrew({ control }: StepCrewProps) {
                   }}
                 />
               </Grid>
+              {designation === "PILOT" &&
+                assignedCrews[index]?.crews?.length > 0 && (
+                  <Grid item xs={12}>
+                    <Box sx={{ pl: 4, mb: 2 }}>
+                      {assignedCrews[index].crews.map(
+                        (crewId: string, crewIdx: number) => {
+                          const crewMember = availableCrew.find(
+                            (c) => c.id === crewId
+                          );
+                          return (
+                            <Grid
+                              container
+                              spacing={2}
+                              key={crewId}
+                              sx={{ mt: 1 }}
+                              alignItems="center"
+                            >
+                              <Grid item xs={4}>
+                                <Typography variant="body2">
+                                  {crewMember?.name || "Unknown Crew"}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={4}>
+                                <Controller
+                                  name={`assignedCrews.${index}.crewAssignmentDetails.${crewIdx}.weight`}
+                                  control={control}
+                                  defaultValue=""
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label="Weight"
+                                      size="small"
+                                      fullWidth
+                                    />
+                                  )}
+                                />
+                              </Grid>
+                              <Grid item xs={4}>
+                                <Controller
+                                  name={`assignedCrews.${index}.crewAssignmentDetails.${crewIdx}.baggage`}
+                                  control={control}
+                                  defaultValue=""
+                                  render={({ field }) => (
+                                    <TextField
+                                      {...field}
+                                      label="Crew Baggage"
+                                      size="small"
+                                      fullWidth
+                                    />
+                                  )}
+                                />
+                              </Grid>
+                            </Grid>
+                          );
+                        }
+                      )}
+                    </Box>
+                  </Grid>
+                )}
             </Fragment>
           );
         })}

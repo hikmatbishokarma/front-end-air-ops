@@ -80,6 +80,11 @@ export const GET_TRIP_DETAILS = gql`
           assignedCrews {
             designation
             crews
+            crewAssignmentDetails {
+              crewId
+              weight
+              baggage
+            }
           }
           baInfo {
             baMachine
@@ -322,6 +327,11 @@ export const GET_TRIP_DETAILS_BY_ID = gql`
           id
           crewId
           email
+        }
+        crewAssignmentDetails {
+          crewId
+          weight
+          baggage
         }
         }
         baInfo {

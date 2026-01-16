@@ -64,7 +64,7 @@ export default function StepFuel({ control, setValue }: StepFuelProps) {
                   {...field}
                   value={field.value ? moment(field.value) : null}
                   label="Fuel Uploaded Date"
-                  disablePast
+                  // disablePast
                   onChange={(date) => {
                     // Ensure we save ISO string, not the moment object
                     field.onChange(date ? date.toISOString() : null);

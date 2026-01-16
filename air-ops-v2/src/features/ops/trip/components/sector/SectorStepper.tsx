@@ -13,7 +13,7 @@ import StepCrew from "./StepCrew";
 import StepFuel from "./StepFuel";
 import StepDocuments from "./StepDocuments";
 
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
@@ -71,7 +71,7 @@ export default function SectorStepper({ sector, tripId, onSave }: any) {
     fileUrl: doc.fileUrl || null,
   }));
 
-  const { control, handleSubmit, reset, watch, setValue } = useForm({
+  const methods = useForm({
     defaultValues: {
       ...sector,
       assignedCrews: sector.assignedCrews || [],
@@ -80,6 +80,8 @@ export default function SectorStepper({ sector, tripId, onSave }: any) {
       baInfo: sector.baInfo || {},
     },
   });
+
+  const { control, handleSubmit, reset, watch, setValue } = methods;
 
   const handleNext = (e?: React.MouseEvent) => {
     if (e) {
@@ -147,50 +149,52 @@ export default function SectorStepper({ sector, tripId, onSave }: any) {
   };
 
   return (
-    <form onSubmit={handleFormSubmit} onKeyDown={handleKeyDown}>
-      <Box mt={2}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              {/* <StepLabel>{label}</StepLabel> */}
-              <StepLabel StepIconComponent={CustomStepIcon}>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+    <FormProvider {...methods}>
+      <form onSubmit={handleFormSubmit} onKeyDown={handleKeyDown}>
+        <Box mt={2}>
+          <Stepper activeStep={activeStep} alternativeLabel>
+            {steps.map((label) => (
+              <Step key={label}>
+                {/* <StepLabel>{label}</StepLabel> */}
+                <StepLabel StepIconComponent={CustomStepIcon}>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
-        <Box mt={3}>
-          {activeStep === 0 && (
-            <StepSectorInfo control={control} sector={sector} />
-          )}
-          {activeStep === 1 && <StepCrew control={control} />}
-          {activeStep === 2 && <StepBADetails control={control} />}
-          {activeStep === 3 && <StepFuel control={control} setValue={setValue} />}
-          {activeStep === 4 && <StepDocuments control={control} tripId={tripId} sectorNo={sector.sectorNo} />}
-        </Box>
+          <Box mt={3}>
+            {activeStep === 0 && (
+              <StepSectorInfo control={control} sector={sector} />
+            )}
+            {activeStep === 1 && <StepCrew control={control} />}
+            {activeStep === 2 && <StepBADetails control={control} />}
+            {activeStep === 3 && <StepFuel control={control} setValue={setValue} />}
+            {activeStep === 4 && <StepDocuments control={control} tripId={tripId} sectorNo={sector.sectorNo} />}
+          </Box>
 
-        <Box mt={2} display="flex" justifyContent="space-between">
-          <Button
-            type="button"
-            disabled={activeStep === 0}
-            onClick={(e) => handleBack(e)}
-          >
-            Back
-          </Button>
-          {activeStep < steps.length - 1 ? (
+          <Box mt={2} display="flex" justifyContent="space-between">
             <Button
               type="button"
-              variant="contained"
-              onClick={(e) => handleNext(e)}
+              disabled={activeStep === 0}
+              onClick={(e) => handleBack(e)}
             >
-              Next
+              Back
             </Button>
-          ) : (
-            <Button type="submit" variant="contained" color="success">
-              Save Sector
-            </Button>
-          )}
+            {activeStep < steps.length - 1 ? (
+              <Button
+                type="button"
+                variant="contained"
+                onClick={(e) => handleNext(e)}
+              >
+                Next
+              </Button>
+            ) : (
+              <Button type="submit" variant="contained" color="success">
+                Save Sector
+              </Button>
+            )}
+          </Box>
         </Box>
-      </Box>
-    </form>
+      </form>
+    </FormProvider>
   );
 }

@@ -355,7 +355,7 @@ const router = createBrowserRouter([
             Component: TripComplianceReportPage,
           },
           {
-            path: "sales-confirmation-preview/:quotationNo",
+            path: "sales-confirmation-preview/*",
             // element: (
             //   <ProtectedRoute>
             //     <SaleConfirmationPreviewPage />

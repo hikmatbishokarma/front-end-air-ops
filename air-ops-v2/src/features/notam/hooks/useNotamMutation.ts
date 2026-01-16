@@ -31,7 +31,7 @@ export const useCreateNotamMutation = () => {
                                 region: notamData.region,
                                 category: notamData.category,
                                 fileName: notamData.fileName,
-                                fileUrl: notamData.fileUrl,
+                                // fileUrl: notamData.fileUrl,
                                 ...(notamData.date && { date: notamData.date }),
                             },
                         },
@@ -79,7 +79,7 @@ export const useUpdateNotamMutation = () => {
                 region?: string;
                 category?: string;
                 fileName?: string;
-                fileUrl?: string;
+                // fileUrl?: string; // Removed as it's not in the DTO
                 date?: string;
             }
         ) => {
