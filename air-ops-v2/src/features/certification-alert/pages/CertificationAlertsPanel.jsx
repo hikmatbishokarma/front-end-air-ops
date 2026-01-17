@@ -44,7 +44,7 @@ export default function CertificationAlertsPanel() {
 
     return (
         <>
-            <Paper sx={{ height: 400, display: 'flex', flexDirection: 'column', p: 3, borderRadius: '24px' }}>
+            <Paper sx={{ height: { xs: 'auto', md: 400 }, minHeight: { xs: 400, md: 'unset' }, display: 'flex', flexDirection: 'column', p: { xs: 2, md: 3 }, borderRadius: '24px' }}>
                 {/* Header */}
                 <Box sx={{ pb: 1.5, mb: 1 }}>
                     <Typography variant="subtitle1" fontWeight="600">
@@ -53,7 +53,7 @@ export default function CertificationAlertsPanel() {
                 </Box>
 
                 {/* Scrollable Content */}
-                <Box sx={{
+                <Box className="renewal_date" sx={{
                     flex: 1,
                     overflow: 'auto',
                     mx: -3,

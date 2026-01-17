@@ -91,7 +91,7 @@ export default function CertificationDetailDialog({ open, onClose, certification
             <DialogContent sx={{ p: 0 }}>
                 <Stack spacing={0}>
                     {/* Staff Name Section */}
-                    <Box sx={{ p: 3, bgcolor: "#F9FAFB" }}>
+                    <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: "#F9FAFB" }}>
                         <Stack direction="row" spacing={2} alignItems="center">
                             <Box
                                 sx={{
@@ -120,7 +120,7 @@ export default function CertificationDetailDialog({ open, onClose, certification
                     <Divider />
 
                     {/* Certification Details */}
-                    <Box sx={{ p: 3 }}>
+                    <Box sx={{ p: { xs: 2, md: 3 } }}>
                         <Stack spacing={3}>
                             {/* Certification Type */}
                             <Box>
@@ -130,7 +130,7 @@ export default function CertificationDetailDialog({ open, onClose, certification
                                         Certification Type
                                     </Typography>
                                 </Stack>
-                                <Typography variant="body1" fontWeight="600" sx={{ pl: 4.5 }}>
+                                <Typography variant="body1" fontWeight="600" sx={{ pl: { xs: 0, md: 4.5 }, mt: { xs: 0.5, md: 0 } }}>
                                     {certification.title}
                                 </Typography>
                             </Box>
@@ -144,7 +144,7 @@ export default function CertificationDetailDialog({ open, onClose, certification
                                             License Number
                                         </Typography>
                                     </Stack>
-                                    <Box sx={{ pl: 4.5 }}>
+                                    <Box sx={{ pl: { xs: 0, md: 4.5 }, mt: { xs: 0.5, md: 0 } }}>
                                         <Chip
                                             label={certification.licenceNo}
                                             sx={{
@@ -168,7 +168,7 @@ export default function CertificationDetailDialog({ open, onClose, certification
                                         Timeline
                                     </Typography>
                                 </Stack>
-                                <Stack spacing={1.5} sx={{ pl: 4.5 }}>
+                                <Stack spacing={1.5} sx={{ pl: { xs: 0, md: 4.5 }, mt: { xs: 1, md: 0 } }}>
                                     {certification.dateOfIssue && (
                                         <Box>
                                             <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.75rem" }}>
@@ -225,7 +225,7 @@ export default function CertificationDetailDialog({ open, onClose, certification
                                             Supporting Document
                                         </Typography>
                                     </Stack>
-                                    <Box sx={{ pl: 4.5 }}>
+                                    <Box sx={{ pl: { xs: 0, md: 4.5 }, mt: { xs: 1, md: 0 } }}>
                                         <Button
                                             variant="contained"
                                             size="medium"

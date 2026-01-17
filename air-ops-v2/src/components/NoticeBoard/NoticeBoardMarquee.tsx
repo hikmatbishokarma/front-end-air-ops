@@ -55,7 +55,7 @@ export default function NoticeBoardMarquee() {
 
     return (
         // Add justifyContent="flex-end" to align content to the right (near the timer)
-        <Box display="flex" alignItems="center" flexGrow={1} justifyContent="flex-end">
+        <Box display="flex" alignItems="center" flexGrow={1} justifyContent="flex-end" className="marquee_width_one">
             {activeNotice && activeNotice.isActive && (
                 <MarqueeContainer>
                     <MarqueeText variant="body2" className='marquee_paragraph'>

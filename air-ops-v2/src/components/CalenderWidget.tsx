@@ -384,7 +384,8 @@ export const FlightCalendarWidget = () => {
         className="tripcnfrm"
         sx={{
           display: "flex",
-          height: 300,
+          flexDirection: { xs: "column", md: "row" },
+          height: { xs: "auto", md: 300 },
           borderRadius: 3,
           overflow: "hidden",
           boxShadow: 3,
@@ -393,7 +394,7 @@ export const FlightCalendarWidget = () => {
         {/* Left: Events */}
         <Box
           sx={{
-            width: "45%",
+            width: { xs: "100%", md: "45%" },
             //   backgroundColor: "#e3f2fd",
             backgroundColor: "#FFFFFF",
             p: 1.5,
@@ -548,7 +549,7 @@ export const FlightCalendarWidget = () => {
         <Box
           className="month_calender"
           sx={{
-            width: "55%",
+            width: { xs: "100%", md: "55%" },
             backgroundColor: "#f5f5f5",
             p: 0.5,
             "& .MuiPickersLayout-root": {
@@ -822,7 +823,7 @@ export const StaffLeaveWidget = () => {
           </Box>
         </Box>
 
-        <Box display="flex" justifyContent="space-between" mb={1} gap={1}>
+        <Box display="flex" justifyContent="space-between" mb={1} gap={1} sx={{ overflowX: 'auto', pb: 1 }}>
           {weekDays.map((date, index) => {
             const isToday = date.isSame(today, "day");
             const isSelected = date.isSame(selectedDate, "day");

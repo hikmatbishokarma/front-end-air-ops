@@ -39,11 +39,12 @@ export default function CertificationAlertCard({ item, onClick }) {
     };
 
     return (
-        <Box
+        <Box className="expired-date"
             onClick={() => onClick(item)}
             sx={{
                 display: 'flex',
-                alignItems: 'center',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'flex-start', sm: 'center' },
                 justifyContent: 'space-between',
                 gap: 2,
                 py: 1.5,
@@ -132,7 +133,8 @@ export default function CertificationAlertCard({ item, onClick }) {
                 sx={{
                     color: colors[severity],
                     minWidth: '70px',
-                    textAlign: 'right',
+                    textAlign: { xs: 'left', sm: 'right' },
+                    width: { xs: '100%', sm: 'auto' },
                     fontSize: '0.875rem',
                 }}
             >
