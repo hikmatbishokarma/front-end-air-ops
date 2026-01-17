@@ -1337,6 +1337,7 @@ function TravelFields({ control, sectorIndex }: any) {
               placeholder="Arrival / Departure / Local"
               fullWidth
               size="small"
+              InputLabelProps={{ shrink: true }}
             />
           )}
         />
@@ -1352,6 +1353,7 @@ function TravelFields({ control, sectorIndex }: any) {
               placeholder="Sedan / SUV / Van"
               fullWidth
               size="small"
+              InputLabelProps={{ shrink: true }}
             />
           )}
         />
@@ -1372,6 +1374,7 @@ function TravelFields({ control, sectorIndex }: any) {
               label="Seating Capacity"
               fullWidth
               size="small"
+              InputLabelProps={{ shrink: true }}
               type="number"
               inputProps={{ min: 0 }}
               onChange={(e) =>
@@ -1392,6 +1395,7 @@ function TravelFields({ control, sectorIndex }: any) {
               placeholder="Innova / Crysta / Tempo Traveller"
               fullWidth
               size="small"
+              InputLabelProps={{ shrink: true }}
             />
           )}
         />
@@ -1407,6 +1411,7 @@ function TravelFields({ control, sectorIndex }: any) {
               placeholder="Hotel / FBO / Terminal"
               fullWidth
               size="small"
+              InputLabelProps={{ shrink: true }}
             />
           )}
         />
