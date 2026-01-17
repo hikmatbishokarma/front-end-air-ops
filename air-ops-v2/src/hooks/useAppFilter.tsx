@@ -104,8 +104,8 @@ export const useAppFilter = <TFilter extends IBaseFilter>(
     const dateFilter: Partial<TFilter> =
       from && to
         ? ({
-            createdAt: { between: { lower: from, upper: to } },
-          } as Partial<TFilter>)
+          createdAt: { between: { lower: from, upper: to } },
+        } as Partial<TFilter>)
         : {};
 
     return dateFilter;
@@ -160,13 +160,23 @@ export const useAppFilter = <TFilter extends IBaseFilter>(
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilter((prev) => ({
-        ...prev,
-        ...(searchTerm ? { quotationNo: { iLike: searchTerm } } : {}),
-      }));
+      setFilter((prev) => {
+        // Remove old search term value to avoid stale data
+        const { searchTermValue: oldTerm, ...rest } = prev;
+
+        const newFilter = {
+          ...rest,
+          ...(searchTerm ? { searchTermValue: { iLike: searchTerm } } : {}),
+        } as TFilter;
+
+        // Notify the consumer
+        onFilterChange(newFilter);
+
+        return newFilter;
+      });
     }, 400);
     return () => clearTimeout(handler);
-  }, [searchTerm]);
+  }, [searchTerm, onFilterChange]);
 
   // --- RETURN VALUES ---
   return {

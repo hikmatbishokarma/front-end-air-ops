@@ -26,18 +26,8 @@ export const GENERATE_BOARDING_PASS = gql`
         aircraft
       }
       groundHandlers {
-        source {
-          name
-          email
-          phone
-          airportCode
-        }
-        destination {
-          name
-          email
-          phone
-          airportCode
-        }
+        source 
+        destination 
       }
       operationType
       status
@@ -71,18 +61,8 @@ export const GET_BOARDING_PASSES = gql`
         aircraft
       }
       groundHandlers {
-        source {
-          name
-          email
-          phone
-          airportCode
-        }
-        destination {
-          name
-          email
-          phone
-          airportCode
-        }
+        source 
+        destination 
       }
       operationType
       status

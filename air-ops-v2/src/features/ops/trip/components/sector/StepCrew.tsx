@@ -41,8 +41,8 @@ export default function StepCrew({ control }: StepCrewProps) {
     "PILOT",
     "CABIN_CREW",
     "ENGINEER",
-    "SECURITY",
-    "OPERATIONS",
+    "SECURITY_MANAGER",
+    "OPERATIONS_MANAGER",
     "CAMO",
   ];
 
@@ -57,11 +57,11 @@ export default function StepCrew({ control }: StepCrewProps) {
 
     // Add SECURITY and OPERATIONS if they don't exist in the hook
     const existingValues = filtered.map((d) => d.value);
-    if (!existingValues.includes("SECURITY")) {
-      filtered.push({ label: "Security", value: "SECURITY" });
+    if (!existingValues.includes("SECURITY_MANAGER")) {
+      filtered.push({ label: "Security ", value: "SECURITY_MANAGER" });
     }
-    if (!existingValues.includes("OPERATIONS")) {
-      filtered.push({ label: "Operations", value: "OPERATIONS" });
+    if (!existingValues.includes("OPERATIONS_MANAGER")) {
+      filtered.push({ label: "Operations ", value: "OPERATIONS_MANAGER" });
     }
 
     // Sort to match the order requested: PILOT, CABIN_CREW, ENGINEER, SECURITY, OPERATIONS, CAMO
@@ -69,8 +69,8 @@ export default function StepCrew({ control }: StepCrewProps) {
       "PILOT",
       "CABIN_CREW",
       "ENGINEER",
-      "SECURITY",
-      "OPERATIONS",
+      "SECURITY_MANAGER",
+      "OPERATIONS_MANAGER",
       "CAMO",
     ];
     return filtered.sort((a, b) => {
@@ -301,7 +301,7 @@ export default function StepCrew({ control }: StepCrewProps) {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label={`${d.label} Crew`}
+                            label={`${d.label}`}
                             margin="normal"
                             size="small"
                             InputProps={{
@@ -355,7 +355,7 @@ export default function StepCrew({ control }: StepCrewProps) {
                                   render={({ field }) => (
                                     <TextField
                                       {...field}
-                                      label="Weight"
+                                      label="Crew Weight"
                                       size="small"
                                       fullWidth
                                     />
@@ -370,7 +370,7 @@ export default function StepCrew({ control }: StepCrewProps) {
                                   render={({ field }) => (
                                     <TextField
                                       {...field}
-                                      label="Crew Baggage"
+                                      label="Baggage Weight"
                                       size="small"
                                       fullWidth
                                     />

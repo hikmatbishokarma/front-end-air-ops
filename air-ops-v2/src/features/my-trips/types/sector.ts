@@ -3,8 +3,8 @@ export type Designation =
   | "PILOT"
   | "CABIN_CREW"
   | "ENGINEER"
-  | "SECURITY"
-  | "OPERATIONS"
+  | "SECURITY_MANAGER"
+  | "OPERATIONS_MANAGER"
   | "CAMO";
 
 export interface SectorDocument {
