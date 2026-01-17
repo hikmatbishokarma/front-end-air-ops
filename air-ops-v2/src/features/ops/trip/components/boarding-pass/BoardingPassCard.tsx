@@ -2,6 +2,9 @@ import { Box, Typography, Divider, Grid } from "@mui/material";
 import moment from "moment";
 import FlightIcon from "@mui/icons-material/Flight";
 import WorldMap from "../../../../../assets/world-map-dots.jpg";
+import Bdpassimg from "../../../../../Asset/Images/Pass-logo-1.png";
+import Bdpassmd from "../../../../../Asset/Images/pass-logo-2.png";
+
 
 interface BoardingPassCardProps {
     data: any;
@@ -14,7 +17,7 @@ export const BoardingPassCard = ({ data }: BoardingPassCardProps) => {
         <Box
             sx={{
                 width: "100%",
-                maxWidth: "650px", // Reduced size
+                maxWidth: "700px", // Reduced size
                 bgcolor: "#fff",
                 borderRadius: "16px",
                 overflow: "hidden",
@@ -37,7 +40,13 @@ export const BoardingPassCard = ({ data }: BoardingPassCardProps) => {
                     height: "50px",
                 }}
             >
-                <Typography variant="h6" sx={{ fontWeight: "bold", letterSpacing: 2, fontSize: "1rem" }}>
+
+                <div className="pass_mt_logo">
+                    <div>
+                        <img src={Bdpassimg} alt="Company Logo" width={65} />
+                    </div>
+                </div>
+                <Typography className="pass_logo_text" variant="h6" sx={{ fontWeight: "bold", letterSpacing: 2, fontSize: "1rem" }}>
                     BOARDING PASS
                 </Typography>
                 <Typography variant="h6" sx={{ fontWeight: "bold", letterSpacing: 2, fontSize: "1rem" }}>
@@ -47,6 +56,13 @@ export const BoardingPassCard = ({ data }: BoardingPassCardProps) => {
 
             {/* Main Content */}
             <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
+
+                <div className="pass_middle_img">
+                    <div>
+                        <img src={Bdpassmd} alt="Company Logo" />
+                    </div>
+                </div>
+
                 {/* Left Section */}
                 <Box sx={{
                     flex: 2.2,
@@ -191,10 +207,15 @@ export const BoardingPassCard = ({ data }: BoardingPassCardProps) => {
                                         </Typography>
                                     )}
                                 </Box>
+
                             </Box>
                         </Box>
                     </Box>
                 </Box>
+
+                <div className="pass_bg_img_section">
+
+                </div>
 
                 {/* Right Stub */}
                 <Box sx={{ flex: 1, p: 3, bgcolor: "#FAFAFA", display: 'flex', flexDirection: 'column' }}>

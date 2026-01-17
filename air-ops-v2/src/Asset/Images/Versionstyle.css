@@ -1434,6 +1434,10 @@ text-align: left;
     height: 40px;
   }
 
+  .pass_middle_img {
+    margin-top: 45px;
+  }
+
   .css-ua372z-MuiStack-root {
     display: block !important;
   }
@@ -1684,4 +1688,32 @@ text-align: left;
 
 .marquee_width_one .css-1ymjhqz {
   max-width: 730px !important;
+}
+
+.pass_logo_text {
+  padding-right: 35%;
+}
+
+.pass_mt_logo {
+  padding-top: 48px;
+  z-index: 999;
+}
+
+.pass_middle_img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.pass_bg_img_section {
+  background-image: url(../Images/pass_right_img.png) !important;
+  background-position: right !important;
+  width: 13px;
+}
+
+.crew_weight_bar {
+  border: 2px solid #ededed;
+  padding: 10px;
+  border-radius: 20px;
 }

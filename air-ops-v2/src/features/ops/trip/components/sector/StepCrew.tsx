@@ -328,7 +328,7 @@ export default function StepCrew({ control }: StepCrewProps) {
               {designation === "PILOT" &&
                 assignedCrews[index]?.crews?.length > 0 && (
                   <Grid item xs={12}>
-                    <Box sx={{ pl: 4, mb: 2 }}>
+                    <Box sx={{ pl: 4, mb: 2 }} className="crew_weight_bar">
                       {assignedCrews[index].crews.map(
                         (crewId: string, crewIdx: number) => {
                           const crewMember = availableCrew.find(
