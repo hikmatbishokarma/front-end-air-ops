@@ -178,8 +178,8 @@ const TripSummaryTab: React.FC<TripSummaryTabProps> = ({ tripId }) => {
                 <Box key={sector.sectorNo} sx={{ mb: 4 }}>
                     <Box sx={SECTION_TITLE_STYLE} display="flex" justifyContent="space-between" alignItems="center">
                         <span>
-                            SECTOR {sector.sectorNo}: {sector.source?.name} ({sector.source?.code}) ➝{" "}
-                            {sector.destination?.name} ({sector.destination?.code})
+                            SECTOR {sector.sectorNo}: {sector.source?.city || sector.source?.name} ({sector.source?.code}) ➝{" "}
+                            {sector.destination?.city || sector.destination?.name} ({sector.destination?.code})
                         </span>
                         <a
                             href={`${apiBaseUrl}api/reports/trip/${tripData.tripId}/sector/${sector.sectorNo}/pdf`}

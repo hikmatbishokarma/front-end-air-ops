@@ -800,7 +800,7 @@ export default function PassengerDetails({
                             color="text.secondary"
                             sx={{ mb: 1, fontWeight: 600 }}
                           >
-                            Departure Handler ({sectorFields[sectorIndex].source?.name}) / {sectorFields[sectorIndex].source?.code}
+                            Departure Handler ({sectorFields[sectorIndex].source?.city || sectorFields[sectorIndex].source?.name}) / {sectorFields[sectorIndex].source?.code}
                           </Typography>
                           <GroundHandlerSelector
                             control={control}
@@ -819,7 +819,7 @@ export default function PassengerDetails({
                             color="text.secondary"
                             sx={{ mb: 1, fontWeight: 600 }}
                           >
-                            Arrival Handler ({sectorFields[sectorIndex].destination?.name}) / {sectorFields[sectorIndex].destination?.code}
+                            Arrival Handler ({sectorFields[sectorIndex].destination?.city || sectorFields[sectorIndex].destination?.name}) / {sectorFields[sectorIndex].destination?.code}
                           </Typography>
                           <GroundHandlerSelector
                             control={control}
