@@ -99,7 +99,6 @@ export const OperatorList = () => {
               <TableCell>Email</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>CompanyName</TableCell>
-              <TableCell>Status</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -110,10 +109,6 @@ export const OperatorList = () => {
                 <TableCell>{item.email}</TableCell>
                 <TableCell>{item?.phone}</TableCell>
                 <TableCell>{item?.companyName}</TableCell>
-                <TableCell>
-                  <Switch checked={item.isActive} size="small" />
-                </TableCell>
-
                 <TableCell>
                   {/* Edit Button */}
                   <IconButton

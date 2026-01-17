@@ -14,6 +14,8 @@ const ReviewStep = ({ allFormValues }: { allFormValues: any }) => {
 
   const aircraft = allFormValues?.aircraft;
 
+  console.log("allFormValues", allFormValues);
+
   return (
     <Box sx={{ mt: 5 }}>
       {showEnquiry && (

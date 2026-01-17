@@ -194,13 +194,15 @@ const EnquiryStep = ({
                       getOptionLabel={(option) => option.name}
                       value={
                         field.value
-                          ? representatives.find(
+                          ? typeof field.value === "string"
+                            ? representatives.find(
                               (rep) => rep.id === field.value
-                            )
+                            ) || null
+                            : field.value
                           : null
                       }
                       onChange={(_, newValue) =>
-                        field.onChange(newValue ? newValue.id : "")
+                        field.onChange(newValue || null)
                       }
                       renderInput={(params) => (
                         <TextField

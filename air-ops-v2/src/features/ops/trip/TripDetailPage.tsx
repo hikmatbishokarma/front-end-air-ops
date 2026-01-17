@@ -52,6 +52,7 @@ export default function TripDetailPage() {
           <PassengerDetailsTab
             quotation={trip?.quotation}
             quotationNo={trip?.quotationNo}
+            tripId={tripId}
           />
         )}
         {tab === 1 && <IntimationsTab trip={trip} />}

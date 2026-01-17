@@ -1569,8 +1569,8 @@ function GroundHandlerSelector({ control, sectorIndex, type, airportCode, airpor
               message: "Invalid phone format",
             },
             minLength: {
-              value: 7,
-              message: "Min 7 digits",
+              value: 10,
+              message: "Min 10 digits",
             },
             maxLength: {
               value: 15,

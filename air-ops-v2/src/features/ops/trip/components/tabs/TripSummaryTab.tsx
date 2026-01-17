@@ -177,7 +177,10 @@ const TripSummaryTab: React.FC<TripSummaryTabProps> = ({ tripId }) => {
             {tripData.sectors?.map((sector: any) => (
                 <Box key={sector.sectorNo} sx={{ mb: 4 }}>
                     <Box sx={SECTION_TITLE_STYLE} display="flex" justifyContent="space-between" alignItems="center">
-                        <span>SECTOR {sector.sectorNo}: {sector.source?.code} ➝ {sector.destination?.code}</span>
+                        <span>
+                            SECTOR {sector.sectorNo}: {sector.source?.name} ({sector.source?.code}) ➝{" "}
+                            {sector.destination?.name} ({sector.destination?.code})
+                        </span>
                         <a
                             href={`${apiBaseUrl}api/reports/trip/${tripData.tripId}/sector/${sector.sectorNo}/pdf`}
                             target="_blank"
@@ -250,6 +253,51 @@ const TripSummaryTab: React.FC<TripSummaryTabProps> = ({ tripId }) => {
                             } else {
                                 return <Typography variant="body2" color="text.secondary" fontStyle="italic">No passengers listed.</Typography>;
                             }
+                        })()}
+
+                        {/* Ground Handling Info (from Passenger Data) */}
+                        {(() => {
+                            const paxNode = passengerData?.[0];
+                            const paxSector = paxNode?.sectors?.find((s: any) => s.sectorNo === sector.sectorNo);
+                            const sourceGH = paxSector?.sourceGroundHandler;
+                            const destGH = paxSector?.destinationGroundHandler;
+
+                            if (!sourceGH && !destGH) return null;
+
+                            const renderGH = (title: string, data: any) => {
+                                if (!data?.fullName && !data?.contactNumber && !data?.email) return null;
+                                return (
+                                    <Box sx={{ flex: 1, p: 1.5, border: '1px solid #eee', borderRadius: '4px', bgcolor: '#fafafa' }}>
+                                        <Typography variant="caption" sx={{ fontWeight: 'bold', color: '#666', mb: 0.5, display: 'block', textTransform: 'uppercase' }}>
+                                            {title}
+                                        </Typography>
+                                        <Typography variant="body2" fontWeight={600}>
+                                            {data.fullName || "N/A"}
+                                        </Typography>
+                                        <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
+                                            📞 {data.contactNumber || data.alternateContactNumber || "N/A"}
+                                        </Typography>
+                                        {data.email && (
+                                            <Typography variant="caption" display="block" color="text.secondary">
+                                                ✉ {data.email}
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                );
+                            };
+
+                            return (
+                                <Box mt={2}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            {renderGH(`Source Handler (${sector.source?.code || 'Departure'})`, sourceGH)}
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            {renderGH(`Dest. Handler (${sector.destination?.code || 'Arrival'})`, destGH)}
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            );
                         })()}
                     </Box>
 
